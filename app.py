@@ -331,10 +331,10 @@ def _get_question_entry(exam_mastery: dict, qid: str) -> dict:
 
 
 def _mastery_threshold(entry: dict) -> int:
-    """Return the number of consecutive correct answers required to master a question.
+    """Return the number of correct answers required to master a question.
 
     Rule: if the first attempt is correct, the question is mastered immediately.
-    If the first attempt is wrong, the user must answer correctly 3 times in a row.
+    If the first attempt is wrong, the user must answer correctly 3 times total.
     """
     return 1 if entry.get("first_correct") is True else 3
 
@@ -364,7 +364,7 @@ def _update_mastery_entry(entry: dict, is_correct: bool) -> bool:
     if entry.get("mastered"):
         return False
     threshold = _mastery_threshold(entry)
-    if entry["streak"] >= threshold:
+    if entry["correct_count"] >= threshold:
         entry["mastered"] = True
         return True
     return False
@@ -844,6 +844,39 @@ def mastery_submit():
     all_questions = get_questions_for_test(filename)
     summary = get_mastery_summary(user, filename, all_questions)
     return jsonify({"ok": True, "summary": summary, "newly_mastered": newly_mastered})
+
+
+@app.route("/api/mastery/debug", methods=["GET"])
+def mastery_debug():
+    """Return raw mastery entries for the current user and exam for troubleshooting."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to track mastery progress."}), 401
+    filename = request.args.get("filename", "").strip()
+    if not filename:
+        return jsonify({"ok": False, "error": "Filename is required."}), 400
+    questions = get_questions_for_test(filename)
+    if not questions:
+        return jsonify({"ok": False, "error": "No questions found."}), 503
+
+    users = load_users()
+    exam = _get_mastery_for_user(users, user, filename)
+    question_store = exam.get("questions", {})
+    working_set = exam.get("working_set", [])
+
+    entries = []
+    for q in questions:
+        qid = str(q["id"])
+        entry = question_store.get(qid, {})
+        if entry or qid in working_set:
+            entries.append({
+                "id": q["id"],
+                "in_working_set": qid in working_set,
+                "entry": entry,
+            })
+
+    summary = get_mastery_summary(user, filename, questions)
+    return jsonify({"ok": True, "summary": summary, "working_set": working_set, "entries": entries})
 
 
 @app.route("/api/mastery/reset", methods=["POST"])
