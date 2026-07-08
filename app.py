@@ -293,14 +293,25 @@ def get_chat_messages(limit: int = 100) -> list:
 
 
 def _get_mastery_for_user(users: dict, username: str, filename: str) -> dict:
-    """Return the per-exam mastery container, migrating from the old flat format if needed."""
+    """Return the per-exam mastery container, migrating from the old flat format if needed.
+
+    Keys are normalized to strings so integer IDs from older data do not duplicate
+    new string-key entries.
+    """
     mastery = users.setdefault(username, {}).setdefault("mastery", {})
     exam = mastery.setdefault(filename, {})
     # Old format stored question entries directly under the filename key.
     if "questions" not in exam:
-        migrated = {"questions": dict(exam), "working_set": []}
+        questions = {str(k): v for k, v in exam.items() if isinstance(v, dict)}
+        migrated = {"questions": questions, "working_set": []}
         mastery[filename] = migrated
         return migrated
+
+    # Normalize any existing keys to strings and drop stale non-dict entries.
+    questions = {str(k): v for k, v in exam.get("questions", {}).items() if isinstance(v, dict)}
+    exam["questions"] = questions
+    working_set = exam.setdefault("working_set", [])
+    exam["working_set"] = [str(qid) for qid in working_set]
     return exam
 
 
