@@ -3,25 +3,35 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sharp's Get Smart</title>
+    <title>IT Study Aid</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <nav class="top-nav">
         <div class="nav-brand">
             <div class="logo-text">
-                <span class="logo">Sharp's Get Smart</span>
-                <span class="tagline">Practice Test Generator</span>
+                <span class="logo">IT Study Aid and Practice Test Generator</span>
+                <span class="tagline">Made for the Navy IT homies</span>
+            </div>
+            <div id="nav-auth" class="nav-auth">
+                <div id="auth-logged-out" class="auth-form-inline">
+                    <input type="text" id="auth-username" placeholder="Username" maxlength="30" />
+                    <input type="password" id="auth-password" placeholder="Password" />
+                    <button id="login-btn" class="btn btn-primary btn-small">Log In</button>
+                    <button id="register-btn" class="btn btn-secondary btn-small">Sign Up</button>
+                </div>
+                <div id="auth-logged-in" class="auth-status hidden">
+                    <span>Hi, <strong id="auth-user"></strong></span>
+                    <button id="logout-btn" class="btn btn-secondary btn-small">Log Out</button>
+                </div>
+                <p id="auth-message" class="auth-message"></p>
             </div>
         </div>
     </nav>
 
-    <div class="page-header">
-        <div class="container">
-            <span class="exam-label">Current Exam</span>
-            <h1 id="exam-title">Loading exam…</h1>
-            <p id="exam-url" class="exam-url"></p>
-        </div>
+    <div class="tab-nav">
+        <button id="tab-practice" class="tab-btn active">Practice</button>
+        <button id="tab-community" class="tab-btn">Community</button>
     </div>
 
     <div class="container">
@@ -30,57 +40,66 @@
             <section id="setup-screen" class="screen active">
                 <div class="setup-grid">
                     <div class="card">
-                        <h2>Configure Your Practice Test</h2>
-                        <p class="card-subtitle">Select an exam and start a practice test.</p>
+                        <h2>Pick Your Exam</h2>
+                        <p class="card-subtitle">Choose the Navy IT exam you want to study.</p>
 
-                        <div class="form-group">
-                            <label for="exam-select">Exam</label>
-                            <select id="exam-select" disabled>
-                                <option value="">Loading exams…</option>
-                            </select>
+                        <div id="exam-buttons" class="exam-buttons">
+                            <p class="empty-state">Loading exams…</p>
                         </div>
 
-                        <div class="form-group spaced">
-                            <label for="question-count">Number of questions</label>
-                            <div class="count-row">
-                                <input type="number" id="question-count" min="1" value="20" />
-                                <span id="total-questions" class="available-count">0 available</span>
+                        <div class="settings-row">
+                            <div class="form-group">
+                                <label>Mode</label>
+                                <div class="mode-toggle">
+                                    <button id="mode-practice" class="btn btn-primary mode-btn active">Practice Test</button>
+                                    <button id="mode-mastery" class="btn btn-secondary mode-btn">Mastery Mode</button>
+                                </div>
+                                <p id="mode-description" class="mode-description">Random questions each test. Great for quick review.</p>
+                            </div>
+
+                            <div class="form-group" id="count-group">
+                                <label for="question-count">Number of questions</label>
+                                <div class="count-row">
+                                    <input type="number" id="question-count" min="1" value="20" />
+                                    <span id="total-questions" class="available-count">0 available</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="button-row">
+                        <div id="mastery-panel" class="mastery-panel hidden">
+                            <div class="mastery-progress">
+                                <div class="mastery-bar-track">
+                                    <div id="mastery-bar" class="mastery-bar"></div>
+                                </div>
+                                <p id="mastery-text" class="mastery-text">Log in to track mastery progress.</p>
+                            </div>
+                            <p class="mastery-hint">
+                                Mastery requires 3 correct answers in a row if you get the question right the first time, or 5 in a row if you miss it first.
+                            </p>
+                            <div class="button-row compact">
+                                <button id="mastery-start-btn" class="btn btn-success" disabled>Start Mastery Session</button>
+                                <button id="mastery-reset-btn" class="btn btn-secondary" disabled>Reset Mastery</button>
+                            </div>
+                            <p id="mastery-message" class="message"></p>
+                        </div>
+
+                        <div class="button-row" id="start-row">
                             <button id="start-btn" class="btn btn-success btn-large" disabled>Start Test</button>
+                        </div>
+
+                        <div class="info-row">
+                            <div id="account-prompt" class="account-prompt">
+                                <p><strong>Want to save your progress?</strong> Create an account above. It's free, and your scores and mastery progress stay here.</p>
+                            </div>
+
+                            <div class="info-box">
+                                <p><strong>Heads up:</strong> This is a full pool of real exam questions. Your actual in-class exam will be around 50 questions pulled from this pool. Use this daily and you'll know every question cold.</p>
+                            </div>
                         </div>
 
                         <p id="setup-message" class="message"></p>
                     </div>
 
-                    <div class="card community-card">
-                    <h2>Study Squad Board</h2>
-                    <p class="card-subtitle">Let your classmates know you're grinding.</p>
-
-                    <div class="form-group">
-                        <label for="study-name">Your name</label>
-                        <div class="input-button-row">
-                            <input type="text" id="study-name" placeholder="e.g. Smith" maxlength="40" />
-                            <button id="studied-btn" class="btn btn-primary">I Studied</button>
-                        </div>
-                        <p id="study-message" class="message"></p>
-                    </div>
-
-                    <div class="study-board">
-                        <h3>Recently Studied</h3>
-                        <div id="study-list" class="study-list">
-                            <p class="empty-state">No one has checked in yet. Be the first!</p>
-                        </div>
-                    </div>
-
-                    <div class="thanks-section">
-                        <p id="thanks-count">Thanks received: 0</p>
-                        <button id="thanks-btn" class="btn btn-secondary">Say Thanks, Sharp!</button>
-                        <p id="thanks-message" class="message"></p>
-                    </div>
-                </div>
                 </div>
             </section>
 
@@ -123,10 +142,19 @@
                         <span id="score-value">0%</span>
                     </div>
                     <p id="score-detail" class="score-detail"></p>
+                    <div id="results-mastery-progress" class="mastery-progress hidden">
+                        <div class="mastery-bar-track">
+                            <div id="results-mastery-bar" class="mastery-bar"></div>
+                        </div>
+                        <p id="results-mastery-text" class="mastery-text"></p>
+                        <p class="mastery-hint">
+                            Each question needs 3 correct answers in a row if you got it right the first time, or 5 in a row if you missed it first. Keep going!
+                        </p>
+                    </div>
                     <div class="button-row centered">
-                        <button id="restart-btn" class="btn btn-primary btn-large">New Test</button>
+                        <button id="restart-btn" class="btn btn-primary btn-large">Back Home</button>
                         <button id="retake-btn" class="btn btn-secondary btn-large">Retake Same Test</button>
-                        <button id="review-btn" class="btn btn-secondary btn-large">Review Answers</button>
+                        <button id="continue-mastery-btn" class="btn btn-success btn-large hidden">Continue Mastery</button>
                     </div>
                 </div>
 
@@ -137,12 +165,28 @@
                     <div id="review-list"></div>
                 </div>
             </section>
+
+            <!-- Community Screen -->
+            <section id="community-screen" class="screen">
+                <div class="card chat-card">
+                    <h2>Community Chat</h2>
+                    <p class="card-subtitle">
+                        Use this chat to talk with your peers, recommend changes, request a new exam, or report bugs. I check this daily.
+                    </p>
+                    <div id="chat-messages" class="chat-messages">
+                        <p class="empty-state">Loading messages…</p>
+                    </div>
+                    <p id="chat-login-prompt" class="chat-login-prompt hidden">
+                        Log in to join the chat.
+                    </p>
+                    <div id="chat-input-row" class="chat-input-row hidden">
+                        <input type="text" id="chat-input" maxlength="500" placeholder="Type a message…" />
+                        <button id="chat-send-btn" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
-
-    <footer class="site-footer">
-        <p>Made for the Navy IT homies.</p>
-    </footer>
 
     <script src="app.js"></script>
 </body>

@@ -30,3 +30,6 @@ Thumbs.db
 # Runtime data
 stats.json
 questions.json
+users.json
+chat.json
+.flask_secret

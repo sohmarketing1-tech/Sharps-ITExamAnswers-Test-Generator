@@ -4,9 +4,16 @@ const API = {
     state: "/api/state",
     test: "/api/test",
     score: "/api/score",
-    stats: "/api/stats",
-    studied: "/api/studied",
-    thanks: "/api/thanks",
+    register: "/api/register",
+    login: "/api/login",
+    logout: "/api/logout",
+    me: "/api/me",
+    mastery: "/api/mastery",
+    masteryBatch: "/api/mastery/batch",
+    masterySubmit: "/api/mastery/submit",
+    masteryReset: "/api/mastery/reset",
+    chatMessages: "/api/chat/messages",
+    chatMessage: "/api/chat/message",
 };
 
 const state = {
@@ -16,11 +23,17 @@ const state = {
     url: "",
     allQuestions: [],
     testQuestions: [],
+    lastTestQuestions: [],
     answers: {}, // { questionId: [selectedOption, ...] }
     currentIndex: 0,
     timerInterval: null,
     secondsElapsed: 0,
     multiSelect: false,
+    mode: "practice", // "practice" or "mastery"
+    user: null,
+    masterySummary: null,
+    lastSavedAnswers: {}, // qid -> saved answer array
+    currentTab: "practice",
 };
 
 // DOM refs
@@ -28,23 +41,23 @@ const screens = {
     setup: document.getElementById("setup-screen"),
     quiz: document.getElementById("quiz-screen"),
     results: document.getElementById("results-screen"),
+    community: document.getElementById("community-screen"),
 };
 
 const els = {
-    examTitle: document.getElementById("exam-title"),
-    examUrl: document.getElementById("exam-url"),
-    examSelect: document.getElementById("exam-select"),
+    examButtons: document.getElementById("exam-buttons"),
     totalQuestions: document.getElementById("total-questions"),
     questionCount: document.getElementById("question-count"),
     startBtn: document.getElementById("start-btn"),
     setupMessage: document.getElementById("setup-message"),
-    studyName: document.getElementById("study-name"),
-    studiedBtn: document.getElementById("studied-btn"),
-    studyMessage: document.getElementById("study-message"),
-    studyList: document.getElementById("study-list"),
-    thanksBtn: document.getElementById("thanks-btn"),
-    thanksCount: document.getElementById("thanks-count"),
-    thanksMessage: document.getElementById("thanks-message"),
+    accountPrompt: document.getElementById("account-prompt"),
+    tabPractice: document.getElementById("tab-practice"),
+    tabCommunity: document.getElementById("tab-community"),
+    chatMessages: document.getElementById("chat-messages"),
+    chatInput: document.getElementById("chat-input"),
+    chatSendBtn: document.getElementById("chat-send-btn"),
+    chatLoginPrompt: document.getElementById("chat-login-prompt"),
+    chatInputRow: document.getElementById("chat-input-row"),
     progressBar: document.getElementById("progress-bar"),
     progress: document.getElementById("progress"),
     timer: document.getElementById("timer"),
@@ -60,9 +73,32 @@ const els = {
     scoreDetail: document.getElementById("score-detail"),
     restartBtn: document.getElementById("restart-btn"),
     retakeBtn: document.getElementById("retake-btn"),
-    reviewBtn: document.getElementById("review-btn"),
+    continueMasteryBtn: document.getElementById("continue-mastery-btn"),
     reviewPanel: document.getElementById("review-panel"),
     reviewList: document.getElementById("review-list"),
+    authUsername: document.getElementById("auth-username"),
+    authPassword: document.getElementById("auth-password"),
+    loginBtn: document.getElementById("login-btn"),
+    registerBtn: document.getElementById("register-btn"),
+    logoutBtn: document.getElementById("logout-btn"),
+    authLoggedOut: document.getElementById("auth-logged-out"),
+    authLoggedIn: document.getElementById("auth-logged-in"),
+    authUser: document.getElementById("auth-user"),
+    authMessage: document.getElementById("auth-message"),
+    modePractice: document.getElementById("mode-practice"),
+    modeMastery: document.getElementById("mode-mastery"),
+    modeDescription: document.getElementById("mode-description"),
+    countGroup: document.getElementById("count-group"),
+    startRow: document.getElementById("start-row"),
+    masteryPanel: document.getElementById("mastery-panel"),
+    masteryBar: document.getElementById("mastery-bar"),
+    masteryText: document.getElementById("mastery-text"),
+    masteryStartBtn: document.getElementById("mastery-start-btn"),
+    masteryResetBtn: document.getElementById("mastery-reset-btn"),
+    masteryMessage: document.getElementById("mastery-message"),
+    resultsMasteryProgress: document.getElementById("results-mastery-progress"),
+    resultsMasteryBar: document.getElementById("results-mastery-bar"),
+    resultsMasteryText: document.getElementById("results-mastery-text"),
 };
 
 function showScreen(name) {
@@ -72,9 +108,133 @@ function showScreen(name) {
 }
 
 function updateHeader() {
-    els.examTitle.textContent = state.title || "IT Exam Practice Test";
-    els.examUrl.textContent = state.url || "";
-    document.title = "Sharp's Get Smart";
+    document.title = "IT Study Aid";
+}
+
+function setAuthMessage(text, type = "") {
+    els.authMessage.textContent = text;
+    els.authMessage.className = "auth-message" + (type ? ` ${type}` : "");
+}
+
+function setMasteryMessage(text, type = "") {
+    els.masteryMessage.textContent = text;
+    els.masteryMessage.className = "message" + (type ? ` ${type}` : "");
+}
+
+function renderAuthState() {
+    if (state.user) {
+        els.authLoggedOut.classList.add("hidden");
+        els.authLoggedIn.classList.remove("hidden");
+        els.authUser.textContent = state.user;
+        els.authUsername.value = "";
+        els.authPassword.value = "";
+    } else {
+        els.authLoggedIn.classList.add("hidden");
+        els.authLoggedOut.classList.remove("hidden");
+        els.authUser.textContent = "";
+    }
+    renderChatInputState();
+}
+
+async function checkAuth() {
+    try {
+        const res = await fetch(API.me, { credentials: "same-origin" });
+        const data = await res.json();
+        if (data.ok && data.user) {
+            state.user = data.user;
+        } else {
+            state.user = null;
+        }
+    } catch (err) {
+        state.user = null;
+    }
+    renderAuthState();
+    renderAccountPrompt();
+}
+
+async function login() {
+    const username = els.authUsername.value.trim();
+    const password = els.authPassword.value;
+    if (!username || !password) {
+        setAuthMessage("Enter a username and password.", "error");
+        return;
+    }
+    els.loginBtn.disabled = true;
+    try {
+        const res = await fetch(API.login, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+            credentials: "same-origin",
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Login failed");
+        state.user = data.user;
+        renderAuthState();
+        renderAccountPrompt();
+        setAuthMessage("Logged in.", "success");
+        await refreshMastery();
+    } catch (err) {
+        setAuthMessage(err.message, "error");
+    } finally {
+        els.loginBtn.disabled = false;
+    }
+}
+
+async function register() {
+    const username = els.authUsername.value.trim();
+    const password = els.authPassword.value;
+    if (!username || !password) {
+        setAuthMessage("Enter a username and password.", "error");
+        return;
+    }
+    if (password.length < 4) {
+        setAuthMessage("Password must be at least 4 characters.", "error");
+        return;
+    }
+    els.registerBtn.disabled = true;
+    try {
+        const res = await fetch(API.register, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+            credentials: "same-origin",
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Sign up failed");
+        state.user = data.user;
+        renderAuthState();
+        renderAccountPrompt();
+        setAuthMessage("Account created and logged in.", "success");
+        await refreshMastery();
+    } catch (err) {
+        setAuthMessage(err.message, "error");
+    } finally {
+        els.registerBtn.disabled = false;
+    }
+}
+
+async function logout() {
+    try {
+        await fetch(API.logout, {
+            method: "POST",
+            credentials: "same-origin",
+        });
+        state.user = null;
+        state.masterySummary = null;
+        renderAuthState();
+        renderAccountPrompt();
+        renderMasteryPanel();
+        setAuthMessage("Logged out.", "success");
+    } catch (err) {
+        setAuthMessage("Logout failed.", "error");
+    }
+}
+
+function renderAccountPrompt() {
+    if (els.accountPrompt) {
+        els.accountPrompt.classList.toggle("hidden", !!state.user);
+    }
 }
 
 function setMessage(text, type = "") {
@@ -95,142 +255,276 @@ async function loadExams() {
         if (!res.ok) throw new Error("Failed to load exam list");
         const data = await res.json();
         state.exams = data.exams || [];
-        populateExamDropdown();
+        renderExamButtons();
         if (state.exams.length > 0) {
             const current = data.current_filename || state.exams[0].filename;
-            els.examSelect.value = current;
-            await loadExam(current);
+            await loadExam(current, true);
         } else {
             setMessage("No pre-scraped exams found.", "error");
             setAvailableCount(0);
         }
     } catch (err) {
         setMessage(err.message, "error");
-        els.examSelect.innerHTML = '<option value="">Error loading exams</option>';
+        els.examButtons.innerHTML = '<p class="empty-state">Error loading exams.</p>';
         setAvailableCount(0);
     }
 }
 
-function populateExamDropdown() {
-    els.examSelect.innerHTML = "";
+function renderExamButtons() {
+    els.examButtons.innerHTML = "";
     if (!state.exams.length) {
-        els.examSelect.innerHTML = '<option value="">No exams found</option>';
+        els.examButtons.innerHTML = '<p class="empty-state">No exams found.</p>';
         return;
     }
     state.exams.forEach((exam) => {
-        const opt = document.createElement("option");
-        opt.value = exam.filename;
-        opt.textContent = `${exam.title} (${exam.count} questions)`;
-        els.examSelect.appendChild(opt);
+        const btn = document.createElement("button");
+        btn.className = "btn btn-exam";
+        btn.dataset.filename = exam.filename;
+        btn.innerHTML = `<span class="exam-name">${exam.display_name || exam.title}</span><span class="exam-count">${exam.count} questions</span>`;
+        btn.addEventListener("click", () => loadExam(exam.filename, true));
+        els.examButtons.appendChild(btn);
     });
-    els.examSelect.disabled = false;
 }
 
-async function loadExam(filename) {
+function updateExamButtonSelection(filename) {
+    Array.from(els.examButtons.children).forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.filename === filename);
+    });
+}
+
+async function loadExam(filename, updateSelection = true) {
     const examMeta = state.exams.find((e) => e.filename === filename);
     if (!examMeta) return;
-    setMessage(`Loading ${examMeta.title}…`);
+    setMessage(`Loading ${examMeta.display_name || examMeta.title}…`);
     try {
         const res = await fetch(API.load, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ filename }),
+            credentials: "same-origin",
         });
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Failed to load exam");
         state.title = data.title;
         state.url = data.url;
         state.currentFilename = data.filename;
-        state.allQuestions = []; // count only needed; loaded server-side
+        state.allQuestions = data.questions || [];
         updateHeader();
+        if (updateSelection) updateExamButtonSelection(filename);
         setAvailableCount(data.count);
         const requested = parseInt(els.questionCount.value, 10) || 20;
         els.questionCount.value = Math.min(requested, data.count);
         setMessage("Ready to start.");
+        await refreshMastery();
     } catch (err) {
         setMessage(err.message, "error");
         setAvailableCount(0);
     }
 }
 
-async function loadStats() {
-    try {
-        const res = await fetch(API.stats);
-        if (!res.ok) throw new Error("Failed to load stats");
-        const data = await res.json();
-        renderStudyList(data.study_sessions || []);
-        renderThanksCount(data.thanks || []);
-    } catch (err) {
-        // Silently ignore; stats are optional
+function setMode(mode) {
+    state.mode = mode;
+    if (mode === "practice") {
+        els.modePractice.classList.add("active", "btn-primary");
+        els.modePractice.classList.remove("btn-secondary");
+        els.modeMastery.classList.remove("active", "btn-primary");
+        els.modeMastery.classList.add("btn-secondary");
+        els.modeDescription.textContent = "Random questions each test. Great for quick review.";
+        els.countGroup.classList.remove("hidden");
+        els.startRow.classList.remove("hidden");
+        els.masteryPanel.classList.add("hidden");
+        els.startBtn.textContent = "Start Test";
+    } else {
+        els.modeMastery.classList.add("active", "btn-primary");
+        els.modeMastery.classList.remove("btn-secondary");
+        els.modePractice.classList.remove("active", "btn-primary");
+        els.modePractice.classList.add("btn-secondary");
+        els.modeDescription.textContent = "Keep seeing questions until you've mastered every single one.";
+        els.countGroup.classList.add("hidden");
+        els.startRow.classList.add("hidden");
+        els.masteryPanel.classList.remove("hidden");
+        renderMasteryPanel();
     }
 }
 
-function renderStudyList(sessions) {
-    if (!sessions.length) {
-        els.studyList.innerHTML = '<p class="empty-state">No one has checked in yet. Be the first!</p>';
+function renderMasteryPanel() {
+    const summary = state.masterySummary;
+    if (!state.user) {
+        els.masteryText.textContent = "Log in to track mastery progress.";
+        els.masteryBar.style.width = "0%";
+        els.masteryStartBtn.disabled = true;
+        els.masteryResetBtn.disabled = true;
         return;
     }
-    els.studyList.innerHTML = "";
-    sessions.slice().reverse().forEach((session) => {
-        const chip = document.createElement("span");
-        chip.className = "study-chip";
-        chip.textContent = `${session.name} studied`;
-        els.studyList.appendChild(chip);
+    if (!summary) {
+        els.masteryText.textContent = "Select an exam to load mastery progress.";
+        els.masteryBar.style.width = "0%";
+        els.masteryStartBtn.disabled = true;
+        els.masteryResetBtn.disabled = true;
+        return;
+    }
+    const { mastered, total, remaining } = summary;
+    els.masteryText.textContent = `Mastered ${mastered} of ${total} questions (${remaining} remaining).`;
+    els.masteryBar.style.width = `${summary.progress}%`;
+    els.masteryStartBtn.disabled = total === 0;
+    els.masteryResetBtn.disabled = total === 0;
+    if (mastered === total && total > 0) {
+        els.masteryStartBtn.textContent = "Exam Mastered!";
+        els.masteryStartBtn.disabled = true;
+    } else {
+        els.masteryStartBtn.textContent = "Start Mastery Session";
+        els.masteryStartBtn.disabled = false;
+    }
+}
+
+function renderResultsMasteryPanel() {
+    const summary = state.masterySummary;
+    if (state.mode !== "mastery" || !summary) {
+        els.resultsMasteryProgress.classList.add("hidden");
+        els.continueMasteryBtn.classList.add("hidden");
+        return;
+    }
+    els.resultsMasteryProgress.classList.remove("hidden");
+    const { mastered, total, remaining } = summary;
+    els.resultsMasteryText.textContent = `Overall mastery: ${mastered}/${total} (${remaining} remaining).`;
+    els.resultsMasteryBar.style.width = `${summary.progress}%`;
+    if (mastered === total && total > 0) {
+        els.scoreValue.textContent = "100%";
+        els.resultsTitle.textContent = "Exam Mastered!";
+        els.scoreDetail.textContent = `You have mastered all ${total} questions. Congrats!`;
+        els.continueMasteryBtn.classList.add("hidden");
+    } else {
+        els.continueMasteryBtn.classList.remove("hidden");
+    }
+}
+
+async function refreshMastery() {
+    if (!state.user || !state.currentFilename) {
+        state.masterySummary = null;
+        renderMasteryPanel();
+        return;
+    }
+    try {
+        const res = await fetch(
+            `${API.mastery}?filename=${encodeURIComponent(state.currentFilename)}`,
+            { credentials: "same-origin" }
+        );
+        const data = await res.json();
+        if (data.ok) {
+            state.masterySummary = data.summary;
+            renderMasteryPanel();
+        }
+    } catch (err) {
+        // ignore
+    }
+}
+
+async function startMasterySession() {
+    if (!state.user || !state.currentFilename) return;
+    els.masteryStartBtn.disabled = true;
+    setMasteryMessage("Loading mastery batch…");
+    try {
+        const res = await fetch(
+            `${API.masteryBatch}?n=20&filename=${encodeURIComponent(state.currentFilename)}`,
+            { credentials: "same-origin" }
+        );
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Could not load mastery batch");
+        if (data.summary.mastered === data.summary.total && data.summary.total > 0) {
+            state.masterySummary = data.summary;
+            renderMasteryPanel();
+            setMasteryMessage("All questions mastered! Great job.", "success");
+            return;
+        }
+        state.testQuestions = data.quiz;
+        state.lastTestQuestions = [...data.quiz];
+        state.answers = {};
+        state.lastSavedAnswers = {};
+        state.testQuestions.forEach((q) => {
+            state.answers[q.id] = [];
+        });
+        state.currentIndex = 0;
+        state.secondsElapsed = 0;
+        state.multiSelect = false;
+        showScreen("quiz");
+        startTimer();
+        renderQuestion();
+    } catch (err) {
+        setMasteryMessage(err.message, "error");
+    } finally {
+        els.masteryStartBtn.disabled = false;
+    }
+}
+
+async function submitMastery() {
+    stopTimer();
+    if (!state.user || !state.currentFilename) return;
+
+    // Flush any pending answer save so the last question isn't lost.
+    clearTimeout(masterySaveTimeout);
+    const currentQ = state.testQuestions[state.currentIndex];
+    if (currentQ) {
+        const current = state.answers[currentQ.id] || [];
+        const saved = state.lastSavedAnswers[currentQ.id] || [];
+        const same = current.length === saved.length && current.slice().sort().join("|") === saved.slice().sort().join("|");
+        if (current.length && !same) {
+            await saveMasteryAnswer(currentQ.id);
+        }
+    }
+
+    try {
+        await refreshMastery();
+        const results = computeResults(state.testQuestions, state.answers);
+        const correct = results.filter((r) => r.is_correct).length;
+        showResults({
+            title: state.title,
+            total: results.length,
+            correct,
+            score: results.length ? Math.round((correct / results.length) * 100) : 0,
+            results,
+        });
+        renderResultsMasteryPanel();
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
+function computeResults(quiz, answers) {
+    return quiz.map((q) => {
+        const correctKey = q.correct_answer || q._correct_answer || "";
+        const correctSet = new Set(correctKey.split("|").map((a) => a.trim()));
+        const selected = answers[q.id] || [];
+        const selectedSet = new Set(selected.map((s) => s.trim()));
+        const isCorrect = correctSet.size === selectedSet.size && [...correctSet].every((c) => selectedSet.has(c));
+        return {
+            id: q.id,
+            question: q.question,
+            options: q.options,
+            selected: Array.from(selectedSet),
+            correct_answer: Array.from(correctSet),
+            is_correct: isCorrect,
+        };
     });
 }
 
-function renderThanksCount(thanks) {
-    const count = thanks.length;
-    els.thanksCount.textContent = `Thanks received: ${count}`;
-}
-
-async function recordStudied() {
-    const name = els.studyName.value.trim();
-    if (!name) {
-        els.studyMessage.textContent = "Enter your name first.";
-        els.studyMessage.className = "message error";
-        return;
-    }
-    els.studiedBtn.disabled = true;
+async function resetMastery() {
+    if (!state.user || !state.currentFilename) return;
+    if (!confirm("Reset all mastery progress for this exam? This cannot be undone.")) return;
     try {
-        const res = await fetch(API.studied, {
+        const res = await fetch(API.masteryReset, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name }),
+            body: JSON.stringify({ filename: state.currentFilename }),
+            credentials: "same-origin",
         });
         const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error || "Could not record study session");
-        renderStudyList(data.stats.study_sessions);
-        els.studyMessage.textContent = `Locked in, ${name}! Good luck studying.`;
-        els.studyMessage.className = "message success";
-        els.studyName.value = "";
+        if (data.ok) {
+            state.masterySummary = data.summary;
+            renderMasteryPanel();
+            setMasteryMessage("Mastery progress reset.", "success");
+        }
     } catch (err) {
-        els.studyMessage.textContent = err.message;
-        els.studyMessage.className = "message error";
-    } finally {
-        els.studiedBtn.disabled = false;
-    }
-}
-
-async function recordThanks() {
-    const name = els.studyName.value.trim() || "Anonymous";
-    els.thanksBtn.disabled = true;
-    try {
-        const res = await fetch(API.thanks, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name }),
-        });
-        const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error || "Could not record thanks");
-        renderThanksCount(data.stats.thanks);
-        els.thanksMessage.textContent = "Thanks sent! Appreciate you.";
-        els.thanksMessage.className = "message success";
-    } catch (err) {
-        els.thanksMessage.textContent = err.message;
-        els.thanksMessage.className = "message error";
-    } finally {
-        els.thanksBtn.disabled = false;
+        setMasteryMessage("Reset failed.", "error");
     }
 }
 
@@ -248,6 +542,7 @@ async function startTest() {
         }
         const data = await res.json();
         state.testQuestions = data.quiz;
+        state.lastTestQuestions = [...data.quiz];
         if (data.title) state.title = data.title;
         updateHeader();
     } catch (err) {
@@ -256,6 +551,9 @@ async function startTest() {
     }
 
     state.answers = {};
+    state.testQuestions.forEach((q) => {
+        state.answers[q.id] = [];
+    });
     state.currentIndex = 0;
     state.secondsElapsed = 0;
     state.multiSelect = false;
@@ -280,19 +578,144 @@ function stopTimer() {
 }
 
 function goHome() {
+    const onQuiz = screens.quiz.classList.contains("active");
+    if (onQuiz && !confirm("Leave this test? Unsubmitted answers won't be saved.")) {
+        return;
+    }
     stopTimer();
     state.testQuestions = [];
     state.answers = {};
     state.currentIndex = 0;
     state.secondsElapsed = 0;
+    state.mode = "practice";
+    setMode("practice");
     showScreen("setup");
-    loadStats();
+}
+
+function switchTab(tabName) {
+    if (state.currentTab === tabName) return;
+    if (screens.quiz.classList.contains("active")) {
+        if (!confirm("Leave this test? Unsubmitted answers won't be saved.")) return;
+    }
+    if (screens.results.classList.contains("active")) {
+        state.answers = {};
+        state.currentIndex = 0;
+        state.secondsElapsed = 0;
+        stopTimer();
+    }
+    state.currentTab = tabName;
+    els.tabPractice.classList.toggle("active", tabName === "practice");
+    els.tabCommunity.classList.toggle("active", tabName === "community");
+    if (tabName === "practice") {
+        stopChatPolling();
+        showScreen("setup");
+    } else {
+        showScreen("community");
+        loadChat();
+        startChatPolling();
+    }
+}
+
+let chatPollInterval = null;
+
+async function loadChat() {
+    try {
+        const res = await fetch(API.chatMessages, { credentials: "same-origin" });
+        if (!res.ok) throw new Error("Could not load chat");
+        const data = await res.json();
+        renderChat(data.messages || []);
+    } catch (err) {
+        renderChat([]);
+    }
+}
+
+function renderChat(messages) {
+    els.chatMessages.innerHTML = "";
+    if (!messages.length) {
+        els.chatMessages.innerHTML = `<p class="empty-state">No messages yet. Be the first to say hello!</p>`;
+    } else {
+        messages.forEach((msg) => {
+            const el = document.createElement("div");
+            el.className = "chat-message" + (msg.username === state.user ? " chat-message-own" : "");
+            const time = new Date(msg.timestamp).toLocaleString(undefined, {
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+            });
+            el.innerHTML = `
+                <div class="chat-message-header">
+                    <span class="chat-username">${escapeHtml(msg.username)}</span>
+                    <span class="chat-time">${escapeHtml(time)}</span>
+                </div>
+                <div class="chat-text">${escapeHtml(msg.message)}</div>
+            `;
+            els.chatMessages.appendChild(el);
+        });
+    }
+    els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
+    renderChatInputState();
+}
+
+function escapeHtml(text) {
+    if (text == null) return "";
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function renderChatInputState() {
+    if (state.user) {
+        els.chatLoginPrompt.classList.add("hidden");
+        els.chatInputRow.classList.remove("hidden");
+    } else {
+        els.chatLoginPrompt.classList.remove("hidden");
+        els.chatInputRow.classList.add("hidden");
+    }
+}
+
+async function sendChatMessage() {
+    if (!state.user) return;
+    const message = els.chatInput.value.trim();
+    if (!message) return;
+    try {
+        const res = await fetch(API.chatMessage, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+            credentials: "same-origin",
+        });
+        if (!res.ok) throw new Error("Could not send message");
+        els.chatInput.value = "";
+        await loadChat();
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
+function startChatPolling() {
+    stopChatPolling();
+    chatPollInterval = setInterval(loadChat, 3000);
+}
+
+function stopChatPolling() {
+    if (chatPollInterval) {
+        clearInterval(chatPollInterval);
+        chatPollInterval = null;
+    }
 }
 
 function retakeSameTest() {
-    if (!state.testQuestions.length) return;
+    if (!state.lastTestQuestions || !state.lastTestQuestions.length) return;
     stopTimer();
+    state.testQuestions = [...state.lastTestQuestions];
     state.answers = {};
+    state.testQuestions.forEach((q) => {
+        state.answers[q.id] = [];
+    });
     state.currentIndex = 0;
     state.secondsElapsed = 0;
     state.multiSelect = false;
@@ -372,6 +795,8 @@ function renderQuestion() {
     els.nextBtn.textContent = state.currentIndex === total - 1 ? "Finish" : "Next";
 }
 
+let masterySaveTimeout = null;
+
 function updateAnswer(qid, checked, value) {
     const current = state.answers[qid] || [];
     let updated;
@@ -388,6 +813,40 @@ function updateAnswer(qid, checked, value) {
         const input = label.querySelector("input");
         label.classList.toggle("selected", input.checked);
     });
+
+    if (state.mode === "mastery" && state.user && state.currentFilename) {
+        clearTimeout(masterySaveTimeout);
+        masterySaveTimeout = setTimeout(() => saveMasteryAnswer(qid), 600);
+    }
+}
+
+async function saveMasteryAnswer(qid) {
+    const current = state.answers[qid] || [];
+    if (!current.length) return;
+
+    const saved = state.lastSavedAnswers[qid] || [];
+    const same = current.length === saved.length && current.slice().sort().join("|") === saved.slice().sort().join("|");
+    if (same) return;
+
+    const question = state.testQuestions.find((q) => q.id == qid);
+    if (!question) return;
+
+    try {
+        const res = await fetch(API.masterySubmit, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                filename: state.currentFilename,
+                answers: { [qid]: current },
+                quiz: [question],
+            }),
+            credentials: "same-origin",
+        });
+        if (!res.ok) throw new Error("Mastery save failed");
+        state.lastSavedAnswers[qid] = [...current];
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 function navigate(direction) {
@@ -425,13 +884,27 @@ async function submitTest() {
 
 function showResults(data) {
     showScreen("results");
-    els.resultsTitle.textContent = `Results: ${data.title || state.title || "Practice Test"}`;
-    els.scoreValue.textContent = `${data.score}%`;
-    els.scoreDetail.textContent = `You got ${data.correct} out of ${data.total} correct in ${formatTime(state.secondsElapsed)}.`;
-    els.reviewPanel.classList.add("hidden");
-
-    const deg = data.total ? Math.round((data.correct / data.total) * 360) : 0;
-    document.querySelector(".score-circle").style.setProperty("--score-deg", `${deg}deg`);
+    const scoreCircle = document.querySelector(".score-circle");
+    if (state.mode === "mastery") {
+        els.retakeBtn.classList.add("hidden");
+        scoreCircle.classList.remove("hidden");
+        els.resultsTitle.textContent = state.masterySummary && state.masterySummary.mastered === state.masterySummary.total
+            ? "Exam Mastered!"
+            : "Mastery Session Complete";
+        els.scoreValue.textContent = `${data.score}%`;
+        els.scoreDetail.textContent = `You got ${data.correct} out of ${data.total} correct in ${formatTime(state.secondsElapsed)}.`;
+        const deg = data.total ? Math.round((data.correct / data.total) * 360) : 0;
+        scoreCircle.style.setProperty("--score-deg", `${deg}deg`);
+    } else {
+        scoreCircle.classList.remove("hidden");
+        els.retakeBtn.classList.remove("hidden");
+        els.resultsTitle.textContent = `Results: ${data.title || state.title || "Practice Test"}`;
+        els.scoreValue.textContent = `${data.score}%`;
+        els.scoreDetail.textContent = `You got ${data.correct} out of ${data.total} correct in ${formatTime(state.secondsElapsed)}.`;
+        const deg = data.total ? Math.round((data.correct / data.total) * 360) : 0;
+        scoreCircle.style.setProperty("--score-deg", `${deg}deg`);
+    }
+    els.reviewPanel.classList.remove("hidden");
 
     els.reviewList.innerHTML = "";
     data.results.forEach((r, i) => {
@@ -470,26 +943,52 @@ function showResults(data) {
     });
 }
 
-els.examSelect.addEventListener("change", () => loadExam(els.examSelect.value));
 els.startBtn.addEventListener("click", startTest);
-els.studiedBtn.addEventListener("click", recordStudied);
-els.thanksBtn.addEventListener("click", recordThanks);
 els.homeBtn.addEventListener("click", goHome);
 els.prevBtn.addEventListener("click", () => navigate(-1));
 els.nextBtn.addEventListener("click", () => {
     if (state.currentIndex === state.testQuestions.length - 1) {
-        submitTest();
+        if (state.mode === "mastery") {
+            submitMastery();
+        } else {
+            submitTest();
+        }
     } else {
         navigate(1);
     }
 });
-els.submitBtn.addEventListener("click", submitTest);
-els.restartBtn.addEventListener("click", () => showScreen("setup"));
+els.submitBtn.addEventListener("click", () => {
+    if (state.mode === "mastery") {
+        submitMastery();
+    } else {
+        submitTest();
+    }
+});
+els.restartBtn.addEventListener("click", goHome);
 els.retakeBtn.addEventListener("click", retakeSameTest);
-els.reviewBtn.addEventListener("click", () => {
-    els.reviewPanel.classList.toggle("hidden");
+els.continueMasteryBtn.addEventListener("click", startMasterySession);
+
+els.loginBtn.addEventListener("click", login);
+els.registerBtn.addEventListener("click", register);
+els.logoutBtn.addEventListener("click", logout);
+
+[els.authUsername, els.authPassword].forEach((input) => {
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") login();
+    });
+});
+els.modePractice.addEventListener("click", () => setMode("practice"));
+els.modeMastery.addEventListener("click", () => setMode("mastery"));
+els.masteryStartBtn.addEventListener("click", startMasterySession);
+els.masteryResetBtn.addEventListener("click", resetMastery);
+
+els.tabPractice.addEventListener("click", () => switchTab("practice"));
+els.tabCommunity.addEventListener("click", () => switchTab("community"));
+els.chatSendBtn.addEventListener("click", sendChatMessage);
+els.chatInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendChatMessage();
 });
 
 // Initialize
 loadExams();
-loadStats();
+checkAuth();
