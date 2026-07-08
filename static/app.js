@@ -48,6 +48,7 @@ const els = {
     progressBar: document.getElementById("progress-bar"),
     progress: document.getElementById("progress"),
     timer: document.getElementById("timer"),
+    homeBtn: document.getElementById("home-btn"),
     questionBadge: document.getElementById("question-badge"),
     questionText: document.getElementById("question-text"),
     optionsContainer: document.getElementById("options-container"),
@@ -236,16 +237,17 @@ async function startTest() {
     const total = parseInt(els.totalQuestions.dataset.count || "0") || state.allQuestions.length || 0;
     const requested = parseInt(els.questionCount.value, 10) || 10;
     const n = Math.max(1, Math.min(requested, total || 1));
+    const filename = state.currentFilename || "";
 
     try {
-        const res = await fetch(`${API.test}?n=${n}`);
+        const res = await fetch(`${API.test}?n=${n}&filename=${encodeURIComponent(filename)}`);
         if (!res.ok) {
             const err = await res.json();
             throw new Error(err.error || "Could not generate test");
         }
         const data = await res.json();
         state.testQuestions = data.quiz;
-        state.title = data.title;
+        if (data.title) state.title = data.title;
         updateHeader();
     } catch (err) {
         setMessage(err.message, "error");
@@ -274,6 +276,16 @@ function startTimer() {
 
 function stopTimer() {
     clearInterval(state.timerInterval);
+}
+
+function goHome() {
+    stopTimer();
+    state.testQuestions = [];
+    state.answers = {};
+    state.currentIndex = 0;
+    state.secondsElapsed = 0;
+    showScreen("setup");
+    loadStats();
 }
 
 function formatTime(totalSeconds) {
@@ -377,7 +389,15 @@ function navigate(direction) {
 
 async function submitTest() {
     stopTimer();
-    const payload = { answers: state.answers };
+    // Only score questions that were actually shown in this test.
+    const testQuestionIds = new Set(state.testQuestions.map((q) => q.id));
+    const relevantAnswers = {};
+    for (const [qid, selected] of Object.entries(state.answers)) {
+        if (testQuestionIds.has(parseInt(qid, 10))) {
+            relevantAnswers[qid] = selected;
+        }
+    }
+    const payload = { answers: relevantAnswers, quiz: state.testQuestions };
     try {
         const res = await fetch(API.score, {
             method: "POST",
@@ -443,6 +463,7 @@ els.examSelect.addEventListener("change", () => loadExam(els.examSelect.value));
 els.startBtn.addEventListener("click", startTest);
 els.studiedBtn.addEventListener("click", recordStudied);
 els.thanksBtn.addEventListener("click", recordThanks);
+els.homeBtn.addEventListener("click", goHome);
 els.prevBtn.addEventListener("click", () => navigate(-1));
 els.nextBtn.addEventListener("click", () => {
     if (state.currentIndex === state.testQuestions.length - 1) {

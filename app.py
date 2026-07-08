@@ -94,6 +94,21 @@ def get_current_url():
     return app_state["url"] or DEFAULT_TARGET_URL
 
 
+def get_questions_for_test(filename: str = ""):
+    """Load questions for a test request, using a specific file if provided."""
+    if filename:
+        filepath = DATA_DIR / filename
+        if filepath.exists():
+            try:
+                with open(filepath, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                if isinstance(data, dict) and "questions" in data:
+                    return data.get("questions", [])
+            except Exception:
+                pass
+    return get_current_questions()
+
+
 def load_stats():
     """Load persisted stats (study sessions and thanks)."""
     if not STATS_FILE.exists():
@@ -136,7 +151,7 @@ def add_thanks(name: str) -> dict:
     name = name.strip()[:40] or "Anonymous"
     thanks = stats.get("thanks", [])
     thanks.append({"name": name, "timestamp": datetime.datetime.utcnow().isoformat() + "Z"})
-    stats["thanks"] = thanks[-200:]  # keep last 200
+    stats["thanks"] = thanks
     save_stats(stats)
     return stats
 
@@ -270,7 +285,8 @@ def generate_test():
         n = int(request.args.get("n", 10))
     except ValueError:
         n = 10
-    questions = get_current_questions()
+    filename = request.args.get("filename", "").strip()
+    questions = get_questions_for_test(filename)
     if not questions:
         return jsonify({"error": "No questions loaded. Paste an itexamanswers.net URL and click Scrape."}), 503
     count = max(1, min(n, len(questions)))
@@ -287,7 +303,7 @@ def generate_test():
             item["image"] = q["image"]
         quiz.append(item)
     return jsonify({
-        "title": get_current_title(),
+        "title": get_current_title() if not filename else None,
         "quiz": quiz,
     })
 
@@ -296,7 +312,17 @@ def generate_test():
 def score_test():
     data = request.get_json(silent=True) or {}
     answers = data.get("answers", {})
-    questions = get_current_questions()
+    # Prefer the exact quiz the frontend took to avoid global-state collisions.
+    provided_quiz = data.get("quiz", [])
+    if provided_quiz:
+        questions = []
+        for q in provided_quiz:
+            normalized = dict(q)
+            if "_correct_answer" in normalized and "correct_answer" not in normalized:
+                normalized["correct_answer"] = normalized.pop("_correct_answer")
+            questions.append(normalized)
+    else:
+        questions = get_current_questions()
     id_map = {q["id"]: q for q in questions}
 
     results = []
