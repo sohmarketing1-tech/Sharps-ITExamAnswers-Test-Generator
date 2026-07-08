@@ -4,6 +4,7 @@ import os
 import random
 import secrets
 from pathlib import Path
+from typing import Optional
 
 from flask import Flask, jsonify, request, send_from_directory, session
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -159,6 +160,38 @@ EXAM_DISPLAY_NAMES = {
 def display_name_for(filename: str) -> str:
     """Return a friendly short name for a known exam file."""
     return EXAM_DISPLAY_NAMES.get(filename, filename.replace("-", " ").replace(".json", "").title())
+
+
+def _get_flashcard_reviews_for_user(users: dict, username: str, filename: str) -> set:
+    """Return the set of question IDs a user has marked for flashcard review."""
+    user = users.get(username)
+    if not user:
+        return set()
+    exams = user.setdefault("exams", {})
+    exam = exams.setdefault(filename, {})
+    reviews = exam.get("flashcard_reviews", [])
+    return set(reviews) if isinstance(reviews, list) else set()
+
+
+def _toggle_flashcard_review(username: str, filename: str, question_id) -> bool:
+    """Toggle review status for a flashcard. Returns True if now marked, False if unmarked."""
+    users = load_users()
+    user = users.get(username)
+    if not user:
+        return False
+    exams = user.setdefault("exams", {})
+    exam = exams.setdefault(filename, {})
+    reviews = set(exam.get("flashcard_reviews", []))
+    qid = str(question_id)
+    if qid in reviews:
+        reviews.discard(qid)
+        marked = False
+    else:
+        reviews.add(qid)
+        marked = True
+    exam["flashcard_reviews"] = sorted(reviews, key=lambda x: int(x) if x.isdigit() else x)
+    save_users(users)
+    return marked
 
 
 def _update_streak(activity: dict) -> None:
@@ -370,6 +403,20 @@ def get_exams():
     })
 
 
+def read_exam_file(filepath: Path) -> Optional[dict]:
+    """Return exam data from a file without mutating app_state."""
+    if not filepath.exists():
+        return None
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        return None
+    if isinstance(data, dict) and "questions" in data:
+        return data
+    return None
+
+
 @app.route("/api/load", methods=["POST"])
 def load_exam_endpoint():
     """Load a pre-scraped exam by filename."""
@@ -392,6 +439,31 @@ def load_exam_endpoint():
             "questions": app_state["questions"],
         })
     return jsonify({"ok": False, "error": f"Failed to load {filename}"}), 500
+
+
+@app.route("/api/exam-questions", methods=["POST"])
+def exam_questions_endpoint():
+    """Return all questions for a given exam filename without changing app_state."""
+    data = request.get_json(silent=True) or {}
+    filename = data.get("filename", "").strip()
+    if not filename:
+        return jsonify({"ok": False, "error": "No filename provided."}), 400
+
+    filepath = DATA_DIR / filename
+    if not filepath.exists():
+        return jsonify({"ok": False, "error": f"Exam file not found: {filename}"}), 404
+
+    exam_data = read_exam_file(filepath)
+    if exam_data is None:
+        return jsonify({"ok": False, "error": f"Failed to read {filename}"}), 500
+
+    return jsonify({
+        "ok": True,
+        "title": exam_data.get("title"),
+        "filename": filepath.name,
+        "count": len(exam_data.get("questions", [])),
+        "questions": exam_data.get("questions", []),
+    })
 
 
 @app.route("/api/scrape", methods=["POST"])
@@ -596,6 +668,39 @@ def chat_message():
         return jsonify({"ok": False, "error": "Message cannot be empty."}), 400
     entry = add_chat_message(user, message)
     return jsonify({"ok": True, "message": entry})
+
+
+# ---------------------------------------------------------------------------
+# Flashcard review endpoints
+# ---------------------------------------------------------------------------
+
+@app.route("/api/flashcard/reviews", methods=["GET"])
+def flashcard_reviews():
+    """Return the logged-in user's marked flashcards for an exam."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to see marked cards."}), 401
+    filename = request.args.get("filename", "").strip()
+    if not filename:
+        return jsonify({"ok": False, "error": "No filename provided."}), 400
+    users = load_users()
+    reviews = _get_flashcard_reviews_for_user(users, user, filename)
+    return jsonify({"ok": True, "reviews": sorted(reviews, key=lambda x: int(x) if x.isdigit() else x)})
+
+
+@app.route("/api/flashcard/review", methods=["POST"])
+def flashcard_review_toggle():
+    """Toggle a flashcard's review status for the logged-in user."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to mark cards."}), 401
+    data = request.get_json(silent=True) or {}
+    filename = data.get("filename", "").strip()
+    question_id = data.get("question_id")
+    if not filename or question_id is None:
+        return jsonify({"ok": False, "error": "Filename and question_id required."}), 400
+    marked = _toggle_flashcard_review(user, filename, question_id)
+    return jsonify({"ok": True, "marked": marked})
 
 
 # ---------------------------------------------------------------------------

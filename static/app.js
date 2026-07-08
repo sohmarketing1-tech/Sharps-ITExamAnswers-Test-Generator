@@ -14,6 +14,9 @@ const API = {
     masteryReset: "/api/mastery/reset",
     chatMessages: "/api/chat/messages",
     chatMessage: "/api/chat/message",
+    examQuestions: "/api/exam-questions",
+    flashcardReviews: "/api/flashcard/reviews",
+    flashcardReviewToggle: "/api/flashcard/review",
 };
 
 const state = {
@@ -34,6 +37,13 @@ const state = {
     masterySummary: null,
     lastSavedAnswers: {}, // qid -> saved answer array
     currentTab: "practice",
+    flashcardFilename: null,
+    flashcardMode: "question", // "question" or "choices"
+    flashcardFilter: "all", // "all" or "review"
+    flashcardQuestions: [],
+    flashcardIndex: 0,
+    flashcardFlipped: false,
+    flashcardReviews: new Set(),
 };
 
 // DOM refs
@@ -42,6 +52,7 @@ const screens = {
     quiz: document.getElementById("quiz-screen"),
     results: document.getElementById("results-screen"),
     community: document.getElementById("community-screen"),
+    flashcards: document.getElementById("flashcards-screen"),
 };
 
 const els = {
@@ -52,6 +63,7 @@ const els = {
     setupMessage: document.getElementById("setup-message"),
     accountPrompt: document.getElementById("account-prompt"),
     tabPractice: document.getElementById("tab-practice"),
+    tabFlashcards: document.getElementById("tab-flashcards"),
     tabCommunity: document.getElementById("tab-community"),
     chatMessages: document.getElementById("chat-messages"),
     chatInput: document.getElementById("chat-input"),
@@ -99,6 +111,31 @@ const els = {
     resultsMasteryProgress: document.getElementById("results-mastery-progress"),
     resultsMasteryBar: document.getElementById("results-mastery-bar"),
     resultsMasteryText: document.getElementById("results-mastery-text"),
+    flashcardExamButtons: document.getElementById("flashcard-exam-buttons"),
+    flashcardModeQuestion: document.getElementById("flashcard-mode-question"),
+    flashcardModeChoices: document.getElementById("flashcard-mode-choices"),
+    flashcardModeDescription: document.getElementById("flashcard-mode-description"),
+    flashcardPreviewFront: document.getElementById("flashcard-preview-front"),
+    flashcardPreviewBack: document.getElementById("flashcard-preview-back"),
+    flashcardFilterAll: document.getElementById("flashcard-filter-all"),
+    flashcardFilterReview: document.getElementById("flashcard-filter-review"),
+    flashcardReviewCount: document.getElementById("flashcard-review-count"),
+    flashcardStartBtn: document.getElementById("flashcard-start-btn"),
+    flashcardSetupMessage: document.getElementById("flashcard-setup-message"),
+    flashcardStudyArea: document.getElementById("flashcard-study-area"),
+    flashcard: document.getElementById("flashcard"),
+    flashcardFrontText: document.getElementById("flashcard-front-text"),
+    flashcardFrontImage: document.getElementById("flashcard-front-image"),
+    flashcardFrontOptions: document.getElementById("flashcard-front-options"),
+    flashcardBackText: document.getElementById("flashcard-back-text"),
+    flashcardCounter: document.getElementById("flashcard-counter"),
+    flashcardShuffleBtn: document.getElementById("flashcard-shuffle-btn"),
+    flashcardFlipBtn: document.getElementById("flashcard-flip-btn"),
+    flashcardPrevBtn: document.getElementById("flashcard-prev-btn"),
+    flashcardNextBtn: document.getElementById("flashcard-next-btn"),
+    flashcardMarkBtn: document.getElementById("flashcard-mark-btn"),
+    flashcardReviewBadge: document.getElementById("flashcard-review-badge"),
+    flashcardExitBtn: document.getElementById("flashcard-exit-btn"),
 };
 
 function showScreen(name) {
@@ -134,6 +171,9 @@ function renderAuthState() {
         els.authUser.textContent = "";
     }
     renderChatInputState();
+    if (state.currentTab === "flashcards" && state.flashcardFilename) {
+        updateFlashcardReviewCount();
+    }
 }
 
 async function checkAuth() {
@@ -605,14 +645,18 @@ function switchTab(tabName) {
     }
     state.currentTab = tabName;
     els.tabPractice.classList.toggle("active", tabName === "practice");
+    els.tabFlashcards.classList.toggle("active", tabName === "flashcards");
     els.tabCommunity.classList.toggle("active", tabName === "community");
+    stopChatPolling();
     if (tabName === "practice") {
-        stopChatPolling();
         showScreen("setup");
-    } else {
+    } else if (tabName === "community") {
         showScreen("community");
         loadChat();
         startChatPolling();
+    } else if (tabName === "flashcards") {
+        showScreen("flashcards");
+        renderFlashcardExamButtons();
     }
 }
 
@@ -705,6 +749,248 @@ function stopChatPolling() {
     if (chatPollInterval) {
         clearInterval(chatPollInterval);
         chatPollInterval = null;
+    }
+}
+
+function renderFlashcardExamButtons() {
+    if (!state.exams.length) {
+        els.flashcardExamButtons.innerHTML = `<p class="empty-state">No exams loaded yet.</p>`;
+        return;
+    }
+    els.flashcardExamButtons.innerHTML = "";
+    state.exams.forEach((exam) => {
+        const btn = document.createElement("button");
+        btn.className = "btn btn-exam" + (state.flashcardFilename === exam.filename ? " active" : "");
+        btn.innerHTML = `
+            <span class="exam-name">${escapeHtml(exam.display_name || exam.title || exam.filename)}</span>
+            <span class="exam-count">${exam.count || 0} questions</span>
+        `;
+        btn.addEventListener("click", () => selectFlashcardExam(exam.filename));
+        els.flashcardExamButtons.appendChild(btn);
+    });
+    els.flashcardStartBtn.disabled = !state.flashcardFilename;
+}
+
+function selectFlashcardExam(filename) {
+    state.flashcardFilename = filename;
+    renderFlashcardExamButtons();
+    updateFlashcardReviewCount();
+    els.flashcardSetupMessage.textContent = "";
+}
+
+function setFlashcardMode(mode) {
+    state.flashcardMode = mode;
+    els.flashcardModeQuestion.classList.toggle("active", mode === "question");
+    els.flashcardModeQuestion.classList.toggle("btn-primary", mode === "question");
+    els.flashcardModeQuestion.classList.toggle("btn-secondary", mode !== "question");
+    els.flashcardModeChoices.classList.toggle("active", mode === "choices");
+    els.flashcardModeChoices.classList.toggle("btn-primary", mode === "choices");
+    els.flashcardModeChoices.classList.toggle("btn-secondary", mode !== "choices");
+
+    if (mode === "question") {
+        els.flashcardModeDescription.textContent = "Front shows just the question. Flip to see the answer.";
+        els.flashcardPreviewFront.textContent = "What is the loopback IP address?";
+        els.flashcardPreviewBack.textContent = "127.0.0.1";
+    } else {
+        els.flashcardModeDescription.textContent = "Front shows the question and answer choices. Flip to reveal the correct answer.";
+        els.flashcardPreviewFront.innerHTML = "What is the loopback IP address?<br><br>A. 192.168.1.1<br>B. 10.0.0.1<br>C. 127.0.0.1";
+        els.flashcardPreviewBack.textContent = "C. 127.0.0.1";
+    }
+}
+
+async function startFlashcards() {
+    if (!state.flashcardFilename) {
+        els.flashcardSetupMessage.textContent = "Select an exam first.";
+        return;
+    }
+    try {
+        const [questionsRes, reviewsRes] = await Promise.all([
+            fetch(API.examQuestions, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ filename: state.flashcardFilename }),
+                credentials: "same-origin",
+            }),
+            state.user
+                ? fetch(`${API.flashcardReviews}?filename=${encodeURIComponent(state.flashcardFilename)}`, {
+                      credentials: "same-origin",
+                  })
+                : Promise.resolve(null),
+        ]);
+        const data = await questionsRes.json();
+        if (!data.ok || !data.questions || !data.questions.length) {
+            els.flashcardSetupMessage.textContent = data.error || "Could not load questions.";
+            return;
+        }
+
+        let allQuestions = [...data.questions];
+        state.flashcardReviews = new Set();
+        if (reviewsRes && reviewsRes.ok) {
+            const reviewData = await reviewsRes.json();
+            if (reviewData.ok) {
+                state.flashcardReviews = new Set(reviewData.reviews.map(String));
+            }
+        }
+
+        if (state.flashcardFilter === "review") {
+            allQuestions = allQuestions.filter((q) => state.flashcardReviews.has(String(q.id)));
+            if (!allQuestions.length) {
+                els.flashcardSetupMessage.textContent = "No cards marked for review yet.";
+                return;
+            }
+        }
+
+        state.flashcardQuestions = allQuestions;
+        state.flashcardIndex = 0;
+        state.flashcardFlipped = false;
+        showFlashcardStudyArea();
+        renderFlashcard();
+    } catch (err) {
+        els.flashcardSetupMessage.textContent = "Failed to load flashcards.";
+    }
+}
+
+function showFlashcardStudyArea() {
+    document.querySelector("#flashcards-screen .setup-grid").classList.add("hidden");
+    els.flashcardStudyArea.classList.remove("hidden");
+}
+
+function showFlashcardSetup() {
+    document.querySelector("#flashcards-screen .setup-grid").classList.remove("hidden");
+    els.flashcardStudyArea.classList.add("hidden");
+    state.flashcardQuestions = [];
+    state.flashcardIndex = 0;
+    state.flashcardFlipped = false;
+    els.flashcardSetupMessage.textContent = "";
+}
+
+function renderFlashcard() {
+    const q = state.flashcardQuestions[state.flashcardIndex];
+    if (!q) return;
+
+    els.flashcard.classList.remove("flipped");
+    state.flashcardFlipped = false;
+
+    els.flashcardFrontText.textContent = q.question;
+
+    els.flashcardFrontImage.innerHTML = "";
+    if (q.image) {
+        const img = document.createElement("img");
+        img.src = q.image;
+        img.alt = "Question image";
+        img.onerror = () => { img.style.display = "none"; };
+        els.flashcardFrontImage.appendChild(img);
+    }
+
+    els.flashcardFrontOptions.innerHTML = "";
+    if (state.flashcardMode === "choices" && q.options && q.options.length) {
+        const ul = document.createElement("ul");
+        q.options.forEach((opt) => {
+            const li = document.createElement("li");
+            li.textContent = opt;
+            ul.appendChild(li);
+        });
+        els.flashcardFrontOptions.appendChild(ul);
+    }
+
+    const correct = q.correct_answer || q._correct_answer || "";
+    els.flashcardBackText.textContent = correct;
+    els.flashcardCounter.textContent = `Card ${state.flashcardIndex + 1} of ${state.flashcardQuestions.length}`;
+
+    const isMarked = state.flashcardReviews.has(String(q.id));
+    els.flashcardReviewBadge.classList.toggle("hidden", !isMarked);
+    els.flashcardMarkBtn.textContent = isMarked ? "Unmark review" : "Mark for review";
+    els.flashcardMarkBtn.classList.toggle("btn-secondary", !isMarked);
+    els.flashcardMarkBtn.classList.toggle("btn-warning", isMarked);
+
+    els.flashcardPrevBtn.disabled = state.flashcardIndex === 0;
+    els.flashcardNextBtn.disabled = state.flashcardIndex === state.flashcardQuestions.length - 1;
+}
+
+function flipFlashcard() {
+    state.flashcardFlipped = !state.flashcardFlipped;
+    els.flashcard.classList.toggle("flipped", state.flashcardFlipped);
+}
+
+function nextFlashcard() {
+    if (state.flashcardIndex < state.flashcardQuestions.length - 1) {
+        state.flashcardIndex += 1;
+        renderFlashcard();
+    }
+}
+
+function prevFlashcard() {
+    if (state.flashcardIndex > 0) {
+        state.flashcardIndex -= 1;
+        renderFlashcard();
+    }
+}
+
+function shuffleFlashcards() {
+    for (let i = state.flashcardQuestions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [state.flashcardQuestions[i], state.flashcardQuestions[j]] = [state.flashcardQuestions[j], state.flashcardQuestions[i]];
+    }
+    state.flashcardIndex = 0;
+    renderFlashcard();
+}
+
+async function toggleFlashcardReview() {
+    const q = state.flashcardQuestions[state.flashcardIndex];
+    if (!q) return;
+    if (!state.user) {
+        alert("Log in to mark cards for review.");
+        return;
+    }
+    try {
+        const res = await fetch(API.flashcardReviewToggle, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ filename: state.flashcardFilename, question_id: q.id }),
+            credentials: "same-origin",
+        });
+        const data = await res.json();
+        if (data.ok) {
+            if (data.marked) {
+                state.flashcardReviews.add(String(q.id));
+            } else {
+                state.flashcardReviews.delete(String(q.id));
+            }
+            renderFlashcard();
+            updateFlashcardReviewCount();
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function setFlashcardFilter(filter) {
+    state.flashcardFilter = filter;
+    els.flashcardFilterAll.classList.toggle("active", filter === "all");
+    els.flashcardFilterAll.classList.toggle("btn-primary", filter === "all");
+    els.flashcardFilterAll.classList.toggle("btn-secondary", filter !== "all");
+    els.flashcardFilterReview.classList.toggle("active", filter === "review");
+    els.flashcardFilterReview.classList.toggle("btn-primary", filter === "review");
+    els.flashcardFilterReview.classList.toggle("btn-secondary", filter !== "review");
+    updateFlashcardReviewCount();
+}
+
+async function updateFlashcardReviewCount() {
+    if (!state.flashcardFilename) return;
+    if (!state.user) {
+        els.flashcardReviewCount.textContent = "Log in to keep a saved review list.";
+        return;
+    }
+    try {
+        const res = await fetch(
+            `${API.flashcardReviews}?filename=${encodeURIComponent(state.flashcardFilename)}`,
+            { credentials: "same-origin" }
+        );
+        const data = await res.json();
+        const count = data.ok ? data.reviews.length : 0;
+        els.flashcardReviewCount.textContent = `${count} card${count === 1 ? "" : "s"} marked for review.`;
+    } catch (err) {
+        els.flashcardReviewCount.textContent = "Could not load review count.";
     }
 }
 
@@ -983,12 +1269,46 @@ els.masteryStartBtn.addEventListener("click", startMasterySession);
 els.masteryResetBtn.addEventListener("click", resetMastery);
 
 els.tabPractice.addEventListener("click", () => switchTab("practice"));
+els.tabFlashcards.addEventListener("click", () => switchTab("flashcards"));
 els.tabCommunity.addEventListener("click", () => switchTab("community"));
 els.chatSendBtn.addEventListener("click", sendChatMessage);
 els.chatInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendChatMessage();
 });
 
+els.flashcardModeQuestion.addEventListener("click", () => setFlashcardMode("question"));
+els.flashcardModeChoices.addEventListener("click", () => setFlashcardMode("choices"));
+els.flashcardFilterAll.addEventListener("click", () => setFlashcardFilter("all"));
+els.flashcardFilterReview.addEventListener("click", () => setFlashcardFilter("review"));
+els.flashcardStartBtn.addEventListener("click", startFlashcards);
+els.flashcard.addEventListener("click", flipFlashcard);
+els.flashcardFlipBtn.addEventListener("click", flipFlashcard);
+els.flashcardNextBtn.addEventListener("click", nextFlashcard);
+els.flashcardPrevBtn.addEventListener("click", prevFlashcard);
+els.flashcardShuffleBtn.addEventListener("click", shuffleFlashcards);
+els.flashcardMarkBtn.addEventListener("click", toggleFlashcardReview);
+els.flashcardExitBtn.addEventListener("click", showFlashcardSetup);
+
+document.addEventListener("keydown", (e) => {
+    if (!screens.flashcards.classList.contains("active")) return;
+    if (!els.flashcardStudyArea.classList.contains("hidden")) {
+        if (e.key === " " || e.code === "Space") {
+            e.preventDefault();
+            flipFlashcard();
+        } else if (e.key === "ArrowRight") {
+            nextFlashcard();
+        } else if (e.key === "ArrowLeft") {
+            prevFlashcard();
+        } else if (e.key.toLowerCase() === "s") {
+            shuffleFlashcards();
+        } else if (e.key.toLowerCase() === "r") {
+            toggleFlashcardReview();
+        }
+    }
+});
+
 // Initialize
+setFlashcardMode("question");
+setFlashcardFilter("all");
 loadExams();
 checkAuth();

@@ -31,6 +31,7 @@
 
     <div class="tab-nav">
         <button id="tab-practice" class="tab-btn active">Practice</button>
+        <button id="tab-flashcards" class="tab-btn">Flashcards</button>
         <button id="tab-community" class="tab-btn">Community</button>
     </div>
 
@@ -182,6 +183,95 @@
                     <div id="chat-input-row" class="chat-input-row hidden">
                         <input type="text" id="chat-input" maxlength="500" placeholder="Type a message…" />
                         <button id="chat-send-btn" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Flashcards Screen -->
+            <section id="flashcards-screen" class="screen">
+                <div class="setup-grid">
+                    <div class="card">
+                        <h2>Flashcards</h2>
+                        <p class="card-subtitle">Pick an exam and flip through questions to memorize the answers.</p>
+
+                        <div id="flashcard-exam-buttons" class="exam-buttons">
+                            <p class="empty-state">Loading exams…</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Card style</label>
+                            <div class="mode-toggle">
+                                <button id="flashcard-mode-question" class="btn btn-primary mode-btn active">Question only</button>
+                                <button id="flashcard-mode-choices" class="btn btn-secondary mode-btn">Show choices</button>
+                            </div>
+                            <p id="flashcard-mode-description" class="mode-description">Front shows just the question. Flip to see the answer.</p>
+                        </div>
+
+                        <div class="flashcard-preview" id="flashcard-preview">
+                            <div class="flashcard-preview-card">
+                                <span class="flashcard-preview-label">Front</span>
+                                <p id="flashcard-preview-front">What is the loopback IP address?</p>
+                            </div>
+                            <div class="flashcard-preview-card flashcard-preview-back">
+                                <span class="flashcard-preview-label">Back</span>
+                                <p id="flashcard-preview-back">127.0.0.1</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="flashcard-filter-group">
+                            <label>Cards to show</label>
+                            <div class="mode-toggle">
+                                <button id="flashcard-filter-all" class="btn btn-primary mode-btn active">All cards</button>
+                                <button id="flashcard-filter-review" class="btn btn-secondary mode-btn">Review only</button>
+                            </div>
+                            <p id="flashcard-review-count" class="mode-description">Log in to keep a saved review list.</p>
+                        </div>
+
+                        <div class="button-row" id="flashcard-start-row">
+                            <button id="flashcard-start-btn" class="btn btn-success btn-large" disabled>Start Flashcards</button>
+                        </div>
+
+                        <p id="flashcard-setup-message" class="message"></p>
+                    </div>
+                </div>
+
+                <div id="flashcard-study-area" class="flashcard-study-area hidden">
+                    <div class="flashcard-progress">
+                        <span id="flashcard-counter">Card 1 of 50</span>
+                        <div class="flashcard-progress-actions">
+                            <span id="flashcard-review-badge" class="flashcard-review-badge hidden">Marked for review</span>
+                            <button id="flashcard-shuffle-btn" class="btn btn-secondary btn-small">Shuffle</button>
+                        </div>
+                    </div>
+
+                    <div id="flashcard" class="flashcard" title="Click or press Space to flip">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <span class="flashcard-label">Question</span>
+                                <h3 id="flashcard-front-text"></h3>
+                                <div id="flashcard-front-image" class="flashcard-image"></div>
+                                <div id="flashcard-front-options" class="flashcard-options"></div>
+                            </div>
+                            <div class="flashcard-back">
+                                <span class="flashcard-label">Answer</span>
+                                <p id="flashcard-back-text"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flashcard-controls">
+                        <button id="flashcard-mark-btn" class="btn btn-secondary">Mark for review</button>
+                        <button id="flashcard-prev-btn" class="btn btn-secondary">Previous</button>
+                        <button id="flashcard-flip-btn" class="btn btn-primary btn-large">Flip</button>
+                        <button id="flashcard-next-btn" class="btn btn-secondary">Next</button>
+                    </div>
+
+                    <p class="flashcard-hint">
+                        Space = flip &nbsp;•&nbsp; ← / → = previous / next &nbsp;•&nbsp; S = shuffle &nbsp;•&nbsp; R = mark for review
+                    </p>
+
+                    <div class="button-row">
+                        <button id="flashcard-exit-btn" class="btn btn-secondary btn-small">Back to Setup</button>
                     </div>
                 </div>
             </section>
