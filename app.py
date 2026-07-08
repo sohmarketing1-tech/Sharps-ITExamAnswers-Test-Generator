@@ -309,9 +309,12 @@ def _get_question_entry(exam_mastery: dict, qid: str) -> dict:
 
 
 def _mastery_threshold(entry: dict) -> int:
-    """Return the number of consecutive correct answers required to master a question."""
-    first = entry.get("first_correct")
-    return 3 if first is True else 5
+    """Return the number of consecutive correct answers required to master a question.
+
+    Rule: if the first attempt is correct, the question is mastered immediately.
+    If the first attempt is wrong, the user must answer correctly 3 times in a row.
+    """
+    return 1 if entry.get("first_correct") is True else 3
 
 
 def _update_mastery_entry(entry: dict, is_correct: bool) -> bool:
@@ -319,8 +322,15 @@ def _update_mastery_entry(entry: dict, is_correct: bool) -> bool:
     entry.setdefault("streak", 0)
     entry.setdefault("attempts", 0)
     entry.setdefault("correct_count", 0)
+
     if entry.get("first_correct") is None:
         entry["first_correct"] = is_correct
+        if is_correct:
+            entry["streak"] = 1
+            entry["correct_count"] = 1
+            entry["attempts"] = 1
+            entry["mastered"] = True
+            return True
 
     entry["attempts"] += 1
     if is_correct:
@@ -329,9 +339,9 @@ def _update_mastery_entry(entry: dict, is_correct: bool) -> bool:
     else:
         entry["streak"] = 0
 
-    threshold = _mastery_threshold(entry)
     if entry.get("mastered"):
         return False
+    threshold = _mastery_threshold(entry)
     if entry["streak"] >= threshold:
         entry["mastered"] = True
         return True
