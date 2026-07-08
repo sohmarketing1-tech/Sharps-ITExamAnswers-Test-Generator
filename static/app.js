@@ -1,6 +1,13 @@
+const API = {
+    state: "/api/state",
+    questions: "/api/questions",
+    scrape: "/api/scrape",
+    test: "/api/test",
+    score: "/api/score",
+    refresh: "/api/refresh",
+};
+
 const state = {
-    exams: [],
-    currentExam: null,
     title: "IT Exam Practice Test",
     url: "",
     allQuestions: [],
@@ -22,10 +29,12 @@ const screens = {
 const els = {
     examTitle: document.getElementById("exam-title"),
     examUrl: document.getElementById("exam-url"),
-    examSelect: document.getElementById("exam-select"),
+    examUrlInput: document.getElementById("exam-url-input"),
+    scrapeBtn: document.getElementById("scrape-btn"),
     totalQuestions: document.getElementById("total-questions"),
     questionCount: document.getElementById("question-count"),
     startBtn: document.getElementById("start-btn"),
+    refreshBtn: document.getElementById("refresh-btn"),
     setupMessage: document.getElementById("setup-message"),
     progressBar: document.getElementById("progress-bar"),
     progress: document.getElementById("progress"),
@@ -69,79 +78,97 @@ function setAvailableCount(count) {
     els.startBtn.disabled = count === 0;
 }
 
-async function loadExamsManifest() {
+async function loadState() {
     try {
-        const res = await fetch("data/exams.json");
-        if (!res.ok) throw new Error("Failed to load exam list");
-        const data = await res.json();
-        state.exams = data.exams || [];
-        populateExamDropdown();
-        if (state.exams.length > 0) {
-            els.examSelect.value = state.exams[0].filename;
-            await loadExam(state.exams[0].filename);
-        }
-        setMessage(state.exams.length ? "Ready to start." : "No exams available.");
-    } catch (err) {
-        setMessage(err.message, "error");
-        els.examSelect.innerHTML = '<option value="">Error loading exams</option>';
-    }
-}
-
-function populateExamDropdown() {
-    els.examSelect.innerHTML = "";
-    if (!state.exams.length) {
-        els.examSelect.innerHTML = '<option value="">No exams found</option>';
-        return;
-    }
-    state.exams.forEach((exam) => {
-        const opt = document.createElement("option");
-        opt.value = exam.filename;
-        opt.textContent = `${exam.title} (${exam.count} questions)`;
-        els.examSelect.appendChild(opt);
-    });
-    els.examSelect.disabled = false;
-}
-
-async function loadExam(filename) {
-    const examMeta = state.exams.find((e) => e.filename === filename);
-    if (!examMeta) return;
-    setMessage(`Loading ${examMeta.title}…`);
-    try {
-        const res = await fetch(`data/${filename}`);
-        if (!res.ok) throw new Error(`Failed to load ${filename}`);
+        const res = await fetch(API.state);
+        if (!res.ok) throw new Error("Failed to load state");
         const data = await res.json();
         state.title = data.title;
         state.url = data.url;
-        state.allQuestions = data.questions || [];
-        state.currentExam = filename;
+        state.allQuestions = Array.from({ length: data.total }); // only count needed for setup
         updateHeader();
-        setAvailableCount(state.allQuestions.length);
-        const requested = parseInt(els.questionCount.value, 10) || 20;
-        els.questionCount.value = Math.min(requested, state.allQuestions.length);
-        setMessage("Ready to start.");
+        setAvailableCount(data.total);
+        if (data.url) els.examUrlInput.value = data.url;
+        setMessage(data.total ? "Ready to start." : "Paste an itexamanswers.net URL above and click Scrape Questions.");
     } catch (err) {
         setMessage(err.message, "error");
         setAvailableCount(0);
     }
 }
 
-function generateTest(questions, n) {
-    const count = Math.max(1, Math.min(n, questions.length));
-    const shuffled = [...questions].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, count).map((q) => ({
-        id: q.id,
-        question: q.question,
-        options: q.options,
-        _correct_answer: q.correct_answer,
-    }));
+async function scrapeUrl() {
+    const url = els.examUrlInput.value.trim();
+    if (!url) {
+        setMessage("Please enter a URL.", "error");
+        return;
+    }
+    setMessage("Scraping the exam page, please wait…");
+    els.scrapeBtn.disabled = true;
+    els.refreshBtn.disabled = true;
+    try {
+        const res = await fetch(API.scrape, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Scrape failed");
+        state.title = data.title;
+        state.url = data.url;
+        updateHeader();
+        setAvailableCount(data.count);
+        const requested = parseInt(els.questionCount.value, 10) || 20;
+        els.questionCount.value = Math.min(requested, data.count);
+        setMessage(`Scraped successfully. ${data.count} questions loaded.`, "success");
+    } catch (err) {
+        setMessage(err.message, "error");
+    } finally {
+        els.scrapeBtn.disabled = false;
+        els.refreshBtn.disabled = false;
+    }
 }
 
-function startTest() {
+async function refreshQuestions() {
+    setMessage("Re-scraping the current exam page, please wait…");
+    els.scrapeBtn.disabled = true;
+    els.refreshBtn.disabled = true;
+    try {
+        const res = await fetch(API.refresh, { method: "POST" });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Refresh failed");
+        state.title = data.title;
+        state.url = data.url;
+        updateHeader();
+        setAvailableCount(data.count);
+        setMessage(`Refreshed successfully. ${data.count} questions loaded.`, "success");
+    } catch (err) {
+        setMessage(err.message, "error");
+    } finally {
+        els.scrapeBtn.disabled = false;
+        els.refreshBtn.disabled = false;
+    }
+}
+
+async function startTest() {
     const total = parseInt(els.totalQuestions.dataset.count || "0") || state.allQuestions.length || 0;
     const requested = parseInt(els.questionCount.value, 10) || 10;
     const n = Math.max(1, Math.min(requested, total || 1));
 
-    state.testQuestions = generateTest(state.allQuestions, n);
+    try {
+        const res = await fetch(`${API.test}?n=${n}`);
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || "Could not generate test");
+        }
+        const data = await res.json();
+        state.testQuestions = data.quiz;
+        state.title = data.title;
+        updateHeader();
+    } catch (err) {
+        setMessage(err.message, "error");
+        return;
+    }
+
     state.answers = {};
     state.currentIndex = 0;
     state.secondsElapsed = 0;
@@ -251,65 +278,21 @@ function navigate(direction) {
     renderQuestion();
 }
 
-function scoreTest() {
-    const idMap = {};
-    state.allQuestions.forEach((q) => (idMap[q.id] = q));
-
-    const results = [];
-    let correctCount = 0;
-    Object.entries(state.answers).forEach(([qidStr, selected]) => {
-        const qid = parseInt(qidStr, 10);
-        const q = idMap[qid];
-        if (!q) return;
-        const correctSet = new Set(q.correct_answer.split("|").map((a) => a.trim()));
-        const selectedSet = new Set((Array.isArray(selected) ? selected : [selected]).map((s) => s.trim()));
-        const isCorrect = selectedSet.size === correctSet.size && [...selectedSet].every((s) => correctSet.has(s));
-        if (isCorrect) correctCount += 1;
-        results.push({
-            id: qid,
-            question: q.question,
-            options: q.options,
-            selected: [...selectedSet].sort(),
-            correct_answer: [...correctSet].sort(),
-            is_correct: isCorrect,
-        });
-    });
-
-    // Include unanswered questions as incorrect
-    state.testQuestions.forEach((q) => {
-        if (!state.answers[q.id]) {
-            const correctSet = new Set(q._correct_answer.split("|").map((a) => a.trim()));
-            results.push({
-                id: q.id,
-                question: q.question,
-                options: q.options,
-                selected: [],
-                correct_answer: [...correctSet].sort(),
-                is_correct: false,
-            });
-        }
-    });
-
-    const total = results.length;
-    const score = total ? round((correctCount / total) * 100, 2) : 0;
-    return {
-        title: state.title,
-        total,
-        correct: correctCount,
-        score,
-        results: results.sort((a, b) => a.id - b.id),
-    };
-}
-
-function round(num, decimals) {
-    const factor = Math.pow(10, decimals);
-    return Math.round((num + Number.EPSILON) * factor) / factor;
-}
-
-function submitTest() {
+async function submitTest() {
     stopTimer();
-    const data = scoreTest();
-    showResults(data);
+    const payload = { answers: state.answers };
+    try {
+        const res = await fetch(API.score, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Scoring failed");
+        const data = await res.json();
+        showResults(data);
+    } catch (err) {
+        alert(err.message);
+    }
 }
 
 function showResults(data) {
@@ -359,8 +342,9 @@ function showResults(data) {
     });
 }
 
-els.examSelect.addEventListener("change", () => loadExam(els.examSelect.value));
+els.scrapeBtn.addEventListener("click", scrapeUrl);
 els.startBtn.addEventListener("click", startTest);
+els.refreshBtn.addEventListener("click", refreshQuestions);
 els.prevBtn.addEventListener("click", () => navigate(-1));
 els.nextBtn.addEventListener("click", () => {
     if (state.currentIndex === state.testQuestions.length - 1) {
@@ -376,4 +360,4 @@ els.reviewBtn.addEventListener("click", () => {
 });
 
 // Initialize
-loadExamsManifest();
+loadState();

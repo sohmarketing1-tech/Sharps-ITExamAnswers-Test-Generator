@@ -7,7 +7,7 @@ from flask import Flask, jsonify, request, send_from_directory
 
 from scraper import scrape_url, is_valid_itexamanswers_url, DEFAULT_TARGET_URL, DEFAULT_OUTPUT
 
-app = Flask(__name__, static_folder="static", static_url_path="/static")
+app = Flask(__name__, static_folder="static", static_url_path="")
 
 BASE_DIR = Path(__file__).resolve().parent
 QUESTIONS_FILE = BASE_DIR / DEFAULT_OUTPUT
@@ -57,7 +57,7 @@ def get_current_url():
 
 @app.route("/")
 def index():
-    return send_from_directory(BASE_DIR, "index.html")
+    return send_from_directory(app.static_folder, "index.html")
 
 
 @app.route("/api/state")
