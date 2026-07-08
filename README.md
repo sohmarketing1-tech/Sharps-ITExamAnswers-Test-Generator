@@ -1,14 +1,21 @@
 # ITExamAnswers Practice Test Generator
 
-A full-stack app that scrapes quiz questions and answers from any `itexamanswers.net` exam page and lets you generate custom-length practice tests.
+A Flask-based practice test app. It comes with three pre-scraped IT Essentials exams and lets users generate custom-length practice tests by selecting an exam from a dropdown.
 
 ## What it does
 
-- **Accepts any itexamanswers.net URL** through a web form.
-- **Scrapes** the page with BeautifulSoup/Requests.
-- **Extracts** the exam title, question text, multiple-choice options, and correct answers (detected via `<li class="correct_answer">`).
-- **Saves** clean JSON in `questions.json`.
-- **Serves** a polished web UI with a prominent exam title header, setup, quiz, and results screens.
+- **Displays a dropdown** of pre-scraped `itexamanswers.net` exams.
+- **Generates** random practice tests of any length.
+- **Scores** answers and shows a detailed review with correct answers.
+- **Includes a scraper** you can run locally to add more exams.
+
+## Included exams
+
+The repo currently includes three scraped IT Essentials 7.0/8.0 exams in `data/`:
+
+- **Final Exam Modules 1-9** — 127 questions
+- **Final Exam Modules 10-14** — 149 questions
+- **Course Final Exam** — 338 questions
 
 ## Project layout
 
@@ -16,11 +23,14 @@ A full-stack app that scrapes quiz questions and answers from any `itexamanswers
 quiz-scraper/
 ├── app.py              # Flask backend
 ├── scraper.py          # HTML scraper + JSON writer
-├── questions.json      # scraped data (generated)
+├── batch_scrape.py     # helper to scrape multiple exams at once
 ├── requirements.txt    # Python dependencies
-├── Dockerfile          # Cloud Run container definition
-├── firebase.json       # Firebase Hosting config + Cloud Run rewrites
-├── .firebaserc         # Firebase project mapping
+├── data/               # pre-scraped exam JSON files
+│   ├── exams.json      # manifest of all exams
+│   └── *.json          # individual exam data
+├── Dockerfile          # optional Cloud Run deployment
+├── firebase.json       # optional Firebase Hosting config
+├── .firebaserc         # optional Firebase project mapping
 ├── README.md           # this file
 └── static/
     ├── index.html      # frontend
@@ -64,13 +74,62 @@ quiz-scraper/
 
 ## Usage
 
-1. Paste any `itexamanswers.net` exam URL into the **Exam URL** field and click **Scrape Questions**.
-2. The exam title appears in the page header (e.g., "IT Essentials 7.0 8.0 Final Exam (Chapters 1-9) Answers Full").
+1. Select an exam from the **Exam** dropdown.
+2. The exam title appears in the page header.
 3. Enter how many questions you want and click **Start Test**.
 4. Answer each question. Multi-answer questions use checkboxes; single-answer questions use radio buttons.
 5. Click **Submit Test** to see your score and review every answer.
 
-Click **Re-scrape Current** to refresh the currently loaded exam.
+## Adding more exams
+
+To add a new exam, run the scraper locally and update the manifest:
+
+```bash
+python3 scraper.py https://itexamanswers.net/your-exam-url.html
+```
+
+This creates `questions.json`. Move it to `data/` with a descriptive name, then update `data/exams.json` with the title, URL, filename, and question count.
+
+## Deploying to PythonAnywhere (free)
+
+1. Sign up at https://www.pythonanywhere.com.
+2. Open a **Bash console** and clone your repo:
+
+   ```bash
+   git clone https://github.com/sohmarketing1-tech/Sharps-ITExamAnswers-Test-Generator.git
+   cd Sharps-ITExamAnswers-Test-Generator
+   python3.11 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+3. Go to **Web → Add a new web app → Manual configuration → Python 3.11**.
+4. Set **Source code** and **Working directory** to:
+
+   ```
+   /home/YOUR_USERNAME/Sharps-ITExamAnswers-Test-Generator
+   ```
+
+5. Set **Virtualenv** to:
+
+   ```
+   /home/YOUR_USERNAME/Sharps-ITExamAnswers-Test-Generator/venv
+   ```
+
+6. Edit the **WSGI configuration file** to:
+
+   ```python
+   import sys
+   path = '/home/YOUR_USERNAME/Sharps-ITExamAnswers-Test-Generator'
+   if path not in sys.path:
+       sys.path.insert(0, path)
+
+   from app import app as application
+   ```
+
+7. Click **Reload**. Your site will be live at `YOUR_USERNAME.pythonanywhere.com`.
+
+Note: live scraping is usually blocked on free PythonAnywhere accounts, so the pre-scraped exams in `data/` are used instead.
 
 ## API endpoints
 
@@ -79,7 +138,9 @@ Click **Re-scrape Current** to refresh the currently loaded exam.
 | `/` | GET | Serve the frontend |
 | `/api/state` | GET | Return current exam title, URL, and question count |
 | `/api/questions` | GET | Return all scraped questions + metadata |
-| `/api/scrape` | POST | Scrape a new URL and load it into the app |
+| `/api/exams` | GET | Return list of pre-scraped exams |
+| `/api/load` | POST | Load a pre-scraped exam by filename |
+| `/api/scrape` | POST | Scrape a new URL and load it into the app (local only) |
 | `/api/test?n=20` | GET | Return `n` random questions |
 | `/api/score` | POST | Submit answers and receive scored results |
 | `/api/refresh` | POST | Re-scrape the current URL |
