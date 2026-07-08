@@ -73,7 +73,7 @@ function showScreen(name) {
 function updateHeader() {
     els.examTitle.textContent = state.title || "IT Exam Practice Test";
     els.examUrl.textContent = state.url || "";
-    document.title = state.title ? `${state.title} - Practice Test` : "ITExamAnswers Practice Test Generator";
+    document.title = "Sharp's Get Smart";
 }
 
 function setMessage(text, type = "") {
