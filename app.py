@@ -14,6 +14,17 @@ from scraper import scrape_url, is_valid_itexamanswers_url, DEFAULT_TARGET_URL, 
 app = Flask(__name__, static_folder="static", static_url_path="")
 
 BASE_DIR = Path(__file__).resolve().parent
+
+
+@app.after_request
+def set_api_cache_headers(response):
+    """Prevent browsers and proxies from caching API responses."""
+    if request.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 QUESTIONS_FILE = BASE_DIR / DEFAULT_OUTPUT
 DATA_DIR = BASE_DIR / "data"
 USERS_FILE = BASE_DIR / "users.json"

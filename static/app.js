@@ -447,7 +447,7 @@ async function refreshMastery() {
     try {
         const res = await fetch(
             `${API.mastery}?filename=${encodeURIComponent(state.currentFilename)}`,
-            { credentials: "same-origin" }
+            { credentials: "same-origin", cache: "no-store" }
         );
         const data = await res.json();
         if (data.ok) {
@@ -466,7 +466,7 @@ async function startMasterySession() {
     try {
         const res = await fetch(
             `${API.masteryBatch}?n=20&filename=${encodeURIComponent(state.currentFilename)}`,
-            { credentials: "same-origin" }
+            { credentials: "same-origin", cache: "no-store" }
         );
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Could not load mastery batch");
@@ -575,7 +575,7 @@ async function startTest() {
     const filename = state.currentFilename || "";
 
     try {
-        const res = await fetch(`${API.test}?n=${n}&filename=${encodeURIComponent(filename)}`);
+        const res = await fetch(`${API.test}?n=${n}&filename=${encodeURIComponent(filename)}`, { cache: "no-store" });
         if (!res.ok) {
             const err = await res.json();
             throw new Error(err.error || "Could not generate test");
