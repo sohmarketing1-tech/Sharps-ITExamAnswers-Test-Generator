@@ -59,6 +59,7 @@ const els = {
     scoreValue: document.getElementById("score-value"),
     scoreDetail: document.getElementById("score-detail"),
     restartBtn: document.getElementById("restart-btn"),
+    retakeBtn: document.getElementById("retake-btn"),
     reviewBtn: document.getElementById("review-btn"),
     reviewPanel: document.getElementById("review-panel"),
     reviewList: document.getElementById("review-list"),
@@ -288,6 +289,19 @@ function goHome() {
     loadStats();
 }
 
+function retakeSameTest() {
+    if (!state.testQuestions.length) return;
+    stopTimer();
+    state.answers = {};
+    state.currentIndex = 0;
+    state.secondsElapsed = 0;
+    state.multiSelect = false;
+    els.reviewPanel.classList.add("hidden");
+    showScreen("quiz");
+    startTimer();
+    renderQuestion();
+}
+
 function formatTime(totalSeconds) {
     const m = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
     const s = String(totalSeconds % 60).padStart(2, "0");
@@ -348,10 +362,7 @@ function renderQuestion() {
         optionEl.appendChild(span);
         els.optionsContainer.appendChild(optionEl);
 
-        optionEl.addEventListener("click", (e) => {
-            if (e.target.tagName !== "INPUT") {
-                input.checked = !input.checked;
-            }
+        input.addEventListener("change", () => {
             updateAnswer(q.id, input.checked, opt);
         });
     });
@@ -474,6 +485,7 @@ els.nextBtn.addEventListener("click", () => {
 });
 els.submitBtn.addEventListener("click", submitTest);
 els.restartBtn.addEventListener("click", () => showScreen("setup"));
+els.retakeBtn.addEventListener("click", retakeSameTest);
 els.reviewBtn.addEventListener("click", () => {
     els.reviewPanel.classList.toggle("hidden");
 });
