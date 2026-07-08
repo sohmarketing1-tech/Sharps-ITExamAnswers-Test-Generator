@@ -1,0 +1,15 @@
+{
+  "hosting": {
+    "public": "static",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "quiz-scraper-api",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.git/
+.gitignore
+.firebase/
+.firebaserc
+firebase.json
+node_modules/
+*.log
+.DS_Store

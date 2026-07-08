@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ITExamAnswers Practice Test Generator</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <span class="logo">ITExamAnswers</span>
+            <span class="tagline">Practice Test Generator</span>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="container">
+            <span class="exam-label">Current Exam</span>
+            <h1 id="exam-title">Loading exam…</h1>
+            <p id="exam-url" class="exam-url"></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <main id="app">
+            <!-- Setup Screen -->
+            <section id="setup-screen" class="screen active">
+                <div class="card">
+                    <h2>Configure Your Practice Test</h2>
+                    <p class="card-subtitle">Paste any itexamanswers.net exam page link below.</p>
+
+                    <div class="form-group">
+                        <label for="exam-url-input">Exam URL</label>
+                        <input type="url" id="exam-url-input" placeholder="https://itexamanswers.net/..." />
+                    </div>
+
+                    <div class="button-row compact">
+                        <button id="scrape-btn" class="btn btn-primary">Scrape Questions</button>
+                        <button id="refresh-btn" class="btn btn-secondary">Re-scrape Current</button>
+                    </div>
+
+                    <div class="form-group spaced">
+                        <label for="question-count">Number of questions</label>
+                        <div class="count-row">
+                            <input type="number" id="question-count" min="1" value="20" />
+                            <span id="total-questions" class="available-count">0 available</span>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button id="start-btn" class="btn btn-success btn-large" disabled>Start Test</button>
+                    </div>
+
+                    <p id="setup-message" class="message"></p>
+                </div>
+            </section>
+
+            <!-- Quiz Screen -->
+            <section id="quiz-screen" class="screen">
+                <div class="quiz-toolbar">
+                    <div class="progress-track">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <div class="quiz-meta">
+                        <span id="progress">Question 1 of 20</span>
+                        <span id="timer" class="timer">00:00</span>
+                    </div>
+                </div>
+
+                <div id="question-card" class="card question-card">
+                    <span id="question-badge" class="question-badge">Question 1</span>
+                    <h3 id="question-text"></h3>
+                    <div id="options-container" class="options"></div>
+                </div>
+
+                <div class="quiz-nav">
+                    <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                    <button id="next-btn" class="btn btn-primary">Next</button>
+                </div>
+
+                <div class="quiz-footer">
+                    <button id="submit-btn" class="btn btn-success btn-large">Submit Test</button>
+                </div>
+            </section>
+
+            <!-- Results Screen -->
+            <section id="results-screen" class="screen">
+                <div class="card results-summary">
+                    <h2 id="results-title">Test Results</h2>
+                    <div class="score-circle">
+                        <span id="score-value">0%</span>
+                    </div>
+                    <p id="score-detail" class="score-detail"></p>
+                    <div class="button-row centered">
+                        <button id="restart-btn" class="btn btn-primary btn-large">New Test</button>
+                        <button id="review-btn" class="btn btn-secondary btn-large">Review Answers</button>
+                    </div>
+                </div>
+
+                <div id="review-panel" class="review-panel hidden">
+                    <div class="review-header">
+                        <h2>Review</h2>
+                    </div>
+                    <div id="review-list"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        <p>Built for itexamanswers.net practice tests.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
