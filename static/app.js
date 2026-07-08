@@ -1,13 +1,14 @@
 const API = {
+    exams: "/api/exams",
+    load: "/api/load",
     state: "/api/state",
-    questions: "/api/questions",
-    scrape: "/api/scrape",
     test: "/api/test",
     score: "/api/score",
-    refresh: "/api/refresh",
 };
 
 const state = {
+    exams: [],
+    currentFilename: null,
     title: "IT Exam Practice Test",
     url: "",
     allQuestions: [],
@@ -29,12 +30,10 @@ const screens = {
 const els = {
     examTitle: document.getElementById("exam-title"),
     examUrl: document.getElementById("exam-url"),
-    examUrlInput: document.getElementById("exam-url-input"),
-    scrapeBtn: document.getElementById("scrape-btn"),
+    examSelect: document.getElementById("exam-select"),
     totalQuestions: document.getElementById("total-questions"),
     questionCount: document.getElementById("question-count"),
     startBtn: document.getElementById("start-btn"),
-    refreshBtn: document.getElementById("refresh-btn"),
     setupMessage: document.getElementById("setup-message"),
     progressBar: document.getElementById("progress-bar"),
     progress: document.getElementById("progress"),
@@ -78,74 +77,67 @@ function setAvailableCount(count) {
     els.startBtn.disabled = count === 0;
 }
 
-async function loadState() {
+async function loadExams() {
     try {
-        const res = await fetch(API.state);
-        if (!res.ok) throw new Error("Failed to load state");
+        const res = await fetch(API.exams);
+        if (!res.ok) throw new Error("Failed to load exam list");
         const data = await res.json();
-        state.title = data.title;
-        state.url = data.url;
-        state.allQuestions = Array.from({ length: data.total }); // only count needed for setup
-        updateHeader();
-        setAvailableCount(data.total);
-        if (data.url) els.examUrlInput.value = data.url;
-        setMessage(data.total ? "Ready to start." : "Paste an itexamanswers.net URL above and click Scrape Questions.");
+        state.exams = data.exams || [];
+        populateExamDropdown();
+        if (state.exams.length > 0) {
+            const current = data.current_filename || state.exams[0].filename;
+            els.examSelect.value = current;
+            await loadExam(current);
+        } else {
+            setMessage("No pre-scraped exams found.", "error");
+            setAvailableCount(0);
+        }
     } catch (err) {
         setMessage(err.message, "error");
+        els.examSelect.innerHTML = '<option value="">Error loading exams</option>';
         setAvailableCount(0);
     }
 }
 
-async function scrapeUrl() {
-    const url = els.examUrlInput.value.trim();
-    if (!url) {
-        setMessage("Please enter a URL.", "error");
+function populateExamDropdown() {
+    els.examSelect.innerHTML = "";
+    if (!state.exams.length) {
+        els.examSelect.innerHTML = '<option value="">No exams found</option>';
         return;
     }
-    setMessage("Scraping the exam page, please wait…");
-    els.scrapeBtn.disabled = true;
-    els.refreshBtn.disabled = true;
+    state.exams.forEach((exam) => {
+        const opt = document.createElement("option");
+        opt.value = exam.filename;
+        opt.textContent = `${exam.title} (${exam.count} questions)`;
+        els.examSelect.appendChild(opt);
+    });
+    els.examSelect.disabled = false;
+}
+
+async function loadExam(filename) {
+    const examMeta = state.exams.find((e) => e.filename === filename);
+    if (!examMeta) return;
+    setMessage(`Loading ${examMeta.title}…`);
     try {
-        const res = await fetch(API.scrape, {
+        const res = await fetch(API.load, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url }),
+            body: JSON.stringify({ filename }),
         });
         const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error || "Scrape failed");
+        if (!res.ok || !data.ok) throw new Error(data.error || "Failed to load exam");
         state.title = data.title;
         state.url = data.url;
+        state.currentFilename = data.filename;
+        state.allQuestions = []; // count only needed; loaded server-side
         updateHeader();
         setAvailableCount(data.count);
         const requested = parseInt(els.questionCount.value, 10) || 20;
         els.questionCount.value = Math.min(requested, data.count);
-        setMessage(`Scraped successfully. ${data.count} questions loaded.`, "success");
+        setMessage("Ready to start.");
     } catch (err) {
         setMessage(err.message, "error");
-    } finally {
-        els.scrapeBtn.disabled = false;
-        els.refreshBtn.disabled = false;
-    }
-}
-
-async function refreshQuestions() {
-    setMessage("Re-scraping the current exam page, please wait…");
-    els.scrapeBtn.disabled = true;
-    els.refreshBtn.disabled = true;
-    try {
-        const res = await fetch(API.refresh, { method: "POST" });
-        const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error || "Refresh failed");
-        state.title = data.title;
-        state.url = data.url;
-        updateHeader();
-        setAvailableCount(data.count);
-        setMessage(`Refreshed successfully. ${data.count} questions loaded.`, "success");
-    } catch (err) {
-        setMessage(err.message, "error");
-    } finally {
-        els.scrapeBtn.disabled = false;
-        els.refreshBtn.disabled = false;
+        setAvailableCount(0);
     }
 }
 
@@ -342,9 +334,8 @@ function showResults(data) {
     });
 }
 
-els.scrapeBtn.addEventListener("click", scrapeUrl);
+els.examSelect.addEventListener("change", () => loadExam(els.examSelect.value));
 els.startBtn.addEventListener("click", startTest);
-els.refreshBtn.addEventListener("click", refreshQuestions);
 els.prevBtn.addEventListener("click", () => navigate(-1));
 els.nextBtn.addEventListener("click", () => {
     if (state.currentIndex === state.testQuestions.length - 1) {
@@ -360,4 +351,4 @@ els.reviewBtn.addEventListener("click", () => {
 });
 
 // Initialize
-loadState();
+loadExams();

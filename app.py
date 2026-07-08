@@ -11,14 +11,34 @@ app = Flask(__name__, static_folder="static", static_url_path="")
 
 BASE_DIR = Path(__file__).resolve().parent
 QUESTIONS_FILE = BASE_DIR / DEFAULT_OUTPUT
+DATA_DIR = BASE_DIR / "data"
 
 
 # In-memory state for the currently loaded exam
 app_state = {
     "title": None,
     "url": None,
+    "filename": None,
     "questions": [],
 }
+
+
+def load_exam_from_file(filepath: Path) -> bool:
+    """Load a specific exam JSON file into app_state."""
+    if not filepath.exists():
+        return False
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        return False
+    if isinstance(data, dict) and "questions" in data:
+        app_state["title"] = data.get("title")
+        app_state["url"] = data.get("url")
+        app_state["filename"] = filepath.name
+        app_state["questions"] = data.get("questions", [])
+        return True
+    return False
 
 
 def load_local_data():
@@ -36,12 +56,29 @@ def load_local_data():
     return None, None, data if isinstance(data, list) else []
 
 
+def load_default_exam():
+    """Try to load the first pre-scraped exam, otherwise fall back to questions.json."""
+    manifest_path = DATA_DIR / "exams.json"
+    if manifest_path.exists():
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as f:
+                manifest = json.load(f)
+            exams = manifest.get("exams", [])
+            if exams:
+                load_exam_from_file(DATA_DIR / exams[0]["filename"])
+                return
+        except Exception:
+            pass
+    # Fallback to legacy questions.json
+    title, url, questions = load_local_data()
+    app_state["title"] = title
+    app_state["url"] = url
+    app_state["questions"] = questions
+
+
 def get_current_questions():
     if not app_state["questions"]:
-        title, url, questions = load_local_data()
-        app_state["title"] = title
-        app_state["url"] = url
-        app_state["questions"] = questions
+        load_default_exam()
     return app_state["questions"]
 
 
@@ -78,6 +115,47 @@ def get_questions():
         "url": get_current_url(),
         "questions": questions,
     })
+
+
+@app.route("/api/exams")
+def get_exams():
+    """Return the list of pre-scraped exams available in data/."""
+    manifest_path = DATA_DIR / "exams.json"
+    exams = []
+    if manifest_path.exists():
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as f:
+                manifest = json.load(f)
+            exams = manifest.get("exams", [])
+        except Exception:
+            pass
+    return jsonify({
+        "current_filename": app_state.get("filename"),
+        "exams": exams,
+    })
+
+
+@app.route("/api/load", methods=["POST"])
+def load_exam_endpoint():
+    """Load a pre-scraped exam by filename."""
+    data = request.get_json(silent=True) or {}
+    filename = data.get("filename", "").strip()
+    if not filename:
+        return jsonify({"ok": False, "error": "No filename provided."}), 400
+
+    filepath = DATA_DIR / filename
+    if not filepath.exists():
+        return jsonify({"ok": False, "error": f"Exam file not found: {filename}"}), 404
+
+    if load_exam_from_file(filepath):
+        return jsonify({
+            "ok": True,
+            "title": app_state["title"],
+            "url": app_state["url"],
+            "filename": app_state["filename"],
+            "count": len(app_state["questions"]),
+        })
+    return jsonify({"ok": False, "error": f"Failed to load {filename}"}), 500
 
 
 @app.route("/api/scrape", methods=["POST"])
