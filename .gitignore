@@ -26,3 +26,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Runtime data
+stats.json
+questions.json

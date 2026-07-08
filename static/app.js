@@ -4,6 +4,9 @@ const API = {
     state: "/api/state",
     test: "/api/test",
     score: "/api/score",
+    stats: "/api/stats",
+    studied: "/api/studied",
+    thanks: "/api/thanks",
 };
 
 const state = {
@@ -35,6 +38,13 @@ const els = {
     questionCount: document.getElementById("question-count"),
     startBtn: document.getElementById("start-btn"),
     setupMessage: document.getElementById("setup-message"),
+    studyName: document.getElementById("study-name"),
+    studiedBtn: document.getElementById("studied-btn"),
+    studyMessage: document.getElementById("study-message"),
+    studyList: document.getElementById("study-list"),
+    thanksBtn: document.getElementById("thanks-btn"),
+    thanksCount: document.getElementById("thanks-count"),
+    thanksMessage: document.getElementById("thanks-message"),
     progressBar: document.getElementById("progress-bar"),
     progress: document.getElementById("progress"),
     timer: document.getElementById("timer"),
@@ -141,6 +151,87 @@ async function loadExam(filename) {
     }
 }
 
+async function loadStats() {
+    try {
+        const res = await fetch(API.stats);
+        if (!res.ok) throw new Error("Failed to load stats");
+        const data = await res.json();
+        renderStudyList(data.study_sessions || []);
+        renderThanksCount(data.thanks || []);
+    } catch (err) {
+        // Silently ignore; stats are optional
+    }
+}
+
+function renderStudyList(sessions) {
+    if (!sessions.length) {
+        els.studyList.innerHTML = '<p class="empty-state">No one has checked in yet. Be the first!</p>';
+        return;
+    }
+    els.studyList.innerHTML = "";
+    sessions.slice().reverse().forEach((session) => {
+        const chip = document.createElement("span");
+        chip.className = "study-chip";
+        chip.textContent = `${session.name} studied`;
+        els.studyList.appendChild(chip);
+    });
+}
+
+function renderThanksCount(thanks) {
+    const count = thanks.length;
+    els.thanksCount.textContent = `Thanks received: ${count}`;
+}
+
+async function recordStudied() {
+    const name = els.studyName.value.trim();
+    if (!name) {
+        els.studyMessage.textContent = "Enter your name first.";
+        els.studyMessage.className = "message error";
+        return;
+    }
+    els.studiedBtn.disabled = true;
+    try {
+        const res = await fetch(API.studied, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Could not record study session");
+        renderStudyList(data.stats.study_sessions);
+        els.studyMessage.textContent = `Locked in, ${name}! Good luck studying.`;
+        els.studyMessage.className = "message success";
+        els.studyName.value = "";
+    } catch (err) {
+        els.studyMessage.textContent = err.message;
+        els.studyMessage.className = "message error";
+    } finally {
+        els.studiedBtn.disabled = false;
+    }
+}
+
+async function recordThanks() {
+    const name = els.studyName.value.trim() || "Anonymous";
+    els.thanksBtn.disabled = true;
+    try {
+        const res = await fetch(API.thanks, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Could not record thanks");
+        renderThanksCount(data.stats.thanks);
+        els.thanksMessage.textContent = "Thanks sent! Appreciate you.";
+        els.thanksMessage.className = "message success";
+    } catch (err) {
+        els.thanksMessage.textContent = err.message;
+        els.thanksMessage.className = "message error";
+    } finally {
+        els.thanksBtn.disabled = false;
+    }
+}
+
 async function startTest() {
     const total = parseInt(els.totalQuestions.dataset.count || "0") || state.allQuestions.length || 0;
     const requested = parseInt(els.questionCount.value, 10) || 10;
@@ -210,7 +301,21 @@ function renderQuestion() {
     state.multiSelect = isMulti;
 
     updateProgress();
-    els.questionText.textContent = q.question;
+    els.questionText.innerHTML = "";
+
+    const questionText = document.createElement("span");
+    questionText.textContent = q.question;
+    els.questionText.appendChild(questionText);
+
+    // Display any associated question image
+    if (q.image) {
+        const img = document.createElement("img");
+        img.src = q.image;
+        img.alt = "Question image";
+        img.className = "question-image";
+        img.onerror = () => { img.style.display = "none"; };
+        els.questionText.appendChild(img);
+    }
 
     els.optionsContainer.innerHTML = "";
     q.options.forEach((opt) => {
@@ -336,6 +441,8 @@ function showResults(data) {
 
 els.examSelect.addEventListener("change", () => loadExam(els.examSelect.value));
 els.startBtn.addEventListener("click", startTest);
+els.studiedBtn.addEventListener("click", recordStudied);
+els.thanksBtn.addEventListener("click", recordThanks);
 els.prevBtn.addEventListener("click", () => navigate(-1));
 els.nextBtn.addEventListener("click", () => {
     if (state.currentIndex === state.testQuestions.length - 1) {
@@ -352,3 +459,4 @@ els.reviewBtn.addEventListener("click", () => {
 
 // Initialize
 loadExams();
+loadStats();

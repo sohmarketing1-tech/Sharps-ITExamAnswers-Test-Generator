@@ -176,7 +176,8 @@
         "section C",
         "section D"
       ],
-      "correct_answer": "section D"
+      "correct_answer": "section D",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/11/i344187v3n1_344163.png"
     },
     {
       "id": 16,
@@ -1489,7 +1490,8 @@
         "DVD-RW",
         "DVD-ROM"
       ],
-      "correct_answer": "BD-RE"
+      "correct_answer": "BD-RE",
+      "image": "https://itexamanswers.net/wp-content/uploads/2016/05/2022-11-28_222530.jpg"
     },
     {
       "id": 131,
@@ -1727,7 +1729,8 @@
         "Move both the CD/DVD and the hard disk options to the bottom of the boot order.",
         "Move the USB Hard Disk drive option to the top of the boot order."
       ],
-      "correct_answer": "Move the USB Hard Disk drive option to the top of the boot order."
+      "correct_answer": "Move the USB Hard Disk drive option to the top of the boot order.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/10/A-computer-technician-creates-a-bootable-USB-hard-drive-and-loads.jpg"
     },
     {
       "id": 152,
@@ -1804,7 +1807,8 @@
         "Download and install the latest HP Officejet Pro 8110 driver for Windows 10 from the HP web site.",
         "Use the Add a printer option and select the HP Officejet Pro 8110 in Payroll printer in the Select a printer screen."
       ],
-      "correct_answer": "Use the Add a printer option and select the HP Officejet Pro 8110 in Payroll printer in the Select a printer screen."
+      "correct_answer": "Use the Add a printer option and select the HP Officejet Pro 8110 in Payroll printer in the Select a printer screen.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/10/A-payroll-department-employee-has-shared-a-locally-attached-HP-Officejet-Pro.jpg"
     },
     {
       "id": 159,
@@ -1826,7 +1830,8 @@
         "The default printer is a virtual printer.",
         "An incorrect printer driver is loaded."
       ],
-      "correct_answer": "The default printer is a virtual printer."
+      "correct_answer": "The default printer is a virtual printer.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/10/A-user-calls-the-help-desk-to-report-a-printer-issue.jpg"
     },
     {
       "id": 161,
@@ -1898,7 +1903,8 @@
         "VMware vSphere",
         "Oracle VM Server"
       ],
-      "correct_answer": "VMware vSphere | Oracle VM Server"
+      "correct_answer": "VMware vSphere | Oracle VM Server",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/10/Which-two-hypervisor-software-products-.jpg"
     },
     {
       "id": 167,
@@ -1910,7 +1916,8 @@
         "The static IP configuration on the payroll department PCs is incorrect.",
         "The PCs are using IPv6 as the preferred communication protocol."
       ],
-      "correct_answer": "The DHCP server is configured with the wrong default gateway address."
+      "correct_answer": "The DHCP server is configured with the wrong default gateway address.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/10/The-help-desk-is-receiving-numerous-calls.jpg"
     },
     {
       "id": 168,
@@ -1943,7 +1950,8 @@
         "change screen resolution and lock screen settings",
         "change the amount of power provided to USB ports"
       ],
-      "correct_answer": "set passwords to allow for access to the BIOS"
+      "correct_answer": "set passwords to allow for access to the BIOS",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/10/Refer-to-the-exhibit.-What-is-one-function-that-a.jpg"
     },
     {
       "id": 171,
@@ -2023,7 +2031,8 @@
         "The $HOSTNAME variable is an environmental variable initialized by the system.",
         "The $uname variable contains the username of the logged in user."
       ],
-      "correct_answer": "The $uname variable is an input variable defined within the script. | The $HOSTNAME variable is an environmental variable initialized by the system."
+      "correct_answer": "The $uname variable is an input variable defined within the script. | The $HOSTNAME variable is an environmental variable initialized by the system.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2016/05/ITE_v7.01_answers-1.jpg"
     },
     {
       "id": 178,
@@ -2067,7 +2076,8 @@
         "There are two data files and three directories contained in this user directory.",
         "The data files in this user directory contain no data."
       ],
-      "correct_answer": "There are two data files and three directories contained in this user directory."
+      "correct_answer": "There are two data files and three directories contained in this user directory.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2016/05/ITE_v7.01_answers_2-1.jpg"
     },
     {
       "id": 182,
@@ -2079,7 +2089,8 @@
         "Unpinning an app from this view will uninstall the app from the phone.",
         "Tile sizes depend on the size of the app."
       ],
-      "correct_answer": "Text messages, news, photos and other content can be displayed in the different tiles."
+      "correct_answer": "Text messages, news, photos and other content can be displayed in the different tiles.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/09/IT-Essentials-7.0-Final-Exam-10-14-Answers_580.jpg"
     },
     {
       "id": 183,
@@ -2309,7 +2320,8 @@
         "The data files in this directory contain no data.",
         "There are three data files and two directories contained in this directory."
       ],
-      "correct_answer": "The owner, group, and others have read permissions to January."
+      "correct_answer": "The owner, group, and others have read permissions to January.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/12/i363539v2n1_Linux-1607775461.7325.png"
     },
     {
       "id": 203,
@@ -2331,7 +2343,8 @@
         "graphics card",
         "wireless network adapter"
       ],
-      "correct_answer": "graphics card"
+      "correct_answer": "graphics card",
+      "image": "https://itexamanswers.net/wp-content/uploads/2022/12/2022-12-04_154435.jpg"
     },
     {
       "id": 205,
@@ -2772,7 +2785,8 @@
         "Send the file as it is to the level two technician.",
         "Deliver the file in printed format only."
       ],
-      "correct_answer": "Replace all passwords in the file with <password omitted> before emailing the file and then supply the passwords by secure means, if required."
+      "correct_answer": "Replace all passwords in the file with <password omitted> before emailing the file and then supply the passwords by secure means, if required.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2016/05/i203425v1n1_203425-1.png"
     },
     {
       "id": 244,

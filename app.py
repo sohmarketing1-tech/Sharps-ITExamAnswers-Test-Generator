@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import random
@@ -12,6 +13,7 @@ app = Flask(__name__, static_folder="static", static_url_path="")
 BASE_DIR = Path(__file__).resolve().parent
 QUESTIONS_FILE = BASE_DIR / DEFAULT_OUTPUT
 DATA_DIR = BASE_DIR / "data"
+STATS_FILE = BASE_DIR / "stats.json"
 
 
 # In-memory state for the currently loaded exam
@@ -92,6 +94,53 @@ def get_current_url():
     return app_state["url"] or DEFAULT_TARGET_URL
 
 
+def load_stats():
+    """Load persisted stats (study sessions and thanks)."""
+    if not STATS_FILE.exists():
+        return {"study_sessions": [], "thanks": []}
+    try:
+        with open(STATS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        return {"study_sessions": [], "thanks": []}
+    return {
+        "study_sessions": data.get("study_sessions", []),
+        "thanks": data.get("thanks", []),
+    }
+
+
+def save_stats(stats):
+    """Persist stats to disk."""
+    try:
+        with open(STATS_FILE, "w", encoding="utf-8") as f:
+            json.dump(stats, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
+
+def add_study_session(name: str) -> dict:
+    stats = load_stats()
+    name = name.strip()[:40]
+    if not name:
+        return stats
+    sessions = stats.get("study_sessions", [])
+    sessions = [s for s in sessions if s.get("name", "").lower() != name.lower()]
+    sessions.append({"name": name, "timestamp": datetime.datetime.utcnow().isoformat() + "Z"})
+    stats["study_sessions"] = sessions[-50:]  # keep last 50
+    save_stats(stats)
+    return stats
+
+
+def add_thanks(name: str) -> dict:
+    stats = load_stats()
+    name = name.strip()[:40] or "Anonymous"
+    thanks = stats.get("thanks", [])
+    thanks.append({"name": name, "timestamp": datetime.datetime.utcnow().isoformat() + "Z"})
+    stats["thanks"] = thanks[-200:]  # keep last 200
+    save_stats(stats)
+    return stats
+
+
 @app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
@@ -105,6 +154,32 @@ def get_state():
         "url": get_current_url(),
         "total": len(questions),
     })
+
+
+@app.route("/api/stats")
+def get_stats():
+    """Return current study sessions and thanks."""
+    return jsonify(load_stats())
+
+
+@app.route("/api/studied", methods=["POST"])
+def record_studied():
+    """Record that someone studied."""
+    data = request.get_json(silent=True) or {}
+    name = data.get("name", "").strip()
+    if not name:
+        return jsonify({"ok": False, "error": "Please enter your name."}), 400
+    stats = add_study_session(name)
+    return jsonify({"ok": True, "stats": stats})
+
+
+@app.route("/api/thanks", methods=["POST"])
+def record_thanks():
+    """Record a thank you."""
+    data = request.get_json(silent=True) or {}
+    name = data.get("name", "").strip() or "Anonymous"
+    stats = add_thanks(name)
+    return jsonify({"ok": True, "stats": stats})
 
 
 @app.route("/api/questions")
@@ -202,12 +277,15 @@ def generate_test():
     selected = random.sample(questions, count)
     quiz = []
     for q in selected:
-        quiz.append({
+        item = {
             "id": q["id"],
             "question": q["question"],
             "options": q["options"],
             "_correct_answer": q["correct_answer"],
-        })
+        }
+        if q.get("image"):
+            item["image"] = q["image"]
+        quiz.append(item)
     return jsonify({
         "title": get_current_title(),
         "quiz": quiz,

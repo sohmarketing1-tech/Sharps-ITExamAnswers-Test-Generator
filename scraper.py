@@ -3,8 +3,8 @@ import re
 import random
 import unicodedata
 import sys
-from typing import List, Dict, Any, Tuple
-from urllib.parse import urlparse
+from typing import List, Dict, Any, Tuple, Optional
+from urllib.parse import urlparse, urljoin
 
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -110,50 +110,65 @@ def extract_title(soup: BeautifulSoup) -> str:
     return "IT Exam Practice Test"
 
 
-def scrape_questions(html: str) -> List[Dict[str, Any]]:
+def scrape_questions(html: str, base_url: str = "") -> List[Dict[str, Any]]:
     soup = BeautifulSoup(html, "html.parser")
     main = find_main_content(soup)
 
     questions: List[Dict[str, Any]] = []
-    current_question: Dict[str, Any] | None = None
+    current_question: Optional[Dict[str, Any]] = None
     current_options: List[Dict[str, Any]] = []
     base_question_text = ""
     collecting = False
+    pending_image: Optional[str] = None
+
+    def make_absolute(src: str) -> str:
+        return urljoin(base_url, src.strip()) if base_url else src.strip()
+
+    def extract_image_from_tag(tag: Tag) -> Optional[str]:
+        img = tag.find("img")
+        if img and img.get("src"):
+            return make_absolute(img["src"])
+        return None
 
     def flush_question():
-        nonlocal current_question, current_options, collecting
+        nonlocal current_question, current_options, collecting, pending_image
         if current_question and current_options:
             correct = [opt["text"] for opt in current_options if opt.get("correct")]
             options_text = [opt["text"] for opt in current_options]
             # Require at least one correct answer and not every option marked correct.
             if 0 < len(correct) < len(options_text):
-                questions.append({
+                q = {
                     "question": current_question["text"],
                     "options": options_text,
                     "correct_answer": " | ".join(correct),
-                })
+                }
+                image = current_question.get("image") or pending_image
+                if image:
+                    q["image"] = image
+                questions.append(q)
         current_question = None
         current_options = []
         collecting = False
+        pending_image = None
 
-    def start_question(text: str):
-        nonlocal current_question, current_options, collecting, base_question_text
+    def start_question(text: str, image: Optional[str] = None):
+        nonlocal current_question, current_options, collecting, base_question_text, pending_image
         flush_question()
-        current_question = {"text": text}
+        current_question = {"text": text, "image": image}
         current_options = []
         collecting = True
         # Remember the base question text to use for case variants.
         base_question_text = text
 
-    def start_case(label: str):
-        nonlocal current_question, current_options, collecting
+    def start_case(label: str, image: Optional[str] = None):
+        nonlocal current_question, current_options, collecting, pending_image
         flush_question()
         # Use the most recent base question text as the stem, appending the case.
         stem = base_question_text or (questions[-1]["question"] if questions else "")
         if stem:
-            current_question = {"text": f"{stem} [{label}]"}
+            current_question = {"text": f"{stem} [{label}]", "image": image}
         else:
-            current_question = {"text": label}
+            current_question = {"text": label, "image": image}
         current_options = []
         collecting = True
 
@@ -165,6 +180,13 @@ def scrape_questions(html: str) -> List[Dict[str, Any]]:
         if elem.name in ("script", "style", "noscript"):
             continue
 
+        # Capture images that appear before or inside a question.
+        if elem.name == "img":
+            src = elem.get("src")
+            if src:
+                pending_image = make_absolute(src)
+            continue
+
         text = elem.get_text(" ", strip=True)
         if not text:
             continue
@@ -173,13 +195,16 @@ def scrape_questions(html: str) -> List[Dict[str, Any]]:
         if elem.name in ("p", "strong", "b", "li", "div") and is_question_start(text):
             cleaned = clean_text(text)
             cleaned = re.sub(r"^\d+\.\s*", "", cleaned)
-            start_question(cleaned)
+            img = extract_image_from_tag(elem)
+            # Prefer an image found inside the question element; otherwise use any pending image.
+            start_question(cleaned, image=img or pending_image)
             continue
 
         # Case variant label (e.g. "Case 2:")
         if is_case_label(text):
             label, _ = extract_case_label(text)
-            start_case(label)
+            img = extract_image_from_tag(elem)
+            start_case(label, image=img or pending_image)
             continue
 
         # Collect options from <li> elements
@@ -222,12 +247,15 @@ def scrape_questions(html: str) -> List[Dict[str, Any]]:
         if key in seen:
             continue
         seen.add(key)
-        final.append({
+        item = {
             "id": idx,
             "question": q_text,
             "options": q["options"],
             "correct_answer": q["correct_answer"],
-        })
+        }
+        if q.get("image"):
+            item["image"] = q["image"]
+        final.append(item)
 
     return final
 
@@ -242,7 +270,7 @@ def scrape_url(url: str) -> Tuple[str, List[Dict[str, Any]]]:
     html = fetch_html(url)
     soup = BeautifulSoup(html, "html.parser")
     title = extract_title(soup)
-    questions = scrape_questions(html)
+    questions = scrape_questions(html, base_url=url)
     return title, questions
 
 

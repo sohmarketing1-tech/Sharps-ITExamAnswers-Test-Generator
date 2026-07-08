@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ITExamAnswers Practice Test Generator</title>
+    <title>Sharp's Get Smart — Practice Test Generator</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <nav class="top-nav">
         <div class="nav-brand">
-            <span class="logo">ITExamAnswers</span>
+            <span class="logo">Sharp's Get Smart</span>
             <span class="tagline">Practice Test Generator</span>
         </div>
     </nav>
@@ -26,30 +26,59 @@
         <main id="app">
             <!-- Setup Screen -->
             <section id="setup-screen" class="screen active">
-                <div class="card">
-                    <h2>Configure Your Practice Test</h2>
-                    <p class="card-subtitle">Select an exam and start a practice test.</p>
+                <div class="setup-grid">
+                    <div class="card">
+                        <h2>Configure Your Practice Test</h2>
+                        <p class="card-subtitle">Select an exam and start a practice test.</p>
 
-                    <div class="form-group">
-                        <label for="exam-select">Exam</label>
-                        <select id="exam-select" disabled>
-                            <option value="">Loading exams…</option>
-                        </select>
+                        <div class="form-group">
+                            <label for="exam-select">Exam</label>
+                            <select id="exam-select" disabled>
+                                <option value="">Loading exams…</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group spaced">
+                            <label for="question-count">Number of questions</label>
+                            <div class="count-row">
+                                <input type="number" id="question-count" min="1" value="20" />
+                                <span id="total-questions" class="available-count">0 available</span>
+                            </div>
+                        </div>
+
+                        <div class="button-row">
+                            <button id="start-btn" class="btn btn-success btn-large" disabled>Start Test</button>
+                        </div>
+
+                        <p id="setup-message" class="message"></p>
                     </div>
 
-                    <div class="form-group spaced">
-                        <label for="question-count">Number of questions</label>
-                        <div class="count-row">
-                            <input type="number" id="question-count" min="1" value="20" />
-                            <span id="total-questions" class="available-count">0 available</span>
+                    <div class="card community-card">
+                    <h2>Study Squad Board</h2>
+                    <p class="card-subtitle">Let your classmates know you're grinding.</p>
+
+                    <div class="form-group">
+                        <label for="study-name">Your name</label>
+                        <div class="input-button-row">
+                            <input type="text" id="study-name" placeholder="e.g. Smith" maxlength="40" />
+                            <button id="studied-btn" class="btn btn-primary">I Studied</button>
+                        </div>
+                        <p id="study-message" class="message"></p>
+                    </div>
+
+                    <div class="study-board">
+                        <h3>Recently Studied</h3>
+                        <div id="study-list" class="study-list">
+                            <p class="empty-state">No one has checked in yet. Be the first!</p>
                         </div>
                     </div>
 
-                    <div class="button-row">
-                        <button id="start-btn" class="btn btn-success btn-large" disabled>Start Test</button>
+                    <div class="thanks-section">
+                        <p id="thanks-count">Thanks received: 0</p>
+                        <button id="thanks-btn" class="btn btn-secondary">Say Thanks, Sharp!</button>
+                        <p id="thanks-message" class="message"></p>
                     </div>
-
-                    <p id="setup-message" class="message"></p>
+                </div>
                 </div>
             </section>
 
@@ -106,7 +135,7 @@
     </div>
 
     <footer class="site-footer">
-        <p>Built for itexamanswers.net practice tests.</p>
+        <p>Made for the Navy IT homies.</p>
     </footer>
 
     <script src="app.js"></script>
