@@ -1,0 +1,1675 @@
+{
+  "title": "IT Essentials 7.0 8.0 Final Exam Modules 10-14 Answers",
+  "url": "https://itexamanswers.net/it-essentials-7-0-final-exam-chapters-10-14-answers-full.html",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which two tools are available to transfer user data and settings from an old Windows computer to a Windows operating system on a new computer? (Choose two.)",
+      "options": [
+        "Windows Easy Transfer",
+        "Windows User Manager",
+        "Windows Upgrade Assistant",
+        "Windows Upgrade Advisor",
+        "User State Migration tool"
+      ],
+      "correct_answer": "Windows Easy Transfer | User State Migration tool"
+    },
+    {
+      "id": 2,
+      "question": "A user wants to extend a primary partition formatted with the NTFS file system with the unallocated space on the hard disk. What must the user do after the primary partition is extended to make it usable?",
+      "options": [
+        "Convert the disk type to dynamic.",
+        "Ensure that the disk type is basic.",
+        "Format the disk with the FAT64 file system.",
+        "Partition the new space as a basic disk."
+      ],
+      "correct_answer": "Convert the disk type to dynamic."
+    },
+    {
+      "id": 3,
+      "question": "Why is a full format more beneficial than a quick format when preparing for a clean OS installation?",
+      "options": [
+        "A full format is the only method of installing Windows 8.1 on a PC that has an operating system currently installed.",
+        "A full format will delete files from the disk while analyzing the disk drive for errors.",
+        "A full format will delete every partition on the hard drive.",
+        "A full format uses the faster FAT32 file system, whereas a quick format uses the slower NTFS file system."
+      ],
+      "correct_answer": "A full format will delete files from the disk while analyzing the disk drive for errors."
+    },
+    {
+      "id": 4,
+      "question": "A technician wishes to prepare the computers in the network for disaster recovery. The network consists of a variety of desktops and laptops from different vendors. All the computers are running either a 32-bit version of Windows 10 Pro or a 64-bit version of Windows 10 Pro. How would the technician prepare the recovery media?",
+      "options": [
+        "Prepare one 64-bit recovery disc for all the computers.",
+        "Prepare one 32-bit recovery disc for all the computers.",
+        "Prepare individual recovery discs for all the computers.",
+        "Prepare one image restore for all the computers."
+      ],
+      "correct_answer": "Prepare individual recovery discs for all the computers."
+    },
+    {
+      "id": 5,
+      "question": "A technician wishes to deploy Windows 10 Pro to multiple PCs through the remote network installation process. The technician begins by connecting the new PCs to the network and booting them up. However, the deployment fails because the target PCs are unable to communicate with the deployment server. What is the possible cause?",
+      "options": [
+        "The wrong network drivers are loaded in the image file.",
+        "The SID has not been changed in the image file.",
+        "The NIC cards on the new PCs are not PXE-enabled.",
+        "Sysprep was not used before building the image file."
+      ],
+      "correct_answer": "The NIC cards on the new PCs are not PXE-enabled."
+    },
+    {
+      "id": 6,
+      "question": "Which condition is required when planning to install Windows on a GPT disk?",
+      "options": [
+        "The computer must be UEFI-based.",
+        "Only one primary partition can contain an OS.",
+        "The maximum partition size cannot exceed 2 TB.",
+        "The maximum number of primary partitions that can co-exist is 4."
+      ],
+      "correct_answer": "The computer must be UEFI-based."
+    },
+    {
+      "id": 7,
+      "question": "A technician wishes to perform a customized unattended network installation of Windows 10 on a PC. The requirements include the installation of specific applications and device drivers through the use of an answer file. What would the technician use to create the answer file?",
+      "options": [
+        "Recovery partition",
+        "Windows SIM",
+        "disk cloning",
+        "System Restore"
+      ],
+      "correct_answer": "Windows SIM"
+    },
+    {
+      "id": 8,
+      "question": "An organization has purchased a custom application for the sales staff that can only be installed on a 64-bit Windows operating system. Each member of the sales staff has a Windows 8.1 32-bit PC. What must the IT department do in order to install and run the application on the sales staff computers?",
+      "options": [
+        "Downgrade the 32-bit Windows 8.1 to 64-bit Windows 7.",
+        "Upgrade the 32-bit Windows 8.1 to 64-bit Windows 10.",
+        "Perform a clean installation of 64-bit Windows 10.",
+        "Download and install 64-bit hardware drivers in the current OS."
+      ],
+      "correct_answer": "Perform a clean installation of 64-bit Windows 10."
+    },
+    {
+      "id": 9,
+      "question": "What are two possible solutions to any Windows computer restarting continuously and never displaying the desktop? (Choose two.)",
+      "options": [
+        "Upgrade the processor.",
+        "Press F8 to open the Advanced Options menu and choose Disable Automatic Restart on System Failure.",
+        "Access the BIOS and change the boot order options.",
+        "Run chkdsk /F /R from the recovery console.",
+        "Upgrade the video card.",
+        "Reset the hard drive jumpers."
+      ],
+      "correct_answer": "Press F8 to open the Advanced Options menu and choose Disable Automatic Restart on System Failure. | Run chkdsk /F /R from the recovery console."
+    },
+    {
+      "id": 10,
+      "question": "A technician uses Microsoft Deployment Image Servicing and Management (DISM) tool to create a Windows image file on one of the workstations running Windows 10. When the technician tries to clone another workstation with the image file, the workstation exhibits network connectivity issues on completion. What could cause this?",
+      "options": [
+        "The SID of the original PC is not cleared when creating the image with DISM.",
+        "The technician used the wrong tool to create the image file.",
+        "The network drivers were not added to the image file.",
+        "The Sysprep utility should have been turned off prior to the creation of the image file."
+      ],
+      "correct_answer": "The SID of the original PC is not cleared when creating the image with DISM."
+    },
+    {
+      "id": 11,
+      "question": "A user complains that user files cannot be synced with the network file server while the user is traveling out of the office. The user had access to the internet but no access to the company network server. How can this be addressed?",
+      "options": [
+        "Ensure that the user only uses a single device and not multiple devices when accessing networked files.",
+        "Turn off the activation of Offline Files feature in the Sync Center.",
+        "Setup a Sync partnership with the networked file location.",
+        "Setup a Sync partnership between the network server, Microsoft OneDrive, and the user."
+      ],
+      "correct_answer": "Setup a Sync partnership between the network server, Microsoft OneDrive, and the user."
+    },
+    {
+      "id": 12,
+      "question": "A technician has connected a new internal hard drive to a Windows 10 PC. What must be done in order for Windows 10 to use the new hard drive?",
+      "options": [
+        "Initialize the new hard drive.",
+        "Extend the partition on an existing hard drive to the new hard drive.",
+        "Run chkdsk on the new hard drive.",
+        "Mount the new hard drive."
+      ],
+      "correct_answer": "Initialize the new hard drive."
+    },
+    {
+      "id": 13,
+      "question": "What service does PRINT$ provide?",
+      "options": [
+        "It provides a network share for accessing shared printers.",
+        "It provides printer drivers for printer administrators.",
+        "It provides a group of hidden printers that only administrative users have permissions to send print jobs to.",
+        "It provides an administrative Printer share accessible by all local user accounts."
+      ],
+      "correct_answer": "It provides printer drivers for printer administrators."
+    },
+    {
+      "id": 14,
+      "question": "A technician is troubleshooting a Windows 10 laptop infected with a virus that has damaged the master boot record. The technician has booted the laptop using the installation media and is attempting to repair the laptop from the command line interface. Which command can the technician use to repair the corrupt master boot record?",
+      "options": [
+        "bootrec /fixmbr",
+        "chkdsk",
+        "msconfig",
+        "sfc /scannow"
+      ],
+      "correct_answer": "bootrec /fixmbr"
+    },
+    {
+      "id": 15,
+      "question": "A user reports that a Windows 10 PC displays the error message \"Invalid Boot Disk\" during the boot process. The IT technician attempts to boot the computer and finds that the error message occurs immediately after the POST. What could be the possible cause?",
+      "options": [
+        "A recently installed device driver is incompatible with the boot controller.",
+        "BOOTMGR is corrupted.",
+        "The MBR/GPT is corrupted.",
+        "A service failed to start during the booting process."
+      ],
+      "correct_answer": "The MBR/GPT is corrupted."
+    },
+    {
+      "id": 16,
+      "question": "Which port number is used by Virtual Network Computing (VNC) to provide remote screen sharing between devices?",
+      "options": [
+        "22",
+        "23",
+        "389",
+        "3389",
+        "5900"
+      ],
+      "correct_answer": "5900"
+    },
+    {
+      "id": 17,
+      "question": "Which feature is included with macOS and provides the ability for a remote user to view and change files, folders, and applications on the local computer?",
+      "options": [
+        "Screen Sharing",
+        "Remote Assistance",
+        "Virtual Network Computing",
+        "Remote Desktop"
+      ],
+      "correct_answer": "Screen Sharing"
+    },
+    {
+      "id": 18,
+      "question": "Which area of concern falls under the operations and planning category in IT documentation?",
+      "options": [
+        "inventory management",
+        "disaster recovery policies and procedures",
+        "logical and physical network topology diagrams",
+        "end-user manual for hardware and software"
+      ],
+      "correct_answer": "inventory management"
+    },
+    {
+      "id": 19,
+      "question": "Which two actions should a technician take if illegal content, such as child pornography, is discovered on the hard drive of a customer computer? (Choose two.)",
+      "options": [
+        "Confront the customer immediately.",
+        "Remove and destroy the hard drive.",
+        "Contact a first responder.",
+        "Shut down the computer until authorities arrive.",
+        "Document as much information as possible."
+      ],
+      "correct_answer": "Contact a first responder. | Document as much information as possible."
+    },
+    {
+      "id": 20,
+      "question": "What are three pieces of information a level one technician should gather from a customer? (Choose three.)",
+      "options": [
+        "contact information",
+        "description of the problem",
+        "details of any recent changes to the computer",
+        "output from diagnostic software",
+        "output from a remote connection to the customer computer",
+        "current CMOS settings"
+      ],
+      "correct_answer": "contact information | description of the problem | details of any recent changes to the computer"
+    },
+    {
+      "id": 21,
+      "question": "What two actions are appropriate for a support desk technician to take when assisting customers? (Choose two.)",
+      "options": [
+        "Interrupt customers if they start to solve their own problems.",
+        "Comfort a customer by minimizing the customer problem.",
+        "Let a customer finish talking before asking additional questions.",
+        "If you have to put the customer on hold, ask the customer for permission.",
+        "As soon as you detect customer anger, pass the angry customer to the next level."
+      ],
+      "correct_answer": "Let a customer finish talking before asking additional questions. | If you have to put the customer on hold, ask the customer for permission."
+    },
+    {
+      "id": 22,
+      "question": "A support desk technician is dealing with an angry customer. Which two approaches should the technician take in dealing with the customer? (Choose two.)",
+      "options": [
+        "Ask socially related questions to direct the customer away from the problem.",
+        "Work to redirect the conversation to solving the problem.",
+        "Immediately transfer the customer to a higher level technician.",
+        "Reply to the customer with the same level of anger.",
+        "Let the customer explain the problem without interrupting."
+      ],
+      "correct_answer": "Work to redirect the conversation to solving the problem. | Let the customer explain the problem without interrupting."
+    },
+    {
+      "id": 23,
+      "question": "What two kinds of problems should be escalated from a level one technician to a level two technician? (Choose two.)",
+      "options": [
+        "problems that require rebooting the equipment",
+        "problems that can be solved in a short time",
+        "problems that are complicated and will take a long time to resolve",
+        "problems that do not fit into the \"down call\" category",
+        "problems that are beyond the scope of the knowledge of the level one technician"
+      ],
+      "correct_answer": "problems that are complicated and will take a long time to resolve | problems that are beyond the scope of the knowledge of the level one technician"
+    },
+    {
+      "id": 24,
+      "question": "An IT technician in a service company has provided extensive remote IT support with product deployment for a customer. After the completion of the contract, a complaint is filed against the IT technician for not following company policy by sending unsolicited emails about services and products that are not related to the contract. What two things should the IT support technician have done differently? (Choose two.)",
+      "options": [
+        "The IT technician should have researched the company policy about personal communication with customers on company time.",
+        "The IT technician should have used encryption to hide the purpose of the emails.",
+        "The IT technician should have added the customer to a chain letter with many recipients instead.",
+        "The IT technician should have asked the customer if the customer was interested in receiving information regarding other new services and products.",
+        "The IT technician should have requested permission from a supervisor to send the customer emails."
+      ],
+      "correct_answer": "The IT technician should have researched the company policy about personal communication with customers on company time. | The IT technician should have asked the customer if the customer was interested in receiving information regarding other new services and products."
+    },
+    {
+      "id": 25,
+      "question": "A third-party security firm is performing a security audit of a company and recommends the company utilize the Remote Desktop Protocol. What are two characteristics of the Microsoft Remote Desktop Protocol (RDP)? (Choose two.)",
+      "options": [
+        "RDP connects on TCP port 22.",
+        "RDP requires a Windows client.",
+        "RDP uses an encrypted session.",
+        "RDP is a command-line network virtual terminal protocol.",
+        "RDP connects on TCP port 3389."
+      ],
+      "correct_answer": "RDP uses an encrypted session. | RDP connects on TCP port 3389."
+    },
+    {
+      "id": 26,
+      "question": "Which subject area describes collecting and analyzing data from computer systems, networks, and storage devices, as part of an investigation of alleged illegal activity?",
+      "options": [
+        "cyber law",
+        "computer forensics",
+        "cryptography",
+        "disaster recovery"
+      ],
+      "correct_answer": "computer forensics"
+    },
+    {
+      "id": 27,
+      "question": "In a computer forensics investigation, which type of data is considered volatile data and can be lost if power is removed from the computer?",
+      "options": [
+        "data stored on magnetic disks",
+        "data stored on an internal drive",
+        "data in transit between RAM and the CPU",
+        "data stored on an external drive"
+      ],
+      "correct_answer": "data in transit between RAM and the CPU"
+    },
+    {
+      "id": 28,
+      "question": "Refer to the exhibit. During the troubleshooting of software that is installed on a computer system, a level one technician requires help from a level two technician. The file shown in the exhibit must be sent to the level two technician. How should the level one technician deliver this file?",
+      "options": [
+        "This file should not be shared with the level two technician.",
+        "Replace all passwords in the file with <password omitted> before emailing the file and then supply the passwords by secure means, if required.",
+        "Send the file as it is to the level two technician.",
+        "Deliver the file in printed format only."
+      ],
+      "correct_answer": "Replace all passwords in the file with <password omitted> before emailing the file and then supply the passwords by secure means, if required."
+    },
+    {
+      "id": 29,
+      "question": "What skill is essential for a level one technician to have?",
+      "options": [
+        "the ability to gather relevant information from the customer and pass it to the level two technician so it can be entered into the work order",
+        "the ability to ask the customer relevant questions, and as soon as this information is included in the work order, escalate it to the level two technician",
+        "the ability to translate a description of a customer problem into a few succinct sentences and enter it into the work order",
+        "ability to take the work order prepared by the level two technician and try to resolve the problem"
+      ],
+      "correct_answer": "the ability to translate a description of a customer problem into a few succinct sentences and enter it into the work order"
+    },
+    {
+      "id": 30,
+      "question": "What is used to control illegal use of software and content?",
+      "options": [
+        "chain of custody",
+        "service level agreement",
+        "End User License Agreement",
+        "digital rights management"
+      ],
+      "correct_answer": "digital rights management"
+    },
+    {
+      "id": 31,
+      "question": "What determines the level of support that a call center technician will provide to an individual customer?",
+      "options": [
+        "Support is based on the SLA for that customer.",
+        "All customers receive the same level of support by the call center.",
+        "A level one technician will provide a higher level of support than a level two technician.",
+        "An individual call center technician chooses the level of support based on the time available to assist the customer."
+      ],
+      "correct_answer": "Support is based on the SLA for that customer."
+    },
+    {
+      "id": 32,
+      "question": "A bench technician enters the server room and finds the backup server computer case open. The hard drives containing patient medical data are all physically disconnected from the motherboard and the SATA data cables are hanging outside the case. Which step should the technician immediately take?",
+      "options": [
+        "Reconnect the SATA data cables to ensure continued data backup.",
+        "Disconnect the SATA power cables to prevent the loss of persistent data.",
+        "Place the hard drives in an external enclosure and begin backing up the data before releasing the drives to first responders.",
+        "Locate an employee qualified to collect evidence.",
+        "Dust the server computer case for fingerprints."
+      ],
+      "correct_answer": "Locate an employee qualified to collect evidence."
+    },
+    {
+      "id": 33,
+      "question": "What is the difference between a scripting language and a compiled language?",
+      "options": [
+        "Scripting languages need to be converted into executable code using a compiler, while compiled languages are interpreted as they are executed.",
+        "Compiled languages are executed by the operating system, while scripting languages are executed by the CPU.",
+        "Scripting languages are interpreted and executed line by line when a script is run, while compiled languages need to be converted into executable code.",
+        "Compiled languages are executed by a command interpreter, while scripting languages are executed by the CPU."
+      ],
+      "correct_answer": "Scripting languages are interpreted and executed line by line when a script is run, while compiled languages need to be converted into executable code."
+    },
+    {
+      "id": 34,
+      "question": "Which methods can be used to implement multifactor authentication?",
+      "options": [
+        "VPNs and VLANs",
+        "IDS and IPS",
+        "passwords and fingerprints",
+        "tokens and hashes"
+      ],
+      "correct_answer": "passwords and fingerprints"
+    },
+    {
+      "id": 35,
+      "question": "When responding to a call from a customer who is experiencing problems with a computer, the technician notices that a number of system files on the computer have been renamed. Which two possible solutions could the technician implement to resolve the problem? (Choose two.)",
+      "options": [
+        "Use antivirus software to remove a virus.",
+        "Restore the computer from a backup.",
+        "Change the folder and file permissions of the user.",
+        "Reset the password of the user.",
+        "Upgrade the file encryption protocol."
+      ],
+      "correct_answer": "Use antivirus software to remove a virus. | Restore the computer from a backup."
+    },
+    {
+      "id": 36,
+      "question": "A technician suspects that a security issue is causing problems with a computer. What two actions could be performed to test theories of probable cause when troubleshooting the PC? (Choose two.)",
+      "options": [
+        "Log in as a different user.",
+        "Disconnect the computer from the network.",
+        "Search helpdesk repair logs for more information.",
+        "Discuss solutions with the customer.",
+        "Ask the customer open-ended questions about the problem."
+      ],
+      "correct_answer": "Log in as a different user. | Disconnect the computer from the network."
+    },
+    {
+      "id": 37,
+      "question": "The CIO wants to secure data on company laptops by implementing file encryption. The technician determines the best method is to encrypt each hard drive using Windows BitLocker. Which two things are needed to implement this solution? (Choose two.)",
+      "options": [
+        "at least two volumes",
+        "USB stick",
+        "password management",
+        "TPM",
+        "EFS",
+        "backup"
+      ],
+      "correct_answer": "at least two volumes | TPM"
+    },
+    {
+      "id": 38,
+      "question": "What is an accurate description of asymmetric encryption technology?",
+      "options": [
+        "Asymmetric encryption is an encryption process that compares traffic on both ends to make sure the traffic has not been altered.",
+        "It is an encryption process that uses identical keys on both ends to establish the VPN.",
+        "It is an encryption protocol that is used to encrypt data as the data is sent over the VPN.",
+        "It is an encryption process that uses a public and private key pair to encrypt/decrypt data."
+      ],
+      "correct_answer": "It is an encryption process that uses a public and private key pair to encrypt/decrypt data."
+    },
+    {
+      "id": 39,
+      "question": "Which type of security threat can be transferred through email and is used to gain sensitive information by recording the keystrokes of the email recipient?",
+      "options": [
+        "adware",
+        "Trojan",
+        "worm",
+        "virus",
+        "grayware"
+      ],
+      "correct_answer": "virus"
+    },
+    {
+      "id": 40,
+      "question": "A manager reports that unusual things are happening on a Windows computer. The technician determines that malware is the culprit. What can the technician do to remove stubborn malware?",
+      "options": [
+        "Ensure that the computer is connected to the wired network so that antimalware updates can be installed.",
+        "Enter Safe Mode and do a system restore.",
+        "Install adware protection.",
+        "Train the user on identifying trusted and untrusted sources."
+      ],
+      "correct_answer": "Enter Safe Mode and do a system restore."
+    },
+    {
+      "id": 41,
+      "question": "An employee that has worked at the company for many years has started a home-based business selling crafts. While leaving an office meeting, a company supervisor notices the employee buying supplies for the personal crafting business of the employee. What section of the security policy should the supervisor review when determining how to handle this situation?",
+      "options": [
+        "acceptable use policies",
+        "identification and authentication policies",
+        "incident handling policies",
+        "remote access policies"
+      ],
+      "correct_answer": "acceptable use policies"
+    },
+    {
+      "id": 42,
+      "question": "What Windows utility should be used to configure password rules and account lockout policies on a system that is not part of a domain?",
+      "options": [
+        "Event Viewer security log",
+        "Local Security Policy tool",
+        "Active Directory Security tool",
+        "Computer Management"
+      ],
+      "correct_answer": "Local Security Policy tool"
+    },
+    {
+      "id": 43,
+      "question": "A customer brings in a computer that is asking for a password as soon as it powers on, even before the operating system boots. Which type of password is enabled?",
+      "options": [
+        "BIOS",
+        "login",
+        "multifactor",
+        "network",
+        "synchronous"
+      ],
+      "correct_answer": "BIOS"
+    },
+    {
+      "id": 44,
+      "question": "When attempting to improve system performance for Linux computers with a limited amount of memory, why is increasing the size of the swap file system not considered the best solution?",
+      "options": [
+        "A swap file system only supports the ex2 file system.",
+        "A swap file system does not have a specific file system.",
+        "A swap file system cannot be mounted on an MBR partition.",
+        "A swap file system uses hard disk space to store inactive RAM content."
+      ],
+      "correct_answer": "A swap file system uses hard disk space to store inactive RAM content."
+    },
+    {
+      "id": 45,
+      "question": "What are three features of GPS on mobile devices? (Choose three.)",
+      "options": [
+        "phone number lookup",
+        "navigation",
+        "specialized search results",
+        "device tracking",
+        "remote wipe",
+        "gas mileage calculations"
+      ],
+      "correct_answer": "navigation | specialized search results | device tracking"
+    },
+    {
+      "id": 46,
+      "question": "Which three components are used to assign file and directory permissions in Linux systems? (Choose three.)",
+      "options": [
+        "root",
+        "group",
+        "owner",
+        "all users",
+        "super group",
+        "admin group",
+        "Owner - the owner user of the file or directory",
+        "Group - the user group that has been assigned to the file or directory",
+        "All users - all other users on the system"
+      ],
+      "correct_answer": "group | owner | all users"
+    },
+    {
+      "id": 47,
+      "question": "A user downloads a widget onto his Android phone but is puzzled to see that when the widget is touched an app is launched. What is a possible cause?",
+      "options": [
+        "The user has downloaded a virus.",
+        "The widget is corrupt.",
+        "The security settings of the Android OS have been compromised.",
+        "The widget is associated with the app and this is the normal behavior."
+      ],
+      "correct_answer": "The widget is associated with the app and this is the normal behavior."
+    },
+    {
+      "id": 48,
+      "question": "What is the purpose of running mobile device apps in a sandbox?",
+      "options": [
+        "to enable the phone to run multiple operating systems",
+        "to prevent malicious programs from infecting the device",
+        "to enable separate app icons to be displayed on the home screen",
+        "to bypass phone carrier restrictions that prevent access to unauthorized apps"
+      ],
+      "correct_answer": "to prevent malicious programs from infecting the device"
+    },
+    {
+      "id": 49,
+      "question": "Which built-in tool is available on a Mac OS X machine to perform disk backups?",
+      "options": [
+        "Disk Utility",
+        "Deja Dup",
+        "Finder",
+        "Time Machine"
+      ],
+      "correct_answer": "Time Machine"
+    },
+    {
+      "id": 50,
+      "question": "A user calls the help desk reporting that a laptop with Linux freezes on startup and displays kernel panic. What could cause this problem?",
+      "options": [
+        "A driver has become corrupted.",
+        "GRUB or LILO has been deleted.",
+        "GRUB or LILO has been corrupted.",
+        "An application is using a resource that has become unavailable."
+      ],
+      "correct_answer": "A driver has become corrupted."
+    },
+    {
+      "id": 51,
+      "question": "A user calls the help desk to report that a mobile device exhibits very slow performance. What could cause this problem?",
+      "options": [
+        "The touchscreen is not calibrated.",
+        "An app is not compatible with the device.",
+        "The operating system is corrupt.",
+        "A power-intensive app is running in the background."
+      ],
+      "correct_answer": "A power-intensive app is running in the background."
+    },
+    {
+      "id": 52,
+      "question": "Which term describes a partition that is used to store and boot an operating system by default?",
+      "options": [
+        "logical drive",
+        "active partition",
+        "basic disk",
+        "extended partition"
+      ],
+      "correct_answer": "active partition"
+    },
+    {
+      "id": 53,
+      "question": "Which term describes a file system that supports a partition size up to 16 exabytes?",
+      "options": [
+        "extended partition",
+        "NTFS",
+        "logical drive",
+        "active partition"
+      ],
+      "correct_answer": "NTFS"
+    },
+    {
+      "id": 54,
+      "question": "Which term describes a file system for USB flash drives that supports files larger than 4 GB?",
+      "options": [
+        "extended partition",
+        "exFAT",
+        "logical drive",
+        "active partition"
+      ],
+      "correct_answer": "exFAT"
+    },
+    {
+      "id": 55,
+      "question": "Which term describes a partition that supports up to 23 logical drives?",
+      "options": [
+        "logical drive",
+        "extended partition",
+        "basic disk",
+        "active partition"
+      ],
+      "correct_answer": "extended partition"
+    },
+    {
+      "id": 56,
+      "question": "Which term describes a file system for optical disk media?",
+      "options": [
+        "extended partition",
+        "CDFS",
+        "logical drive",
+        "active partition"
+      ],
+      "correct_answer": "CDFS"
+    },
+    {
+      "id": 57,
+      "question": "Which term describes a type of partition that would only exist on a hard disk that has an MBR?",
+      "options": [
+        "extended partition",
+        "logical drive",
+        "basic disk",
+        "active partition"
+      ],
+      "correct_answer": "logical drive"
+    },
+    {
+      "id": 58,
+      "question": "Which term describes a type of storage device that supports a partition to be extended into adjacent unallocated space as long as it is contiguous?",
+      "options": [
+        "NTFS",
+        "basic disk",
+        "FAT32",
+        "formatting"
+      ],
+      "correct_answer": "basic disk"
+    },
+    {
+      "id": 59,
+      "question": "Which term describes a general name for physical areas on a hard drive?",
+      "options": [
+        "NTFS",
+        "partition",
+        "FAT32",
+        "formatting"
+      ],
+      "correct_answer": "partition"
+    },
+    {
+      "id": 60,
+      "question": "Which term describes a partition scheme that takes a portion of disk space of 512 bytes long and that contains the boot loader?",
+      "options": [
+        "NTFS",
+        "MBR",
+        "FAT32",
+        "formatting"
+      ],
+      "correct_answer": "MBR"
+    },
+    {
+      "id": 61,
+      "question": "Which term describes a type of storage device that supports a volume that can span across more than one disk?",
+      "options": [
+        "NTFS",
+        "dynamic disk",
+        "FAT32",
+        "formatting"
+      ],
+      "correct_answer": "dynamic disk"
+    },
+    {
+      "id": 62,
+      "question": "A technician is booting a laptop that has Windows 10 installed with 2 GB RAM. The boot process is currently working on the following step: NTOSKRNL.EXE starts the login file called WINLOGON.EXE. What is the next step that will happen in the boot process?",
+      "options": [
+        "WINLOGON.EXE displays the Windows Welcome screen.",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.",
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
+        "Winload uses the path specified in BOOTMGR to find the boot partition."
+      ],
+      "correct_answer": "WINLOGON.EXE displays the Windows Welcome screen."
+    },
+    {
+      "id": 63,
+      "question": "A user is booting a tablet that has Windows 10 installed. The boot process is currently working on the following step: WINLOGON.EXE displays the Windows Welcome screen What is the next step that will happen in the boot process?",
+      "options": [
+        "There are no more steps, the boot process is complete.",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.",
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
+        "Winload uses the path specified in BOOTMGR to find the boot partition."
+      ],
+      "correct_answer": "There are no more steps, the boot process is complete."
+    },
+    {
+      "id": 64,
+      "question": "A manager is booting a tablet that has Windows 8 installed. The boot process is currently working on the following step: POST. What is the next step that will happen in the boot process?",
+      "options": [
+        "BIOS locates and reads the configuration settings that are stored in the CMOS memory.",
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
+        "The Windows kernel takes over the boot process.",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL."
+      ],
+      "correct_answer": "BIOS locates and reads the configuration settings that are stored in the CMOS memory."
+    },
+    {
+      "id": 65,
+      "question": "An accountant is booting a PC that has Windows 8 installed. The boot process is currently working on the following step: BIOS locates and reads the configuration settings that are stored in the CMOS memory. What is the next step that will happen in the boot process?",
+      "options": [
+        "The BIOS boots the computer using the first drive that contains a valid boot sector.",
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
+        "The Windows kernel takes over the boot process.",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL."
+      ],
+      "correct_answer": "The BIOS boots the computer using the first drive that contains a valid boot sector."
+    },
+    {
+      "id": 66,
+      "question": "A network analyst is booting a PC that has Windows 7 installed with 2 GB RAM. The boot process is currently working on the following step: The code in the boot sector is executed and the control of the boot process is given to Windows Boot Manager. What is the next step that will happen in the boot process?",
+      "options": [
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
+        "The Windows kernel takes over the boot process.",
+        "Winload uses the path specified in BOOTMGR to find the boot partition.",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL."
+      ],
+      "correct_answer": "Winload uses the path specified in BOOTMGR to find the boot partition."
+    },
+    {
+      "id": 67,
+      "question": "An analyst is booting a desktop that has Windows 7 installed with 4 GB RAM. The boot process is currently working on the following step: Winload uses the path specified in BOOTMGR to find the boot partition. What is the next step that will happen in the boot process?",
+      "options": [
+        "There are no more steps, the boot process is complete.",
+        "WINLOGON.EXE displays the Windows Welcome screen",
+        "NTOSKRNL.EXE starts the login file called WINLOGON.EXE.",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL."
+      ],
+      "correct_answer": "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL."
+    },
+    {
+      "id": 68,
+      "question": "A gamer is booting a desktop that has Windows 7 installed on dynamic drives. The boot process is currently working on the following step: WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers. What is the next step that will happen in the boot process?",
+      "options": [
+        "The Windows kernel takes over the boot process.",
+        "There are no more steps, the boot process is complete.",
+        "WINLOGON.EXE displays the Windows Welcome screen",
+        "NTOSKRNL.EXE starts the login file called WINLOGON.EXE."
+      ],
+      "correct_answer": "The Windows kernel takes over the boot process."
+    },
+    {
+      "id": 69,
+      "question": "A technician is booting a laptop that has Windows 10 installed with 2 GB RAM. The boot process is currently working on the following step: The Windows kernel takes over the boot process. What is the next step that will happen in the boot process?",
+      "options": [
+        "There are no more steps, the boot process is complete.",
+        "WINLOGON.EXE displays the Windows Welcome screen",
+        "The Windows kernel takes over the boot process.",
+        "NTOSKRNL.EXE starts the login file called WINLOGON.EXE."
+      ],
+      "correct_answer": "NTOSKRNL.EXE starts the login file called WINLOGON.EXE."
+    },
+    {
+      "id": 70,
+      "question": "A user is booting a laptop that has Windows 10 installed. The boot process is currently working on the following step: WINLOGON.EXE displays the Windows Welcome screen What is the next step that will happen in the boot process?",
+      "options": [
+        "WINLOGON.EXE displays the Windows Welcome screen",
+        "NTOSKRNL.EXE starts the login file called WINLOGON.EXE.",
+        "There are no more steps, the boot process is complete.",
+        "The Windows kernel takes over the boot process."
+      ],
+      "correct_answer": "There are no more steps, the boot process is complete."
+    },
+    {
+      "id": 71,
+      "question": "A manager is booting a tablet that has Windows 8 installed. The boot process is currently working on the following step: The Windows kernel takes over the boot process. What is the next step that will happen in the boot process?",
+      "options": [
+        "The Windows kernel takes over the boot process.",
+        "NTOSKRNL.EXE starts the login file called WINLOGON.EXE.",
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
+        "WINLOGON.EXE displays the Windows Welcome screen"
+      ],
+      "correct_answer": "NTOSKRNL.EXE starts the login file called WINLOGON.EXE."
+    },
+    {
+      "id": 72,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that the attacker was using a specific technique that affected the TCP three-way handshake. What is the type of network attack?",
+      "options": [
+        "SYN flood",
+        "DDoS",
+        "DNS poisoning",
+        "zero-day"
+      ],
+      "correct_answer": "SYN flood"
+    },
+    {
+      "id": 73,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that the attacker is using a technique that compares hashed passwords to potential hashes the hacker has. What is the type of network attack?",
+      "options": [
+        "rainbow table",
+        "DDoS",
+        "DNS poisoning",
+        "SYN flood"
+      ],
+      "correct_answer": "rainbow table"
+    },
+    {
+      "id": 74,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that the DNS server was sent with an enormous amount of false requests, thus overwhelming the server. What is the type of network attack?",
+      "options": [
+        "DNS poisoning",
+        "SYN flood",
+        "zero-day",
+        "DoS"
+      ],
+      "correct_answer": "DoS"
+    },
+    {
+      "id": 75,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that the attacker is using a vulnerability that is known to the software vendor, but not patched yet. What is the type of network attack?",
+      "options": [
+        "DDoS",
+        "DNS poisoning",
+        "zero-day",
+        "SYN flood"
+      ],
+      "correct_answer": "zero-day"
+    },
+    {
+      "id": 76,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that zombies were used to attack the firewall. What is the type of network attack?",
+      "options": [
+        "DDoS",
+        "DNS poisoning",
+        "SYN flood",
+        "zero-day"
+      ],
+      "correct_answer": "DDoS"
+    },
+    {
+      "id": 77,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that zombies were used to attack the firewall. What is the type of network attack?",
+      "options": [
+        "zero-day",
+        "dictionary",
+        "SYN flood",
+        "DDoS"
+      ],
+      "correct_answer": "DDoS"
+    },
+    {
+      "id": 78,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that the attacker is using a table of words that potentially could be used as passwords. What is the type of network attack?",
+      "options": [
+        "SYN flood",
+        "zero-day",
+        "dictionary",
+        "DNS poisoning"
+      ],
+      "correct_answer": "dictionary"
+    },
+    {
+      "id": 79,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that the attacker injected false records on the server that translates IP addresses to domain names. What is the type of network attack?",
+      "options": [
+        "DNS poisoning",
+        "zero-day",
+        "dictionary",
+        "SYN flood"
+      ],
+      "correct_answer": "DNS poisoning"
+    },
+    {
+      "id": 80,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that the attacker is using a technique that compares hashed passwords to potential hashes the hacker has. What is the type of network attack?",
+      "options": [
+        "SYN flood",
+        "zero-day",
+        "DNS poisoning",
+        "rainbow table"
+      ],
+      "correct_answer": "rainbow table"
+    },
+    {
+      "id": 81,
+      "question": "Users in a company have complained about network performance. After investigation, the IT staff has determined that the attacker was using a specific technique that affected the TCP three-way handshake. What is the type of network attack?",
+      "options": [
+        "zero-day",
+        "SYN flood",
+        "dictionary",
+        "DNS poisoning"
+      ],
+      "correct_answer": "SYN flood"
+    },
+    {
+      "id": 82,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for a company that wants a device to monitor incoming and outgoing traffic and stop any malicious activity. Which security technique should the technician recommend?",
+      "options": [
+        "Implement a RAID.",
+        "Provide security awareness training.",
+        "Use SSL.",
+        "Buy an IPS."
+      ],
+      "correct_answer": "Buy an IPS."
+    },
+    {
+      "id": 83,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for a machine where the antimalware software cannot remove all of the malware. Which security technique should the technician recommend?",
+      "options": [
+        "Use Windows Safe Mode.",
+        "Implement a RAID.",
+        "Provide security awareness training.",
+        "Use SSL."
+      ],
+      "correct_answer": "Use Windows Safe Mode."
+    },
+    {
+      "id": 84,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for a machine where the antimalware software cannot remove all of the malware. Which security technique should the technician recommend?",
+      "options": [
+        "Use Windows Safe Mode.",
+        "Implement a RAID.",
+        "Provide security awareness training.",
+        "Use encryption."
+      ],
+      "correct_answer": "Use Windows Safe Mode."
+    },
+    {
+      "id": 85,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for preventing tailgating. Which security technique should the technician recommend?",
+      "options": [
+        "Implement a RAID.",
+        "Use a mantrap.",
+        "Provide security awareness training.",
+        "Use encryption."
+      ],
+      "correct_answer": "Use a mantrap."
+    },
+    {
+      "id": 86,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for drive redundancy. Which security technique should the technician recommend?",
+      "options": [
+        "Provide security awareness training.",
+        "Disable ports.",
+        "Implement dual authentication.",
+        "Implement a RAID."
+      ],
+      "correct_answer": "Implement a RAID."
+    },
+    {
+      "id": 87,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for drive redundancy. Which security technique should the technician recommend?",
+      "options": [
+        "Implement a RAID.",
+        "Buy an ASA.",
+        "Use a VPN.",
+        "Implement dual authentication."
+      ],
+      "correct_answer": "Implement a RAID."
+    },
+    {
+      "id": 88,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for phishing. Which security technique should the technician recommend?",
+      "options": [
+        "Buy an ASA.",
+        "Use a VPN.",
+        "Provide security awareness training.",
+        "Employ ping sweeps."
+      ],
+      "correct_answer": "Provide security awareness training."
+    },
+    {
+      "id": 89,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for protecting a computer used to log in at a dental clinic from someone using a bootable disk containing hacking tools. Which security technique should the technician recommend?",
+      "options": [
+        "Buy an ASA.",
+        "Use a VPN.",
+        "Employ ping sweeps.",
+        "Disable ports."
+      ],
+      "correct_answer": "Disable ports."
+    },
+    {
+      "id": 90,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for protecting a computer used to log in at a dental clinic from someone using a bootable disk containing hacking tools. Which security technique should the technician recommend?",
+      "options": [
+        "Disable ports.",
+        "Buy an ASA.",
+        "Use a VPN.",
+        "Run vulnerability scanners."
+      ],
+      "correct_answer": "Disable ports."
+    },
+    {
+      "id": 91,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for a manager traveling who needs access to internal corporate resources. Which security technique should the technician recommend?",
+      "options": [
+        "Buy an ASA.",
+        "Use a VPN.",
+        "Disable ports.",
+        "Run vulnerability scanners."
+      ],
+      "correct_answer": "Use a VPN."
+    },
+    {
+      "id": 92,
+      "question": "Why would a gamer need to use the move command?",
+      "options": [
+        "to relocate a file from one Windows directory to another one",
+        "to prepare a hard drive to accept Windows files",
+        "to manage a PCs drives, disks, partitions, volumes, and virtual drives",
+        "to copy files, directories, and subdirectories from one location to another"
+      ],
+      "correct_answer": "to relocate a file from one Windows directory to another one"
+    },
+    {
+      "id": 93,
+      "question": "Why would a gamer need to use the copy command?",
+      "options": [
+        "to prepare a hard drive to accept Windows files",
+        "to manage a PCs drives, disks, partitions, volumes, and virtual drives",
+        "to copy files, directories, and subdirectories from one location to another",
+        "to move that file to a different Windows directory while also leaving the file in the current location"
+      ],
+      "correct_answer": "to move that file to a different Windows directory while also leaving the file in the current location"
+    },
+    {
+      "id": 94,
+      "question": "Why would a university student need to use the robocopy command?",
+      "options": [
+        "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions",
+        "to shutdown several remote computers one at a time",
+        "to copy a group of files from one Windows directory to another",
+        "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system"
+      ],
+      "correct_answer": "to copy a group of files from one Windows directory to another"
+    },
+    {
+      "id": 95,
+      "question": "Why would a university student need to use the xcopy command?",
+      "options": [
+        "to copy files, directories, and subdirectories from one location to another",
+        "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions",
+        "to shutdown several remote computers one at a time",
+        "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system"
+      ],
+      "correct_answer": "to copy files, directories, and subdirectories from one location to another"
+    },
+    {
+      "id": 96,
+      "question": "Why would a technical support representative need to use the format command?",
+      "options": [
+        "to prepare a hard drive to accept Windows files",
+        "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions",
+        "to shutdown several remote computers one at a time",
+        "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system"
+      ],
+      "correct_answer": "to prepare a hard drive to accept Windows files"
+    },
+    {
+      "id": 97,
+      "question": "Why would a technical support representative need to use the bootrec command?",
+      "options": [
+        "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions",
+        "to help to repair the MBR that is suspected of having issues",
+        "to shutdown several remote computers one at a time",
+        "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system"
+      ],
+      "correct_answer": "to help to repair the MBR that is suspected of having issues"
+    },
+    {
+      "id": 98,
+      "question": "Why would a technical support representative need to use the ipconfig command?",
+      "options": [
+        "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions",
+        "to shutdown several remote computers one at a time",
+        "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system",
+        "to display the IPv6 address of the PC"
+      ],
+      "correct_answer": "to display the IPv6 address of the PC"
+    },
+    {
+      "id": 99,
+      "question": "Why would a user need to use the netstat command?",
+      "options": [
+        "to verify activity on the PC by displaying all active TCP connections on the device",
+        "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions",
+        "to shutdown several remote computers one at a time",
+        "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system"
+      ],
+      "correct_answer": "to verify activity on the PC by displaying all active TCP connections on the device"
+    },
+    {
+      "id": 100,
+      "question": "Why would a user need to use the nslookup command?",
+      "options": [
+        "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions",
+        "to query the Domain Name Sysytem (DNS) to get domain names and mapping information",
+        "to shutdown several remote computers one at a time",
+        "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system"
+      ],
+      "correct_answer": "to query the Domain Name Sysytem (DNS) to get domain names and mapping information"
+    },
+    {
+      "id": 101,
+      "question": "Why would a manager need to use the ping command?",
+      "options": [
+        "to change from the current working folder to another folder",
+        "to create a new Windows directory",
+        "to remove an empty directory",
+        "to quickly verify connectivity by sending echo-request messages to the destination and receiving a series of echo-reply messages from that destination"
+      ],
+      "correct_answer": "to quickly verify connectivity by sending echo-request messages to the destination and receiving a series of echo-reply messages from that destination"
+    },
+    {
+      "id": 102,
+      "question": "What are two probable causes of a user unable to access local resources such as file shares or printers on a wired network? (Choose two.)",
+      "options": [
+        "bad cabling",
+        "ISP down",
+        "incorrect gateway address",
+        "DNS name resolution not working",
+        "poor Wi-Fi signal"
+      ],
+      "correct_answer": "bad cabling | DNS name resolution not working"
+    },
+    {
+      "id": 103,
+      "question": "The IT department has just purchased 15 wireless access points in order to provide full wireless coverage for all 100 employees within the company and is looking to deploy the most secure and scalable wireless implementation. Which open source authentication method would perform authentication on behalf of all 15 wireless network devices?",
+      "options": [
+        "TACACS+",
+        "TKIP",
+        "RADIUS",
+        "WPA2-PSK"
+      ],
+      "correct_answer": "RADIUS"
+    },
+    {
+      "id": 104,
+      "question": "A technician is upgrading many PCs used within the company. How should the technician dispose of an old inkjet printer cartridge?",
+      "options": [
+        "Give it to your neighbor.",
+        "Recycle following local regulations.",
+        "Take it home.",
+        "Seal in a plastic bag before putting in the garbage."
+      ],
+      "correct_answer": "Recycle following local regulations."
+    },
+    {
+      "id": 105,
+      "question": "A client packet is received by a server. The packet has a destination port number of 3389. What service application is the client requesting?",
+      "options": [
+        "SSH",
+        "Telnet",
+        "SMTP",
+        "RDP"
+      ],
+      "correct_answer": "RDP"
+    },
+    {
+      "id": 106,
+      "question": "A client packet is received by a server. The packet has a destination port number of 67. What service application is the client requesting?",
+      "options": [
+        "SSH",
+        "Telnet",
+        "DHCP",
+        "SMTP"
+      ],
+      "correct_answer": "DHCP"
+    },
+    {
+      "id": 107,
+      "question": "A client packet is received by a server. The packet has a destination port number of 443. What service application is the client requesting?",
+      "options": [
+        "HTTPS",
+        "SSH",
+        "Telnet",
+        "SMTP"
+      ],
+      "correct_answer": "HTTPS"
+    },
+    {
+      "id": 108,
+      "question": "A client packet is received by a server. The packet has a destination port number of 69. What service application is the client requesting?",
+      "options": [
+        "SSH",
+        "Telnet",
+        "SMTP",
+        "TFTP"
+      ],
+      "correct_answer": "TFTP"
+    },
+    {
+      "id": 109,
+      "question": "A client packet is received by a server. The packet has a destination port number of 445. What service application is the client requesting?",
+      "options": [
+        "SSH",
+        "Telnet",
+        "SMB/CIFS",
+        "SMTP"
+      ],
+      "correct_answer": "SMB/CIFS"
+    },
+    {
+      "id": 110,
+      "question": "A client packet is received by a server. The packet has a destination port number of 548. What service application is the client requesting?",
+      "options": [
+        "AFP",
+        "HTTP",
+        "TFTP",
+        "POP3"
+      ],
+      "correct_answer": "AFP"
+    },
+    {
+      "id": 111,
+      "question": "A client packet is received by a server. The packet has a destination port number of 80. What service application is the client requesting?",
+      "options": [
+        "HTTP",
+        "POP3",
+        "TFTP",
+        "NetBIOS (NetBT)"
+      ],
+      "correct_answer": "HTTP"
+    },
+    {
+      "id": 112,
+      "question": "A client packet is received by a server. The packet has a destination port number of 3389. What service application is the client requesting?",
+      "options": [
+        "HTTP",
+        "RDP",
+        "TFTP",
+        "POP3"
+      ],
+      "correct_answer": "RDP"
+    },
+    {
+      "id": 113,
+      "question": "A PC technician has been asked by a supervisor to recommend a security solution for a small company that wants stateful firewall services. Which security technique should the technician recommend?",
+      "options": [
+        "Disable ports.",
+        "Use a VPN.",
+        "Setup footprinting.",
+        "Buy an ASA."
+      ],
+      "correct_answer": "Buy an ASA."
+    },
+    {
+      "id": 114,
+      "question": "A gamer is booting a desktop that has Windows 10 installed on dynamic drives. The boot process is currently working on the following step: WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers. What is the next step that will happen in the boot process?",
+      "options": [
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.*",
+        "The Windows kernel takes over the boot process. *",
+        "Winload uses the path specified in BOOTMGR to find the boot partition."
+      ],
+      "correct_answer": "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.* | The Windows kernel takes over the boot process. *"
+    },
+    {
+      "id": 115,
+      "question": "A technician is working on a laptop and an error message about decryption appears when opening an email. What is a possible solution for this situation?",
+      "options": [
+        "Install an appropriate certificate.",
+        "Check the screen refresh rate.",
+        "Ensure that only one app is open at a time.",
+        "Ensure that Wi-Fi is turned off."
+      ],
+      "correct_answer": "Install an appropriate certificate."
+    },
+    {
+      "id": 116,
+      "question": "A technician is working on a laptop and an error message about decryption appears when opening an email. What is a possible solution for this situation?",
+      "options": [
+        "Install an appropriate certificate.",
+        "Replace the digitizer.",
+        "Ensure that only one app is open at a time.",
+        "Ensure that Wi-Fi is turned off."
+      ],
+      "correct_answer": "Install an appropriate certificate."
+    },
+    {
+      "id": 117,
+      "question": "A technician is working on a laptop and an error message about decryption appears when opening an email. What is a possible solution for this situation?",
+      "options": [
+        "Replace the digitizer.",
+        "Check the screen refresh rate.",
+        "Install an appropriate certificate.",
+        "Check the display settings."
+      ],
+      "correct_answer": "Install an appropriate certificate."
+    },
+    {
+      "id": 118,
+      "question": "A technician is working on a laptop and a key on the keyboard is not responding as it should. What is a possible solution for this situation?",
+      "options": [
+        "Update all security apps.",
+        "Check the screen refresh rate.",
+        "Check the display settings.",
+        "Clean with compressed air."
+      ],
+      "correct_answer": "Clean with compressed air."
+    },
+    {
+      "id": 119,
+      "question": "A technician is working on a laptop and a key on the keyboard is not responding as it should. What is a possible solution for this situation?",
+      "options": [
+        "Ensure that Bluetooth is not activated.",
+        "Check the screen refresh rate.",
+        "Check the display settings.",
+        "Clean with compressed air. *"
+      ],
+      "correct_answer": "Clean with compressed air. *"
+    },
+    {
+      "id": 120,
+      "question": "A technician is working on a laptop and GPS is not functioning. What is a possible solution for this situation?",
+      "options": [
+        "Verify that airplane mode is not activated.",
+        "Ensure that Bluetooth is not activated.",
+        "Check the screen refresh rate.",
+        "Check the display settings."
+      ],
+      "correct_answer": "Verify that airplane mode is not activated."
+    },
+    {
+      "id": 121,
+      "question": "A technician is working on a laptop and GPS is not functioning. What is a possible solution for this situation?",
+      "options": [
+        "Check the fan on the GPU.",
+        "Check the screen refresh rate.",
+        "Verify that airplane mode is not activated.",
+        "Check the display settings."
+      ],
+      "correct_answer": "Verify that airplane mode is not activated."
+    },
+    {
+      "id": 122,
+      "question": "A technician is working on a laptop and GPS is not functioning. What is a possible solution for this situation?",
+      "options": [
+        "Verify that airplane mode is not activated.",
+        "Ensure that Wi-Fi is turned off.",
+        "Check the screen refresh rate.",
+        "Check the display settings."
+      ],
+      "correct_answer": "Verify that airplane mode is not activated."
+    },
+    {
+      "id": 123,
+      "question": "A technician is working on a laptop and GPS is not functioning. What is a possible solution for this situation?",
+      "options": [
+        "Ensure that Wi-Fi is turned off.",
+        "Check the screen refresh rate.",
+        "Verify the status of service.",
+        "Check the display settings."
+      ],
+      "correct_answer": "Verify the status of service."
+    },
+    {
+      "id": 124,
+      "question": "A technician is working on a laptop and GPS is not functioning. What is a possible solution for this situation?",
+      "options": [
+        "Ensure that only one app is open at a time.",
+        "Recharge the battery.",
+        "Check the display settings.",
+        "Verify the status of service."
+      ],
+      "correct_answer": "Verify the status of service."
+    },
+    {
+      "id": 125,
+      "question": "Why would a manager need to use the tracert command?",
+      "options": [
+        "to display a list of the near-side router interfaces between the source device and the destination device",
+        "to move that file to a different Windows directory while also leaving the file in the current location",
+        "to copy a group of files from one Windows directory to another",
+        "to relocate a file from one Windows directory to another one"
+      ],
+      "correct_answer": "to display a list of the near-side router interfaces between the source device and the destination device"
+    },
+    {
+      "id": 126,
+      "question": "Why would a manager need to use the sfc command?",
+      "options": [
+        "to move that file to a different Windows directory while also leaving the file in the current location",
+        "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions",
+        "to copy a group of files from one Windows directory to another",
+        "to relocate a file from one Windows directory to another one"
+      ],
+      "correct_answer": "to scan and verify the integrity of all protected system files and replace incorrect versions with correct versions"
+    },
+    {
+      "id": 127,
+      "question": "Why would a technician need to use the DISM command?",
+      "options": [
+        "to move that file to a different Windows directory while also leaving the file in the current location",
+        "to copy a group of files from one Windows directory to another",
+        "to relocate a file from one Windows directory to another one",
+        "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system"
+      ],
+      "correct_answer": "to repair, prepare, and fix Windows images and the recovery image within an installation of the operating system"
+    },
+    {
+      "id": 128,
+      "question": "Why would a technician need to use the tasklist command?",
+      "options": [
+        "to create a new Windows directory",
+        "to display a list of current processes running on a local or a remote computer",
+        "to remove an empty directory",
+        "to change from the current working folder to another folder"
+      ],
+      "correct_answer": "to display a list of current processes running on a local or a remote computer"
+    },
+    {
+      "id": 129,
+      "question": "Why would an analyst need to use the taskkill command?",
+      "options": [
+        "to create a new Windows directory",
+        "to remove an empty directory",
+        "to change from the current working folder to another folder",
+        "to end one or more processes on a PC based on process ID or image name"
+      ],
+      "correct_answer": "to end one or more processes on a PC based on process ID or image name"
+    },
+    {
+      "id": 130,
+      "question": "Why would an analyst need to use the msconfig command?",
+      "options": [
+        "to select some programs that will automatically run at startup",
+        "to remove an empty directory",
+        "to erase one or more files from a Windows directory",
+        "to create a new Windows directory"
+      ],
+      "correct_answer": "to select some programs that will automatically run at startup"
+    },
+    {
+      "id": 131,
+      "question": "Why would an analyst need to use the dir command?",
+      "options": [
+        "to show all of the files in the current directory",
+        "to remove an empty directory",
+        "to erase one or more files from a Windows directory",
+        "to create a new Windows directory"
+      ],
+      "correct_answer": "to show all of the files in the current directory"
+    },
+    {
+      "id": 132,
+      "question": "Why would a bank manager need to use the gpupdate command?",
+      "options": [
+        "to remove an empty directory",
+        "to erase one or more files from a Windows directory",
+        "to make the PC synchronize with new group policy settings",
+        "to create a new Windows directory"
+      ],
+      "correct_answer": "to make the PC synchronize with new group policy settings"
+    },
+    {
+      "id": 133,
+      "question": "Why would a bank manager need to use the gpresult command?",
+      "options": [
+        "to verify the settings that are suspected to be incorrect",
+        "to remove an empty directory",
+        "to erase one or more files from a Windows directory",
+        "to create a new Windows directory"
+      ],
+      "correct_answer": "to verify the settings that are suspected to be incorrect"
+    },
+    {
+      "id": 134,
+      "question": "Why would a lawyer need to use the cd command?",
+      "options": [
+        "to remove an empty directory",
+        "to erase one or more files from a Windows directory",
+        "to create a new Windows directory",
+        "to change from the current working folder to another folder"
+      ],
+      "correct_answer": "to change from the current working folder to another folder"
+    },
+    {
+      "id": 136,
+      "question": "Refer to the exhibit. What is true of this mobile device screen?",
+      "options": [
+        "Tapping and holding the arrow at the bottom left will display the Home screen.",
+        "Text messages, news, photos and other content can be displayed in the different tiles.",
+        "Icons and buttons are used to represent the different apps on the phone.",
+        "Unpinning an app from this view will uninstall the app from the phone.",
+        "Tile sizes depend on the size of the app."
+      ],
+      "correct_answer": "Text messages, news, photos and other content can be displayed in the different tiles."
+    },
+    {
+      "id": 137,
+      "question": "An accountant is booting a PC that has Windows 10 installed. The boot process is currently working on the following step: BIOS locates and reads the configuration settings that are stored in the CMOS memory. What is the next step that will happen in the boot process?",
+      "options": [
+        "Winload uses the path specified in BOOTMGR to find the boot partition.",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.",
+        "The BIOS boots the computer using the first drive that contains a valid boot sector.",
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers."
+      ],
+      "correct_answer": "The BIOS boots the computer using the first drive that contains a valid boot sector."
+    },
+    {
+      "id": 138,
+      "question": "An analyst is booting a desktop that has Windows 10 installed with 4 GB RAM. The boot process is currently working on the following step: Winload uses the path specified in BOOTMGR to find the boot partition. What is the next step that will happen in the boot process?",
+      "options": [
+        "There are no more steps, the boot process is complete.",
+        "NTOSKRNL.EXE starts the login file called WINLOGON.EXE.",
+        "WINLOGON.EXE displays the Windows Welcome screen",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL."
+      ],
+      "correct_answer": "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL."
+    },
+    {
+      "id": 139,
+      "question": "What is a possible situation when it might be necessary to boot Windows 10 from a bootable recovery USB device?",
+      "options": [
+        "to partition the hard drive",
+        "to delete registry keys",
+        "to repair the operating system",
+        "to disable background services"
+      ],
+      "correct_answer": "to repair the operating system"
+    },
+    {
+      "id": 140,
+      "question": "Which statement is true regarding mobile devices using the Wireless Wide Area Network (WWAN)?",
+      "options": [
+        "They require a 64-bit operating system.",
+        "They require an adapter to link to a cellular provider's network through the nearest base station or transmitter.",
+        "They can only be connected through external WWAN USB adapters.",
+        "The bandwidth available over WWAN connections is fixed and is independent of the technologies supported by the adapter and the transmitter."
+      ],
+      "correct_answer": "They require an adapter to link to a cellular provider's network through the nearest base station or transmitter."
+    },
+    {
+      "id": 141,
+      "question": "A Windows 10 computer locks up with a stop error during startup and then automatically reboots. The automatic restart setting is making it difficult to see any error messages. What can be done so that the error messages can be viewed?",
+      "options": [
+        "Use the System Recovery options to restart the operating system.",
+        "View the error messages and recover the system using the System Image Recovery tool.",
+        "Access the System and Security options menu in the control panel and disable the auto restart function.",
+        "Use the Command Prompt option to research the stop error messages."
+      ],
+      "correct_answer": "Access the System and Security options menu in the control panel and disable the auto restart function."
+    },
+    {
+      "id": 142,
+      "question": "Which statement is true regarding libraries in Windows 10?",
+      "options": [
+        "Libraries allow Windows 10 to link mutiple different directories.",
+        "Libraries allow Windows 10 to enforce the EFS file system.",
+        "Libraries allow Windows 10 to support file names longer than 20 characters.",
+        "Libraries allow Windows 10 to index files faster."
+      ],
+      "correct_answer": "Libraries allow Windows 10 to link mutiple different directories."
+    },
+    {
+      "id": 143,
+      "question": "A corporation would like to use three or more factors for the password authentication policy. How can this be achieved?",
+      "options": [
+        "bitlocker",
+        "SFA",
+        "2FA",
+        "MFA"
+      ],
+      "correct_answer": "MFA"
+    },
+    {
+      "id": 144,
+      "question": "A system administrator has been asked to protect the sensitive data on Windows 10 computers of all management employees. Which Windows 10 feature can be used to selectively encrypt individual files within the user accounts of each manager?​",
+      "options": [
+        "EFS",
+        "BitLocker",
+        "TPM",
+        "Windows Update"
+      ],
+      "correct_answer": "EFS"
+    },
+    {
+      "id": 145,
+      "question": "Which two statements are true regarding 64-bit processor architecture? (Choose two.)",
+      "options": [
+        "It supports both 32-bit and 64-bit operating systems.",
+        "It has additional registers for 64-bit address space.",
+        "It only supports 64-bit operating systems.",
+        "It has only 64-bit registers.",
+        "It supports a maximum of 4GB RAM memory."
+      ],
+      "correct_answer": "It supports both 32-bit and 64-bit operating systems. | It has additional registers for 64-bit address space."
+    },
+    {
+      "id": 146,
+      "question": "A manager is booting a tablet that has Windows 10 installed. The boot process is currently working on the following step: POST. What is the next step that will happen in the boot process?",
+      "options": [
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.",
+        "The Windows kernel takes over the boot process.",
+        "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
+        "BIOS locates and reads the configuration settings that are stored in the CMOS memory."
+      ],
+      "correct_answer": "BIOS locates and reads the configuration settings that are stored in the CMOS memory."
+    },
+    {
+      "id": 147,
+      "question": "A computer technician uses Windows tools to gather information such as system components, operating system, users, and disk drives on multiple systems within the company. Another technician suggests that the tasks would take less time if they were automated. Which two built-in scripting capabilities in Windows enable a technician to run a simple text file, created in Notepad, which contains the necessary commands and variables? (Choose two.)",
+      "options": [
+        "Linux Bash shell script interpreter",
+        "PowerShell ISE script interpreter",
+        "JavaScript client-side scripting language",
+        "command line batch script interpreter",
+        "C++ and C# built-in compiler"
+      ],
+      "correct_answer": "PowerShell ISE script interpreter | command line batch script interpreter"
+    },
+    {
+      "id": 148,
+      "question": "Why would a lawyer need to use the tracert command?",
+      "options": [
+        "to verify activity on the PC by displaying all active TCP connections on the device",
+        "to query the Domain Name Sysytem (DNS) to get domain names and mapping information",
+        "to quickly verify connectivity by sending echo-request messages to the destination and receiving a series of echo-reply messages from that destination",
+        "to display a list of the near-side router interfaces between the source device and the destination device"
+      ],
+      "correct_answer": "to display a list of the near-side router interfaces between the source device and the destination device"
+    },
+    {
+      "id": 149,
+      "question": "A technician wishes to start Windows 10 in safe mode to troubleshoot it. What key or key combination would begin this process?",
+      "options": [
+        "ctrl + F6 and restart",
+        "hold the Shift key and select the Restart option in the Power menu",
+        "recycle power and hold down the del key",
+        "recycle power and hold down the F8 key"
+      ],
+      "correct_answer": "hold the Shift key and select the Restart option in the Power menu"
+    },
+    {
+      "id": 150,
+      "question": "A user notes that the username and password are automatically populated in the Microsoft Edge browser when logging into a secure site. When the user tries to log into the same site using Google Chrome, the username and password do not save automatically. Why is this occurring?",
+      "options": [
+        "Google Chrome does not support that secure site.",
+        "The certificate for that site has not been authenticated.",
+        "The Google Chrome browser is corrupt.",
+        "Google Chrome does not automatically save web credentials."
+      ],
+      "correct_answer": "Google Chrome does not automatically save web credentials."
+    }
+  ]
+}

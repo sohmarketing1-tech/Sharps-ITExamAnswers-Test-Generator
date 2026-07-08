@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ITExamAnswers Practice Test Generator</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="static/style.css" />
 </head>
 <body>
     <nav class="top-nav">
@@ -28,16 +28,13 @@
             <section id="setup-screen" class="screen active">
                 <div class="card">
                     <h2>Configure Your Practice Test</h2>
-                    <p class="card-subtitle">Paste any itexamanswers.net exam page link below.</p>
+                    <p class="card-subtitle">Select an exam from the list below.</p>
 
                     <div class="form-group">
-                        <label for="exam-url-input">Exam URL</label>
-                        <input type="url" id="exam-url-input" placeholder="https://itexamanswers.net/..." />
-                    </div>
-
-                    <div class="button-row compact">
-                        <button id="scrape-btn" class="btn btn-primary">Scrape Questions</button>
-                        <button id="refresh-btn" class="btn btn-secondary">Re-scrape Current</button>
+                        <label for="exam-select">Exam</label>
+                        <select id="exam-select" disabled>
+                            <option value="">Loading exams…</option>
+                        </select>
                     </div>
 
                     <div class="form-group spaced">
@@ -112,6 +109,6 @@
         <p>Built for itexamanswers.net practice tests.</p>
     </footer>
 
-    <script src="app.js"></script>
+    <script src="static/app.js"></script>
 </body>
 </html>

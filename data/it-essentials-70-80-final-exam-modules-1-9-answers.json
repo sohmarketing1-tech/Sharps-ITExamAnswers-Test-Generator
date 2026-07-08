@@ -1,0 +1,1451 @@
+{
+  "title": "IT Essentials 7.0 8.0 Final Exam Modules 1-9 Answers",
+  "url": "https://itexamanswers.net/it-essentials-7-0-final-exam-chapters-1-9-answers-full.html",
+  "questions": [
+    {
+      "id": 1,
+      "question": "In which situation would an ESD strike potentially cause harm to the PC?",
+      "options": [
+        "when replacing a mechanical hard drive with an M.2 SSD",
+        "when installing an additional display in a workplace cubicle",
+        "when using a grounded mat and working on a computer on an ungrounded workbench",
+        "when installing a dual-voltage power supply"
+      ],
+      "correct_answer": "when replacing a mechanical hard drive with an M.2 SSD"
+    },
+    {
+      "id": 2,
+      "question": "A person has started a new technical job. In which situation would ESD be an issue?",
+      "options": [
+        "when installing a processor",
+        "when using a grounded mat and working on a computer on an ungrounded workbench",
+        "when installing a dual-voltage power supply",
+        "while exchanging one laptop AC adapter with one that is not from the original equipment manufacturer"
+      ],
+      "correct_answer": "when installing a processor"
+    },
+    {
+      "id": 3,
+      "question": "A technician is about to begin preventive maintenance on a company PC. In which situation would ESD be an issue?",
+      "options": [
+        "when walking across a carpeted area and then touching a keyboard that is attached to a tower PC",
+        "when installing a UPS",
+        "while attaching speakers to a surround sound card",
+        "when installing a processor"
+      ],
+      "correct_answer": "when installing a processor"
+    },
+    {
+      "id": 4,
+      "question": "A technician is about to begin preventive maintenance on a company PC. In which situation would ESD be an issue? [Case 2]",
+      "options": [
+        "when replacing a motherboard",
+        "while attaching speakers to a surround sound card",
+        "when using a grounded mat and working on a computer on an ungrounded workbench",
+        "when installing a dual-voltage power supply"
+      ],
+      "correct_answer": "when replacing a motherboard"
+    },
+    {
+      "id": 5,
+      "question": "A technician is about to begin preventive maintenance on a company PC. In which situation would ESD be an issue? [Case 3]",
+      "options": [
+        "when installing RAM",
+        "when walking across a carpeted area and then touching a keyboard that is attached to a tower PC",
+        "when using a grounded mat and working on a computer on an ungrounded workbench",
+        "when installing a dual-voltage power supply"
+      ],
+      "correct_answer": "when installing RAM"
+    },
+    {
+      "id": 6,
+      "question": "An instructor has given a student an assignment to assemble a PC. In which situation should the student be aware that ESD is an issue?",
+      "options": [
+        "when installing RAM",
+        "when working in a corporate environment that has carpet installed under tower PCs",
+        "when using a grounded mat and working on a computer on an ungrounded workbench",
+        "when installing a dual-voltage power supply"
+      ],
+      "correct_answer": "when installing RAM"
+    },
+    {
+      "id": 7,
+      "question": "What two motherboard components control the system boot operations? (Choose two.)",
+      "options": [
+        "BIOS chip",
+        "UEFI chip",
+        "Northbridge chip",
+        "Southbridge chip",
+        "CPU"
+      ],
+      "correct_answer": "BIOS chip | UEFI chip"
+    },
+    {
+      "id": 8,
+      "question": "A technician is upgrading an ATX motherboard with another ATX motherboard. Which component might be affected by this and need to be upgraded and bought as an additional purchase?",
+      "options": [
+        "BIOS",
+        "chipset",
+        "CMOS battery",
+        "CPU",
+        "PCIe adapter"
+      ],
+      "correct_answer": "CPU"
+    },
+    {
+      "id": 9,
+      "question": "A customer has requested that a PC be built that will support eSATA. Which component should be checked to be sure that this feature is supported?",
+      "options": [
+        "CPU",
+        "chipset",
+        "hard disk",
+        "RAM module"
+      ],
+      "correct_answer": "chipset"
+    },
+    {
+      "id": 10,
+      "question": "Which memory module used to hold instructions for booting a PC and loading the OS, but is still used on adapters even though the memory contents cannot be changed?",
+      "options": [
+        "RAM",
+        "ROM",
+        "cache",
+        "main memory"
+      ],
+      "correct_answer": "ROM"
+    },
+    {
+      "id": 11,
+      "question": "What is a characteristic of DDR SDRAM?",
+      "options": [
+        "It transfers data twice per clock cycle compared to once per clock cycle for SDRAM.",
+        "DDR SDRAM modules have double the number of pins of SDRAM memory modules.",
+        "It is dynamic memory whereas SDRAM is static memory.",
+        "It operates at double the voltage of SDRAM memory."
+      ],
+      "correct_answer": "It transfers data twice per clock cycle compared to once per clock cycle for SDRAM."
+    },
+    {
+      "id": 12,
+      "question": "What are two safety hazards when dealing with laser printers? (Choose two.)",
+      "options": [
+        "high voltage",
+        "hot components",
+        "heavy metals",
+        "proprietary power bricks",
+        "unwieldy card cages"
+      ],
+      "correct_answer": "high voltage | hot components"
+    },
+    {
+      "id": 13,
+      "question": "Which component requires a technician to install screws externally through the PC case?",
+      "options": [
+        "RAM",
+        "CPU",
+        "motherboard",
+        "power supply"
+      ],
+      "correct_answer": "power supply"
+    },
+    {
+      "id": 14,
+      "question": "A technician is installing an internal HDD. To which motherboard connector will the technician connect the data cable?",
+      "options": [
+        "ATX",
+        "PCI",
+        "PWR_SW",
+        "SATA"
+      ],
+      "correct_answer": "SATA"
+    },
+    {
+      "id": 15,
+      "question": "Refer to the exhibit. A technician has been asked to install a video card. Which section of the motherboard will the technician use to install the card?",
+      "options": [
+        "section A",
+        "section B",
+        "section C",
+        "section D"
+      ],
+      "correct_answer": "section D"
+    },
+    {
+      "id": 16,
+      "question": "When a PC is being assembled, what component is connected to the motherboard with a SATA cable?",
+      "options": [
+        "the optical drive",
+        "the network interface card",
+        "the video card",
+        "the power supply"
+      ],
+      "correct_answer": "the optical drive"
+    },
+    {
+      "id": 17,
+      "question": "A technician is troubleshooting a computer that is experiencing hardware failure detected by the BIOS. What is one way this failure is indicated?",
+      "options": [
+        "The computer automatically boots into Safe Mode and displays a warning on the screen.",
+        "The screen flashes with a red background and displays a warning message.",
+        "The computer emits a pattern of beeps indicating the failing device.",
+        "The computer returns an error message that indicates the I/O address of the failing device."
+      ],
+      "correct_answer": "The computer emits a pattern of beeps indicating the failing device."
+    },
+    {
+      "id": 18,
+      "question": "Which three features can be configured in the BIOS settings to secure a computer? (Choose three.)",
+      "options": [
+        "MAC filtering",
+        "drive encryption",
+        "TPM",
+        "file encryption",
+        "TKIP key",
+        "passwords"
+      ],
+      "correct_answer": "drive encryption | TPM | passwords"
+    },
+    {
+      "id": 19,
+      "question": "What is the purpose of RAID adapters?",
+      "options": [
+        "to allow older PCI technology expansion slots to be used",
+        "to provide enhanced audio and graphic capabilities",
+        "to connect multiple storage devices for redundancy or speed",
+        "to connect peripheral devices to a PC to improve performance"
+      ],
+      "correct_answer": "to connect multiple storage devices for redundancy or speed"
+    },
+    {
+      "id": 20,
+      "question": "When a new motherboard is being installed, between which two components must thermal compound be applied? (Choose two.)",
+      "options": [
+        "CPU",
+        "RAM",
+        "chassis",
+        "heat sink",
+        "chipset",
+        "motherboard"
+      ],
+      "correct_answer": "CPU | heat sink"
+    },
+    {
+      "id": 21,
+      "question": "What is the purpose of a Safety Data Sheet?",
+      "options": [
+        "to specify procedures for dealing with potentially hazardous materials",
+        "to specify procedures in designing and building common computer systems",
+        "to specify procedures for the operation of sensitive components and prevention of electrostatic discharge",
+        "to specify procedures in the use of humidity control and prevention of moisture damage"
+      ],
+      "correct_answer": "to specify procedures for dealing with potentially hazardous materials"
+    },
+    {
+      "id": 22,
+      "question": "Which negative environmental factor does cleaning the inside of a computer reduce?",
+      "options": [
+        "dust",
+        "EMI",
+        "rust",
+        "ESD"
+      ],
+      "correct_answer": "dust"
+    },
+    {
+      "id": 23,
+      "question": "What is a recommended procedure to follow when cleaning computer components?",
+      "options": [
+        "Remove the CPU before cleaning.",
+        "Blow compressed air on cooling fans so that they will spin when dust is being removed.",
+        "Use window cleaner on LCD screens.",
+        "Hold cans of compressed air upright while spraying."
+      ],
+      "correct_answer": "Hold cans of compressed air upright while spraying."
+    },
+    {
+      "id": 24,
+      "question": "On the production floor, a furniture plant has laptops for process monitoring and reporting. The production floor environment is around 80 degrees Fahrenheit (27 degrees Celsius). The humidity level is fairly high around 70 percent. Fans are mounted in the ceiling for air circulation. Wood dust is prevalent. Which condition is most likely to adversely affect a laptop that is used in this environment?",
+      "options": [
+        "the temperature",
+        "the humidity",
+        "the air flow",
+        "the dust"
+      ],
+      "correct_answer": "the dust"
+    },
+    {
+      "id": 25,
+      "question": "After a technician tests a theory of probable causes, what two actions should the technician take if the testing did not identify an exact cause? (Choose two.)",
+      "options": [
+        "Establish a new theory of probable causes.",
+        "Randomly replace components one at a time until the problem is solved.",
+        "Document each test tried that did not correct the problem.",
+        "Verify full system functionality.",
+        "Test all remaining possible causes starting with the most complex."
+      ],
+      "correct_answer": "Establish a new theory of probable causes. | Document each test tried that did not correct the problem."
+    },
+    {
+      "id": 26,
+      "question": "What would happen if a PC that contains a power supply that does not automatically adjust for input voltage is set to 230 volts and attaches to an outlet in the United States?",
+      "options": [
+        "The power supply would explode.",
+        "The PC would not turn on.",
+        "The PC would display an error code.",
+        "The PC would emit a series of beeps."
+      ],
+      "correct_answer": "The PC would not turn on."
+    },
+    {
+      "id": 27,
+      "question": "Which type of network spans a single building or campus and provides services and applications to people within a common organizational structure?",
+      "options": [
+        "PAN",
+        "WAN",
+        "LAN",
+        "MAN"
+      ],
+      "correct_answer": "LAN"
+    },
+    {
+      "id": 28,
+      "question": "What are two types of wired high-speed Internet connections? (Choose two.)",
+      "options": [
+        "cable",
+        "satellite",
+        "cellular",
+        "DSL",
+        "dial-up"
+      ],
+      "correct_answer": "cable | DSL"
+    },
+    {
+      "id": 29,
+      "question": "In what two situations would UDP be better than TCP as the preferred transport protocol? (Choose two.)",
+      "options": [
+        "when applications need to guarantee that a packet arrives intact, in sequence, and unduplicated",
+        "when a faster delivery mechanism is needed",
+        "when delivery overhead is not an issue",
+        "when applications do not need to guarantee delivery of the data",
+        "when destination port numbers are dynamic"
+      ],
+      "correct_answer": "when a faster delivery mechanism is needed | when applications do not need to guarantee delivery of the data"
+    },
+    {
+      "id": 30,
+      "question": "The current IP configuration of a small company is done manually and is time-consuming. Because of increased network growth, a technician needs a simpler way for IP configuration of workstations. Which service would simplify the workstation IP configuration task?",
+      "options": [
+        "APIPA",
+        "DHCP",
+        "DNS",
+        "ICMP"
+      ],
+      "correct_answer": "DHCP"
+    },
+    {
+      "id": 31,
+      "question": "A company is looking for a next-generation firewall that provides VPN functionality, IDS/IPS functionality, and DoS/DDoS protection. Which device would be best suited for this task?",
+      "options": [
+        "multipurpose device",
+        "router",
+        "endpoint management server",
+        "UTM",
+        "TPM"
+      ],
+      "correct_answer": "UTM"
+    },
+    {
+      "id": 32,
+      "question": "A student is helping a friend with a home computer that can no longer access the Internet. Upon investigation, the student discovers that the computer has been assigned the IP address 169.254.100.88. What could cause a computer to get such an IP address?",
+      "options": [
+        "static IP addressing with incomplete information",
+        "interference from surrounding devices",
+        "reduced computer power supply output",
+        "unreachable DHCP server"
+      ],
+      "correct_answer": "unreachable DHCP server"
+    },
+    {
+      "id": 33,
+      "question": "What three values must be added to the IPv4 properties of a NIC in order for a computer to have basic connectivity with the network? (Choose three.)",
+      "options": [
+        "subnet mask",
+        "DHCP server address",
+        "domain name",
+        "default gateway",
+        "speed and duplex",
+        "IP address"
+      ],
+      "correct_answer": "subnet mask | default gateway | IP address"
+    },
+    {
+      "id": 34,
+      "question": "A device has an IPv6 address of 2001:0DB8:75a3:0214:0607:1234:aa10:ba01 /64. What is the host identifier of the device?",
+      "options": [
+        "2001:0DB8:75a3",
+        "0607:1234:aa10:ba01",
+        "2001:0DB8",
+        "ba01"
+      ],
+      "correct_answer": "0607:1234:aa10:ba01"
+    },
+    {
+      "id": 35,
+      "question": "How can a user prevent specific applications from accessing a Windows computer over a network?",
+      "options": [
+        "Enable MAC address filtering.",
+        "Disable automatic IP address assignment.",
+        "Block specific TCP or UDP ports in Windows Firewall.",
+        "Change default usernames and passwords."
+      ],
+      "correct_answer": "Block specific TCP or UDP ports in Windows Firewall."
+    },
+    {
+      "id": 36,
+      "question": "A technician has been asked to configure Wi-Fi calling on a corporate mobile device. In which situation would this feature be most advantageous?",
+      "options": [
+        "in an emergency situation and no minutes are left on the phone",
+        "when sending WEA updates",
+        "when in an area with poor cellular coverage",
+        "in a store transaction making a payment using the mobile device"
+      ],
+      "correct_answer": "when in an area with poor cellular coverage"
+    },
+    {
+      "id": 37,
+      "question": "Which statement is true about laptops?",
+      "options": [
+        "Most of the internal components that are designed for laptops cannot be used for desktops.",
+        "Laptop motherboards have standard form factors.",
+        "Laptops use fewer components than desktops use.",
+        "Laptop CPUs do not use cooling devices."
+      ],
+      "correct_answer": "Most of the internal components that are designed for laptops cannot be used for desktops."
+    },
+    {
+      "id": 38,
+      "question": "Which standard provides a bridge between laptop hardware and the operating system and a way for technicians to configure power management schemes to get the best performance?",
+      "options": [
+        "ACPI",
+        "PCIe",
+        "Bluetooth",
+        "802.11"
+      ],
+      "correct_answer": "ACPI"
+    },
+    {
+      "id": 39,
+      "question": "Which two laptop components are considered replaceable by the customer. (Choose two.)",
+      "options": [
+        "battery",
+        "integrated card reader",
+        "mini-PCIe module",
+        "RAM",
+        "display"
+      ],
+      "correct_answer": "battery | RAM"
+    },
+    {
+      "id": 40,
+      "question": "A user wants to synchronize some apps, movies, music, and ebooks between mobile devices. What are the two types of connections used to synchronize this type of data? (Choose two.)",
+      "options": [
+        "cellular",
+        "Wi-Fi",
+        "USB",
+        "Bluetooth",
+        "NFC"
+      ],
+      "correct_answer": "Wi-Fi | USB"
+    },
+    {
+      "id": 41,
+      "question": "A technician is explaining the differences between inkjet printers and laser printers to a customer. Which two comparisons should the technician make? (Choose two.)",
+      "options": [
+        "Inkjet printers are less expensive as an initial purchase than laser printers.",
+        "A laser printer is significantly slower than an inkjet printer.",
+        "Both laser and inkjet printers produce poor quality images.",
+        "The laser printer output is dry after printing, but an inkjet printer may still have wet ink on the paper after printing.",
+        "Inkjet printers use plain paper to make economical prints, but laser printers require more expensive thermal paper."
+      ],
+      "correct_answer": "Inkjet printers are less expensive as an initial purchase than laser printers. | The laser printer output is dry after printing, but an inkjet printer may still have wet ink on the paper after printing."
+    },
+    {
+      "id": 42,
+      "question": "A user chooses the collate option and prints two copies of a three-page document. What is the order in which the pages are printed?",
+      "options": [
+        "pages 1, 1, 2, 2, 3, 3",
+        "pages 1, 2, 3, 1, 2, 3",
+        "pages 3, 3, 2, 2, 1, 1",
+        "pages 3, 2, 1, 3, 2, 1"
+      ],
+      "correct_answer": "pages 1, 2, 3, 1, 2, 3"
+    },
+    {
+      "id": 43,
+      "question": "A color laser printer is used to print documents with graphics and photographs. Users are complaining that printing takes too long. Which component of the printer should be upgraded in order to improve printing performance?",
+      "options": [
+        "CPU",
+        "RAM",
+        "hard drive",
+        "toner cartridges"
+      ],
+      "correct_answer": "RAM"
+    },
+    {
+      "id": 44,
+      "question": "What service is available for Windows to provide software print server services to MAC OS clients?",
+      "options": [
+        "Bonjour Print Server",
+        "Print to XPS",
+        "Apple AirPort Extreme",
+        "Apple AirPrint"
+      ],
+      "correct_answer": "Bonjour Print Server"
+    },
+    {
+      "id": 45,
+      "question": "Which three components are typically found in laser printer maintenance kits? (Choose three.)",
+      "options": [
+        "fuser assembly",
+        "primary corona",
+        "pickup rollers",
+        "transfer rollers",
+        "secondary corona",
+        "paper trays"
+      ],
+      "correct_answer": "fuser assembly | pickup rollers | transfer rollers"
+    },
+    {
+      "id": 46,
+      "question": "A technician is installing a new printer in a cool, damp environment. After the printer cabling is done, and the software and print driver are installed, the printer test page jams. What is the most likely cause of the print failure?",
+      "options": [
+        "incorrect printer driver",
+        "too much humidity",
+        "not enough printer memory",
+        "loose printer cables"
+      ],
+      "correct_answer": "too much humidity"
+    },
+    {
+      "id": 47,
+      "question": "A data center has recently updated a physical server to host multiple operating systems on a single CPU. The data center can now provide each customer with a separate web server without having to allocate an actual discrete server for each customer. What is the networking trend that is being implemented by the data center in this situation?",
+      "options": [
+        "BYOD",
+        "virtualization",
+        "maintaining communication integrity",
+        "online collaboration"
+      ],
+      "correct_answer": "virtualization"
+    },
+    {
+      "id": 48,
+      "question": "How does virtualization help with disaster recovery within a data center?",
+      "options": [
+        "Power is always provided.",
+        "Less energy is consumed.",
+        "Server provisioning is faster.",
+        "Hardware does not have to be identical."
+      ],
+      "correct_answer": "Hardware does not have to be identical."
+    },
+    {
+      "id": 49,
+      "question": "Which two hypervisors are suitable to support virtual machines in a data center? (Choose two.)",
+      "options": [
+        "Virtual PC",
+        "VMware Fusion",
+        "VMware ESX/ESXi",
+        "Oracle VM VirtualBox",
+        "Microsoft Hyper-V 2012"
+      ],
+      "correct_answer": "VMware ESX/ESXi | Microsoft Hyper-V 2012"
+    },
+    {
+      "id": 50,
+      "question": "A web designer accesses a company Windows 10 computer remotely. The designer often needs to simultaneously open multiple applications, such as a web page editor and a graphics editor. Rather than opening them in multiple windows, the designer opens them in different virtual desktops. What technology is being used by the designer?",
+      "options": [
+        "virtual reality",
+        "Windows Virtual Desktop",
+        "cloud-based applications",
+        "virtual desktop infrastructure"
+      ],
+      "correct_answer": "Windows Virtual Desktop"
+    },
+    {
+      "id": 51,
+      "question": "Which Cloud computing service would be best for an organization that needs to collaboratively create applications and deliver them over the web?",
+      "options": [
+        "PaaS",
+        "IaaS",
+        "SaaS",
+        "ITaaS"
+      ],
+      "correct_answer": "PaaS"
+    },
+    {
+      "id": 52,
+      "question": "Which statement describes a feature of SDRAM?",
+      "options": [
+        "It requires constant power to function.",
+        "Its connector always has 240 pins.",
+        "It can process overlapping instructions in parallel.",
+        "It is able to support two writes and two reads per CPU clock cycle."
+      ],
+      "correct_answer": "It can process overlapping instructions in parallel."
+    },
+    {
+      "id": 53,
+      "question": "A technician is troubleshooting a server that displays the error message \"RAID not found\" after a power outage over the weekend. What is a possible cause for this?",
+      "options": [
+        "The BIOS firmware needs updating.",
+        "The FSB settings have changed and are wrong.",
+        "The external RAID controller is not receiving power.",
+        "The CPU multiplier is set too high."
+      ],
+      "correct_answer": "The external RAID controller is not receiving power."
+    },
+    {
+      "id": 54,
+      "question": "A customer brings in a laptop with a touch screen that is not working correctly. The touch screen either does not respond at all or provides unusual or inaccurate responses. What is a possible cause for such behavior?",
+      "options": [
+        "The battery is not seated properly.",
+        "The DC jack is not grounded or is loose.",
+        "The digitizer is faulty.",
+        "Too many apps are open."
+      ],
+      "correct_answer": "Too many apps are open."
+    },
+    {
+      "id": 55,
+      "question": "What are two security risks associated with sharing printers in a corporate environment? (Choose two.)",
+      "options": [
+        "user authentication",
+        "cached files",
+        "document viewing in the print queue",
+        "dumpster diving",
+        "shoulder surfing"
+      ],
+      "correct_answer": "user authentication | cached files"
+    },
+    {
+      "id": 56,
+      "question": "Which change management process component is concerned with the business processes that are affected by changes?",
+      "options": [
+        "assessment",
+        "approval",
+        "implementation",
+        "identification"
+      ],
+      "correct_answer": "assessment"
+    },
+    {
+      "id": 57,
+      "question": "A computer technician is installing a RAID. If the RAID uses mirroring and striping, which RAID level is the technician using?",
+      "options": [
+        "10",
+        "5",
+        "1",
+        "8"
+      ],
+      "correct_answer": "10"
+    },
+    {
+      "id": 58,
+      "question": "A computer technician is installing a RAID. If the RAID uses mirroring, which RAID level is the technician using?",
+      "options": [
+        "1",
+        "6",
+        "5",
+        "3"
+      ],
+      "correct_answer": "1"
+    },
+    {
+      "id": 59,
+      "question": "A computer technician is installing a RAID. If the RAID uses striping with parity, which RAID level is the technician using?",
+      "options": [
+        "5",
+        "6",
+        "1",
+        "4"
+      ],
+      "correct_answer": "5"
+    },
+    {
+      "id": 60,
+      "question": "A computer technician is installing a RAID. If the RAID uses striping, which RAID level is the technician using?",
+      "options": [
+        "0",
+        "6",
+        "5",
+        "2"
+      ],
+      "correct_answer": "0"
+    },
+    {
+      "id": 61,
+      "question": "A computer technician is installing a RAID. If the RAID uses striping with double parity, which RAID level is the technician using?",
+      "options": [
+        "6",
+        "1",
+        "5",
+        "7"
+      ],
+      "correct_answer": "6"
+    },
+    {
+      "id": 62,
+      "question": "A technician is upgrading many PCs used within the company. How should the technician dispose of an old battery?",
+      "options": [
+        "Recycle following local regulations.",
+        "Throw it away.",
+        "Take it to the garbage dump.",
+        "Burn it."
+      ],
+      "correct_answer": "Recycle following local regulations."
+    },
+    {
+      "id": 63,
+      "question": "A technician is upgrading many PCs used within the company. How should the technician dispose of a broken monitor?",
+      "options": [
+        "Bury it.",
+        "Take it to the garbage dump.",
+        "Recycle following local regulations.",
+        "Burn it."
+      ],
+      "correct_answer": "Recycle following local regulations."
+    },
+    {
+      "id": 64,
+      "question": "A technician is upgrading many PCs used within the company. How should the technician dispose of an old power supply?",
+      "options": [
+        "Burn it.",
+        "Take it to the garbage dump.",
+        "Bury it.",
+        "Recycle following local regulations."
+      ],
+      "correct_answer": "Recycle following local regulations."
+    },
+    {
+      "id": 65,
+      "question": "A technician is upgrading many PCs used within the company. How should the technician dispose of old RAM?",
+      "options": [
+        "Destroy it with a hammer.",
+        "Burn it.",
+        "Recycle following local regulations.",
+        "Bury it."
+      ],
+      "correct_answer": "Recycle following local regulations."
+    },
+    {
+      "id": 66,
+      "question": "A technician is upgrading many PCs used within the company. How should the technician dispose of an old motherboard?",
+      "options": [
+        "Seal in a plastic bag before putting in the garbage.",
+        "Give it to your neighbor.",
+        "Recycle following local regulations.",
+        "Destroy it with a hammer."
+      ],
+      "correct_answer": "Recycle following local regulations."
+    },
+    {
+      "id": 67,
+      "question": "A technician is upgrading many PCs used within the company. How should the technician dispose of an old hard drive?",
+      "options": [
+        "Recycle following local regulations.",
+        "Seal in a cardboard box.",
+        "Give it to your neighbor.",
+        "Destroy it with a hammer."
+      ],
+      "correct_answer": "Recycle following local regulations."
+    },
+    {
+      "id": 68,
+      "question": "After continuous morning use, a computer suddenly reboots without the intervention of the user. What are the two most likely hardware parts that could cause this problem? (Choose two.)",
+      "options": [
+        "CPU",
+        "hard drive",
+        "RAID",
+        "BIOS",
+        "power supply",
+        "wireless NIC"
+      ],
+      "correct_answer": "CPU | power supply"
+    },
+    {
+      "id": 69,
+      "question": "A technician has been called in to investigate a problem with the computer rebooting randomly throughout the day. What two pieces of hardware could cause this problem? (Choose two.)",
+      "options": [
+        "power supply",
+        "surge strip",
+        "ROM",
+        "wireless NIC",
+        "motherboard",
+        "CPU"
+      ],
+      "correct_answer": "power supply | CPU"
+    },
+    {
+      "id": 70,
+      "question": "For two days in a row, a user has noticed that the computer reboots several times before it eventually starts. What are two suspect components? (Choose two.)",
+      "options": [
+        "power supply",
+        "BIOS",
+        "ROM",
+        "CPU",
+        "wireless NIC",
+        "motherboard"
+      ],
+      "correct_answer": "power supply | CPU"
+    },
+    {
+      "id": 71,
+      "question": "While a user is working on a spreadsheet, the computer reboots. What are two components that could cause this issue? (Choose two.)",
+      "options": [
+        "CPU",
+        "ROM",
+        "power supply",
+        "BIOS",
+        "RAID",
+        "wireless NIC"
+      ],
+      "correct_answer": "CPU | power supply"
+    },
+    {
+      "id": 72,
+      "question": "A client packet is received by a server. The packet has a destination port number of 137. What service application is the client requesting?",
+      "options": [
+        "SMB/CIFS",
+        "HTTPS",
+        "NetBIOS (NetBT)",
+        "SLP"
+      ],
+      "correct_answer": "NetBIOS (NetBT)"
+    },
+    {
+      "id": 73,
+      "question": "A client packet is received by a server. The packet has a destination port number of 22. What service application is the client requesting?",
+      "options": [
+        "SSH",
+        "SMB/CIFS",
+        "HTTPS",
+        "SLP"
+      ],
+      "correct_answer": "SSH"
+    },
+    {
+      "id": 74,
+      "question": "A client packet is received by a server. The packet has a destination port number of 143. What service application is the client requesting?",
+      "options": [
+        "IMAP",
+        "SMB/CIFS",
+        "HTTPS",
+        "SLP"
+      ],
+      "correct_answer": "IMAP"
+    },
+    {
+      "id": 75,
+      "question": "A client packet is received by a server. The packet has a destination port number of 23. What service application is the client requesting?",
+      "options": [
+        "SMB/CIFS",
+        "Telnet",
+        "HTTPS",
+        "SLP"
+      ],
+      "correct_answer": "Telnet"
+    },
+    {
+      "id": 76,
+      "question": "A client packet is received by a server. The packet has a destination port number of 161. What service application is the client requesting?",
+      "options": [
+        "SMB/CIFS",
+        "HTTPS",
+        "SLP",
+        "SNMP"
+      ],
+      "correct_answer": "SNMP"
+    },
+    {
+      "id": 77,
+      "question": "A client packet is received by a server. The packet has a destination port number of 389. What service application is the client requesting?",
+      "options": [
+        "LDAP",
+        "SMB/CIFS",
+        "HTTPS",
+        "SLP"
+      ],
+      "correct_answer": "LDAP"
+    },
+    {
+      "id": 78,
+      "question": "A client packet is received by a server. The packet has a destination port number of 25. What service application is the client requesting?",
+      "options": [
+        "SMB/CIFS",
+        "HTTPS",
+        "SMTP",
+        "SLP"
+      ],
+      "correct_answer": "SMTP"
+    },
+    {
+      "id": 79,
+      "question": "A client packet is received by a server. The packet has a destination port number of 427. What service application is the client requesting?",
+      "options": [
+        "SMB/CIFS",
+        "SMTP",
+        "DNS",
+        "SLP"
+      ],
+      "correct_answer": "SLP"
+    },
+    {
+      "id": 80,
+      "question": "A client packet is received by a server. The packet has a destination port number of 53. What service application is the client requesting?",
+      "options": [
+        "DNS",
+        "SMTP",
+        "DHCP",
+        "TFTP"
+      ],
+      "correct_answer": "DNS"
+    },
+    {
+      "id": 81,
+      "question": "Which is the compressed format of the IPv6 address 2001:0db8:0000:0000:0000:a0b0:0008:0001?",
+      "options": [
+        "2001:db80:0:1::80:1",
+        "2001:db8::ab8:1:0:1000",
+        "2001:db8::a0b0:8:1",
+        "2001:db80:::1::80:1"
+      ],
+      "correct_answer": "2001:db8::a0b0:8:1"
+    },
+    {
+      "id": 82,
+      "question": "Which is the compressed format of the IPv6 address fe80:09ea:0000:2200:0000:0000:0fe0:0290?",
+      "options": [
+        "fe80:9:20::b000:290",
+        "fe80:9ea0::2020:0:bf:e0:9290",
+        "fe80:9ea0::2020::bf:e0:9290",
+        "fe80:9ea:0:2200::fe0:290"
+      ],
+      "correct_answer": "fe80:9ea:0:2200::fe0:290"
+    },
+    {
+      "id": 83,
+      "question": "Which is the compressed format of the IPv6 address 2002:0042:0010:c400:0000:0000:0000:0909?",
+      "options": [
+        "200:420:110:c4b::910:0:90",
+        "2002:42:10:c400::909",
+        "2002:4200::25:1090:0:99",
+        "2002:42::25:1090:0:99"
+      ],
+      "correct_answer": "2002:42:10:c400::909"
+    },
+    {
+      "id": 84,
+      "question": "Which is the compressed format of the IPv6 address 2002:0420:00c4:1008:0025:0190:0000:0990?",
+      "options": [
+        "2002:4200::25:1090:0:99",
+        "2002:42:10:c400::909",
+        "2002:420:c4:1008:25:190::990",
+        "2002:42::25:1090:0:99"
+      ],
+      "correct_answer": "2002:420:c4:1008:25:190::990"
+    },
+    {
+      "id": 85,
+      "question": "Which is the compressed format of the IPv6 address 2001:0db8:0000:0000:0ab8:0001:0000:1000?",
+      "options": [
+        "2001:db8::a0b0:8:1",
+        "2001:db8::ab8:1:0:1000",
+        "2001:db8:1::ab8:0:1",
+        "2001:db8:0:1::8:1"
+      ],
+      "correct_answer": "2001:db8::ab8:1:0:1000"
+    },
+    {
+      "id": 86,
+      "question": "Which is the compressed format of the IPv6 address fe80:0000:0000:0000:0220:0b3f:f0e0:0029?",
+      "options": [
+        "fe80::220:b3f:f0e0:29",
+        "fe80:9ea0::2020:0:bf:e0:9290",
+        "fe80:9ea:0:2200::fe0:290",
+        "fe80:9ea0::2020::bf:e0:9290"
+      ],
+      "correct_answer": "fe80::220:b3f:f0e0:29"
+    },
+    {
+      "id": 87,
+      "question": "Which is the compressed format of the IPv6 address fe80:9ea0:0000:2020:0000:00bf:00e0:9290?",
+      "options": [
+        "fe80:9ea0::2020:0:bf:e0:9290",
+        "fe80:9:20::b000:290",
+        "fe80:9ea:0:2200::fe0:290",
+        "fe80::0220:0b3f:f0e0:0029"
+      ],
+      "correct_answer": "fe80:9ea0::2020:0:bf:e0:9290"
+    },
+    {
+      "id": 88,
+      "question": "What ACPI power state describes when the CPU and RAM are off and the contents of RAM have been saved to a temporary file on the hard drive?",
+      "options": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "correct_answer": "S4"
+    },
+    {
+      "id": 89,
+      "question": "What ACPI power state describes when the CPU and RAM are still receiving power but unused devices are powered down?",
+      "options": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "correct_answer": "S1"
+    },
+    {
+      "id": 90,
+      "question": "What ACPI power state describes when the CPU is off, but the RAM is refreshed?",
+      "options": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "correct_answer": "S2"
+    },
+    {
+      "id": 91,
+      "question": "What ACPI power state describes when the computer is off?",
+      "options": [
+        "S1",
+        "S2",
+        "S3",
+        "S5"
+      ],
+      "correct_answer": "S5"
+    },
+    {
+      "id": 92,
+      "question": "What ACPI power state describes when the CPU is off and the RAM is set to a slow refresh rate, often called suspend mode?",
+      "options": [
+        "S3",
+        "S4",
+        "S2",
+        "S5"
+      ],
+      "correct_answer": "S3"
+    },
+    {
+      "id": 93,
+      "question": "What ACPI power state describes when the computer is on and the CPU is running?",
+      "options": [
+        "S0",
+        "S4",
+        "S3",
+        "S5"
+      ],
+      "correct_answer": "S0"
+    },
+    {
+      "id": 94,
+      "question": "A reporter is trying to print several high resolution photographs but the color laser printer is going extremely slowly. What should the technician do to resolve the issue?",
+      "options": [
+        "Rewind the ribbon.",
+        "Add more RAM to the printer.",
+        "Connect the printer using wireless.",
+        "Install a USB hub.",
+        "Update the BIOS."
+      ],
+      "correct_answer": "Add more RAM to the printer."
+    },
+    {
+      "id": 95,
+      "question": "A new printer has just been installed deep in a mine. When test pages are printed, the paper constantly jams. What should the technician do to resolve the issue?",
+      "options": [
+        "Clean the printer.",
+        "Connect the printer using wireless.",
+        "Install a USB hub.",
+        "Move the printer to a less-humid location.",
+        "Update the BIOS."
+      ],
+      "correct_answer": "Move the printer to a less-humid location."
+    },
+    {
+      "id": 96,
+      "question": "A user complains that recently every printed document has vertical lines and streaks on the paper. What should the technician do to resolve the issue?",
+      "options": [
+        "Clean the printer.",
+        "Connect the printer using wireless.",
+        "Install a USB hub.",
+        "Distribute the toner more evenly within the cartridge.",
+        "Update the BIOS."
+      ],
+      "correct_answer": "Distribute the toner more evenly within the cartridge."
+    },
+    {
+      "id": 97,
+      "question": "A school is installing a new shared printer but the printer is not showing up on the list of available printers. What should the technician do to resolve the issue?",
+      "options": [
+        "Reset the page counter.",
+        "Connect the printer using wireless.",
+        "Install a USB hub.",
+        "Manually add the printer IP address.",
+        "Update the BIOS."
+      ],
+      "correct_answer": "Manually add the printer IP address."
+    },
+    {
+      "id": 98,
+      "question": "Employees are complaining that they send print jobs to a newly installed printer but the print jobs never print. What should the technician do to resolve the issue?",
+      "options": [
+        "Check the vibration of the crystals.",
+        "Connect the printer using wireless.",
+        "Install a USB hub.",
+        "Update the BIOS.",
+        "The printer is connected to the wrong port. Modify the port."
+      ],
+      "correct_answer": "The printer is connected to the wrong port. Modify the port."
+    },
+    {
+      "id": 99,
+      "question": "Users have noticed that the colors on their printed documents are different from the colors that they see on their computer screens. What should the technician do to resolve the issue?",
+      "options": [
+        "Calibrate the printer.",
+        "Install a USB hub.",
+        "Reset the page counter.",
+        "Check the vibration of the crystals.",
+        "Connect the printer using wireless."
+      ],
+      "correct_answer": "Calibrate the printer."
+    },
+    {
+      "id": 100,
+      "question": "A technician has just completed a preventive maintenance on the department printer. Users are now complaining that the printer is no longer available. What should the technician do to resolve the issue?",
+      "options": [
+        "Check that the printer is plugged into a power source.",
+        "Connect the printer using wireless.",
+        "Reset the page counter.",
+        "Check the vibration of the crystals.",
+        "Install a USB hub."
+      ],
+      "correct_answer": "Check that the printer is plugged into a power source."
+    },
+    {
+      "id": 101,
+      "question": "Employees of a small business are complaining that the printer is printing faded images. What should the technician do to resolve the issue?",
+      "options": [
+        "Update the BIOS.",
+        "Replace the toner cartridge.",
+        "Reset the page counter.",
+        "Check the vibration of the crystals.",
+        "Install a USB hub."
+      ],
+      "correct_answer": "Replace the toner cartridge."
+    },
+    {
+      "id": 102,
+      "question": "A photographer is complaining about the following printer issue: The printer issues a \"Document failed to print\" message. What are two possible causes of this issue? (Choose two.)",
+      "options": [
+        "The printer is no longer shared.",
+        "The paper tray is flimsy.",
+        "The laser printer is emitting too much radiation.",
+        "A cable is loose or disconnected.",
+        "The wrong printer type has been selected."
+      ],
+      "correct_answer": "The printer is no longer shared. | A cable is loose or disconnected."
+    },
+    {
+      "id": 103,
+      "question": "A reporter is complaining about the following printer issue: The printer is printing unknown characters. What are two possible causes of this issue? (Choose two.)",
+      "options": [
+        "The wrong or an outdated printer driver is installed.",
+        "The printer has a loose connection.",
+        "The laser printer is emitting too much radiation.",
+        "The printer has been installed on the wrong port.",
+        "The paper tray is flimsy."
+      ],
+      "correct_answer": "The wrong or an outdated printer driver is installed. | The printer has a loose connection."
+    },
+    {
+      "id": 104,
+      "question": "A manager is complaining about the following printer issue: The printer is printing incorrect colors. What are two possible causes of this issue? (Choose two.)",
+      "options": [
+        "The print heads might need to be cleaned and calibrated.",
+        "The printer is using the wrong cable.",
+        "An incorrect cartridge could be installed.",
+        "The printer has been installed on the wrong port.",
+        "The paper tray is flimsy."
+      ],
+      "correct_answer": "The print heads might need to be cleaned and calibrated. | An incorrect cartridge could be installed."
+    },
+    {
+      "id": 105,
+      "question": "A technician is complaining about the following printer issue: The print appears faded on the paper. What are two possible causes of this issue? (Choose two.)",
+      "options": [
+        "The toner cartridge is low.",
+        "The wrong printer type has been selected.",
+        "The printer has been installed on the wrong port.",
+        "The paper might be incompatible with the printer.",
+        "The paper tray is flimsy."
+      ],
+      "correct_answer": "The toner cartridge is low. | The paper might be incompatible with the printer."
+    },
+    {
+      "id": 106,
+      "question": "A librarian is complaining about the following printer issue: The printer control panel displays no image. What are two possible causes of this issue? (Choose two.)",
+      "options": [
+        "The room temperature is above normal.",
+        "The printer has been installed on the wrong port.",
+        "The contrast of the screen may be set too low.",
+        "The printer is not turned on.",
+        "The paper tray is flimsy."
+      ],
+      "correct_answer": "The contrast of the screen may be set too low. | The printer is not turned on."
+    },
+    {
+      "id": 107,
+      "question": "A teacher is complaining about the following printer issue: The paper is creased after printing. What are two possible causes of this issue? (Choose two.)",
+      "options": [
+        "Print jobs are being sent to the wrong printer.",
+        "The printer has been installed on the wrong port.",
+        "The paper tray is flimsy.",
+        "The paper-feed tray might not be firmly adjusted against the edges of the printer.",
+        "The paper might be loaded incorrectly."
+      ],
+      "correct_answer": "The paper-feed tray might not be firmly adjusted against the edges of the printer. | The paper might be loaded incorrectly."
+    },
+    {
+      "id": 108,
+      "question": "A receptionist is complaining about the following printer issue: My impact printer produces faded or light characters. What are two possible causes of this issue? (Choose two.)",
+      "options": [
+        "The ribbon may be worn out.",
+        "The print queue is overloaded.",
+        "The printer has been installed on the wrong port.",
+        "The ribbon may be damaged.",
+        "The paper tray is flimsy."
+      ],
+      "correct_answer": "The ribbon may be worn out. | The ribbon may be damaged."
+    },
+    {
+      "id": 109,
+      "question": "A photographer is complaining about the following printer issue: The paper is not being fed into the printer. What are two possible causes of this issue? (Choose two.)",
+      "options": [
+        "The paper may be wrinkled.",
+        "The paper tray is flimsy.",
+        "The printer has been installed on the wrong port.",
+        "The printer service is stopped or not working properly.",
+        "The printer could be set to print to a different paper size than is currently loaded."
+      ],
+      "correct_answer": "The paper may be wrinkled. | The printer could be set to print to a different paper size than is currently loaded."
+    },
+    {
+      "id": 110,
+      "question": "A laptop has an NVMe drive (C:) and a mechanical hard drive (D:). When the user tries to save a spreadsheet to the D: drive, the user notices that the D: drive is not there. What should the technician do to see if the drive is recognized by the operating system?",
+      "options": [
+        "Use the Msconfig utility.",
+        "Boot into UEFI/BIOS and see if the drive appears.",
+        "Use the Disk Management Control Panel.",
+        "Remove the drive and attach it to the SATA port used by the SSD. Reboot the computer and see if the drive is recognized."
+      ],
+      "correct_answer": "Use the Disk Management Control Panel."
+    },
+    {
+      "id": 111,
+      "question": "A computer has two mechanical hard drives. The second drive (D:) is used for data storage. When trying to save an email attachment to the local hard drive, the user notices that the D: drive is not an option. What should the technician do to see if the drive is recognized by the operating system?",
+      "options": [
+        "Use File Explorer.",
+        "Swap the data cables of the mechanical drive and the SSD.",
+        "Open a web browser and type the following: http://127.0.0.1. Verify if both drives appear in the list.",
+        "Bring up a command prompt and type ipconfig."
+      ],
+      "correct_answer": "Use File Explorer."
+    },
+    {
+      "id": 112,
+      "question": "A user reports that a drive is no longer there. The technician asks the user to demonstrate the problem. Within the application, the user demonstrates that the drive, that was present in the save options yesterday, is now no longer an option. What should the technician do to see if the drive is recognized by the operating system?",
+      "options": [
+        "Check the Startup folder.",
+        "Bring up a command prompt and type ipconfig.",
+        "Use Device Manager.",
+        "Swap the data cables of the mechanical drive and the SSD."
+      ],
+      "correct_answer": "Use Device Manager."
+    },
+    {
+      "id": 113,
+      "question": "A computer has an SSD for the operating system and applications and uses another mechanical hard drive for data storage. The user reports that data can no longer be saved to the mechanical hard drive. What should the technician do to see if the drive is recognized by the operating system?",
+      "options": [
+        "Use File Explorer.",
+        "Swap the data cables of the mechanical drive and the SSD.",
+        "Open a web browser and type the following: http://127.0.0.1. Verify if both drives appear in the list.",
+        "Bring up a command prompt and type ipconfig."
+      ],
+      "correct_answer": "Use File Explorer."
+    },
+    {
+      "id": 114,
+      "question": "A computer has an SSD for the operating system and applications and uses another mechanical hard drive for data storage. The user reports that data can no longer be saved to the mechanical hard drive. What should the technician do to see if the drive is recognized by the operating system? [Case 2]",
+      "options": [
+        "Open a web browser and type the following: http://127.0.0.1. Verify if both drives appear in the list.",
+        "Remove the drive and attach it to the SATA port used by the SSD. Reboot the computer and see if the drive is recognized.",
+        "Bring up a command prompt and type ipconfig.",
+        "Use Device Manager."
+      ],
+      "correct_answer": "Use Device Manager."
+    },
+    {
+      "id": 115,
+      "question": "A technician is working on a laptop and the GPS is not functioning. What is a probable cause for this situation?",
+      "options": [
+        "The GPU is overheating.",
+        "The screen resolution needs recalibration.",
+        "A service is disabled.",
+        "The screen refresh rate is too low."
+      ],
+      "correct_answer": "A service is disabled."
+    },
+    {
+      "id": 116,
+      "question": "A technician is working on a laptop and an app is not loading. What is a probable cause for this situation?",
+      "options": [
+        "More than one app is open simultaneously.",
+        "The screen resolution needs recalibration.",
+        "The screen refresh rate is too low.",
+        "An app needs to be restarted."
+      ],
+      "correct_answer": "An app needs to be restarted."
+    },
+    {
+      "id": 117,
+      "question": "A technician is working on a laptop and an app is not responding. What is a probable cause for this situation?",
+      "options": [
+        "An app needs to be restarted.",
+        "The battery is low.",
+        "The GPU is overheating.",
+        "Wi-Fi is turned off."
+      ],
+      "correct_answer": "An app needs to be restarted."
+    },
+    {
+      "id": 118,
+      "question": "A technician is working on a laptop and an error message about decryption appears when opening an email. What is a probable cause for this situation?",
+      "options": [
+        "The display setting is incorrect.",
+        "The GPU is overheating.",
+        "A digital certificate is missing.",
+        "Wi-Fi is turned off."
+      ],
+      "correct_answer": "A digital certificate is missing."
+    },
+    {
+      "id": 119,
+      "question": "Students who use the same printer are complaining that recently printed documents contain unknown characters. What should the technician do to resolve the issue?",
+      "options": [
+        "Re-install the printer driver.",
+        "Power cycle the printer.",
+        "Check the vibration of the crystals.",
+        "Install a USB hub.",
+        "Reset the page counter."
+      ],
+      "correct_answer": "Re-install the printer driver."
+    },
+    {
+      "id": 120,
+      "question": "An office assistant in a law firm is trying to print many large legal documents but is getting \"memory overload\" error messages from the printer. What should the technician do to resolve the issue?",
+      "options": [
+        "Replace the pickup roller.",
+        "Check the vibration of the crystals.",
+        "Install a USB hub.",
+        "Connect the printer using wireless.",
+        "Add more memory to the printer."
+      ],
+      "correct_answer": "Add more memory to the printer."
+    },
+    {
+      "id": 121,
+      "question": "A technician is working on a laptop and the GPS is not functioning. What is a probable cause for this situation?",
+      "options": [
+        "Airplane mode is turned on.",
+        "The screen refresh rate is too low.",
+        "Wi-Fi is turned off.",
+        "The screen resolution needs recalibration."
+      ],
+      "correct_answer": "Airplane mode is turned on."
+    },
+    {
+      "id": 122,
+      "question": "A technician is working on a laptop and the GPS is not functioning. What is a probable cause for this situation?",
+      "options": [
+        "The screen refresh rate is too low.",
+        "The GPU is overheating.",
+        "Airplane mode is turned on.",
+        "The screen resolution needs recalibration."
+      ],
+      "correct_answer": "Airplane mode is turned on."
+    },
+    {
+      "id": 123,
+      "question": "A user is complaining that the printer is printing pages with no image on them. What should the technician do to resolve the issue?",
+      "options": [
+        "Replace the toner cartridge.",
+        "Rewind the ribbon.",
+        "Clean the printer.",
+        "Reset the page counter.",
+        "Check the vibration of the crystals."
+      ],
+      "correct_answer": "Replace the toner cartridge."
+    },
+    {
+      "id": 124,
+      "question": "A software engineer is involved in the development of an application. For usability tests, the engineer needs to make sure that the application will work in both Windows 10 Enterprise and Windows 11 environments. The features and functions must be verified in the actual OS environment. The engineer is using a Windows 10 Pro workstation. What two technologies can help the engineer achieve the usability tests? (Choose two.)",
+      "options": [
+        "dual boot",
+        "two separate CPUs",
+        "storage redundancy",
+        "client-side virtualization",
+        "two separate hard disks"
+      ],
+      "correct_answer": "dual boot | client-side virtualization"
+    },
+    {
+      "id": 125,
+      "question": "Which protocol is used by Windows for file and printer sharing?",
+      "options": [
+        "SMB",
+        "SMTP",
+        "HTTPS",
+        "IMAP"
+      ],
+      "correct_answer": "SMB"
+    },
+    {
+      "id": 126,
+      "question": "Which laptop LCD technology uses tilting crystals to provide a much higher contrast ratio than other types?",
+      "options": [
+        "Vertical alignment (VA)",
+        "In-Plane switching (IPS)",
+        "Twisted Nematic (TN)",
+        "Organic light-emitting diode (OLED)"
+      ],
+      "correct_answer": "Vertical alignment (VA)"
+    },
+    {
+      "id": 127,
+      "question": "What is the purpose of the Server Message Block (SMB) protocol on Windows networks?",
+      "options": [
+        "web browsing",
+        "desktop management",
+        "file sharing",
+        "email services"
+      ],
+      "correct_answer": "file sharing"
+    }
+  ]
+}
