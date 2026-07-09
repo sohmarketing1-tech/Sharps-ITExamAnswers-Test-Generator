@@ -1257,3 +1257,115 @@ body {
         width: 100%;
     }
 }
+
+/* Matching question styles */
+.matching-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.matching-terms,
+.matching-definitions {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.matching-terms h4,
+.matching-definitions h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.matching-term {
+    position: relative;
+    background: #f0f4ff;
+    border: 1px solid #c8d6ff;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    cursor: grab;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.matching-term.assigned {
+    opacity: 0.55;
+}
+
+.matching-term:active {
+    cursor: grabbing;
+}
+
+.matching-term.dragging {
+    opacity: 0.5;
+}
+
+.matching-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.matching-row:last-child {
+    border-bottom: none;
+}
+
+.matching-definition-text {
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.matching-terms-in-definition {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 1.5rem;
+}
+
+.matching-terms-in-definition .matching-term {
+    margin-bottom: 0;
+}
+
+.matching-drop-zone {
+    min-height: 2.5rem;
+    padding: 0.5rem;
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.matching-drop-zone.drag-over {
+    border-color: #007bff;
+    background: #e6f2ff;
+}
+
+.matching-clear-btn {
+    background: transparent;
+    border: none;
+    color: #dc3545;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.25rem;
+}
+
+@media (max-width: 600px) {
+    .matching-container {
+        grid-template-columns: 1fr;
+    }
+}

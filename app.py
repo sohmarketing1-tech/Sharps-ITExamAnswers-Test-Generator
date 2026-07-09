@@ -549,6 +549,14 @@ def generate_test():
             "options": q["options"],
             "_correct_answer": q["correct_answer"],
         }
+        if q.get("type"):
+            item["type"] = q["type"]
+        if q.get("terms"):
+            item["terms"] = q["terms"]
+        if q.get("definitions"):
+            item["definitions"] = q["definitions"]
+        if q.get("correct_pairs"):
+            item["correct_pairs"] = q["correct_pairs"]
         if q.get("image"):
             item["image"] = q["image"]
         quiz.append(item)
@@ -556,6 +564,28 @@ def generate_test():
         "title": get_current_title() if not filename else None,
         "quiz": quiz,
     })
+
+
+def _is_answer_correct(q: dict, selected) -> bool:
+    """Return True if the selected answer matches the question's correct answer.
+
+    Supports multiple-choice answers (pipe-separated correct strings) and
+    matching questions (term -> definition mapping).
+    """
+    if q.get("type") == "matching":
+        correct_pairs = q.get("correct_pairs", {})
+        user_pairs = selected if isinstance(selected, dict) else {}
+        if len(user_pairs) != len(correct_pairs):
+            return False
+        for term, definition in correct_pairs.items():
+            if user_pairs.get(term) != definition:
+                return False
+        return bool(correct_pairs)
+
+    correct_key = q.get("correct_answer") or q.get("_correct_answer", "")
+    correct_set = set(a.strip() for a in correct_key.split("|") if a.strip())
+    selected_set = set(s.strip() for s in (selected if isinstance(selected, list) else [selected]) if s)
+    return selected_set == correct_set
 
 
 @app.route("/api/score", methods=["POST"])
@@ -573,28 +603,37 @@ def score_test():
             questions.append(normalized)
     else:
         questions = get_current_questions()
-    id_map = {q["id"]: q for q in questions}
 
     results = []
     correct_count = 0
-    for qid_str, selected in answers.items():
-        qid = int(qid_str)
-        q = id_map.get(qid)
-        if not q:
-            continue
-        correct_set = set(a.strip() for a in q["correct_answer"].split("|"))
-        selected_set = set(s.strip() for s in (selected if isinstance(selected, list) else [selected]))
-        is_correct = selected_set == correct_set
+    # Iterate over the quiz in the order the questions were presented, so the
+    # review panel matches the test order rather than numeric answer-key order.
+    for q in questions:
+        qid = q["id"]
+        selected = answers.get(str(qid))
+        is_correct = _is_answer_correct(q, selected)
         if is_correct:
             correct_count += 1
-        results.append({
+        if q.get("type") == "matching":
+            selected_display = selected if isinstance(selected, dict) else {}
+            correct_display = q.get("correct_pairs", {})
+        else:
+            correct_key = q.get("correct_answer") or q.get("_correct_answer", "")
+            selected_display = sorted(set(s.strip() for s in (selected if isinstance(selected, list) else [selected]) if s))
+            correct_display = sorted(set(a.strip() for a in correct_key.split("|") if a.strip()))
+        result = {
             "id": qid,
             "question": q["question"],
-            "options": q["options"],
-            "selected": sorted(selected_set),
-            "correct_answer": sorted(correct_set),
+            "options": q.get("options", []),
+            "selected": selected_display,
+            "correct_answer": correct_display,
             "is_correct": is_correct,
-        })
+        }
+        if q.get("type") == "matching":
+            result["type"] = "matching"
+            result["terms"] = q.get("terms", [])
+            result["correct_pairs"] = q.get("correct_pairs", {})
+        results.append(result)
 
     total = len(results)
     score = round((correct_count / total) * 100, 2) if total else 0
@@ -797,6 +836,14 @@ def mastery_batch():
             "options": q["options"],
             "_correct_answer": q["correct_answer"],
         }
+        if q.get("type"):
+            item["type"] = q["type"]
+        if q.get("terms"):
+            item["terms"] = q["terms"]
+        if q.get("definitions"):
+            item["definitions"] = q["definitions"]
+        if q.get("correct_pairs"):
+            item["correct_pairs"] = q["correct_pairs"]
         if q.get("image"):
             item["image"] = q["image"]
         quiz.append(item)
@@ -830,10 +877,7 @@ def mastery_submit():
         q = id_map.get(qid)
         if not q:
             continue
-        correct_key = q.get("correct_answer") or q.get("_correct_answer", "")
-        correct_set = set(a.strip() for a in correct_key.split("|"))
-        selected_set = set(s.strip() for s in (selected if isinstance(selected, list) else [selected]))
-        is_correct = selected_set == correct_set
+        is_correct = _is_answer_correct(q, selected)
         entry = _get_question_entry(exam, str(qid))
         if _update_mastery_entry(entry, is_correct):
             newly_mastered += 1

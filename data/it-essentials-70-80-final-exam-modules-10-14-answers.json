@@ -1596,7 +1596,7 @@
     },
     {
       "id": 144,
-      "question": "A system administrator has been asked to protect the sensitive data on Windows 10 computers of all management employees. Which Windows 10 feature can be used to selectively encrypt individual files within the user accounts of each manager?​",
+      "question": "A system administrator has been asked to protect the sensitive data on Windows 10 computers of all management employees. Which Windows 10 feature can be used to selectively encrypt individual files within the user accounts of each manager?\u200b",
       "options": [
         "EFS",
         "BitLocker",
@@ -1672,6 +1672,242 @@
         "Google Chrome does not automatically save web credentials."
       ],
       "correct_answer": "Google Chrome does not automatically save web credentials."
+    },
+    {
+      "id": 151,
+      "question": "Match the Windows 10 boot sequence after the boot manager (bootmgr.exe) loads.",
+      "type": "matching",
+      "terms": [
+        "Step one",
+        "Step two",
+        "Step three",
+        "Step four",
+        "Step five"
+      ],
+      "definitions": [
+        "the Windows boot loader winload.exe loads",
+        "ntoskrnl.exe and hal.dll are loaded",
+        "winload.exeis loaded",
+        "ntoskrnl.exe loads and executes",
+        "winlogon.exe is loaded and executes the logon process"
+      ],
+      "correct_pairs": {
+        "Step one": "the Windows boot loader winload.exe loads",
+        "Step two": "ntoskrnl.exe and hal.dll are loaded",
+        "Step three": "winload.exeis loaded",
+        "Step four": "ntoskrnl.exe loads and executes",
+        "Step five": "winlogon.exe is loaded and executes the logon process"
+      },
+      "options": [],
+      "correct_answer": "Step one: the Windows boot loader winload.exe loads; Step two: ntoskrnl.exe and hal.dll are loaded; Step three: winload.exeis loaded; Step four: ntoskrnl.exe loads and executes; Step five: winlogon.exe is loaded and executes the logon process"
+    },
+    {
+      "id": 152,
+      "question": "Match the correct API with its function within the Windows 10 environment.",
+      "type": "matching",
+      "terms": [
+        "Windows APIs",
+        "DirectX",
+        "Open Graphics Library (OpenGL)",
+        "Java APIs"
+      ],
+      "definitions": [
+        "This is a cross-platform standard specification for multimedia graphics.",
+        "This is a collection of APIs related to multimedia tasks for Microsoft Windows.",
+        "This allows applications from older versions of Windows to operate on newer versions.",
+        "This is a collection of APIs related to the development of Java programming."
+      ],
+      "correct_pairs": {
+        "Windows APIs": "This allows applications from older versions of Windows to operate on newer versions.",
+        "DirectX": "This is a collection of APIs related to multimedia tasks for Microsoft Windows.",
+        "Open Graphics Library (OpenGL)": "This is a cross-platform standard specification for multimedia graphics.",
+        "Java APIs": "This is a collection of APIs related to the development of Java programming."
+      },
+      "options": [],
+      "correct_answer": "Windows APIs: This allows applications from older versions of Windows to operate on newer versions.; DirectX: This is a collection of APIs related to multimedia tasks for Microsoft Windows.; Open Graphics Library (OpenGL): This is a cross-platform standard specification for multimedia graphics.; Java APIs: This is a collection of APIs related to the development of Java programming."
+    },
+    {
+      "id": 153,
+      "question": "Match the tabs of the Windows 10 Task Manager to their functions. (Not all options are used.)",
+      "type": "matching",
+      "terms": [
+        "Performance",
+        "Startup",
+        "Services",
+        "Users",
+        "Details"
+      ],
+      "definitions": [
+        "Allows for a process to have its affinity set.",
+        "Displays resource utilization information for CPU, memory, network, disk, and others.",
+        "Allows programs that are running on system startup to be disabled.",
+        "Allows for a start, stop or restart of a particular service."
+      ],
+      "correct_pairs": {
+        "Performance": "Displays resource utilization information for CPU, memory, network, disk, and others.",
+        "Startup": "Allows programs that are running on system startup to be disabled.",
+        "Services": "Allows for a start, stop or restart of a particular service.",
+        "Details": "Allows for a process to have its affinity set."
+      },
+      "options": [],
+      "correct_answer": "Performance: Displays resource utilization information for CPU, memory, network, disk, and others.; Startup: Allows programs that are running on system startup to be disabled.; Services: Allows for a start, stop or restart of a particular service.; Details: Allows for a process to have its affinity set."
+    },
+    {
+      "id": 154,
+      "question": "Match the drive status indicators in the Disk Management utility with their description. (Not all options are used.)",
+      "type": "matching",
+      "terms": [
+        "Offline",
+        "Healthy",
+        "Initializing",
+        "Missing",
+        "Not Initialized",
+        "Online"
+      ],
+      "definitions": [
+        "a volume that is functioning properly",
+        "a basic disk that is being converted into a dynamic disk",
+        "a disk that does not contain a valid signature",
+        "a basic or dynamic disk that is accessible and shows no problems",
+        "a dynamic disk that is corrupted or unavailable"
+      ],
+      "correct_pairs": {
+        "Healthy": "a volume that is functioning properly",
+        "Initializing": "a basic disk that is being converted into a dynamic disk",
+        "Not Initialized": "a disk that does not contain a valid signature",
+        "Online": "a basic or dynamic disk that is accessible and shows no problems",
+        "Offline": "a dynamic disk that is corrupted or unavailable"
+      },
+      "options": [],
+      "correct_answer": "Healthy: a volume that is functioning properly.; Initializing: a basic disk that is being converted into a dynamic disk.; Not Initialized: a disk that does not contain a valid signature.; Online: a basic or dynamic disk that is accessible and shows no problems.; Offline: a dynamic disk that is corrupted or unavailable."
+    },
+    {
+      "id": 155,
+      "question": "Match the wireless security settings to the description. (Not all options are used.)",
+      "type": "matching",
+      "terms": [
+        "Open",
+        "WEP",
+        "WPA2-Personal",
+        "WPA2-Enterprise"
+      ],
+      "definitions": [
+        "The Advanced Encryption Standard (AES) cipher and preshared keys (PSKs) are used to encrypt communications.",
+        "Authentication is passed from the access point to a centralized authentication RADIUS server.",
+        "Data is sent unencrypted with no authentication."
+      ],
+      "correct_pairs": {
+        "WPA2-Personal": "The Advanced Encryption Standard (AES) cipher and preshared keys (PSKs) are used to encrypt communications.",
+        "WPA2-Enterprise": "Authentication is passed from the access point to a centralized authentication RADIUS server.",
+        "Open": "Data is sent unencrypted with no authentication."
+      },
+      "options": [],
+      "correct_answer": "WPA2-Personal: The Advanced Encryption Standard (AES) cipher and preshared keys (PSKs) are used to encrypt communications.; WPA2-Enterprise: Authentication is passed from the access point to a centralized authentication RADIUS server.; Open: Data is sent unencrypted with no authentication."
+    },
+    {
+      "id": 156,
+      "question": "Match the individual languages with their corresponding classification.",
+      "type": "matching",
+      "terms": [
+        "C++",
+        "VBScript",
+        "Java",
+        "C#",
+        "Python",
+        "JavaScript"
+      ],
+      "definitions": [
+        "Scripting Languages",
+        "Compiled Languages"
+      ],
+      "correct_pairs": {
+        "C++": "Compiled Languages",
+        "VBScript": "Scripting Languages",
+        "Java": "Compiled Languages",
+        "C#": "Compiled Languages",
+        "Python": "Scripting Languages",
+        "JavaScript": "Scripting Languages"
+      },
+      "options": [],
+      "correct_answer": "C++: Compiled Languages; VBScript: Scripting Languages; Java: Compiled Languages; C#: Compiled Languages; Python: Scripting Languages; JavaScript: Scripting Languages"
+    },
+    {
+      "id": 157,
+      "question": "Match the file system with the respective description.",
+      "type": "matching",
+      "terms": [
+        "NTFS",
+        "exFAT",
+        "FAT32",
+        "CDFS",
+        "NFS"
+      ],
+      "definitions": [
+        "Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.",
+        "Usually used on flash drives as it can support files larger than 4GB.",
+        "Supports partition sizes up to 2TB or 2,048GB.",
+        "Created specifically for optical disk media.",
+        "A network-based file system that allows file access over the network."
+      ],
+      "correct_pairs": {
+        "NTFS": "Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.",
+        "exFAT": "Usually used on flash drives as it can support files larger than 4GB.",
+        "FAT32": "Supports partition sizes up to 2TB or 2,048GB.",
+        "CDFS": "Created specifically for optical disk media.",
+        "NFS": "A network-based file system that allows file access over the network."
+      },
+      "options": [],
+      "correct_answer": "NTFS: Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.; exFAT: Usually used on flash drives as it can support files larger than 4GB.; FAT32: Supports partition sizes up to 2TB or 2,048GB.; CDFS: Created specifically for optical disk media.; NFS: A network-based file system that allows file access over the network."
+    },
+    {
+      "id": 158,
+      "question": "Match the steps that will lead to the loading of bootmgr.exe in a 32 bit Windows 10 environment.",
+      "type": "matching",
+      "terms": [
+        "Step 1",
+        "Step 2",
+        "Step 3",
+        "Step 4"
+      ],
+      "definitions": [
+        "POST executed",
+        "CMOS configuration settings loaded",
+        "MBR",
+        "VBR"
+      ],
+      "correct_pairs": {
+        "Step 1": "POST executed",
+        "Step 2": "CMOS configuration settings loaded",
+        "Step 3": "MBR",
+        "Step 4": "VBR"
+      },
+      "options": [],
+      "correct_answer": "Step 1: POST executed; Step 2: CMOS configuration settings loaded; Step 3: MBR; Step 4: VBR"
+    },
+    {
+      "id": 159,
+      "question": "Select the Windows 10 version that best meets the described use.",
+      "type": "matching",
+      "terms": [
+        "Windows 10 Home",
+        "Windows 10 Education",
+        "Windows 10 Pro",
+        "Windows 10 Enterprise"
+      ],
+      "definitions": [
+        "Used for personal computing and gaming with built-in features like family safety and parental control.",
+        "Used in an academic environment with volume licensing options.",
+        "Used in small business environments with built-in security, productivity, and management features.",
+        "Used in large to mid-size business environments requiring advanced security and management features."
+      ],
+      "correct_pairs": {
+        "Windows 10 Home": "Used for personal computing and gaming with built-in features like family safety and parental control.",
+        "Windows 10 Education": "Used in an academic environment with volume licensing options.",
+        "Windows 10 Pro": "Used in small business environments with built-in security, productivity, and management features.",
+        "Windows 10 Enterprise": "Used in large to mid-size business environments requiring advanced security and management features."
+      },
+      "options": [],
+      "correct_answer": "Windows 10 Home: Used for personal computing and gaming with built-in features like family safety and parental control.; Windows 10 Education: Used in an academic environment with volume licensing options.; Windows 10 Pro: Used in small business environments with built-in security, productivity, and management features.; Windows 10 Enterprise: Used in large to mid-size business environments requiring advanced security and management features."
     }
   ]
 }

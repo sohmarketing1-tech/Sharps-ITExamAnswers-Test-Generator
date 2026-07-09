@@ -481,7 +481,7 @@ async function startMasterySession() {
         state.answers = {};
         state.lastSavedAnswers = {};
         state.testQuestions.forEach((q) => {
-            state.answers[q.id] = [];
+            state.answers[q.id] = q.type === "matching" ? {} : [];
         });
         state.currentIndex = 0;
         state.secondsElapsed = 0;
@@ -504,10 +504,13 @@ async function submitMastery() {
     clearTimeout(masterySaveTimeout);
     const currentQ = state.testQuestions[state.currentIndex];
     if (currentQ) {
-        const current = state.answers[currentQ.id] || [];
-        const saved = state.lastSavedAnswers[currentQ.id] || [];
-        const same = current.length === saved.length && current.slice().sort().join("|") === saved.slice().sort().join("|");
-        if (current.length && !same) {
+        const current = state.answers[currentQ.id];
+        const saved = state.lastSavedAnswers[currentQ.id];
+        const same = JSON.stringify(current) === JSON.stringify(saved);
+        const hasAnswer = Array.isArray(current)
+            ? current.length > 0
+            : current && typeof current === "object" && Object.keys(current).length > 0;
+        if (hasAnswer && !same) {
             await saveMasteryAnswer(currentQ.id);
         }
     }
@@ -529,21 +532,54 @@ async function submitMastery() {
     }
 }
 
+function isMatchingCorrect(q, answer) {
+    const correctPairs = q.correct_pairs || {};
+    if (!answer || typeof answer !== "object" || Array.isArray(answer)) {
+        return false;
+    }
+    for (const [term, definition] of Object.entries(correctPairs)) {
+        if (answer[term] !== definition) {
+            return false;
+        }
+    }
+    return Object.keys(correctPairs).length > 0;
+}
+
 function computeResults(quiz, answers) {
     return quiz.map((q) => {
-        const correctKey = q.correct_answer || q._correct_answer || "";
-        const correctSet = new Set(correctKey.split("|").map((a) => a.trim()));
-        const selected = answers[q.id] || [];
-        const selectedSet = new Set(selected.map((s) => s.trim()));
-        const isCorrect = correctSet.size === selectedSet.size && [...correctSet].every((c) => selectedSet.has(c));
-        return {
+        const selected = answers[q.id];
+        let isCorrect;
+        let selectedDisplay;
+        let correctDisplay;
+
+        if (q.type === "matching") {
+            isCorrect = isMatchingCorrect(q, selected);
+            selectedDisplay = selected && typeof selected === "object" && !Array.isArray(selected) ? { ...selected } : {};
+            correctDisplay = q.correct_pairs || {};
+        } else {
+            const correctKey = q.correct_answer || q._correct_answer || "";
+            const correctSet = new Set(correctKey.split("|").map((a) => a.trim()));
+            const selectedArray = Array.isArray(selected) ? selected : [];
+            const selectedSet = new Set(selectedArray.map((s) => s.trim()));
+            isCorrect = correctSet.size === selectedSet.size && [...correctSet].every((c) => selectedSet.has(c));
+            selectedDisplay = Array.from(selectedSet);
+            correctDisplay = Array.from(correctSet);
+        }
+
+        const result = {
             id: q.id,
             question: q.question,
-            options: q.options,
-            selected: Array.from(selectedSet),
-            correct_answer: Array.from(correctSet),
+            options: q.options || [],
+            selected: selectedDisplay,
+            correct_answer: correctDisplay,
             is_correct: isCorrect,
         };
+        if (q.type === "matching") {
+            result.type = q.type;
+            result.terms = q.terms;
+            result.correct_pairs = q.correct_pairs;
+        }
+        return result;
     });
 }
 
@@ -592,7 +628,7 @@ async function startTest() {
 
     state.answers = {};
     state.testQuestions.forEach((q) => {
-        state.answers[q.id] = [];
+        state.answers[q.id] = q.type === "matching" ? {} : [];
     });
     state.currentIndex = 0;
     state.secondsElapsed = 0;
@@ -1000,7 +1036,7 @@ function retakeSameTest() {
     state.testQuestions = [...state.lastTestQuestions];
     state.answers = {};
     state.testQuestions.forEach((q) => {
-        state.answers[q.id] = [];
+        state.answers[q.id] = q.type === "matching" ? {} : [];
     });
     state.currentIndex = 0;
     state.secondsElapsed = 0;
@@ -1021,6 +1057,173 @@ function isMultiCorrect(question) {
     return question._correct_answer.includes("|");
 }
 
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function createDraggableTerm(term) {
+    const termEl = document.createElement("div");
+    termEl.className = "matching-term";
+    termEl.draggable = true;
+    termEl.textContent = term;
+    termEl.dataset.term = term;
+    termEl.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", term);
+        e.dataTransfer.effectAllowed = "move";
+        termEl.classList.add("dragging");
+    });
+    termEl.addEventListener("dragend", () => {
+        termEl.classList.remove("dragging");
+    });
+    return termEl;
+}
+
+function renderMatchingQuestion(q) {
+    state.multiSelect = false;
+    updateProgress();
+    els.questionText.innerHTML = "";
+
+    const questionText = document.createElement("span");
+    questionText.textContent = q.question;
+    els.questionText.appendChild(questionText);
+
+    if (q.image) {
+        const img = document.createElement("img");
+        img.src = q.image;
+        img.alt = "Question image";
+        img.className = "question-image";
+        img.onerror = () => { img.style.display = "none"; };
+        els.questionText.appendChild(img);
+    }
+
+    els.optionsContainer.innerHTML = "";
+    const selected = state.answers[q.id] || {};
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "matching-container";
+
+    const termsBox = document.createElement("div");
+    termsBox.className = "matching-terms";
+    const termsHeading = document.createElement("h4");
+    termsHeading.textContent = "Terms";
+    termsBox.appendChild(termsHeading);
+
+    const shuffledTerms = shuffleArray(q.terms);
+    shuffledTerms.forEach((term) => {
+        const termEl = createDraggableTerm(term);
+        if (selected[term]) {
+            termEl.classList.add("assigned");
+        }
+        termsBox.appendChild(termEl);
+    });
+
+    const defsBox = document.createElement("div");
+    defsBox.className = "matching-definitions";
+    const defsHeading = document.createElement("h4");
+    defsHeading.textContent = "Definitions";
+    defsBox.appendChild(defsHeading);
+
+    const shuffledDefs = shuffleArray(q.definitions);
+    const zoneUpdaters = [];
+
+    const updateTermAssignments = () => {
+        Array.from(termsBox.children).forEach((child) => {
+            const term = child.dataset.term;
+            child.classList.toggle("assigned", !!(state.answers[q.id] || {})[term]);
+        });
+    };
+
+    shuffledDefs.forEach((def) => {
+        const row = document.createElement("div");
+        row.className = "matching-row";
+        row.dataset.definition = def;
+
+        const defText = document.createElement("div");
+        defText.className = "matching-definition-text";
+        defText.textContent = def;
+
+        const termsInDef = document.createElement("div");
+        termsInDef.className = "matching-terms-in-definition";
+
+        const updateTermsInDef = () => {
+            termsInDef.innerHTML = "";
+            const current = state.answers[q.id] || {};
+            q.terms.forEach((term) => {
+                if (current[term] === def) {
+                    const termEl = createDraggableTerm(term);
+                    const clearBtn = document.createElement("button");
+                    clearBtn.type = "button";
+                    clearBtn.className = "matching-clear-btn";
+                    clearBtn.textContent = "×";
+                    clearBtn.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        updateMatchingAnswer(q.id, term, "");
+                        updateTermsInDef();
+                        updateTermAssignments();
+                    });
+                    termEl.appendChild(clearBtn);
+                    termsInDef.appendChild(termEl);
+                }
+            });
+        };
+
+        const dropZone = document.createElement("div");
+        dropZone.className = "matching-drop-zone";
+        dropZone.textContent = "Drop term here";
+
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZone.classList.add("drag-over");
+        });
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.classList.remove("drag-over");
+        });
+        dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropZone.classList.remove("drag-over");
+            const term = e.dataTransfer.getData("text/plain");
+            if (!term) return;
+            updateMatchingAnswer(q.id, term, def);
+            zoneUpdaters.forEach((fn) => fn());
+            updateTermAssignments();
+        });
+
+        updateTermsInDef();
+
+        row.appendChild(defText);
+        row.appendChild(termsInDef);
+        row.appendChild(dropZone);
+        defsBox.appendChild(row);
+
+        zoneUpdaters.push(updateTermsInDef);
+    });
+
+    wrapper.appendChild(termsBox);
+    wrapper.appendChild(defsBox);
+    els.optionsContainer.appendChild(wrapper);
+}
+
+function updateMatchingAnswer(qid, term, definition) {
+    const current = state.answers[qid] || {};
+    const updated = { ...current };
+    if (definition) {
+        updated[term] = definition;
+    } else {
+        delete updated[term];
+    }
+    state.answers[qid] = updated;
+
+    if (state.mode === "mastery" && state.user && state.currentFilename) {
+        clearTimeout(masterySaveTimeout);
+        masterySaveTimeout = setTimeout(() => saveMasteryAnswer(qid), 600);
+    }
+}
+
 function updateProgress() {
     const total = state.testQuestions.length;
     const pct = total ? ((state.currentIndex + 1) / total) * 100 : 0;
@@ -1031,6 +1234,12 @@ function updateProgress() {
 
 function renderQuestion() {
     const q = state.testQuestions[state.currentIndex];
+
+    if (q.type === "matching") {
+        renderMatchingQuestion(q);
+        return;
+    }
+
     const selected = state.answers[q.id] || [];
     const isMulti = isMultiCorrect(q);
     state.multiSelect = isMulti;
@@ -1107,11 +1316,14 @@ function updateAnswer(qid, checked, value) {
 }
 
 async function saveMasteryAnswer(qid) {
-    const current = state.answers[qid] || [];
-    if (!current.length) return;
+    const current = state.answers[qid];
+    const hasAnswer = Array.isArray(current)
+        ? current.length > 0
+        : current && typeof current === "object" && Object.keys(current).length > 0;
+    if (!hasAnswer) return;
 
-    const saved = state.lastSavedAnswers[qid] || [];
-    const same = current.length === saved.length && current.slice().sort().join("|") === saved.slice().sort().join("|");
+    const saved = state.lastSavedAnswers[qid];
+    const same = JSON.stringify(current) === JSON.stringify(saved);
     if (same) return;
 
     const question = state.testQuestions.find((q) => q.id == qid);
@@ -1129,7 +1341,7 @@ async function saveMasteryAnswer(qid) {
             credentials: "same-origin",
         });
         if (!res.ok) throw new Error("Mastery save failed");
-        state.lastSavedAnswers[qid] = [...current];
+        state.lastSavedAnswers[qid] = Array.isArray(current) ? [...current] : { ...current };
     } catch (err) {
         console.error(err);
     }
@@ -1166,6 +1378,31 @@ async function submitTest() {
     } catch (err) {
         alert(err.message);
     }
+}
+
+function formatAnswerForReview(answer) {
+    if (!answer) return "(no answer)";
+    if (Array.isArray(answer)) {
+        return answer.length ? answer.join(", ") : "(no answer)";
+    }
+    if (typeof answer === "object") {
+        return Object.entries(answer)
+            .map(([def, term]) => `${term} → ${def}`)
+            .join("; ") || "(no answer)";
+    }
+    return String(answer);
+}
+
+function formatMatchingAnswerForReview(answer, terms, correctPairs, isSelected) {
+    if (!terms || !terms.length) return "(no answer)";
+    return terms
+        .map((term) => {
+            const def = isSelected
+                ? (answer && typeof answer === "object" ? answer[term] : undefined)
+                : correctPairs[term];
+            return `${term}: ${def || "(not matched)"}`;
+        })
+        .join("; ");
 }
 
 function showResults(data) {
@@ -1208,7 +1445,9 @@ function showResults(data) {
         selectedLabel.textContent = "Your answer";
         const selectedText = document.createElement("div");
         selectedText.className = `answer-text ${r.is_correct ? "correct-answer" : "wrong-answer"}`;
-        selectedText.textContent = r.selected.length ? r.selected.join(", ") : "(no answer)";
+        selectedText.textContent = r.type === "matching"
+            ? formatMatchingAnswerForReview(r.selected, r.terms, r.correct_pairs, true)
+            : formatAnswerForReview(r.selected);
         selectedRow.appendChild(selectedLabel);
         selectedRow.appendChild(selectedText);
         item.appendChild(selectedRow);
@@ -1220,7 +1459,9 @@ function showResults(data) {
         correctLabel.textContent = "Correct answer";
         const correctText = document.createElement("div");
         correctText.className = "answer-text correct-answer";
-        correctText.textContent = r.correct_answer.join(", ");
+        correctText.textContent = r.type === "matching"
+            ? formatMatchingAnswerForReview(r.correct_answer, r.terms, r.correct_pairs, false)
+            : formatAnswerForReview(r.correct_answer);
         correctRow.appendChild(correctLabel);
         correctRow.appendChild(correctText);
         item.appendChild(correctRow);
