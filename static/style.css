@@ -60,26 +60,12 @@ body {
     flex-wrap: wrap;
 }
 
-.logo-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.logo {
-    font-size: 1.25rem;
-    font-weight: 900;
-    color: #ffffff;
-    letter-spacing: -0.4px;
-    line-height: 1.15;
-}
-
-.tagline {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
+.header-logo {
+    height: 46px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
 }
 
 .nav-auth {

@@ -145,7 +145,7 @@ function showScreen(name) {
 }
 
 function updateHeader() {
-    document.title = "IT Study Aid";
+    document.title = "AnswrIT";
 }
 
 function setAuthMessage(text, type = "") {
