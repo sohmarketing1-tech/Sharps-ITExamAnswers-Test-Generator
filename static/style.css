@@ -45,7 +45,7 @@ body {
 /* Top navigation */
 .top-nav {
     background: var(--primary-dark);
-    padding: 14px 24px;
+    padding: 20px 24px;
     box-shadow: var(--shadow-sm);
     border-bottom: 3px solid var(--accent);
 }
@@ -61,11 +61,20 @@ body {
 }
 
 .header-logo {
-    height: 46px;
+    height: 72px;
     width: auto;
     max-width: 100%;
     object-fit: contain;
     display: block;
+}
+
+@media (max-width: 600px) {
+    .top-nav {
+        padding: 14px 16px;
+    }
+    .header-logo {
+        height: 54px;
+    }
 }
 
 .nav-auth {
