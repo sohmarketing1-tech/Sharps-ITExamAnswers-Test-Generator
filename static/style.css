@@ -1,5 +1,5 @@
 :root {
-    --bg: #eef2f6;
+    --bg: #2c4a70;
     --card-bg: #ffffff;
     --primary: #1e3a5f;
     --primary-dark: #172b45;
@@ -27,8 +27,9 @@
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    background: linear-gradient(180deg, #1a2f4d 0%, #243b5a 50%, #2c4a70 100%);
+    background-attachment: fixed;
+    color: #fff;
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
@@ -44,13 +45,16 @@ body {
 
 /* Top navigation */
 .top-nav {
-    background: var(--primary-dark);
-    padding: 20px 24px;
-    box-shadow: var(--shadow-sm);
-    border-bottom: 3px solid var(--accent);
+    background: linear-gradient(135deg, #0c1928 0%, #162c49 100%);
+    padding: 14px 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.nav-brand {
+.nav-inner {
     max-width: 1100px;
     margin: 0 auto;
     display: flex;
@@ -61,20 +65,11 @@ body {
 }
 
 .header-logo {
-    height: 72px;
+    height: 56px;
     width: auto;
-    max-width: 100%;
+    max-width: 240px;
     object-fit: contain;
     display: block;
-}
-
-@media (max-width: 600px) {
-    .top-nav {
-        padding: 14px 16px;
-    }
-    .header-logo {
-        height: 54px;
-    }
 }
 
 .nav-auth {
@@ -82,6 +77,16 @@ body {
     flex-direction: column;
     align-items: flex-end;
     gap: 6px;
+}
+
+@media (max-width: 600px) {
+    .top-nav {
+        padding: 12px 16px;
+    }
+    .header-logo {
+        height: 44px;
+        max-width: 180px;
+    }
 }
 
 .auth-form-inline {
@@ -164,38 +169,48 @@ body {
 
 /* Tab navigation */
 .tab-nav {
-    background: var(--card-bg);
-    border-bottom: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
     display: flex;
     justify-content: center;
-    gap: 8px;
-    padding: 8px 24px;
-    box-shadow: var(--shadow-sm);
-    position: sticky;
-    top: 0;
+    gap: 4px;
+    padding: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    width: fit-content;
+    margin: 20px auto;
+    position: static;
     z-index: 50;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+@media (max-width: 600px) {
+    .tab-nav {
+        margin: 16px auto;
+    }
 }
 
 .tab-btn {
     background: transparent;
     border: none;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.95rem;
     font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 8px 18px;
+    border-radius: 999px;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
 }
 
 .tab-btn:hover {
-    background: rgba(14, 165, 233, 0.08);
-    color: var(--text);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 
 .tab-btn.active {
-    background: rgba(14, 165, 233, 0.14);
-    color: var(--accent);
+    background: var(--accent);
+    color: #fff;
 }
 
 /* Auth section */
@@ -305,6 +320,7 @@ body {
 /* Cards */
 .card {
     background: var(--card-bg);
+    color: var(--text);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 32px;
@@ -464,6 +480,21 @@ body {
     box-shadow: 0 4px 10px rgba(15, 28, 46, 0.08);
 }
 
+.top-nav .btn-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+}
+
+.top-nav .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.top-nav .btn-secondary:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: none;
+}
+
 .btn-success {
     background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%);
     color: white;
@@ -528,7 +559,7 @@ body {
 
 .progress-track {
     height: 10px;
-    background: #e2e8f0;
+    background: rgba(255, 255, 255, 0.25);
     border-radius: 999px;
     overflow: hidden;
     margin-bottom: 12px;
@@ -547,7 +578,7 @@ body {
     justify-content: space-between;
     align-items: center;
     font-weight: 600;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 0.95rem;
 }
 
