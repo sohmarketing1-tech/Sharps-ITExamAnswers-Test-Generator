@@ -423,10 +423,19 @@ def get_exams():
         try:
             with open(manifest_path, "r", encoding="utf-8") as f:
                 manifest = json.load(f)
-            exams = [
-                {**exam, "display_name": display_name_for(exam.get("filename", ""))}
-                for exam in manifest.get("exams", [])
-            ]
+            for exam in manifest.get("exams", []):
+                filename = exam.get("filename", "")
+                display_name = display_name_for(filename)
+                # Count questions dynamically so the UI count stays accurate
+                # when questions are added to a file.
+                count = exam.get("count", 0)
+                try:
+                    with open(DATA_DIR / filename, "r", encoding="utf-8") as qf:
+                        qdata = json.load(qf)
+                    count = len(qdata.get("questions", []))
+                except Exception:
+                    pass
+                exams.append({**exam, "display_name": display_name, "count": count})
         except Exception:
             pass
     return jsonify({

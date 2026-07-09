@@ -1066,20 +1066,20 @@ function shuffleArray(array) {
     return arr;
 }
 
-function createDraggableTerm(term) {
+function createMatchingTerm(term, options = {}) {
+    const { onClick, assigned, selected } = options;
     const termEl = document.createElement("div");
     termEl.className = "matching-term";
-    termEl.draggable = true;
     termEl.textContent = term;
     termEl.dataset.term = term;
-    termEl.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", term);
-        e.dataTransfer.effectAllowed = "move";
-        termEl.classList.add("dragging");
-    });
-    termEl.addEventListener("dragend", () => {
-        termEl.classList.remove("dragging");
-    });
+    if (onClick) {
+        termEl.addEventListener("click", (e) => {
+            e.stopPropagation();
+            onClick(term, termEl);
+        });
+    }
+    if (assigned) termEl.classList.add("assigned");
+    if (selected) termEl.classList.add("selected");
     return termEl;
 }
 
@@ -1114,11 +1114,42 @@ function renderMatchingQuestion(q) {
     termsBox.appendChild(termsHeading);
 
     const shuffledTerms = shuffleArray(q.terms);
-    shuffledTerms.forEach((term) => {
-        const termEl = createDraggableTerm(term);
-        if (selected[term]) {
-            termEl.classList.add("assigned");
+    let selectedTerm = null;
+
+    const clearSelection = () => {
+        selectedTerm = null;
+        wrapper.querySelectorAll(".matching-term.selected").forEach((el) => {
+            el.classList.remove("selected");
+        });
+    };
+
+    const selectTerm = (term, el) => {
+        clearSelection();
+        selectedTerm = term;
+        el.classList.add("selected");
+    };
+
+    const toggleTermSelection = (term, el) => {
+        if (selectedTerm === term) {
+            clearSelection();
+        } else {
+            selectTerm(term, el);
         }
+    };
+
+    const updateTermAssignments = () => {
+        Array.from(termsBox.children).forEach((child) => {
+            const term = child.dataset.term;
+            const isAssigned = !!(state.answers[q.id] || {})[term];
+            child.classList.toggle("assigned", isAssigned);
+        });
+    };
+
+    shuffledTerms.forEach((term) => {
+        const termEl = createMatchingTerm(term, {
+            onClick: toggleTermSelection,
+            assigned: !!selected[term],
+        });
         termsBox.appendChild(termEl);
     });
 
@@ -1130,13 +1161,6 @@ function renderMatchingQuestion(q) {
 
     const shuffledDefs = shuffleArray(q.definitions);
     const zoneUpdaters = [];
-
-    const updateTermAssignments = () => {
-        Array.from(termsBox.children).forEach((child) => {
-            const term = child.dataset.term;
-            child.classList.toggle("assigned", !!(state.answers[q.id] || {})[term]);
-        });
-    };
 
     shuffledDefs.forEach((def) => {
         const row = document.createElement("div");
@@ -1155,7 +1179,10 @@ function renderMatchingQuestion(q) {
             const current = state.answers[q.id] || {};
             q.terms.forEach((term) => {
                 if (current[term] === def) {
-                    const termEl = createDraggableTerm(term);
+                    const termEl = createMatchingTerm(term, {
+                        onClick: toggleTermSelection,
+                        assigned: true,
+                    });
                     const clearBtn = document.createElement("button");
                     clearBtn.type = "button";
                     clearBtn.className = "matching-clear-btn";
@@ -1163,7 +1190,7 @@ function renderMatchingQuestion(q) {
                     clearBtn.addEventListener("click", (e) => {
                         e.stopPropagation();
                         updateMatchingAnswer(q.id, term, "");
-                        updateTermsInDef();
+                        zoneUpdaters.forEach((fn) => fn());
                         updateTermAssignments();
                     });
                     termEl.appendChild(clearBtn);
@@ -1174,23 +1201,23 @@ function renderMatchingQuestion(q) {
 
         const dropZone = document.createElement("div");
         dropZone.className = "matching-drop-zone";
-        dropZone.textContent = "Drop term here";
+        dropZone.textContent = "Tap to place selected term";
 
-        dropZone.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            dropZone.classList.add("drag-over");
-        });
-        dropZone.addEventListener("dragleave", () => {
-            dropZone.classList.remove("drag-over");
-        });
-        dropZone.addEventListener("drop", (e) => {
-            e.preventDefault();
-            dropZone.classList.remove("drag-over");
-            const term = e.dataTransfer.getData("text/plain");
-            if (!term) return;
-            updateMatchingAnswer(q.id, term, def);
+        const placeSelectedTerm = () => {
+            if (!selectedTerm) return;
+            updateMatchingAnswer(q.id, selectedTerm, def);
+            clearSelection();
             zoneUpdaters.forEach((fn) => fn());
             updateTermAssignments();
+        };
+
+        dropZone.addEventListener("click", (e) => {
+            e.stopPropagation();
+            placeSelectedTerm();
+        });
+
+        row.addEventListener("click", () => {
+            placeSelectedTerm();
         });
 
         updateTermsInDef();
