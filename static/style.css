@@ -1230,6 +1230,13 @@ body {
     margin-top: 0;
 }
 
+.flashcard-session-status {
+    margin-top: 14px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
 .flashcard-study-area {
     display: flex;
     flex-direction: column;

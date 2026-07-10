@@ -142,6 +142,7 @@ const els = {
     flashcardResumeText: document.getElementById("flashcard-resume-text"),
     flashcardResumeBtn: document.getElementById("flashcard-resume-btn"),
     flashcardDiscardBtn: document.getElementById("flashcard-discard-btn"),
+    flashcardSessionStatus: document.getElementById("flashcard-session-status"),
     flashcardStudyArea: document.getElementById("flashcard-study-area"),
     flashcard: document.getElementById("flashcard"),
     flashcardFrontText: document.getElementById("flashcard-front-text"),
@@ -1054,6 +1055,9 @@ function renderFlashcardResume() {
     const session = loadFlashcardSession();
     if (!session || !session.questions || !session.questions.length) {
         els.flashcardResumeContainer.classList.add("hidden");
+        if (els.flashcardSessionStatus) {
+            els.flashcardSessionStatus.textContent = "No saved flashcard session on this device.";
+        }
         return;
     }
     const exam = state.exams.find((e) => e.filename === session.filename);
@@ -1061,6 +1065,9 @@ function renderFlashcardResume() {
     const current = Math.min(session.index + 1, session.questions.length);
     els.flashcardResumeText.textContent = `Resume ${examName} at card ${current} of ${session.questions.length}.`;
     els.flashcardResumeContainer.classList.remove("hidden");
+    if (els.flashcardSessionStatus) {
+        els.flashcardSessionStatus.textContent = "";
+    }
 }
 
 function resumeFlashcardSession() {
