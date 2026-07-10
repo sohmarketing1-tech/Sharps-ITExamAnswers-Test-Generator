@@ -28,7 +28,14 @@
         <div class="modal auth-modal">
             <h3 id="auth-modal-title">Log In</h3>
             <input type="text" id="modal-username" placeholder="Username" maxlength="30" />
-            <input type="password" id="modal-password" placeholder="Password" />
+            <div class="password-field">
+                <input type="password" id="modal-password" placeholder="Password" />
+                <button type="button" id="toggle-password" class="toggle-password" aria-label="Show password">Show</button>
+            </div>
+            <div class="password-field confirm-password-field hidden" id="confirm-password-field">
+                <input type="password" id="modal-confirm-password" placeholder="Confirm password" />
+                <button type="button" id="toggle-confirm-password" class="toggle-password" aria-label="Show confirm password">Show</button>
+            </div>
             <button id="modal-submit" class="btn btn-primary btn-large btn-block">Log In</button>
             <button id="modal-cancel" class="btn btn-secondary btn-block">Cancel</button>
             <p id="modal-message" class="auth-message"></p>

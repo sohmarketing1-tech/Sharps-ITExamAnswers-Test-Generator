@@ -91,6 +91,10 @@ const els = {
     reviewList: document.getElementById("review-list"),
     modalUsername: document.getElementById("modal-username"),
     modalPassword: document.getElementById("modal-password"),
+    modalConfirmPassword: document.getElementById("modal-confirm-password"),
+    confirmPasswordField: document.getElementById("confirm-password-field"),
+    togglePassword: document.getElementById("toggle-password"),
+    toggleConfirmPassword: document.getElementById("toggle-confirm-password"),
     modalSubmit: document.getElementById("modal-submit"),
     modalCancel: document.getElementById("modal-cancel"),
     modalTitle: document.getElementById("auth-modal-title"),
@@ -230,12 +234,17 @@ async function login() {
 async function register() {
     const username = els.modalUsername.value.trim();
     const password = els.modalPassword.value;
+    const confirmPassword = els.modalConfirmPassword.value;
     if (!username || !password) {
         setAuthMessage("Enter a username and password.", "error");
         return;
     }
     if (password.length < 4) {
         setAuthMessage("Password must be at least 4 characters.", "error");
+        return;
+    }
+    if (password !== confirmPassword) {
+        setAuthMessage("Passwords do not match.", "error");
         return;
     }
     els.modalSubmit.disabled = true;
@@ -273,10 +282,16 @@ function openAuthModal(mode) {
     state.authModalMode = mode;
     els.modalUsername.value = "";
     els.modalPassword.value = "";
+    els.modalConfirmPassword.value = "";
+    els.modalPassword.type = "password";
+    els.modalConfirmPassword.type = "password";
+    els.togglePassword.textContent = "Show";
+    els.toggleConfirmPassword.textContent = "Show";
     setAuthMessage("");
     const isLogin = mode === "login";
     els.modalTitle.textContent = isLogin ? "Log In" : "Sign Up";
     els.modalSubmit.textContent = isLogin ? "Log In" : "Sign Up";
+    els.confirmPasswordField.classList.toggle("hidden", isLogin);
     els.authModal.classList.remove("hidden");
     els.modalUsername.focus();
 }
@@ -284,6 +299,12 @@ function openAuthModal(mode) {
 function closeAuthModal() {
     els.authModal.classList.add("hidden");
     state.authModalMode = null;
+}
+
+function togglePasswordVisibility(input, btn) {
+    const showing = input.type === "text";
+    input.type = showing ? "password" : "text";
+    btn.textContent = showing ? "Show" : "Hide";
 }
 
 async function logout() {
@@ -1563,12 +1584,18 @@ els.modalCancel.addEventListener("click", closeAuthModal);
 els.authModal.addEventListener("click", (e) => {
     if (e.target === els.authModal) closeAuthModal();
 });
+els.togglePassword.addEventListener("click", () => {
+    togglePasswordVisibility(els.modalPassword, els.togglePassword);
+});
+els.toggleConfirmPassword.addEventListener("click", () => {
+    togglePasswordVisibility(els.modalConfirmPassword, els.toggleConfirmPassword);
+});
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !els.authModal.classList.contains("hidden")) {
         closeAuthModal();
     }
 });
-[els.modalUsername, els.modalPassword].forEach((input) => {
+[els.modalUsername, els.modalPassword, els.modalConfirmPassword].forEach((input) => {
     input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") submitAuth();
     });

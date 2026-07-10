@@ -200,6 +200,38 @@ body {
     box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
 }
 
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-field input {
+    width: 100%;
+    padding-right: 58px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+}
+
+.toggle-password:hover {
+    color: var(--primary);
+    background: rgba(30, 58, 95, 0.08);
+}
+
 .auth-modal .auth-message {
     text-align: center;
     max-width: 100%;
