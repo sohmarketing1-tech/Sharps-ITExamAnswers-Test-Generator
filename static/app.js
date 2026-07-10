@@ -103,6 +103,13 @@ const els = {
     loginTrigger: document.getElementById("login-trigger"),
     registerTrigger: document.getElementById("register-trigger"),
     logoutBtn: document.getElementById("logout-btn"),
+    installHelpBtn: document.getElementById("install-help-btn"),
+    installModal: document.getElementById("install-modal"),
+    installCloseBtn: document.getElementById("install-close-btn"),
+    installTabIos: document.getElementById("install-tab-ios"),
+    installTabAndroid: document.getElementById("install-tab-android"),
+    installIos: document.getElementById("install-ios"),
+    installAndroid: document.getElementById("install-android"),
     authLoggedOut: document.getElementById("auth-logged-out"),
     authLoggedIn: document.getElementById("auth-logged-in"),
     authUser: document.getElementById("auth-user"),
@@ -299,6 +306,25 @@ function openAuthModal(mode) {
 function closeAuthModal() {
     els.authModal.classList.add("hidden");
     state.authModalMode = null;
+}
+
+function openInstallModal() {
+    switchInstallTab("ios");
+    els.installModal.classList.remove("hidden");
+}
+
+function closeInstallModal() {
+    els.installModal.classList.add("hidden");
+}
+
+function switchInstallTab(tab) {
+    const isIos = tab === "ios";
+    els.installTabIos.classList.toggle("active", isIos);
+    els.installTabAndroid.classList.toggle("active", !isIos);
+    els.installIos.classList.toggle("active", isIos);
+    els.installIos.classList.toggle("hidden", !isIos);
+    els.installAndroid.classList.toggle("active", !isIos);
+    els.installAndroid.classList.toggle("hidden", isIos);
 }
 
 function togglePasswordVisibility(input, btn) {
@@ -1624,10 +1650,20 @@ els.toggleConfirmPassword.addEventListener("click", () => {
     togglePasswordVisibility(els.modalConfirmPassword, els.toggleConfirmPassword);
 });
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !els.authModal.classList.contains("hidden")) {
-        closeAuthModal();
+    if (e.key === "Escape") {
+        if (!els.authModal.classList.contains("hidden")) closeAuthModal();
+        if (!els.installModal.classList.contains("hidden")) closeInstallModal();
     }
 });
+
+els.installHelpBtn.addEventListener("click", openInstallModal);
+els.installCloseBtn.addEventListener("click", closeInstallModal);
+els.installModal.addEventListener("click", (e) => {
+    if (e.target === els.installModal) closeInstallModal();
+});
+els.installTabIos.addEventListener("click", () => switchInstallTab("ios"));
+els.installTabAndroid.addEventListener("click", () => switchInstallTab("android"));
+
 [els.modalUsername, els.modalPassword, els.modalConfirmPassword].forEach((input) => {
     input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") submitAuth();

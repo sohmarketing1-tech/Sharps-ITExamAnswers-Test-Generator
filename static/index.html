@@ -47,6 +47,40 @@
         </div>
     </div>
 
+    <div id="install-modal" class="modal-overlay hidden">
+        <div class="modal install-modal">
+            <h3>Add AnswrIT to Your Home Screen</h3>
+            <p class="modal-subtitle">This site works great as a standalone app. Pick your device below.</p>
+
+            <div class="install-tabs">
+                <button id="install-tab-ios" class="install-tab active">iPhone / iPad</button>
+                <button id="install-tab-android" class="install-tab">Android</button>
+            </div>
+
+            <div id="install-ios" class="install-instructions active">
+                <ol>
+                    <li>Open <strong>AnswrIT</strong> in Safari.</li>
+                    <li>Tap the <strong>Share</strong> button at the bottom of the screen (the square with an arrow).</li>
+                    <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
+                    <li>Tap <strong>Add</strong> in the top-right corner.</li>
+                </ol>
+                <p>AnswrIT will appear on your home screen and launch like a regular app.</p>
+            </div>
+
+            <div id="install-android" class="install-instructions hidden">
+                <ol>
+                    <li>Open <strong>AnswrIT</strong> in Chrome.</li>
+                    <li>Tap the <strong>menu</strong> button (three dots in the top-right corner).</li>
+                    <li>Tap <strong>Add to Home Screen</strong> or <strong>Install app</strong>.</li>
+                    <li>Tap <strong>Add</strong> or <strong>Install</strong> when prompted.</li>
+                </ol>
+                <p>AnswrIT will appear on your home screen and launch like a regular app.</p>
+            </div>
+
+            <button id="install-close-btn" class="btn btn-secondary btn-block">Close</button>
+        </div>
+    </div>
+
     <div class="tab-nav">
         <button id="tab-practice" class="tab-btn active">Practice</button>
         <button id="tab-flashcards" class="tab-btn">Flashcards</button>
@@ -119,6 +153,21 @@
                         <p id="setup-message" class="message"></p>
                     </div>
 
+                    <div class="card install-card">
+                        <div class="install-card-content">
+                            <div class="install-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                </svg>
+                            </div>
+                            <div class="install-text">
+                                <h3>Mobile-friendly</h3>
+                                <p>Add AnswrIT to your home screen for quick access like a regular app.</p>
+                            </div>
+                            <button id="install-help-btn" class="btn btn-primary">How to Install</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 

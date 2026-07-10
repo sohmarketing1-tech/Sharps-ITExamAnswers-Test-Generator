@@ -237,6 +237,103 @@ body {
     max-width: 100%;
 }
 
+/* Mobile install card */
+.install-card {
+    padding: 24px;
+}
+
+.install-card-content {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.install-icon {
+    color: var(--primary);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.install-text {
+    flex: 1;
+    min-width: 200px;
+}
+
+.install-text h3 {
+    margin: 0 0 4px;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.install-text p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* Install tutorial modal */
+.install-modal {
+    max-width: 440px;
+}
+
+.modal-subtitle {
+    margin: -8px 0 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.install-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.install-tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(30, 58, 95, 0.08);
+    color: var(--text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.install-tab:hover:not(.active) {
+    background: rgba(30, 58, 95, 0.12);
+    color: var(--text);
+}
+
+.install-tab.active {
+    background: var(--primary);
+    color: #fff;
+}
+
+.install-instructions {
+    display: none;
+    text-align: left;
+}
+
+.install-instructions.active {
+    display: block;
+}
+
+.install-instructions ol {
+    margin: 0 0 16px;
+    padding-left: 20px;
+    color: var(--text);
+    line-height: 1.7;
+}
+
+.install-instructions p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
 /* Screens */
 .screen {
     display: none;
