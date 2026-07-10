@@ -657,6 +657,24 @@ async function resetMastery() {
     }
 }
 
+function generateLocalQuiz(n) {
+    const questions = state.allQuestions;
+    const count = Math.max(1, Math.min(n, questions.length || 1));
+    const shuffled = [...questions].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, count);
+    return selected.map((q) => ({
+        id: q.id,
+        question: q.question,
+        options: q.options,
+        _correct_answer: q.correct_answer,
+        type: q.type,
+        terms: q.terms,
+        definitions: q.definitions,
+        correct_pairs: q.correct_pairs,
+        image: q.image,
+    }));
+}
+
 async function startTest() {
     const total = parseInt(els.totalQuestions.dataset.count || "0") || state.allQuestions.length || 0;
     const requested = parseInt(els.questionCount.value, 10) || 10;
@@ -675,8 +693,14 @@ async function startTest() {
         if (data.title) state.title = data.title;
         updateHeader();
     } catch (err) {
-        setMessage(err.message, "error");
-        return;
+        if (state.allQuestions.length) {
+            state.testQuestions = generateLocalQuiz(n);
+            state.lastTestQuestions = [...state.testQuestions];
+            updateHeader();
+        } else {
+            setMessage(err.message, "error");
+            return;
+        }
     }
 
     state.answers = {};
@@ -903,7 +927,7 @@ async function startFlashcards() {
             state.user
                 ? fetch(`${API.flashcardReviews}?filename=${encodeURIComponent(state.flashcardFilename)}`, {
                       credentials: "same-origin",
-                  })
+                  }).catch(() => null)
                 : Promise.resolve(null),
         ]);
         const data = await questionsRes.json();
@@ -1456,7 +1480,16 @@ async function submitTest() {
         const data = await res.json();
         showResults(data);
     } catch (err) {
-        alert(err.message);
+        // Offline fallback: score locally using the cached questions.
+        const results = computeResults(state.testQuestions, relevantAnswers);
+        const correct = results.filter((r) => r.is_correct).length;
+        showResults({
+            title: state.title,
+            total: results.length,
+            correct,
+            score: results.length ? Math.round((correct / results.length) * 100) : 0,
+            results,
+        });
     }
 }
 
@@ -1643,6 +1676,13 @@ document.addEventListener("keydown", (e) => {
         }
     }
 });
+
+// Register service worker for PWA / offline support.
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js").catch((err) => {
+        console.error("Service worker registration failed", err);
+    });
+}
 
 // Initialize
 setFlashcardMode("question");
