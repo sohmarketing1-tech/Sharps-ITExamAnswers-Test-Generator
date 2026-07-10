@@ -138,6 +138,10 @@ const els = {
     flashcardReviewCount: document.getElementById("flashcard-review-count"),
     flashcardStartBtn: document.getElementById("flashcard-start-btn"),
     flashcardSetupMessage: document.getElementById("flashcard-setup-message"),
+    flashcardResumeContainer: document.getElementById("flashcard-resume-container"),
+    flashcardResumeText: document.getElementById("flashcard-resume-text"),
+    flashcardResumeBtn: document.getElementById("flashcard-resume-btn"),
+    flashcardDiscardBtn: document.getElementById("flashcard-discard-btn"),
     flashcardStudyArea: document.getElementById("flashcard-study-area"),
     flashcard: document.getElementById("flashcard"),
     flashcardFrontText: document.getElementById("flashcard-front-text"),
@@ -375,6 +379,8 @@ async function loadExams() {
         const data = await res.json();
         state.exams = data.exams || [];
         renderExamButtons();
+        renderFlashcardExamButtons();
+        renderFlashcardResume();
         if (state.exams.length > 0) {
             const current = data.current_filename || state.exams[0].filename;
             await loadExam(current, true);
@@ -796,6 +802,7 @@ function switchTab(tabName) {
     } else if (tabName === "flashcards") {
         showScreen("flashcards");
         renderFlashcardExamButtons();
+        renderFlashcardResume();
     }
 }
 
@@ -935,6 +942,7 @@ function setFlashcardMode(mode) {
         els.flashcardPreviewFront.innerHTML = "What is the loopback IP address?<br><br>A. 192.168.1.1<br>B. 10.0.0.1<br>C. 127.0.0.1";
         els.flashcardPreviewBack.textContent = "C. 127.0.0.1";
     }
+    saveFlashcardSession();
 }
 
 async function startFlashcards() {
@@ -942,6 +950,7 @@ async function startFlashcards() {
         els.flashcardSetupMessage.textContent = "Select an exam first.";
         return;
     }
+    clearFlashcardSession();
     try {
         const [questionsRes, reviewsRes] = await Promise.all([
             fetch(API.examQuestions, {
@@ -984,6 +993,7 @@ async function startFlashcards() {
         state.flashcardFlipped = false;
         showFlashcardStudyArea();
         renderFlashcard();
+        saveFlashcardSession();
     } catch (err) {
         els.flashcardSetupMessage.textContent = "Failed to load flashcards.";
     }
@@ -1001,14 +1011,86 @@ function showFlashcardSetup() {
     state.flashcardIndex = 0;
     state.flashcardFlipped = false;
     els.flashcardSetupMessage.textContent = "";
+    renderFlashcardResume();
+}
+
+const FLASHCARD_SESSION_KEY = "answrit_flashcard_session";
+
+function saveFlashcardSession() {
+    if (!state.flashcardQuestions.length) return;
+    const session = {
+        filename: state.flashcardFilename,
+        mode: state.flashcardMode,
+        filter: state.flashcardFilter,
+        questions: state.flashcardQuestions,
+        index: state.flashcardIndex,
+        flipped: state.flashcardFlipped,
+        reviews: Array.from(state.flashcardReviews),
+        savedAt: Date.now(),
+    };
+    try {
+        localStorage.setItem(FLASHCARD_SESSION_KEY, JSON.stringify(session));
+    } catch (e) {
+        console.error("Failed to save flashcard session", e);
+    }
+}
+
+function clearFlashcardSession() {
+    localStorage.removeItem(FLASHCARD_SESSION_KEY);
+    renderFlashcardResume();
+}
+
+function loadFlashcardSession() {
+    const raw = localStorage.getItem(FLASHCARD_SESSION_KEY);
+    if (!raw) return null;
+    try {
+        return JSON.parse(raw);
+    } catch (e) {
+        return null;
+    }
+}
+
+function renderFlashcardResume() {
+    const session = loadFlashcardSession();
+    if (!session || !session.questions || !session.questions.length) {
+        els.flashcardResumeContainer.classList.add("hidden");
+        return;
+    }
+    const exam = state.exams.find((e) => e.filename === session.filename);
+    const examName = exam?.display_name || exam?.title || session.filename;
+    const current = Math.min(session.index + 1, session.questions.length);
+    els.flashcardResumeText.textContent = `Resume ${examName} at card ${current} of ${session.questions.length}.`;
+    els.flashcardResumeContainer.classList.remove("hidden");
+}
+
+function resumeFlashcardSession() {
+    const session = loadFlashcardSession();
+    if (!session || !session.questions || !session.questions.length) {
+        clearFlashcardSession();
+        return;
+    }
+    state.flashcardFilename = session.filename;
+    state.flashcardMode = session.mode || "question";
+    state.flashcardFilter = session.filter || "all";
+    state.flashcardQuestions = session.questions;
+    state.flashcardIndex = Math.min(session.index || 0, session.questions.length - 1);
+    state.flashcardFlipped = !!session.flipped;
+    state.flashcardReviews = new Set((session.reviews || []).map(String));
+
+    renderFlashcardExamButtons();
+    setFlashcardMode(state.flashcardMode);
+    setFlashcardFilter(state.flashcardFilter);
+    updateFlashcardReviewCount();
+    showFlashcardStudyArea();
+    renderFlashcard();
+    saveFlashcardSession();
 }
 
 function renderFlashcard() {
     const q = state.flashcardQuestions[state.flashcardIndex];
     if (!q) return;
 
-    els.flashcard.classList.remove("flipped");
-    state.flashcardFlipped = false;
+    els.flashcard.classList.toggle("flipped", state.flashcardFlipped);
 
     els.flashcardFrontText.textContent = q.question;
 
@@ -1049,19 +1131,24 @@ function renderFlashcard() {
 function flipFlashcard() {
     state.flashcardFlipped = !state.flashcardFlipped;
     els.flashcard.classList.toggle("flipped", state.flashcardFlipped);
+    saveFlashcardSession();
 }
 
 function nextFlashcard() {
     if (state.flashcardIndex < state.flashcardQuestions.length - 1) {
         state.flashcardIndex += 1;
+        state.flashcardFlipped = false;
         renderFlashcard();
+        saveFlashcardSession();
     }
 }
 
 function prevFlashcard() {
     if (state.flashcardIndex > 0) {
         state.flashcardIndex -= 1;
+        state.flashcardFlipped = false;
         renderFlashcard();
+        saveFlashcardSession();
     }
 }
 
@@ -1071,7 +1158,9 @@ function shuffleFlashcards() {
         [state.flashcardQuestions[i], state.flashcardQuestions[j]] = [state.flashcardQuestions[j], state.flashcardQuestions[i]];
     }
     state.flashcardIndex = 0;
+    state.flashcardFlipped = false;
     renderFlashcard();
+    saveFlashcardSession();
 }
 
 async function toggleFlashcardReview() {
@@ -1097,6 +1186,7 @@ async function toggleFlashcardReview() {
             }
             renderFlashcard();
             updateFlashcardReviewCount();
+            saveFlashcardSession();
         }
     } catch (err) {
         console.error(err);
@@ -1112,6 +1202,7 @@ function setFlashcardFilter(filter) {
     els.flashcardFilterReview.classList.toggle("btn-primary", filter === "review");
     els.flashcardFilterReview.classList.toggle("btn-secondary", filter !== "review");
     updateFlashcardReviewCount();
+    saveFlashcardSession();
 }
 
 async function updateFlashcardReviewCount() {
@@ -1694,6 +1785,10 @@ els.flashcardPrevBtn.addEventListener("click", prevFlashcard);
 els.flashcardShuffleBtn.addEventListener("click", shuffleFlashcards);
 els.flashcardMarkBtn.addEventListener("click", toggleFlashcardReview);
 els.flashcardExitBtn.addEventListener("click", showFlashcardSetup);
+els.flashcardResumeBtn.addEventListener("click", resumeFlashcardSession);
+els.flashcardDiscardBtn.addEventListener("click", clearFlashcardSession);
+window.addEventListener("pagehide", saveFlashcardSession);
+window.addEventListener("beforeunload", saveFlashcardSession);
 
 document.addEventListener("keydown", (e) => {
     if (!screens.flashcards.classList.contains("active")) return;

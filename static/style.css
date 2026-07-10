@@ -1211,6 +1211,25 @@ body {
 }
 
 /* Flashcards */
+.flashcard-resume {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+    background: rgba(30, 58, 95, 0.08);
+    border: 1px solid rgba(30, 58, 95, 0.15);
+    text-align: center;
+}
+
+.flashcard-resume-text {
+    margin: 0 0 14px;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.flashcard-resume .button-row {
+    margin-top: 0;
+}
+
 .flashcard-study-area {
     display: flex;
     flex-direction: column;
