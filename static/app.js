@@ -44,6 +44,7 @@ const state = {
     flashcardIndex: 0,
     flashcardFlipped: false,
     flashcardReviews: new Set(),
+    authModalMode: null,
 };
 
 // DOM refs
@@ -88,15 +89,19 @@ const els = {
     continueMasteryBtn: document.getElementById("continue-mastery-btn"),
     reviewPanel: document.getElementById("review-panel"),
     reviewList: document.getElementById("review-list"),
-    authUsername: document.getElementById("auth-username"),
-    authPassword: document.getElementById("auth-password"),
-    loginBtn: document.getElementById("login-btn"),
-    registerBtn: document.getElementById("register-btn"),
+    modalUsername: document.getElementById("modal-username"),
+    modalPassword: document.getElementById("modal-password"),
+    modalSubmit: document.getElementById("modal-submit"),
+    modalCancel: document.getElementById("modal-cancel"),
+    modalTitle: document.getElementById("auth-modal-title"),
+    modalMessage: document.getElementById("modal-message"),
+    authModal: document.getElementById("auth-modal"),
+    loginTrigger: document.getElementById("login-trigger"),
+    registerTrigger: document.getElementById("register-trigger"),
     logoutBtn: document.getElementById("logout-btn"),
     authLoggedOut: document.getElementById("auth-logged-out"),
     authLoggedIn: document.getElementById("auth-logged-in"),
     authUser: document.getElementById("auth-user"),
-    authMessage: document.getElementById("auth-message"),
     modePractice: document.getElementById("mode-practice"),
     modeMastery: document.getElementById("mode-mastery"),
     modeDescription: document.getElementById("mode-description"),
@@ -149,8 +154,8 @@ function updateHeader() {
 }
 
 function setAuthMessage(text, type = "") {
-    els.authMessage.textContent = text;
-    els.authMessage.className = "auth-message" + (type ? ` ${type}` : "");
+    els.modalMessage.textContent = text;
+    els.modalMessage.className = "auth-message" + (type ? ` ${type}` : "");
 }
 
 function setMasteryMessage(text, type = "") {
@@ -163,8 +168,8 @@ function renderAuthState() {
         els.authLoggedOut.classList.add("hidden");
         els.authLoggedIn.classList.remove("hidden");
         els.authUser.textContent = state.user;
-        els.authUsername.value = "";
-        els.authPassword.value = "";
+        els.modalUsername.value = "";
+        els.modalPassword.value = "";
     } else {
         els.authLoggedIn.classList.add("hidden");
         els.authLoggedOut.classList.remove("hidden");
@@ -193,13 +198,13 @@ async function checkAuth() {
 }
 
 async function login() {
-    const username = els.authUsername.value.trim();
-    const password = els.authPassword.value;
+    const username = els.modalUsername.value.trim();
+    const password = els.modalPassword.value;
     if (!username || !password) {
         setAuthMessage("Enter a username and password.", "error");
         return;
     }
-    els.loginBtn.disabled = true;
+    els.modalSubmit.disabled = true;
     try {
         const res = await fetch(API.login, {
             method: "POST",
@@ -213,17 +218,18 @@ async function login() {
         renderAuthState();
         renderAccountPrompt();
         setAuthMessage("Logged in.", "success");
+        closeAuthModal();
         await refreshMastery();
     } catch (err) {
         setAuthMessage(err.message, "error");
     } finally {
-        els.loginBtn.disabled = false;
+        els.modalSubmit.disabled = false;
     }
 }
 
 async function register() {
-    const username = els.authUsername.value.trim();
-    const password = els.authPassword.value;
+    const username = els.modalUsername.value.trim();
+    const password = els.modalPassword.value;
     if (!username || !password) {
         setAuthMessage("Enter a username and password.", "error");
         return;
@@ -232,7 +238,7 @@ async function register() {
         setAuthMessage("Password must be at least 4 characters.", "error");
         return;
     }
-    els.registerBtn.disabled = true;
+    els.modalSubmit.disabled = true;
     try {
         const res = await fetch(API.register, {
             method: "POST",
@@ -246,12 +252,38 @@ async function register() {
         renderAuthState();
         renderAccountPrompt();
         setAuthMessage("Account created and logged in.", "success");
+        closeAuthModal();
         await refreshMastery();
     } catch (err) {
         setAuthMessage(err.message, "error");
     } finally {
-        els.registerBtn.disabled = false;
+        els.modalSubmit.disabled = false;
     }
+}
+
+function submitAuth() {
+    if (state.authModalMode === "login") {
+        login();
+    } else if (state.authModalMode === "register") {
+        register();
+    }
+}
+
+function openAuthModal(mode) {
+    state.authModalMode = mode;
+    els.modalUsername.value = "";
+    els.modalPassword.value = "";
+    setAuthMessage("");
+    const isLogin = mode === "login";
+    els.modalTitle.textContent = isLogin ? "Log In" : "Sign Up";
+    els.modalSubmit.textContent = isLogin ? "Log In" : "Sign Up";
+    els.authModal.classList.remove("hidden");
+    els.modalUsername.focus();
+}
+
+function closeAuthModal() {
+    els.authModal.classList.add("hidden");
+    state.authModalMode = null;
 }
 
 async function logout() {
@@ -265,9 +297,9 @@ async function logout() {
         renderAuthState();
         renderAccountPrompt();
         renderMasteryPanel();
-        setAuthMessage("Logged out.", "success");
     } catch (err) {
-        setAuthMessage("Logout failed.", "error");
+        // Logout error is silent since the UI already reflects the action.
+        console.error("Logout failed", err);
     }
 }
 
@@ -1522,13 +1554,23 @@ els.restartBtn.addEventListener("click", goHome);
 els.retakeBtn.addEventListener("click", retakeSameTest);
 els.continueMasteryBtn.addEventListener("click", startMasterySession);
 
-els.loginBtn.addEventListener("click", login);
-els.registerBtn.addEventListener("click", register);
+els.loginTrigger.addEventListener("click", () => openAuthModal("login"));
+els.registerTrigger.addEventListener("click", () => openAuthModal("register"));
 els.logoutBtn.addEventListener("click", logout);
 
-[els.authUsername, els.authPassword].forEach((input) => {
+els.modalSubmit.addEventListener("click", submitAuth);
+els.modalCancel.addEventListener("click", closeAuthModal);
+els.authModal.addEventListener("click", (e) => {
+    if (e.target === els.authModal) closeAuthModal();
+});
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !els.authModal.classList.contains("hidden")) {
+        closeAuthModal();
+    }
+});
+[els.modalUsername, els.modalPassword].forEach((input) => {
     input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") login();
+        if (e.key === "Enter") submitAuth();
     });
 });
 els.modePractice.addEventListener("click", () => setMode("practice"));

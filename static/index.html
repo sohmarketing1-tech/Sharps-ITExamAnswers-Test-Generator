@@ -12,20 +12,28 @@
         <div class="nav-inner">
             <img src="images/answrit-logo.png" alt="AnswrIT" class="header-logo" />
             <div id="nav-auth" class="nav-auth">
-                <div id="auth-logged-out" class="auth-form-inline">
-                    <input type="text" id="auth-username" placeholder="Username" maxlength="30" />
-                    <input type="password" id="auth-password" placeholder="Password" />
-                    <button id="login-btn" class="btn btn-primary btn-small">Log In</button>
-                    <button id="register-btn" class="btn btn-secondary btn-small">Sign Up</button>
+                <div id="auth-logged-out" class="auth-actions">
+                    <button id="login-trigger" class="btn btn-text">Log In</button>
+                    <button id="register-trigger" class="btn btn-primary btn-small">Sign Up</button>
                 </div>
                 <div id="auth-logged-in" class="auth-status hidden">
                     <span>Hi, <strong id="auth-user"></strong></span>
                     <button id="logout-btn" class="btn btn-secondary btn-small">Log Out</button>
                 </div>
-                <p id="auth-message" class="auth-message"></p>
             </div>
         </div>
     </nav>
+
+    <div id="auth-modal" class="modal-overlay hidden">
+        <div class="modal auth-modal">
+            <h3 id="auth-modal-title">Log In</h3>
+            <input type="text" id="modal-username" placeholder="Username" maxlength="30" />
+            <input type="password" id="modal-password" placeholder="Password" />
+            <button id="modal-submit" class="btn btn-primary btn-large btn-block">Log In</button>
+            <button id="modal-cancel" class="btn btn-secondary btn-block">Cancel</button>
+            <p id="modal-message" class="auth-message"></p>
+        </div>
+    </div>
 
     <div class="tab-nav">
         <button id="tab-practice" class="tab-btn active">Practice</button>
