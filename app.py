@@ -872,7 +872,12 @@ def mastery_batch():
     current_set = set(working_set)
     candidates = [q for q in questions if str(q["id"]) not in mastered_qids and str(q["id"]) not in current_set]
     # Prefer questions with the lowest streak so new questions appear before partially learned ones.
-    candidates.sort(key=lambda q: question_store.get(str(q["id"]), {}).get("streak", 0))
+    # When starting fresh (empty working set), shuffle first so each new session has a different order.
+    fresh_start = len(working_set) == 0
+    if fresh_start:
+        random.shuffle(candidates)
+    else:
+        candidates.sort(key=lambda q: question_store.get(str(q["id"]), {}).get("streak", 0))
     while len(working_set) < n and candidates:
         working_set.append(str(candidates.pop(0)["id"]))
 
