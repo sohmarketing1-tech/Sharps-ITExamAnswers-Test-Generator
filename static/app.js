@@ -591,7 +591,8 @@ async function startMasterySession() {
         state.secondsElapsed = 0;
         state.multiSelect = false;
         showScreen("quiz");
-        startTimer();
+        els.timer.style.display = "none";
+        stopTimer();
         renderQuestion();
     } catch (err) {
         setMasteryMessage(err.message, "error");
@@ -762,6 +763,7 @@ async function startTest() {
     state.secondsElapsed = 0;
     state.multiSelect = false;
     showScreen("quiz");
+    els.timer.style.display = "";
     startTimer();
     renderQuestion();
 }
