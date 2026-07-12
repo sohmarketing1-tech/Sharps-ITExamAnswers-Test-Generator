@@ -87,14 +87,24 @@
         <button id="tab-community" class="tab-btn">Community</button>
     </div>
 
+    <div id="welcome-banner" class="welcome-banner hidden">
+        <div class="welcome-banner-inner">
+            <div class="welcome-banner-text">
+                <strong>Welcome to AnswrIT!</strong>
+                <span>Pick an exam below, then start a flashcard session or practice test. Sign up free to save your progress across devices.</span>
+            </div>
+            <button id="welcome-dismiss" class="welcome-dismiss" aria-label="Dismiss">&times;</button>
+        </div>
+    </div>
+
     <div class="container">
         <main id="app">
             <!-- Setup Screen -->
             <section id="setup-screen" class="screen active">
                 <div class="setup-grid">
                     <div class="card">
-                        <h2>Pick Your Exam</h2>
-                        <p class="card-subtitle">Choose the Navy IT exam you want to study.</p>
+                        <h2>Practice Test</h2>
+                        <p class="card-subtitle">Select an exam, choose your settings, and start a timed test.</p>
 
                         <div id="exam-buttons" class="exam-buttons">
                             <p class="empty-state">Loading exams…</p>
@@ -107,7 +117,7 @@
                                     <button id="mode-practice" class="btn btn-primary mode-btn active">Practice Test</button>
                                     <button id="mode-mastery" class="btn btn-secondary mode-btn">Mastery Mode</button>
                                 </div>
-                                <p id="mode-description" class="mode-description">Random questions each test. Great for quick review.</p>
+                                <p id="mode-description" class="mode-description">New random questions every time. Good for quick review.</p>
                             </div>
 
                             <div class="form-group" id="count-group">
@@ -115,6 +125,22 @@
                                 <div class="count-row">
                                     <input type="number" id="question-count" min="1" value="20" />
                                     <span id="total-questions" class="available-count">0 available</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="timer-group">
+                                <label for="timer-duration">Time limit</label>
+                                <div class="count-row">
+                                    <select id="timer-duration">
+                                        <option value="0">No limit</option>
+                                        <option value="5">5 minutes</option>
+                                        <option value="10">10 minutes</option>
+                                        <option value="15">15 minutes</option>
+                                        <option value="20">20 minutes</option>
+                                        <option value="30">30 minutes</option>
+                                        <option value="45">45 minutes</option>
+                                        <option value="60">60 minutes</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -137,16 +163,19 @@
                         </div>
 
                         <div class="button-row" id="start-row">
-                            <button id="start-btn" class="btn btn-success btn-large" disabled>Start Test</button>
+                            <div class="btn-tooltip-wrap">
+                                <button id="start-btn" class="btn btn-success btn-large" disabled>Start Test</button>
+                                <span class="btn-tooltip">Pick an exam first</span>
+                            </div>
                         </div>
 
                         <div class="info-row">
                             <div id="account-prompt" class="account-prompt">
-                                <p><strong>Want to save your progress?</strong> Create an account above. It's free, and your scores and mastery progress stay here.</p>
+                                <p><strong>Want to track your scores?</strong> Sign up free — your results and mastery progress save to your account.</p>
                             </div>
 
                             <div class="info-box">
-                                <p><strong>Heads up:</strong> This is a full pool of real exam questions. Your actual in-class exam will be around 50 questions pulled from this pool. Use this daily and you'll know every question cold.</p>
+                                <p><strong>Heads up:</strong> This is the full question pool. Your real exam pulls ~50 from it. Study daily and you'll know every question cold.</p>
                             </div>
                         </div>
 
@@ -259,7 +288,7 @@
                 <div class="setup-grid">
                     <div class="card">
                         <h2>Flashcards</h2>
-                        <p class="card-subtitle">Pick an exam and flip through questions to memorize the answers.</p>
+                        <p class="card-subtitle">The fastest way to memorize — flip through cards at your own pace.</p>
 
                         <div id="flashcard-exam-buttons" class="exam-buttons">
                             <p class="empty-state">Loading exams…</p>
@@ -295,7 +324,10 @@
                         </div>
 
                         <div class="button-row" id="flashcard-start-row">
-                            <button id="flashcard-start-btn" class="btn btn-success btn-large" disabled>Start Flashcards</button>
+                            <div class="btn-tooltip-wrap">
+                                <button id="flashcard-start-btn" class="btn btn-success btn-large" disabled>Start Flashcards</button>
+                                <span class="btn-tooltip">Pick an exam first</span>
+                            </div>
                         </div>
 
                         <div id="flashcard-resume-container" class="flashcard-resume hidden">
@@ -354,6 +386,7 @@
         </main>
     </div>
 
+    <div id="toast" class="toast hidden"></div>
     <script src="app.js?v=2"></script>
 </body>
 </html>

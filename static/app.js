@@ -31,6 +31,8 @@ const state = {
     currentIndex: 0,
     timerInterval: null,
     secondsElapsed: 0,
+    timerLimitSeconds: 0,
+    fiveMinWarned: false,
     multiSelect: false,
     mode: "practice", // "practice" or "mastery"
     user: null,
@@ -74,6 +76,7 @@ const els = {
     progressBar: document.getElementById("progress-bar"),
     progress: document.getElementById("progress"),
     timer: document.getElementById("timer"),
+    timerDuration: document.getElementById("timer-duration"),
     homeBtn: document.getElementById("home-btn"),
     questionBadge: document.getElementById("question-badge"),
     questionText: document.getElementById("question-text"),
@@ -389,6 +392,7 @@ async function loadExams() {
         if (prefs.flashcardFilter) setFlashcardFilter(prefs.flashcardFilter);
         state._restoringPrefs = false;
         renderFlashcardExamButtons();
+        updateFlashcardSteps();
         await renderFlashcardResume();
         if (state.exams.length > 0) {
             const current = (prefs.examFilename && state.exams.find((e) => e.filename === prefs.examFilename))
@@ -452,6 +456,7 @@ async function loadExam(filename, updateSelection = true) {
         els.questionCount.value = Math.min(requested, data.count);
         setMessage("Ready to start.");
         savePrefs();
+        updatePracticeSteps();
         await refreshMastery();
     } catch (err) {
         setMessage(err.message, "error");
@@ -468,6 +473,7 @@ function setMode(mode) {
         els.modeMastery.classList.add("btn-secondary");
         els.modeDescription.textContent = "Random questions each test. Great for quick review.";
         els.countGroup.classList.remove("hidden");
+        document.getElementById("timer-group").classList.remove("hidden");
         els.startRow.classList.remove("hidden");
         els.masteryPanel.classList.add("hidden");
         els.startBtn.textContent = "Start Test";
@@ -478,6 +484,7 @@ function setMode(mode) {
         els.modePractice.classList.add("btn-secondary");
         els.modeDescription.textContent = "Keep seeing questions until you've mastered every single one.";
         els.countGroup.classList.add("hidden");
+        document.getElementById("timer-group").classList.add("hidden");
         els.startRow.classList.add("hidden");
         els.masteryPanel.classList.remove("hidden");
         renderMasteryPanel();
@@ -759,19 +766,64 @@ async function startTest() {
     renderQuestion();
 }
 
+let _toastTimeout = null;
+function showToast(msg, type = "", duration = 4000) {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.className = "toast" + (type ? ` ${type}` : "");
+    clearTimeout(_toastTimeout);
+    _toastTimeout = setTimeout(() => { toast.classList.add("hidden"); }, duration);
+}
+
 function startTimer() {
     clearInterval(state.timerInterval);
-    els.timer.textContent = "00:00";
-    state.timerInterval = setInterval(() => {
-        state.secondsElapsed += 1;
-        const m = String(Math.floor(state.secondsElapsed / 60)).padStart(2, "0");
-        const s = String(state.secondsElapsed % 60).padStart(2, "0");
-        els.timer.textContent = `${m}:${s}`;
-    }, 1000);
+    const limitMins = els.timerDuration ? parseInt(els.timerDuration.value, 10) : 0;
+    state.timerLimitSeconds = limitMins > 0 ? limitMins * 60 : 0;
+    state.secondsElapsed = 0;
+    state.fiveMinWarned = false;
+    els.timer.classList.remove("timer-warning");
+
+    if (state.timerLimitSeconds > 0) {
+        const update = () => {
+            const remaining = state.timerLimitSeconds - state.secondsElapsed;
+            const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+            const s = String(remaining % 60).padStart(2, "0");
+            els.timer.textContent = `${m}:${s}`;
+
+            if (remaining <= 300) {
+                els.timer.classList.add("timer-warning");
+                if (!state.fiveMinWarned && state.timerLimitSeconds > 300) {
+                    state.fiveMinWarned = true;
+                    showToast("⏰ 5 minutes remaining!", "warning", 6000);
+                }
+            }
+
+            if (remaining <= 0) {
+                stopTimer();
+                showToast("⏱ Time's up! Submitting your test…", "warning", 5000);
+                setTimeout(() => els.submitBtn.click(), 1200);
+            }
+        };
+        update();
+        state.timerInterval = setInterval(() => {
+            state.secondsElapsed += 1;
+            update();
+        }, 1000);
+    } else {
+        els.timer.textContent = "00:00";
+        state.timerInterval = setInterval(() => {
+            state.secondsElapsed += 1;
+            const m = String(Math.floor(state.secondsElapsed / 60)).padStart(2, "0");
+            const s = String(state.secondsElapsed % 60).padStart(2, "0");
+            els.timer.textContent = `${m}:${s}`;
+        }, 1000);
+    }
 }
 
 function stopTimer() {
     clearInterval(state.timerInterval);
+    els.timer.classList.remove("timer-warning");
 }
 
 function goHome() {
@@ -958,6 +1010,7 @@ function selectFlashcardExam(filename) {
     updateFlashcardReviewCount();
     els.flashcardSetupMessage.textContent = "";
     savePrefs();
+    updateFlashcardSteps();
 }
 
 function setFlashcardMode(mode) {
@@ -1899,6 +1952,44 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
+// ── Welcome banner ─────────────────────────────────────────────────────────
+const WELCOME_KEY = "answrit_welcomed";
+(function initWelcomeBanner() {
+    const banner = document.getElementById("welcome-banner");
+    const dismiss = document.getElementById("welcome-dismiss");
+    if (!banner) return;
+    if (!localStorage.getItem(WELCOME_KEY)) {
+        banner.classList.remove("hidden");
+    }
+    dismiss.addEventListener("click", () => {
+        banner.classList.add("hidden");
+        try { localStorage.setItem(WELCOME_KEY, "1"); } catch (e) {}
+    });
+})();
+
+// ── Step indicator helpers ──────────────────────────────────────────────────
+function updatePracticeSteps() {
+    const examPicked = !!state.currentFilename;
+    const s1 = document.getElementById("step-practice-1");
+    const s2 = document.getElementById("step-practice-2");
+    const s3 = document.getElementById("step-practice-3");
+    if (!s1) return;
+    s1.className = "setup-step" + (examPicked ? " done" : " active");
+    s2.className = "setup-step" + (examPicked ? " active" : "");
+    s3.className = "setup-step" + (examPicked ? " active" : "");
+}
+
+function updateFlashcardSteps() {
+    const examPicked = !!state.flashcardFilename;
+    const s1 = document.getElementById("step-fc-1");
+    const s2 = document.getElementById("step-fc-2");
+    const s3 = document.getElementById("step-fc-3");
+    if (!s1) return;
+    s1.className = "setup-step" + (examPicked ? " done" : " active");
+    s2.className = "setup-step" + (examPicked ? " active" : "");
+    s3.className = "setup-step" + (examPicked ? " active" : "");
+}
+
 // Initialize — wrap defaults in _restoringPrefs so savePrefs is not called
 state._restoringPrefs = true;
 setFlashcardMode("question");
@@ -1909,7 +2000,9 @@ checkAuth();
 
 (function restoreTab() {
     const saved = localStorage.getItem(TAB_KEY);
-    if (saved && saved !== "practice") {
-        switchTab(saved);
+    if (saved) {
+        if (saved !== "practice") switchTab(saved);
+    } else if (!localStorage.getItem(WELCOME_KEY)) {
+        switchTab("flashcards");
     }
 })();
