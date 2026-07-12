@@ -1034,11 +1034,37 @@ function saveFlashcardSession() {
     } catch (e) {
         console.error("Failed to save flashcard session", e);
     }
+    if (state.user) {
+        fetch("/api/flashcard/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ session }),
+        }).catch(() => {});
+    }
 }
 
 function clearFlashcardSession() {
     localStorage.removeItem(FLASHCARD_SESSION_KEY);
+    if (state.user) {
+        fetch("/api/flashcard/session", {
+            method: "DELETE",
+            credentials: "same-origin",
+        }).catch(() => {});
+    }
     renderFlashcardResume();
+}
+
+async function loadServerFlashcardSession() {
+    if (!state.user) return null;
+    try {
+        const res = await fetch("/api/flashcard/session", { credentials: "same-origin" });
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.session || null;
+    } catch (e) {
+        return null;
+    }
 }
 
 function loadFlashcardSession() {
@@ -1051,31 +1077,47 @@ function loadFlashcardSession() {
     }
 }
 
-function renderFlashcardResume() {
-    const session = loadFlashcardSession();
+async function renderFlashcardResume() {
+    let session = loadFlashcardSession();
+
+    if (!session && state.user) {
+        const serverSession = await loadServerFlashcardSession();
+        if (serverSession && serverSession.questions && serverSession.questions.length) {
+            try { localStorage.setItem(FLASHCARD_SESSION_KEY, JSON.stringify(serverSession)); } catch (e) {}
+            session = serverSession;
+        }
+    }
+
     const hasSession = !!(session && session.questions && session.questions.length);
 
     els.flashcardResumeContainer.classList.toggle("hidden", !hasSession);
     document.getElementById("flashcard-start-row").classList.toggle("hidden", hasSession);
 
-    if (!hasSession) {
-        if (els.flashcardSessionStatus) {
-            els.flashcardSessionStatus.textContent = "No saved flashcard session on this device.";
+    if (els.flashcardSessionStatus) {
+        if (!state.user) {
+            els.flashcardSessionStatus.textContent = "⚠️ Not signed in — progress is only saved on this device.";
+        } else {
+            els.flashcardSessionStatus.textContent = "";
         }
-        return;
     }
+
+    if (!hasSession) return;
 
     const exam = state.exams.find((e) => e.filename === session.filename);
     const examName = exam?.display_name || exam?.title || session.filename;
     const current = Math.min(session.index + 1, session.questions.length);
     els.flashcardResumeText.textContent = `Resume "${examName}" — card ${current} of ${session.questions.length}.`;
-    if (els.flashcardSessionStatus) {
-        els.flashcardSessionStatus.textContent = "";
-    }
 }
 
-function resumeFlashcardSession() {
-    const session = loadFlashcardSession();
+async function resumeFlashcardSession() {
+    let session = null;
+    if (state.user) {
+        session = await loadServerFlashcardSession();
+        if (session) {
+            try { localStorage.setItem(FLASHCARD_SESSION_KEY, JSON.stringify(session)); } catch (e) {}
+        }
+    }
+    if (!session) session = loadFlashcardSession();
     if (!session || !session.questions || !session.questions.length) {
         clearFlashcardSession();
         return;

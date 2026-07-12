@@ -784,6 +784,49 @@ def flashcard_review_toggle():
 
 
 # ---------------------------------------------------------------------------
+# Flashcard session persistence (server-side, logged-in users only)
+# ---------------------------------------------------------------------------
+
+@app.route("/api/flashcard/session", methods=["GET"])
+def get_flashcard_session():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "session": None}), 200
+    users = load_users()
+    user_data = users.get(user, {})
+    saved = user_data.get("flashcard_session")
+    return jsonify({"ok": True, "session": saved})
+
+
+@app.route("/api/flashcard/session", methods=["POST"])
+def save_flashcard_session():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Not logged in"}), 401
+    body = request.get_json(silent=True) or {}
+    sess = body.get("session")
+    users = load_users()
+    user_data = users.setdefault(user, {})
+    if sess is None:
+        user_data.pop("flashcard_session", None)
+    else:
+        user_data["flashcard_session"] = sess
+    save_users(users)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/flashcard/session", methods=["DELETE"])
+def delete_flashcard_session():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Not logged in"}), 401
+    users = load_users()
+    users.get(user, {}).pop("flashcard_session", None)
+    save_users(users)
+    return jsonify({"ok": True})
+
+
+# ---------------------------------------------------------------------------
 # Mastery mode endpoints
 # ---------------------------------------------------------------------------
 
