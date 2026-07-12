@@ -721,6 +721,16 @@ body {
     box-shadow: 0 8px 18px -4px rgba(22, 163, 74, 0.35);
 }
 
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger) 0%, #b91c1c 100%);
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    filter: brightness(1.08);
+    box-shadow: 0 8px 18px -4px rgba(220, 38, 38, 0.35);
+}
+
 .btn-warning {
     background: #f59e0b;
     color: white;
