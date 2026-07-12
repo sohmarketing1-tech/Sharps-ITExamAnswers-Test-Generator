@@ -1815,13 +1815,6 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// Register service worker for PWA / offline support.
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js").catch((err) => {
-        console.error("Service worker registration failed", err);
-    });
-}
-
 // Initialize
 setFlashcardMode("question");
 setFlashcardFilter("all");
