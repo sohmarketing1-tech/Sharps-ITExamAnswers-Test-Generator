@@ -380,10 +380,20 @@ async function loadExams() {
         const data = await res.json();
         state.exams = data.exams || [];
         renderExamButtons();
+        const prefs = loadPrefs();
+        if (prefs.flashcardFilename && state.exams.find((e) => e.filename === prefs.flashcardFilename)) {
+            state.flashcardFilename = prefs.flashcardFilename;
+        }
+        state._restoringPrefs = true;
+        if (prefs.flashcardMode) setFlashcardMode(prefs.flashcardMode);
+        if (prefs.flashcardFilter) setFlashcardFilter(prefs.flashcardFilter);
+        state._restoringPrefs = false;
         renderFlashcardExamButtons();
-        renderFlashcardResume();
+        await renderFlashcardResume();
         if (state.exams.length > 0) {
-            const current = data.current_filename || state.exams[0].filename;
+            const current = (prefs.examFilename && state.exams.find((e) => e.filename === prefs.examFilename))
+                ? prefs.examFilename
+                : (data.current_filename || state.exams[0].filename);
             await loadExam(current, true);
         } else {
             setMessage("No pre-scraped exams found.", "error");
@@ -441,6 +451,7 @@ async function loadExam(filename, updateSelection = true) {
         const requested = parseInt(els.questionCount.value, 10) || 20;
         els.questionCount.value = Math.min(requested, data.count);
         setMessage("Ready to start.");
+        savePrefs();
         await refreshMastery();
     } catch (err) {
         setMessage(err.message, "error");
@@ -778,8 +789,31 @@ function goHome() {
     showScreen("setup");
 }
 
+const TAB_KEY = "answrit_active_tab";
+const PREFS_KEY = "answrit_prefs";
+
+function savePrefs() {
+    if (state._restoringPrefs) return;
+    try {
+        localStorage.setItem(PREFS_KEY, JSON.stringify({
+            examFilename: state.currentFilename,
+            flashcardFilename: state.flashcardFilename,
+            flashcardMode: state.flashcardMode,
+            flashcardFilter: state.flashcardFilter,
+        }));
+    } catch (e) {}
+}
+
+function loadPrefs() {
+    try {
+        const raw = localStorage.getItem(PREFS_KEY);
+        return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+}
+
 function switchTab(tabName) {
     if (state.currentTab === tabName) return;
+    try { localStorage.setItem(TAB_KEY, tabName); } catch (e) {}
     if (screens.quiz.classList.contains("active")) {
         if (!confirm("Leave this test? Unsubmitted answers won't be saved.")) return;
     }
@@ -923,6 +957,7 @@ function selectFlashcardExam(filename) {
     renderFlashcardExamButtons();
     updateFlashcardReviewCount();
     els.flashcardSetupMessage.textContent = "";
+    savePrefs();
 }
 
 function setFlashcardMode(mode) {
@@ -944,6 +979,7 @@ function setFlashcardMode(mode) {
         els.flashcardPreviewBack.textContent = "C. 127.0.0.1";
     }
     saveFlashcardSession();
+    savePrefs();
 }
 
 async function startFlashcards() {
@@ -1018,6 +1054,7 @@ function showFlashcardSetup() {
 const FLASHCARD_SESSION_KEY = "answrit_flashcard_session";
 
 function saveFlashcardSession() {
+    if (state._restoringPrefs) return;
     if (!state.flashcardQuestions.length) return;
     const session = {
         filename: state.flashcardFilename,
@@ -1256,6 +1293,7 @@ function setFlashcardFilter(filter) {
     els.flashcardFilterReview.classList.toggle("btn-secondary", filter !== "review");
     updateFlashcardReviewCount();
     saveFlashcardSession();
+    savePrefs();
 }
 
 async function updateFlashcardReviewCount() {
@@ -1861,8 +1899,17 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// Initialize
+// Initialize — wrap defaults in _restoringPrefs so savePrefs is not called
+state._restoringPrefs = true;
 setFlashcardMode("question");
 setFlashcardFilter("all");
+state._restoringPrefs = false;
 loadExams();
 checkAuth();
+
+(function restoreTab() {
+    const saved = localStorage.getItem(TAB_KEY);
+    if (saved && saved !== "practice") {
+        switchTab(saved);
+    }
+})();
