@@ -146,6 +146,8 @@ const els = {
     profileAvatarPreview: document.getElementById("profile-avatar-preview"),
     profileUsername: document.getElementById("profile-username"),
     micahBuilder: document.getElementById("micah-builder"),
+    avatarBuilder: document.getElementById("avatar-builder"),
+    avatarEditBtn: document.getElementById("avatar-edit-btn"),
     profileRandomAvatar: document.getElementById("profile-random-avatar"),
     themePicker: document.getElementById("theme-picker"),
     profileSave: document.getElementById("profile-save"),
@@ -522,6 +524,18 @@ function updateAvatarPreview() {
     els.profileAvatarPreview.src = avatarUrl(profileDraft.avatar_seed, profileDraft.avatar_style, profileDraft.avatar_options);
 }
 
+function toggleAvatarBuilder() {
+    if (!els.avatarBuilder) return;
+    const isHidden = els.avatarBuilder.classList.toggle("hidden");
+    if (els.avatarEditBtn) {
+        els.avatarEditBtn.textContent = isHidden ? "Customize Avatar" : "Hide Avatar Editor";
+    }
+    if (!isHidden) {
+        renderMicahBuilder();
+        updateAvatarPreview();
+    }
+}
+
 function micahOptionUrl(key, value, size = 64) {
     const opts = { ...MICAH_DEFAULTS, [key]: value };
     return avatarUrl("preview", "micah", opts, size);
@@ -709,6 +723,8 @@ function openProfileModal() {
     profileDraft.avatar_options = opts;
     profileSavedTheme = profileDraft.theme;
     els.profileUsername.textContent = state.user || "";
+    if (els.avatarBuilder) els.avatarBuilder.classList.add("hidden");
+    if (els.avatarEditBtn) els.avatarEditBtn.textContent = "Customize Avatar";
     renderMicahBuilder();
     updateAvatarPreview();
     renderThemePicker(profileDraft.theme);
@@ -2481,6 +2497,7 @@ els.profileBtn.addEventListener("click", openProfileModal);
 els.profileLogout.addEventListener("click", logout);
 els.profileSave.addEventListener("click", saveProfile);
 els.profileCancel.addEventListener("click", cancelProfile);
+els.avatarEditBtn.addEventListener("click", toggleAvatarBuilder);
 els.profileRandomAvatar.addEventListener("click", randomAvatar);
 els.profileModal.addEventListener("click", (e) => {
     if (e.target === els.profileModal) cancelProfile();

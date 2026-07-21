@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" href="images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="images/answrit-icon.png" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css?v=14" />
+    <link rel="stylesheet" href="style.css?v=15" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -80,8 +80,11 @@
                 <div class="profile-column profile-column-right">
                     <div class="profile-section">
                         <label>Avatar</label>
-                        <div id="micah-builder" class="micah-builder"></div>
-                        <button id="profile-random-avatar" class="btn btn-secondary btn-small">Randomize avatar</button>
+                        <button id="avatar-edit-btn" class="btn btn-secondary btn-small avatar-edit-btn">Customize Avatar</button>
+                        <div id="avatar-builder" class="avatar-builder-wrap hidden">
+                            <div id="micah-builder" class="micah-builder"></div>
+                            <button id="profile-random-avatar" class="btn btn-secondary btn-small">Randomize avatar</button>
+                        </div>
                     </div>
                     <p id="profile-message" class="auth-message"></p>
                 </div>
@@ -556,6 +559,6 @@
     </div>
 
     <div id="toast" class="toast hidden"></div>
-    <script src="app.js?v=14"></script>
+    <script src="app.js?v=15"></script>
 </body>
 </html>

@@ -443,10 +443,11 @@ body {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     z-index: 200;
     padding: 24px;
+    overflow-y: auto;
 }
 
 .modal-overlay.hidden {
@@ -468,6 +469,7 @@ body {
     border: 1px solid rgba(var(--glass-base), 0.45);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    margin: auto;
 }
 
 @keyframes modalIn {
@@ -3082,5 +3084,481 @@ body {
 
     .home-actions {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Extra mobile polish */
+.avatar-builder-wrap {
+    margin-top: 10px;
+}
+
+.avatar-edit-btn {
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    /* Header / nav */
+    .top-nav {
+        padding: 10px 12px;
+    }
+
+    .nav-inner {
+        gap: 10px;
+    }
+
+    .header-logo {
+        height: 38px;
+        max-width: 150px;
+    }
+
+    .auth-actions {
+        gap: 6px;
+    }
+
+    .btn-text,
+    .top-nav .btn-primary,
+    .top-nav .btn-secondary {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+
+    .profile-btn {
+        padding: 4px 10px 4px 4px;
+        gap: 6px;
+        font-size: 0.85rem;
+    }
+
+    .profile-btn span {
+        max-width: 90px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .nav-avatar {
+        width: 26px;
+        height: 26px;
+    }
+
+    /* Modals */
+    .modal-overlay {
+        padding: 12px;
+    }
+
+    .modal {
+        padding: 22px;
+        border-radius: 16px;
+    }
+
+    .modal h3 {
+        font-size: 1.25rem;
+    }
+
+    .auth-modal input {
+        padding: 11px 12px;
+    }
+
+    /* Profile modal */
+    .profile-modal {
+        padding: 16px;
+    }
+
+    .profile-layout {
+        gap: 16px;
+    }
+
+    .profile-preview img {
+        width: 84px;
+        height: 84px;
+    }
+
+    .profile-preview span {
+        font-size: 1rem;
+    }
+
+    .theme-picker {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .theme-option {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .micah-option {
+        width: 52px;
+        height: 52px;
+    }
+
+    .micah-swatch {
+        width: 34px;
+        height: 34px;
+    }
+
+    .profile-actions {
+        gap: 8px;
+    }
+
+    .avatar-edit-btn {
+        width: 100%;
+    }
+
+    /* Home */
+    .home-hero {
+        padding: 28px 18px;
+        border-radius: 18px;
+        margin-bottom: 18px;
+    }
+
+    .home-hero-badge {
+        font-size: 0.68rem;
+        padding: 5px 10px;
+        margin-bottom: 10px;
+    }
+
+    .home-hero h1 {
+        font-size: clamp(1.7rem, 8vw, 2.4rem);
+    }
+
+    .home-hero p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .home-hero-hint {
+        font-size: 0.75rem;
+    }
+
+    .home-hero .btn-success.btn-large {
+        width: 100%;
+        padding: 14px 22px;
+    }
+
+    .home-card {
+        padding: 16px;
+        gap: 10px;
+    }
+
+    .home-card-wide {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .home-card-wide .home-card-icon {
+        width: 54px;
+        height: 54px;
+    }
+
+    .home-card-title {
+        font-size: 1.05rem;
+    }
+
+    .home-card-text {
+        font-size: 0.9rem;
+    }
+
+    .home-card-arrow {
+        margin-left: 0;
+        margin-top: auto;
+        font-size: 1.3rem;
+    }
+
+    /* Screen headers */
+    .screen-header {
+        margin-bottom: 16px;
+    }
+
+    .screen-header-main {
+        gap: 12px;
+    }
+
+    .screen-header-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .screen-header-icon svg {
+        width: 50%;
+        height: 50%;
+    }
+
+    .screen-header-title {
+        font-size: 1.25rem;
+    }
+
+    .screen-header-subtitle {
+        font-size: 0.85rem;
+    }
+
+    /* Practice / setup */
+    .card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .exam-buttons {
+        gap: 10px;
+    }
+
+    .btn-exam {
+        padding: 12px 10px;
+    }
+
+    .btn-exam .exam-name {
+        font-size: 0.95rem;
+    }
+
+    .mode-toggle {
+        width: 100%;
+    }
+
+    .mode-toggle .mode-btn {
+        min-width: 0;
+        flex: 1 1 0;
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .count-row input,
+    .count-row select {
+        width: 100%;
+    }
+
+    .info-row {
+        gap: 12px;
+    }
+
+    /* Quiz */
+    .quiz-toolbar-top {
+        margin-bottom: 10px;
+    }
+
+    .quiz-meta {
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: 0.85rem;
+    }
+
+    .question-card h3 {
+        font-size: 1.05rem;
+        margin-bottom: 18px;
+        gap: 12px;
+    }
+
+    .option {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .option input {
+        width: 18px;
+        height: 18px;
+    }
+
+    .option-text {
+        font-size: 0.95rem;
+    }
+
+    .quiz-nav {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .quiz-nav .btn {
+        width: 100%;
+    }
+
+    .quiz-footer {
+        margin-top: 20px;
+    }
+
+    .quiz-footer .btn {
+        width: 100%;
+    }
+
+    /* Results */
+    .results-summary {
+        padding: 24px 16px;
+    }
+
+    .score-circle {
+        width: 120px;
+        height: 120px;
+        margin: 18px auto;
+    }
+
+    .score-circle::before {
+        width: 92px;
+        height: 92px;
+    }
+
+    .score-circle span {
+        font-size: 1.5rem;
+    }
+
+    .score-detail {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .review-panel {
+        margin-top: 20px;
+    }
+
+    .review-item {
+        padding: 16px;
+    }
+
+    .review-item h4 {
+        font-size: 1rem;
+    }
+
+    .answer-text {
+        font-size: 0.9rem;
+    }
+
+    /* Flashcards */
+    .flashcard-study-area {
+        gap: 16px;
+    }
+
+    .flashcard-progress {
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 0.85rem;
+    }
+
+    .flashcard {
+        min-height: 240px;
+    }
+
+    .flashcard-inner {
+        min-height: 240px;
+    }
+
+    .flashcard-front,
+    .flashcard-back {
+        padding: 18px;
+        gap: 12px;
+    }
+
+    .flashcard-front h3 {
+        font-size: 1rem;
+    }
+
+    .flashcard-back p {
+        font-size: 1.1rem;
+    }
+
+    .flashcard-options li {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .flashcard-controls {
+        gap: 10px;
+    }
+
+    .flashcard-hint {
+        font-size: 0.75rem;
+    }
+
+    /* History */
+    .history-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .history-summary-card strong {
+        font-size: 1.25rem;
+    }
+
+    .history-item {
+        gap: 0.5rem;
+    }
+
+    .history-item h3 {
+        font-size: 0.95rem;
+    }
+
+    .history-item-score strong {
+        font-size: 1.15rem;
+    }
+
+    /* Community */
+    .chat-card {
+        padding: 16px;
+    }
+
+    .chat-messages {
+        padding: 12px;
+        max-height: 320px;
+        gap: 10px;
+    }
+
+    .chat-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    .chat-message-header {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .chat-text {
+        font-size: 0.9rem;
+    }
+
+    .chat-input-row {
+        gap: 8px;
+    }
+
+    .chat-input-row .btn {
+        padding: 10px 14px;
+    }
+
+    /* Install modal */
+    .install-tabs {
+        width: 100%;
+    }
+
+    .install-tab {
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+
+    /* Toast */
+    .toast {
+        left: 16px;
+        right: 16px;
+        transform: translateX(0);
+        max-width: none;
+        white-space: normal;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .home-actions {
+        gap: 12px;
+    }
+
+    .home-hero {
+        padding: 22px 14px;
+    }
+
+    .mode-toggle .mode-btn {
+        font-size: 0.85rem;
+        padding: 10px 8px;
+    }
+
+    .flashcard-front h3 {
+        font-size: 0.95rem;
+    }
+
+    .flashcard-back p {
+        font-size: 1rem;
     }
 }
