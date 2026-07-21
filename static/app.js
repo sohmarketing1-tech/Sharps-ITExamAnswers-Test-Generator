@@ -14,9 +14,12 @@ const API = {
     masteryReset: "/api/mastery/reset",
     chatMessages: "/api/chat/messages",
     chatMessage: "/api/chat/message",
+    chatAvatars: "/api/chat/avatars",
     examQuestions: "/api/exam-questions",
     flashcardReviews: "/api/flashcard/reviews",
     flashcardReviewToggle: "/api/flashcard/review",
+    history: "/api/history",
+    profile: "/api/profile",
 };
 
 const state = {
@@ -38,8 +41,9 @@ const state = {
     user: null,
     masterySummary: null,
     lastSavedAnswers: {}, // qid -> saved answer array
-    currentTab: "practice",
+    currentTab: "home",
     flashcardFilename: null,
+    historyAttempts: [],
     flashcardMode: "question", // "question" or "choices"
     flashcardFilter: "all", // "all" or "review"
     flashcardQuestions: [],
@@ -47,13 +51,18 @@ const state = {
     flashcardFlipped: false,
     flashcardReviews: new Set(),
     authModalMode: null,
+    chatMessages: [],
+    chatMessagesKey: null,
+    userProfile: {},
 };
 
 // DOM refs
 const screens = {
+    home: document.getElementById("home-screen"),
     setup: document.getElementById("setup-screen"),
     quiz: document.getElementById("quiz-screen"),
     results: document.getElementById("results-screen"),
+    history: document.getElementById("history-screen"),
     community: document.getElementById("community-screen"),
     flashcards: document.getElementById("flashcards-screen"),
 };
@@ -65,9 +74,23 @@ const els = {
     startBtn: document.getElementById("start-btn"),
     setupMessage: document.getElementById("setup-message"),
     accountPrompt: document.getElementById("account-prompt"),
+    tabHome: document.getElementById("tab-home"),
+    tabNav: document.querySelector(".tab-nav"),
     tabPractice: document.getElementById("tab-practice"),
     tabFlashcards: document.getElementById("tab-flashcards"),
+    tabHistory: document.getElementById("tab-history"),
     tabCommunity: document.getElementById("tab-community"),
+    homePracticeBtn: document.querySelector('.home-card[data-tab="practice"]'),
+    homeFlashcardsBtn: document.querySelector('.home-card[data-tab="flashcards"]'),
+    homeHistoryBtn: document.querySelector('.home-card[data-tab="history"]'),
+    homeCommunityBtn: document.querySelector('.home-card[data-tab="community"]'),
+    historyLoginPrompt: document.getElementById("history-login-prompt"),
+    historyLoginBtn: document.getElementById("history-login-btn"),
+    historyContent: document.getElementById("history-content"),
+    historyTestsTaken: document.getElementById("history-tests-taken"),
+    historyAverageScore: document.getElementById("history-average-score"),
+    historyRecentScore: document.getElementById("history-recent-score"),
+    historyList: document.getElementById("history-list"),
     chatMessages: document.getElementById("chat-messages"),
     chatInput: document.getElementById("chat-input"),
     chatSendBtn: document.getElementById("chat-send-btn"),
@@ -78,6 +101,8 @@ const els = {
     timer: document.getElementById("timer"),
     timerDuration: document.getElementById("timer-duration"),
     homeBtn: document.getElementById("home-btn"),
+    homeLogo: document.getElementById("home-logo"),
+    homeStartBtn: document.getElementById("home-start-btn"),
     questionBadge: document.getElementById("question-badge"),
     questionText: document.getElementById("question-text"),
     optionsContainer: document.getElementById("options-container"),
@@ -105,7 +130,6 @@ const els = {
     authModal: document.getElementById("auth-modal"),
     loginTrigger: document.getElementById("login-trigger"),
     registerTrigger: document.getElementById("register-trigger"),
-    logoutBtn: document.getElementById("logout-btn"),
     installHelpBtn: document.getElementById("install-help-btn"),
     installModal: document.getElementById("install-modal"),
     installCloseBtn: document.getElementById("install-close-btn"),
@@ -116,6 +140,18 @@ const els = {
     authLoggedOut: document.getElementById("auth-logged-out"),
     authLoggedIn: document.getElementById("auth-logged-in"),
     authUser: document.getElementById("auth-user"),
+    navAvatar: document.getElementById("nav-avatar"),
+    profileBtn: document.getElementById("profile-btn"),
+    profileModal: document.getElementById("profile-modal"),
+    profileAvatarPreview: document.getElementById("profile-avatar-preview"),
+    profileUsername: document.getElementById("profile-username"),
+    micahBuilder: document.getElementById("micah-builder"),
+    profileRandomAvatar: document.getElementById("profile-random-avatar"),
+    themePicker: document.getElementById("theme-picker"),
+    profileSave: document.getElementById("profile-save"),
+    profileCancel: document.getElementById("profile-cancel"),
+    profileLogout: document.getElementById("profile-logout"),
+    profileMessage: document.getElementById("profile-message"),
     modePractice: document.getElementById("mode-practice"),
     modeMastery: document.getElementById("mode-mastery"),
     modeDescription: document.getElementById("mode-description"),
@@ -162,6 +198,94 @@ const els = {
     flashcardExitBtn: document.getElementById("flashcard-exit-btn"),
 };
 
+const DEFAULT_PROFILE = { theme: "ocean", avatar_seed: "me", avatar_style: "micah", avatar_options: {} };
+const THEMES = [
+    { key: "ocean", label: "Ocean" },
+    { key: "midnight", label: "Midnight" },
+    { key: "sunset", label: "Sunset" },
+    { key: "forest", label: "Forest" },
+    { key: "berry", label: "Berry" },
+    { key: "bubblegum", label: "Jenelle" },
+    { key: "slate", label: "Slate" },
+    { key: "coffee", label: "Coffee" },
+];
+
+const MICAH_OPTIONS = {
+    hair: ["dannyPhantom", "dougFunny", "fonze", "full", "mrClean", "mrT", "pixie", "turban"],
+    clothes: ["collared", "crew", "open"],
+    mouth: ["frown", "laughing", "nervous", "pucker", "sad", "smile", "smirk", "surprised"],
+    eyes: ["eyes", "eyesShadow", "round", "smiling", "smilingShadow"],
+    ears: ["attached", "detached"],
+    eyebrows: ["down", "eyelashesDown", "eyelashesUp", "up"],
+    nose: ["curve", "pointed", "tound"],
+    baseColor: "#f9c9b6",
+    hairColor: "#000000",
+    shirtColor: "#d2eff3",
+    glassesColor: "#000000",
+    eyesColor: "#000000",
+    glasses: false,
+    facialHair: false,
+    earrings: false,
+};
+
+const MICAH_COLORS = [
+    "#000000", "#ffffff", "#f9c9b6", "#ac6651", "#77311d", "#92400e",
+    "#f4d150", "#57534e", "#d2eff3", "#ef4444", "#3b82f6", "#22c55e",
+    "#a855f7", "#ec4899",
+];
+
+const MICAH_DEFAULTS = {};
+Object.keys(MICAH_OPTIONS).forEach((k) => {
+    const v = MICAH_OPTIONS[k];
+    MICAH_DEFAULTS[k] = Array.isArray(v) ? v[0] : v;
+});
+
+let profileDraft = { ...DEFAULT_PROFILE };
+let profileSavedTheme = DEFAULT_PROFILE.theme;
+
+function getProfile() {
+    return { ...DEFAULT_PROFILE, ...state.userProfile };
+}
+
+function avatarUrl(seed, style, options = {}, size = null) {
+    const s = seed || (state.user ? state.user : "guest");
+    const st = style || "bottts";
+    const base = `https://api.dicebear.com/10.x/${encodeURIComponent(st)}/svg?seed=${encodeURIComponent(s)}`;
+    let url = base;
+    if (st === "micah" && options && Object.keys(options).length > 0) {
+        const params = [];
+        const bools = ["glasses", "facialHair", "earrings"];
+        Object.entries(options).forEach(([key, value]) => {
+            if (value === undefined || value === null || value === "") return;
+            if (bools.includes(key)) {
+                const prob = value === true || value === "true" ? 100 : 0;
+                params.push(`${encodeURIComponent(key)}Probability=${prob}`);
+                return;
+            }
+            if (key.toLowerCase().endsWith("color")) {
+                const color = String(value).replace("#", "");
+                params.push(`${encodeURIComponent(key)}=${encodeURIComponent(color)}`);
+                return;
+            }
+            params.push(`${encodeURIComponent(key)}Variant=${encodeURIComponent(value)}`);
+        });
+        if (params.length) url = `${url}&${params.join("&")}`;
+    }
+    if (size) url = `${url}&size=${size}`;
+    return url;
+}
+
+function applyProfileTheme(profile) {
+    const theme = profile.theme || "ocean";
+    document.documentElement.dataset.theme = theme;
+}
+
+function updateNavAvatar() {
+    const profile = getProfile();
+    els.navAvatar.src = avatarUrl(profile.avatar_seed, profile.avatar_style, profile.avatar_options);
+    els.authUser.textContent = state.user || "";
+}
+
 function showScreen(name) {
     Object.values(screens).forEach((s) => s.classList.remove("active"));
     screens[name].classList.add("active");
@@ -186,13 +310,15 @@ function renderAuthState() {
     if (state.user) {
         els.authLoggedOut.classList.add("hidden");
         els.authLoggedIn.classList.remove("hidden");
-        els.authUser.textContent = state.user;
+        updateNavAvatar();
         els.modalUsername.value = "";
         els.modalPassword.value = "";
     } else {
         els.authLoggedIn.classList.add("hidden");
         els.authLoggedOut.classList.remove("hidden");
         els.authUser.textContent = "";
+        state.userProfile = {};
+        applyProfileTheme(getProfile());
     }
     renderChatInputState();
     if (state.currentTab === "flashcards" && state.flashcardFilename) {
@@ -206,14 +332,19 @@ async function checkAuth() {
         const data = await res.json();
         if (data.ok && data.user) {
             state.user = data.user;
+            state.userProfile = data.profile || {};
         } else {
             state.user = null;
+            state.userProfile = {};
         }
     } catch (err) {
         state.user = null;
+        state.userProfile = {};
     }
+    applyProfileTheme(getProfile());
     renderAuthState();
     renderAccountPrompt();
+    if (state.currentTab === "history") loadHistory();
 }
 
 async function login() {
@@ -234,11 +365,14 @@ async function login() {
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Login failed");
         state.user = data.user;
+        state.userProfile = data.profile || {};
+        applyProfileTheme(getProfile());
         renderAuthState();
         renderAccountPrompt();
         setAuthMessage("Logged in.", "success");
         closeAuthModal();
         await refreshMastery();
+        if (state.currentTab === "history") loadHistory();
     } catch (err) {
         setAuthMessage(err.message, "error");
     } finally {
@@ -273,11 +407,14 @@ async function register() {
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Sign up failed");
         state.user = data.user;
+        state.userProfile = data.profile || {};
+        applyProfileTheme(getProfile());
         renderAuthState();
         renderAccountPrompt();
         setAuthMessage("Account created and logged in.", "success");
         closeAuthModal();
         await refreshMastery();
+        if (state.currentTab === "history") loadHistory();
     } catch (err) {
         setAuthMessage(err.message, "error");
     } finally {
@@ -348,13 +485,267 @@ async function logout() {
             credentials: "same-origin",
         });
         state.user = null;
+        state.userProfile = {};
         state.masterySummary = null;
+        applyProfileTheme(getProfile());
         renderAuthState();
         renderAccountPrompt();
         renderMasteryPanel();
+        if (state.currentTab === "history") renderHistory();
     } catch (err) {
         // Logout error is silent since the UI already reflects the action.
         console.error("Logout failed", err);
+    }
+}
+
+function setProfileMessage(text, type = "") {
+    els.profileMessage.textContent = text;
+    els.profileMessage.className = "auth-message" + (type ? ` ${type}` : "");
+}
+
+function getMicahOption(key) {
+    const opts = profileDraft.avatar_options || {};
+    const raw = opts[key] !== undefined ? opts[key] : MICAH_OPTIONS[key];
+    if (["glasses", "facialHair", "earrings"].includes(key)) {
+        return raw === true || raw === "true" || raw === "True";
+    }
+    return Array.isArray(raw) ? raw[0] : raw;
+}
+
+function setMicahOption(key, value) {
+    profileDraft.avatar_options = { ...(profileDraft.avatar_options || {}), [key]: value };
+    updateAvatarPreview();
+    updateMicahBuilderActiveStates();
+}
+
+function updateAvatarPreview() {
+    els.profileAvatarPreview.src = avatarUrl(profileDraft.avatar_seed, profileDraft.avatar_style, profileDraft.avatar_options);
+}
+
+function micahOptionUrl(key, value, size = 64) {
+    const opts = { ...MICAH_DEFAULTS, [key]: value };
+    return avatarUrl("preview", "micah", opts, size);
+}
+
+function updateMicahBuilderActiveStates() {
+    if (!els.micahBuilder) return;
+    Array.from(els.micahBuilder.querySelectorAll("[data-micah-key]")).forEach((btn) => {
+        const key = btn.dataset.micahKey;
+        const isToggle = btn.dataset.micahToggle === "true";
+        const active = isToggle ? getMicahOption(key) : String(getMicahOption(key)) === btn.dataset.micahValue;
+        btn.classList.toggle("active", active);
+    });
+    Array.from(els.micahBuilder.querySelectorAll(".micah-swatch")).forEach((btn) => {
+        const key = btn.dataset.micahColor;
+        const val = btn.dataset.micahColorValue;
+        btn.classList.toggle("active", String(getMicahOption(key)) === val);
+    });
+}
+
+function renderMicahBuilder() {
+    if (!els.micahBuilder) return;
+    els.micahBuilder.innerHTML = "";
+
+    const variantSections = [
+        { key: "hair", label: "Hair" },
+        { key: "clothes", label: "Shirt" },
+        { key: "mouth", label: "Mouth" },
+        { key: "eyes", label: "Eyes" },
+        { key: "ears", label: "Ears" },
+        { key: "eyebrows", label: "Eyebrows" },
+        { key: "nose", label: "Nose" },
+    ];
+
+    variantSections.forEach(({ key, label }) => {
+        const row = document.createElement("div");
+        row.className = "micah-row";
+        const title = document.createElement("div");
+        title.className = "micah-row-label";
+        title.textContent = label;
+        const options = document.createElement("div");
+        options.className = "micah-options-row";
+        (MICAH_OPTIONS[key] || []).forEach((val) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "micah-option";
+            btn.dataset.micahKey = key;
+            btn.dataset.micahValue = val;
+            btn.title = val.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
+            const img = document.createElement("img");
+            img.src = micahOptionUrl(key, val);
+            img.alt = "";
+            img.loading = "lazy";
+            btn.appendChild(img);
+            btn.addEventListener("click", () => setMicahOption(key, val));
+            options.appendChild(btn);
+        });
+        row.appendChild(title);
+        row.appendChild(options);
+        els.micahBuilder.appendChild(row);
+    });
+
+    const toggleSection = document.createElement("div");
+    toggleSection.className = "micah-row";
+    const toggleTitle = document.createElement("div");
+    toggleTitle.className = "micah-row-label";
+    toggleTitle.textContent = "Accessories";
+    const toggleOptions = document.createElement("div");
+    toggleOptions.className = "micah-options-row";
+    const toggleLabels = { glasses: "Glasses", facialHair: "Facial hair", earrings: "Earrings" };
+    ["glasses", "facialHair", "earrings"].forEach((key) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "micah-option";
+        btn.dataset.micahKey = key;
+        btn.dataset.micahValue = "true";
+        btn.dataset.micahToggle = "true";
+        btn.title = toggleLabels[key];
+        const img = document.createElement("img");
+        img.src = micahOptionUrl(key, true);
+        img.alt = "";
+        img.loading = "lazy";
+        btn.appendChild(img);
+        btn.addEventListener("click", () => setMicahOption(key, !getMicahOption(key)));
+        toggleOptions.appendChild(btn);
+    });
+    toggleSection.appendChild(toggleTitle);
+    toggleSection.appendChild(toggleOptions);
+    els.micahBuilder.appendChild(toggleSection);
+
+    const colorSection = document.createElement("div");
+    colorSection.className = "micah-row";
+    const colorTitle = document.createElement("div");
+    colorTitle.className = "micah-row-label";
+    colorTitle.textContent = "Colors";
+    const colorGrid = document.createElement("div");
+    colorGrid.className = "micah-colors-grid";
+    const colorLabels = {
+        baseColor: "Skin",
+        hairColor: "Hair",
+        shirtColor: "Shirt",
+        eyesColor: "Eyes",
+        glassesColor: "Glasses",
+    };
+    Object.keys(colorLabels).forEach((key) => {
+        const field = document.createElement("div");
+        field.className = "micah-color";
+        const lbl = document.createElement("label");
+        lbl.textContent = colorLabels[key];
+        const swatches = document.createElement("div");
+        swatches.className = "micah-swatches";
+        swatches.dataset.micahColorKey = key;
+        MICAH_COLORS.forEach((color) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "micah-swatch";
+            btn.style.backgroundColor = color;
+            btn.dataset.micahColor = key;
+            btn.dataset.micahColorValue = color;
+            btn.title = color;
+            btn.addEventListener("click", () => setMicahOption(key, color));
+            swatches.appendChild(btn);
+        });
+        field.appendChild(lbl);
+        field.appendChild(swatches);
+        colorGrid.appendChild(field);
+    });
+    colorSection.appendChild(colorTitle);
+    colorSection.appendChild(colorGrid);
+    els.micahBuilder.appendChild(colorSection);
+
+    updateMicahBuilderActiveStates();
+}
+
+function renderThemePicker(selectedKey) {
+    els.themePicker.innerHTML = "";
+    THEMES.forEach((theme) => {
+        const btn = document.createElement("button");
+        btn.className = "theme-option" + (theme.key === selectedKey ? " active" : "");
+        btn.type = "button";
+        btn.textContent = theme.label;
+        btn.dataset.theme = theme.key;
+        btn.title = theme.label;
+        btn.addEventListener("click", () => {
+            profileDraft.theme = theme.key;
+            renderThemePicker(theme.key);
+            applyProfileTheme(profileDraft);
+        });
+        els.themePicker.appendChild(btn);
+    });
+}
+
+function randomMicahOptions() {
+    const opts = {};
+    ["hair", "clothes", "mouth", "eyes", "ears", "eyebrows", "nose"].forEach((key) => {
+        const arr = MICAH_OPTIONS[key];
+        opts[key] = arr[Math.floor(Math.random() * arr.length)];
+    });
+    ["glasses", "facialHair", "earrings"].forEach((key) => {
+        opts[key] = Math.random() > 0.5;
+    });
+    ["baseColor", "hairColor", "shirtColor", "eyesColor", "glassesColor"].forEach((key) => {
+        opts[key] = MICAH_COLORS[Math.floor(Math.random() * MICAH_COLORS.length)];
+    });
+    return opts;
+}
+
+function randomAvatar() {
+    profileDraft.avatar_seed = Math.random().toString(36).slice(2, 10);
+    profileDraft.avatar_style = "micah";
+    profileDraft.avatar_options = randomMicahOptions();
+    renderMicahBuilder();
+    updateAvatarPreview();
+}
+
+function openProfileModal() {
+    profileDraft = { ...getProfile(), avatar_style: "micah" };
+    const opts = { ...(profileDraft.avatar_options || {}) };
+    if (opts.skinColor !== undefined && opts.baseColor === undefined) {
+        opts.baseColor = opts.skinColor;
+    }
+    ["skinColor", "mouthColor", "eyeShadowColor", "eyebrowsColor", "facialHairColor", "earringColor"].forEach((key) => {
+        delete opts[key];
+    });
+    profileDraft.avatar_options = opts;
+    profileSavedTheme = profileDraft.theme;
+    els.profileUsername.textContent = state.user || "";
+    renderMicahBuilder();
+    updateAvatarPreview();
+    renderThemePicker(profileDraft.theme);
+    setProfileMessage("");
+    els.profileModal.classList.remove("hidden");
+}
+
+function closeProfileModal() {
+    els.profileModal.classList.add("hidden");
+}
+
+function cancelProfile() {
+    applyProfileTheme({ theme: profileSavedTheme });
+    closeProfileModal();
+}
+
+async function saveProfile() {
+    try {
+        const res = await fetch(API.profile, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(profileDraft),
+            credentials: "same-origin",
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) throw new Error(data.error || "Could not save profile");
+        state.userProfile = { ...profileDraft };
+        applyProfileTheme(state.userProfile);
+        updateNavAvatar();
+        updateChatAvatars({});
+        closeProfileModal();
+        if (state.currentTab === "community") {
+            loadChat();
+            loadChatAvatars();
+        }
+    } catch (err) {
+        setProfileMessage(err.message, "error");
     }
 }
 
@@ -376,7 +767,29 @@ function setAvailableCount(count) {
     els.startBtn.disabled = count === 0;
 }
 
+function renderSkeletonExams(container) {
+    container.innerHTML = "";
+    for (let i = 0; i < 6; i++) {
+        const div = document.createElement("div");
+        div.className = "btn-exam skeleton";
+        div.innerHTML = '<span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span>';
+        container.appendChild(div);
+    }
+}
+
+function renderSkeletonChat(container) {
+    container.innerHTML = "";
+    for (let i = 0; i < 3; i++) {
+        const div = document.createElement("div");
+        div.className = "chat-message skeleton";
+        div.innerHTML = '<div class="chat-message-header"><span class="chat-username skeleton-text">&nbsp;</span><span class="chat-time skeleton-text">&nbsp;</span></div><div class="chat-text skeleton-text">&nbsp;</div>';
+        container.appendChild(div);
+    }
+}
+
 async function loadExams() {
+    renderSkeletonExams(els.examButtons);
+    renderSkeletonExams(els.flashcardExamButtons);
     try {
         const res = await fetch(API.exams);
         if (!res.ok) throw new Error("Failed to load exam list");
@@ -840,7 +1253,15 @@ function goHome() {
     state.secondsElapsed = 0;
     state.mode = "practice";
     setMode("practice");
-    showScreen("setup");
+    state.currentTab = "home";
+    try { localStorage.setItem(TAB_KEY, "home"); } catch (e) {}
+    els.tabHome.classList.add("active");
+    els.tabPractice.classList.remove("active");
+    els.tabFlashcards.classList.remove("active");
+    els.tabHistory.classList.remove("active");
+    els.tabCommunity.classList.remove("active");
+    if (els.tabNav) els.tabNav.classList.add("hidden");
+    showScreen("home");
 }
 
 const TAB_KEY = "answrit_active_tab";
@@ -878,15 +1299,24 @@ function switchTab(tabName) {
         stopTimer();
     }
     state.currentTab = tabName;
+    els.tabHome.classList.toggle("active", tabName === "home");
     els.tabPractice.classList.toggle("active", tabName === "practice");
     els.tabFlashcards.classList.toggle("active", tabName === "flashcards");
+    els.tabHistory.classList.toggle("active", tabName === "history");
     els.tabCommunity.classList.toggle("active", tabName === "community");
+    if (els.tabNav) els.tabNav.classList.toggle("hidden", tabName === "home");
     stopChatPolling();
-    if (tabName === "practice") {
+    if (tabName === "home") {
+        showScreen("home");
+    } else if (tabName === "practice") {
         showScreen("setup");
+    } else if (tabName === "history") {
+        showScreen("history");
+        loadHistory();
     } else if (tabName === "community") {
         showScreen("community");
         loadChat();
+        loadChatAvatars();
         startChatPolling();
     } else if (tabName === "flashcards") {
         showScreen("flashcards");
@@ -895,14 +1325,129 @@ function switchTab(tabName) {
     }
 }
 
+async function loadHistory() {
+    if (!state.user) {
+        state.historyAttempts = [];
+        renderHistory();
+        return;
+    }
+    try {
+        const res = await fetch(API.history, { credentials: "same-origin", cache: "no-store" });
+        const data = await res.json();
+        state.historyAttempts = res.ok && data.ok ? data.attempts || [] : [];
+    } catch (err) {
+        state.historyAttempts = [];
+    }
+    renderHistory();
+}
+
+function renderHistory() {
+    const loggedIn = !!state.user;
+    els.historyLoginPrompt.classList.toggle("hidden", loggedIn);
+    els.historyContent.classList.toggle("hidden", !loggedIn);
+    if (!loggedIn) return;
+
+    const attempts = state.historyAttempts;
+    els.historyTestsTaken.textContent = attempts.length;
+    if (!attempts.length) {
+        els.historyAverageScore.textContent = "—";
+        els.historyRecentScore.textContent = "—";
+        els.historyList.innerHTML = '<div class="card history-empty"><h3>No completed practice tests yet</h3><p>Finish a practice test and it will appear here for review or an exact retake.</p></div>';
+        return;
+    }
+
+    const scores = attempts.map((attempt) => Number(attempt.score) || 0);
+    els.historyAverageScore.textContent = `${Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)}%`;
+    els.historyRecentScore.textContent = `${scores[0]}%`;
+    els.historyList.innerHTML = "";
+    attempts.forEach((attempt) => {
+        const item = document.createElement("article");
+        item.className = "card history-item";
+        const completed = new Date(attempt.completed_at);
+        const dateText = Number.isNaN(completed.getTime()) ? "Completed test" : completed.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+        const timerText = attempt.timer_minutes ? `${attempt.timer_minutes} min limit` : "No time limit";
+        item.innerHTML = `
+            <div class="history-item-main">
+                <h3>${escapeHtml(attempt.title)}</h3>
+                <p>${dateText} · ${attempt.total} questions · ${timerText}</p>
+            </div>
+            <div class="history-item-score"><strong>${attempt.score}%</strong><span>${attempt.correct} / ${attempt.total} correct · ${formatTime(attempt.duration_seconds || 0)}</span></div>
+            <div class="history-item-actions">
+                <button class="btn btn-secondary btn-small">Review Results</button>
+                <button class="btn btn-primary btn-small">Retake This Test</button>
+            </div>`;
+        const [reviewBtn, retakeBtn] = item.querySelectorAll("button");
+        reviewBtn.addEventListener("click", () => reviewHistoryAttempt(attempt));
+        retakeBtn.addEventListener("click", () => retakeHistoryAttempt(attempt));
+        els.historyList.appendChild(item);
+    });
+}
+
+function reviewHistoryAttempt(attempt) {
+    state.mode = "practice";
+    state.currentFilename = attempt.filename;
+    state.title = attempt.title;
+    state.lastTestQuestions = attempt.quiz || [];
+    state.testQuestions = attempt.quiz || [];
+    state.answers = attempt.answers || {};
+    state.secondsElapsed = attempt.duration_seconds || 0;
+    showResults({ ...attempt, duration_seconds: attempt.duration_seconds || 0 });
+}
+
+function retakeHistoryAttempt(attempt) {
+    if (!attempt.quiz || !attempt.quiz.length) return;
+    state.mode = "practice";
+    state.currentFilename = attempt.filename;
+    state.title = attempt.title;
+    state.lastTestQuestions = [...attempt.quiz];
+    if (els.timerDuration) els.timerDuration.value = String(attempt.timer_minutes || 0);
+    retakeSameTest();
+}
+
+async function saveHistoryAttempt(data, answers) {
+    if (!state.user || state.mode !== "practice") return;
+    try {
+        const timerMinutes = els.timerDuration ? parseInt(els.timerDuration.value, 10) || 0 : 0;
+        const res = await fetch(API.history, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                filename: state.currentFilename,
+                title: data.title || state.title || "Practice Test",
+                quiz: state.testQuestions,
+                answers,
+                results: data.results,
+                total: data.total,
+                correct: data.correct,
+                score: data.score,
+                duration_seconds: state.secondsElapsed,
+                timer_minutes: timerMinutes,
+            }),
+        });
+        if (res.ok && state.currentTab === "history") loadHistory();
+    } catch (err) {}
+}
+
 let chatPollInterval = null;
+let chatAvatarPollInterval = null;
+
+function chatMessagesKey(messages) {
+    return messages.map((m) => `${m.timestamp}|${m.username}|${m.message}`).join("\n");
+}
 
 async function loadChat() {
+    if (!els.chatMessages.querySelector(".chat-message:not(.skeleton)")) {
+        renderSkeletonChat(els.chatMessages);
+    }
     try {
         const res = await fetch(API.chatMessages, { credentials: "same-origin" });
         if (!res.ok) throw new Error("Could not load chat");
         const data = await res.json();
-        renderChat(data.messages || []);
+        const messages = data.messages || [];
+        if (chatMessagesKey(messages) !== state.chatMessagesKey) {
+            renderChat(messages);
+        }
     } catch (err) {
         renderChat([]);
     }
@@ -910,30 +1455,78 @@ async function loadChat() {
 
 function renderChat(messages) {
     els.chatMessages.innerHTML = "";
+    state.chatMessages = messages;
+    state.chatMessagesKey = chatMessagesKey(messages);
     if (!messages.length) {
         els.chatMessages.innerHTML = `<p class="empty-state">No messages yet. Be the first to say hello!</p>`;
     } else {
         messages.forEach((msg) => {
             const el = document.createElement("div");
             el.className = "chat-message" + (msg.username === state.user ? " chat-message-own" : "");
+            el.dataset.username = msg.username;
+            el.dataset.timestamp = msg.timestamp;
             const time = new Date(msg.timestamp).toLocaleString(undefined, {
                 month: "short",
                 day: "numeric",
                 hour: "numeric",
                 minute: "2-digit",
             });
+            const isOwn = msg.username === state.user;
+            const profile = isOwn ? getProfile() : msg;
+            const avatarUrlSrc = avatarUrl(
+                profile.avatar_seed || msg.username,
+                profile.avatar_style || "micah",
+                profile.avatar_options || {}
+            );
             el.innerHTML = `
-                <div class="chat-message-header">
-                    <span class="chat-username">${escapeHtml(msg.username)}</span>
-                    <span class="chat-time">${escapeHtml(time)}</span>
+                <img src="${escapeHtml(avatarUrlSrc)}" alt="" class="chat-avatar" loading="lazy" />
+                <div class="chat-message-content">
+                    <div class="chat-message-header">
+                        <span class="chat-username">${escapeHtml(msg.username)}</span>
+                        <span class="chat-time">${escapeHtml(time)}</span>
+                    </div>
+                    <div class="chat-text">${escapeHtml(msg.message)}</div>
                 </div>
-                <div class="chat-text">${escapeHtml(msg.message)}</div>
             `;
             els.chatMessages.appendChild(el);
         });
     }
     els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
     renderChatInputState();
+}
+
+function updateChatAvatars(avatars) {
+    if (!els.chatMessages) return;
+    const ownProfile = state.user ? getProfile() : null;
+    Array.from(els.chatMessages.querySelectorAll(".chat-message")).forEach((el) => {
+        const username = el.dataset.username;
+        const img = el.querySelector(".chat-avatar");
+        if (!username || !img) return;
+        let profile;
+        if (username === state.user && ownProfile) {
+            profile = ownProfile;
+        } else if (avatars && avatars[username]) {
+            profile = avatars[username];
+        } else {
+            return;
+        }
+        const src = avatarUrl(
+            profile.avatar_seed || username,
+            profile.avatar_style || "micah",
+            profile.avatar_options || {}
+        );
+        if (img.src !== src) img.src = src;
+    });
+}
+
+async function loadChatAvatars() {
+    if (state.currentTab !== "community") return;
+    try {
+        const res = await fetch(API.chatAvatars, { credentials: "same-origin" });
+        if (!res.ok) throw new Error("Could not load chat avatars");
+        const data = await res.json();
+        updateChatAvatars(data.avatars || {});
+    } catch (err) {}
 }
 
 function escapeHtml(text) {
@@ -978,12 +1571,17 @@ async function sendChatMessage() {
 function startChatPolling() {
     stopChatPolling();
     chatPollInterval = setInterval(loadChat, 3000);
+    chatAvatarPollInterval = setInterval(loadChatAvatars, 1500);
 }
 
 function stopChatPolling() {
     if (chatPollInterval) {
         clearInterval(chatPollInterval);
         chatPollInterval = null;
+    }
+    if (chatAvatarPollInterval) {
+        clearInterval(chatAvatarPollInterval);
+        chatAvatarPollInterval = null;
     }
 }
 
@@ -1373,6 +1971,7 @@ async function updateFlashcardReviewCount() {
 function retakeSameTest() {
     if (!state.lastTestQuestions || !state.lastTestQuestions.length) return;
     stopTimer();
+    els.timer.style.display = "";
     state.testQuestions = [...state.lastTestQuestions];
     state.answers = {};
     state.testQuestions.forEach((q) => {
@@ -1741,18 +2340,21 @@ async function submitTest() {
         });
         if (!res.ok) throw new Error("Scoring failed");
         const data = await res.json();
+        await saveHistoryAttempt(data, relevantAnswers);
         showResults(data);
     } catch (err) {
         // Offline fallback: score locally using the cached questions.
         const results = computeResults(state.testQuestions, relevantAnswers);
         const correct = results.filter((r) => r.is_correct).length;
-        showResults({
+        const localData = {
             title: state.title,
             total: results.length,
             correct,
             score: results.length ? Math.round((correct / results.length) * 100) : 0,
             results,
-        });
+        };
+        await saveHistoryAttempt(localData, relevantAnswers);
+        showResults(localData);
     }
 }
 
@@ -1791,7 +2393,7 @@ function showResults(data) {
             ? "Exam Mastered!"
             : "Mastery Session Complete";
         els.scoreValue.textContent = `${data.score}%`;
-        els.scoreDetail.textContent = `You got ${data.correct} out of ${data.total} correct in ${formatTime(state.secondsElapsed)}.`;
+        els.scoreDetail.textContent = `You got ${data.correct} out of ${data.total} correct in ${formatTime(data.duration_seconds ?? state.secondsElapsed)}.`;
         const deg = data.total ? Math.round((data.correct / data.total) * 360) : 0;
         scoreCircle.style.setProperty("--score-deg", `${deg}deg`);
     } else {
@@ -1799,7 +2401,7 @@ function showResults(data) {
         els.retakeBtn.classList.remove("hidden");
         els.resultsTitle.textContent = `Results: ${data.title || state.title || "Practice Test"}`;
         els.scoreValue.textContent = `${data.score}%`;
-        els.scoreDetail.textContent = `You got ${data.correct} out of ${data.total} correct in ${formatTime(state.secondsElapsed)}.`;
+        els.scoreDetail.textContent = `You got ${data.correct} out of ${data.total} correct in ${formatTime(data.duration_seconds ?? state.secondsElapsed)}.`;
         const deg = data.total ? Math.round((data.correct / data.total) * 360) : 0;
         scoreCircle.style.setProperty("--score-deg", `${deg}deg`);
     }
@@ -1848,6 +2450,8 @@ function showResults(data) {
 
 els.startBtn.addEventListener("click", startTest);
 els.homeBtn.addEventListener("click", goHome);
+els.homeLogo.addEventListener("click", goHome);
+els.homeStartBtn.addEventListener("click", () => switchTab("practice"));
 els.prevBtn.addEventListener("click", () => navigate(-1));
 els.nextBtn.addEventListener("click", () => {
     if (state.currentIndex === state.testQuestions.length - 1) {
@@ -1873,7 +2477,14 @@ els.continueMasteryBtn.addEventListener("click", startMasterySession);
 
 els.loginTrigger.addEventListener("click", () => openAuthModal("login"));
 els.registerTrigger.addEventListener("click", () => openAuthModal("register"));
-els.logoutBtn.addEventListener("click", logout);
+els.profileBtn.addEventListener("click", openProfileModal);
+els.profileLogout.addEventListener("click", logout);
+els.profileSave.addEventListener("click", saveProfile);
+els.profileCancel.addEventListener("click", cancelProfile);
+els.profileRandomAvatar.addEventListener("click", randomAvatar);
+els.profileModal.addEventListener("click", (e) => {
+    if (e.target === els.profileModal) cancelProfile();
+});
 
 els.modalSubmit.addEventListener("click", submitAuth);
 els.modalCancel.addEventListener("click", closeAuthModal);
@@ -1890,6 +2501,7 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         if (!els.authModal.classList.contains("hidden")) closeAuthModal();
         if (!els.installModal.classList.contains("hidden")) closeInstallModal();
+        if (!els.profileModal.classList.contains("hidden")) cancelProfile();
     }
 });
 
@@ -1901,6 +2513,27 @@ els.installModal.addEventListener("click", (e) => {
 els.installTabIos.addEventListener("click", () => switchInstallTab("ios"));
 els.installTabAndroid.addEventListener("click", () => switchInstallTab("android"));
 
+document.querySelectorAll(".home-card").forEach((card) => {
+    card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty("--mouse-x", `${x}%`);
+        card.style.setProperty("--mouse-y", `${y}%`);
+    });
+});
+
+const homeHero = document.querySelector(".home-hero");
+if (homeHero) {
+    homeHero.addEventListener("mousemove", (e) => {
+        const rect = homeHero.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        homeHero.style.setProperty("--mouse-x", `${x}%`);
+        homeHero.style.setProperty("--mouse-y", `${y}%`);
+    });
+}
+
 [els.modalUsername, els.modalPassword, els.modalConfirmPassword].forEach((input) => {
     input.addEventListener("keydown", (e) => {
         if (e.key === "Enter") submitAuth();
@@ -1911,9 +2544,16 @@ els.modeMastery.addEventListener("click", () => setMode("mastery"));
 els.masteryStartBtn.addEventListener("click", startMasterySession);
 els.masteryResetBtn.addEventListener("click", resetMastery);
 
+els.tabHome.addEventListener("click", () => switchTab("home"));
 els.tabPractice.addEventListener("click", () => switchTab("practice"));
 els.tabFlashcards.addEventListener("click", () => switchTab("flashcards"));
+els.tabHistory.addEventListener("click", () => switchTab("history"));
 els.tabCommunity.addEventListener("click", () => switchTab("community"));
+
+document.querySelectorAll(".home-card[data-tab]").forEach((btn) => {
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+});
+els.historyLoginBtn.addEventListener("click", () => openAuthModal("login"));
 els.chatSendBtn.addEventListener("click", sendChatMessage);
 els.chatInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendChatMessage();
@@ -2003,8 +2643,8 @@ checkAuth();
 (function restoreTab() {
     const saved = localStorage.getItem(TAB_KEY);
     if (saved) {
-        if (saved !== "practice") switchTab(saved);
-    } else if (!localStorage.getItem(WELCOME_KEY)) {
-        switchTab("flashcards");
+        switchTab(saved);
+    } else {
+        switchTab("home");
     }
 })();

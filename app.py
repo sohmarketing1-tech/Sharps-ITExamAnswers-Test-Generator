@@ -283,12 +283,18 @@ def save_chat(data: dict) -> None:
 def add_chat_message(username: str, message: str) -> dict:
     """Add a new chat message and return the message entry."""
     from datetime import datetime, timezone
+    users = load_users()
+    user_data = users.get(username, {})
+    profile = user_data.get("profile", {})
     data = load_chat()
     messages = data.setdefault("messages", [])
     entry = {
         "username": username,
         "message": message.strip()[:500],
         "timestamp": datetime.now(timezone.utc).isoformat(),
+        "avatar_seed": profile.get("avatar_seed", username),
+        "avatar_style": profile.get("avatar_style", "bottts"),
+        "avatar_options": profile.get("avatar_options", {}),
     }
     messages.append(entry)
     data["messages"] = messages[-500:]
@@ -657,6 +663,55 @@ def score_test():
 
 
 # ---------------------------------------------------------------------------
+# Practice test history
+# ---------------------------------------------------------------------------
+
+@app.route("/api/history", methods=["GET"])
+def get_history():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to view test history."}), 401
+    users = load_users()
+    attempts = users.get(user, {}).get("test_history", [])
+    return jsonify({"ok": True, "attempts": attempts})
+
+
+@app.route("/api/history", methods=["POST"])
+def save_history_attempt():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to save test history."}), 401
+
+    attempt = request.get_json(silent=True) or {}
+    required = ("filename", "title", "quiz", "results", "total", "correct", "score")
+    if any(key not in attempt for key in required) or not isinstance(attempt["quiz"], list):
+        return jsonify({"ok": False, "error": "Invalid test history entry."}), 400
+
+    saved_attempt = {
+        "id": secrets.token_urlsafe(12),
+        "completed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "filename": str(attempt["filename"]),
+        "title": str(attempt["title"]),
+        "quiz": attempt["quiz"],
+        "answers": attempt.get("answers", {}),
+        "results": attempt["results"],
+        "total": int(attempt["total"]),
+        "correct": int(attempt["correct"]),
+        "score": attempt["score"],
+        "duration_seconds": max(0, int(attempt.get("duration_seconds", 0))),
+        "timer_minutes": max(0, int(attempt.get("timer_minutes", 0))),
+    }
+
+    users = load_users()
+    user_data = users.setdefault(user, {})
+    history = user_data.setdefault("test_history", [])
+    history.insert(0, saved_attempt)
+    del history[50:]
+    save_users(users)
+    return jsonify({"ok": True, "attempt": saved_attempt})
+
+
+# ---------------------------------------------------------------------------
 # Auth endpoints
 # ---------------------------------------------------------------------------
 
@@ -682,7 +737,7 @@ def register():
     save_users(users)
     session["user"] = username
     track_user_activity(username)
-    return jsonify({"ok": True, "user": username})
+    return jsonify({"ok": True, "user": username, "profile": {}})
 
 
 @app.route("/api/login", methods=["POST"])
@@ -698,7 +753,8 @@ def login():
         return jsonify({"ok": False, "error": "Invalid username or password."}), 401
     session["user"] = username
     track_user_activity(username)
-    return jsonify({"ok": True, "user": username})
+    profile = user.get("profile", {})
+    return jsonify({"ok": True, "user": username, "profile": profile})
 
 
 @app.route("/api/logout", methods=["POST"])
@@ -713,7 +769,49 @@ def me():
     if not user:
         return jsonify({"ok": False, "user": None})
     track_user_activity(user)
-    return jsonify({"ok": True, "user": user})
+    users = load_users()
+    profile = users.get(user, {}).get("profile", {})
+    return jsonify({"ok": True, "user": user, "profile": profile})
+
+
+@app.route("/api/profile", methods=["GET", "POST"])
+def profile():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to manage your profile."}), 401
+    users = load_users()
+    user_data = users.setdefault(user, {})
+    if request.method == "GET":
+        return jsonify({"ok": True, "profile": user_data.get("profile", {})})
+
+    data = request.get_json(silent=True) or {}
+    profile = user_data.setdefault("profile", {})
+    if "theme" in data and isinstance(data["theme"], str):
+        profile["theme"] = data["theme"][:30]
+    if "avatar_seed" in data:
+        profile["avatar_seed"] = str(data["avatar_seed"])[:120]
+    if "avatar_style" in data and isinstance(data["avatar_style"], str):
+        profile["avatar_style"] = data["avatar_style"][:40]
+    if "avatar_options" in data and isinstance(data["avatar_options"], dict):
+        def _clean_opt(v):
+            if isinstance(v, bool):
+                return v
+            if isinstance(v, (int, float)):
+                return v
+            return str(v)[:120]
+        profile["avatar_options"] = {str(k): _clean_opt(v) for k, v in data["avatar_options"].items()}
+    save_users(users)
+
+    # Update this user's existing chat messages to the new avatar
+    chat_data = load_chat()
+    for msg in chat_data.get("messages", []):
+        if msg.get("username") == user:
+            msg["avatar_seed"] = profile.get("avatar_seed", user)
+            msg["avatar_style"] = profile.get("avatar_style", "bottts")
+            msg["avatar_options"] = profile.get("avatar_options", {})
+    save_chat(chat_data)
+
+    return jsonify({"ok": True, "profile": profile})
 
 
 @app.route("/api/ping", methods=["POST"])
@@ -748,6 +846,25 @@ def chat_message():
         return jsonify({"ok": False, "error": "Message cannot be empty."}), 400
     entry = add_chat_message(user, message)
     return jsonify({"ok": True, "message": entry})
+
+
+@app.route("/api/chat/avatars", methods=["GET"])
+def chat_avatars():
+    """Return the latest avatar info for users with recent chat messages."""
+    messages = get_chat_messages(limit=100)
+    usernames = {m.get("username") for m in messages}
+    users = load_users()
+    avatars = {}
+    for username in usernames:
+        if not username:
+            continue
+        profile = users.get(username, {}).get("profile", {})
+        avatars[username] = {
+            "avatar_seed": profile.get("avatar_seed", username),
+            "avatar_style": profile.get("avatar_style", "micah"),
+            "avatar_options": profile.get("avatar_options", {}),
+        }
+    return jsonify({"ok": True, "avatars": avatars})
 
 
 # ---------------------------------------------------------------------------
