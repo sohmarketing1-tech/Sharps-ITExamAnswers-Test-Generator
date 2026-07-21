@@ -145,10 +145,13 @@ const els = {
     profileModal: document.getElementById("profile-modal"),
     profileAvatarPreview: document.getElementById("profile-avatar-preview"),
     profileUsername: document.getElementById("profile-username"),
-    micahBuilder: document.getElementById("micah-builder"),
-    avatarBuilder: document.getElementById("avatar-builder"),
+    micahBuilder: document.getElementById("avatar-modal-builder"),
     avatarEditBtn: document.getElementById("avatar-edit-btn"),
-    profileRandomAvatar: document.getElementById("profile-random-avatar"),
+    avatarModal: document.getElementById("avatar-modal"),
+    avatarModalPreview: document.getElementById("avatar-modal-preview-img"),
+    avatarModalUsername: document.getElementById("avatar-modal-username"),
+    avatarModalClose: document.getElementById("avatar-modal-close"),
+    avatarModalRandom: document.getElementById("avatar-modal-random"),
     themePicker: document.getElementById("theme-picker"),
     profileSave: document.getElementById("profile-save"),
     profileCancel: document.getElementById("profile-cancel"),
@@ -521,19 +524,21 @@ function setMicahOption(key, value) {
 }
 
 function updateAvatarPreview() {
-    els.profileAvatarPreview.src = avatarUrl(profileDraft.avatar_seed, profileDraft.avatar_style, profileDraft.avatar_options);
+    const url = avatarUrl(profileDraft.avatar_seed, profileDraft.avatar_style, profileDraft.avatar_options);
+    if (els.profileAvatarPreview) els.profileAvatarPreview.src = url;
+    if (els.avatarModalPreview) els.avatarModalPreview.src = url;
 }
 
-function toggleAvatarBuilder() {
-    if (!els.avatarBuilder) return;
-    const isHidden = els.avatarBuilder.classList.toggle("hidden");
-    if (els.avatarEditBtn) {
-        els.avatarEditBtn.textContent = isHidden ? "Customize Avatar" : "Hide Avatar Editor";
-    }
-    if (!isHidden) {
-        renderMicahBuilder();
-        updateAvatarPreview();
-    }
+function openAvatarModal() {
+    if (!els.avatarModal) return;
+    if (els.avatarModalUsername) els.avatarModalUsername.textContent = state.user || "";
+    renderMicahBuilder();
+    updateAvatarPreview();
+    els.avatarModal.classList.remove("hidden");
+}
+
+function closeAvatarModal() {
+    if (els.avatarModal) els.avatarModal.classList.add("hidden");
 }
 
 function micahOptionUrl(key, value, size = 64) {
@@ -723,9 +728,6 @@ function openProfileModal() {
     profileDraft.avatar_options = opts;
     profileSavedTheme = profileDraft.theme;
     els.profileUsername.textContent = state.user || "";
-    if (els.avatarBuilder) els.avatarBuilder.classList.add("hidden");
-    if (els.avatarEditBtn) els.avatarEditBtn.textContent = "Customize Avatar";
-    renderMicahBuilder();
     updateAvatarPreview();
     renderThemePicker(profileDraft.theme);
     setProfileMessage("");
@@ -2497,8 +2499,12 @@ els.profileBtn.addEventListener("click", openProfileModal);
 els.profileLogout.addEventListener("click", logout);
 els.profileSave.addEventListener("click", saveProfile);
 els.profileCancel.addEventListener("click", cancelProfile);
-els.avatarEditBtn.addEventListener("click", toggleAvatarBuilder);
-els.profileRandomAvatar.addEventListener("click", randomAvatar);
+els.avatarEditBtn.addEventListener("click", openAvatarModal);
+els.avatarModalClose.addEventListener("click", closeAvatarModal);
+els.avatarModalRandom.addEventListener("click", randomAvatar);
+els.avatarModal.addEventListener("click", (e) => {
+    if (e.target === els.avatarModal) closeAvatarModal();
+});
 els.profileModal.addEventListener("click", (e) => {
     if (e.target === els.profileModal) cancelProfile();
 });
@@ -2518,6 +2524,10 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         if (!els.authModal.classList.contains("hidden")) closeAuthModal();
         if (!els.installModal.classList.contains("hidden")) closeInstallModal();
+        if (!els.avatarModal.classList.contains("hidden")) {
+            closeAvatarModal();
+            return;
+        }
         if (!els.profileModal.classList.contains("hidden")) cancelProfile();
     }
 });

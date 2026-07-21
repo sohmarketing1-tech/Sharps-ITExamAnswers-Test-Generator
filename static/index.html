@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" href="images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="images/answrit-icon.png" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css?v=15" />
+    <link rel="stylesheet" href="style.css?v=16" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -67,10 +67,7 @@
                         <img id="profile-avatar-preview" src="" alt="" />
                         <span id="profile-username"></span>
                     </div>
-                    <div class="profile-section">
-                        <label>Theme</label>
-                        <div class="theme-picker" id="theme-picker"></div>
-                    </div>
+                    <button id="avatar-edit-btn" class="btn btn-secondary btn-small avatar-edit-btn">Customize Avatar</button>
                     <div class="profile-actions">
                         <button id="profile-save" class="btn btn-primary btn-large btn-block">Save</button>
                         <button id="profile-cancel" class="btn btn-secondary btn-block">Cancel</button>
@@ -79,15 +76,28 @@
                 </div>
                 <div class="profile-column profile-column-right">
                     <div class="profile-section">
-                        <label>Avatar</label>
-                        <button id="avatar-edit-btn" class="btn btn-secondary btn-small avatar-edit-btn">Customize Avatar</button>
-                        <div id="avatar-builder" class="avatar-builder-wrap hidden">
-                            <div id="micah-builder" class="micah-builder"></div>
-                            <button id="profile-random-avatar" class="btn btn-secondary btn-small">Randomize avatar</button>
-                        </div>
+                        <label>Theme</label>
+                        <div class="theme-picker" id="theme-picker"></div>
                     </div>
                     <p id="profile-message" class="auth-message"></p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="avatar-modal" class="modal-overlay avatar-modal-overlay hidden">
+        <div class="modal avatar-modal">
+            <div class="avatar-modal-header">
+                <h3>Customize Avatar</h3>
+                <button id="avatar-modal-close" class="welcome-dismiss" type="button" aria-label="Close avatar editor">&times;</button>
+            </div>
+            <div class="avatar-modal-body">
+                <div class="avatar-modal-preview">
+                    <img id="avatar-modal-preview-img" src="" alt="Avatar preview" />
+                    <span id="avatar-modal-username"></span>
+                    <button id="avatar-modal-random" class="btn btn-secondary btn-small">Randomize avatar</button>
+                </div>
+                <div class="avatar-modal-options" id="avatar-modal-builder"></div>
             </div>
         </div>
     </div>
@@ -559,6 +569,6 @@
     </div>
 
     <div id="toast" class="toast hidden"></div>
-    <script src="app.js?v=15"></script>
+    <script src="app.js?v=16"></script>
 </body>
 </html>

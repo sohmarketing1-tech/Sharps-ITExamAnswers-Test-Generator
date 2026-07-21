@@ -658,10 +658,79 @@ body {
     letter-spacing: 0.06em;
 }
 
-#avatar-builder {
+/* Avatar customization modal */
+.avatar-modal-overlay {
+    z-index: 300;
+}
+
+.avatar-modal {
+    max-width: 980px;
+    width: 100%;
+    max-height: 90vh;
     display: flex;
     flex-direction: column;
+    padding: 24px;
+    overflow: hidden;
+}
+
+.avatar-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 12px;
+    margin-bottom: 16px;
+}
+
+.avatar-modal-header h3 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.avatar-modal-body {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.avatar-modal-preview {
+    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(var(--primary-base), 0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(var(--primary-base), 0.08);
+    align-self: flex-start;
+}
+
+.avatar-modal-preview img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(var(--shadow-sm-base), 0.1);
+    object-fit: cover;
+    border: 4px solid var(--accent);
+    box-shadow: 0 6px 16px rgba(var(--shadow-sm-base), 0.15);
+}
+
+.avatar-modal-preview span {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-align: center;
+    word-break: break-word;
+}
+
+.avatar-modal-options {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-y: auto;
+    padding-right: 6px;
 }
 
 .avatar-style-tabs {
@@ -3560,5 +3629,62 @@ body {
 
     .flashcard-back p {
         font-size: 1rem;
+    }
+}
+
+@media (max-width: 700px) {
+    .avatar-modal {
+        padding: 16px;
+        max-height: 92vh;
+    }
+
+    .avatar-modal-header h3 {
+        font-size: 1.15rem;
+    }
+
+    .avatar-modal-body {
+        flex-direction: column;
+        gap: 16px;
+        overflow-y: auto;
+    }
+
+    .avatar-modal-preview {
+        flex: 0 0 auto;
+        position: sticky;
+        top: 0;
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        background: var(--card-bg);
+        z-index: 2;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .avatar-modal-preview img {
+        width: 88px;
+        height: 88px;
+    }
+
+    .avatar-modal-preview span {
+        width: 100%;
+        text-align: center;
+        font-size: 0.95rem;
+    }
+
+    .avatar-modal-options {
+        overflow-y: visible;
+        flex: none;
+    }
+
+    .micah-option {
+        width: 56px;
+        height: 56px;
+    }
+
+    .micah-swatch {
+        width: 32px;
+        height: 32px;
     }
 }
