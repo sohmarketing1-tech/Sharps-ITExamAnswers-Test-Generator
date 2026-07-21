@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" href="images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="images/answrit-icon.png" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css?v=16" />
+    <link rel="stylesheet" href="style.css?v=17" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -96,6 +96,10 @@
                     <img id="avatar-modal-preview-img" src="" alt="Avatar preview" />
                     <span id="avatar-modal-username"></span>
                     <button id="avatar-modal-random" class="btn btn-secondary btn-small">Randomize avatar</button>
+                    <div class="avatar-modal-actions">
+                        <button id="avatar-modal-cancel" class="btn btn-secondary btn-small">Cancel</button>
+                        <button id="avatar-modal-save" class="btn btn-primary btn-small">Save Avatar</button>
+                    </div>
                 </div>
                 <div class="avatar-modal-options" id="avatar-modal-builder"></div>
             </div>
@@ -569,6 +573,6 @@
     </div>
 
     <div id="toast" class="toast hidden"></div>
-    <script src="app.js?v=16"></script>
+    <script src="app.js?v=17"></script>
 </body>
 </html>

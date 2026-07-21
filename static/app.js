@@ -152,6 +152,8 @@ const els = {
     avatarModalUsername: document.getElementById("avatar-modal-username"),
     avatarModalClose: document.getElementById("avatar-modal-close"),
     avatarModalRandom: document.getElementById("avatar-modal-random"),
+    avatarModalSave: document.getElementById("avatar-modal-save"),
+    avatarModalCancel: document.getElementById("avatar-modal-cancel"),
     themePicker: document.getElementById("theme-picker"),
     profileSave: document.getElementById("profile-save"),
     profileCancel: document.getElementById("profile-cancel"),
@@ -247,6 +249,7 @@ Object.keys(MICAH_OPTIONS).forEach((k) => {
 
 let profileDraft = { ...DEFAULT_PROFILE };
 let profileSavedTheme = DEFAULT_PROFILE.theme;
+let avatarSnapshot = null;
 
 function getProfile() {
     return { ...DEFAULT_PROFILE, ...state.userProfile };
@@ -531,6 +534,11 @@ function updateAvatarPreview() {
 
 function openAvatarModal() {
     if (!els.avatarModal) return;
+    avatarSnapshot = {
+        seed: profileDraft.avatar_seed,
+        style: profileDraft.avatar_style,
+        options: { ...(profileDraft.avatar_options || {}) },
+    };
     if (els.avatarModalUsername) els.avatarModalUsername.textContent = state.user || "";
     renderMicahBuilder();
     updateAvatarPreview();
@@ -539,6 +547,20 @@ function openAvatarModal() {
 
 function closeAvatarModal() {
     if (els.avatarModal) els.avatarModal.classList.add("hidden");
+}
+
+function saveAvatarModal() {
+    closeAvatarModal();
+}
+
+function cancelAvatarModal() {
+    if (avatarSnapshot) {
+        profileDraft.avatar_seed = avatarSnapshot.seed;
+        profileDraft.avatar_style = avatarSnapshot.style;
+        profileDraft.avatar_options = { ...avatarSnapshot.options };
+        updateAvatarPreview();
+    }
+    closeAvatarModal();
 }
 
 function micahOptionUrl(key, value, size = 64) {
@@ -2500,10 +2522,12 @@ els.profileLogout.addEventListener("click", logout);
 els.profileSave.addEventListener("click", saveProfile);
 els.profileCancel.addEventListener("click", cancelProfile);
 els.avatarEditBtn.addEventListener("click", openAvatarModal);
-els.avatarModalClose.addEventListener("click", closeAvatarModal);
+els.avatarModalClose.addEventListener("click", cancelAvatarModal);
 els.avatarModalRandom.addEventListener("click", randomAvatar);
+els.avatarModalSave.addEventListener("click", saveAvatarModal);
+els.avatarModalCancel.addEventListener("click", cancelAvatarModal);
 els.avatarModal.addEventListener("click", (e) => {
-    if (e.target === els.avatarModal) closeAvatarModal();
+    if (e.target === els.avatarModal) cancelAvatarModal();
 });
 els.profileModal.addEventListener("click", (e) => {
     if (e.target === els.profileModal) cancelProfile();
@@ -2525,7 +2549,7 @@ document.addEventListener("keydown", (e) => {
         if (!els.authModal.classList.contains("hidden")) closeAuthModal();
         if (!els.installModal.classList.contains("hidden")) closeInstallModal();
         if (!els.avatarModal.classList.contains("hidden")) {
-            closeAvatarModal();
+            cancelAvatarModal();
             return;
         }
         if (!els.profileModal.classList.contains("hidden")) cancelProfile();

@@ -726,6 +726,13 @@ body {
     word-break: break-word;
 }
 
+.avatar-modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+}
+
 .avatar-modal-options {
     flex: 1 1 auto;
     min-width: 0;
