@@ -60,6 +60,23 @@ The last completed work was a **mobile-responsiveness pass** and hiding the avat
 - Git remote uses HTTPS (`https://github.com/sohmarketing1-tech/...`) with macOS keychain credential helper; pushes to GitHub work from this machine.
 - For PythonAnywhere: pull the latest `main` in a Bash console and reload the web app.
 
+### Important: runtime data files are NOT in Git
+
+The following files are in `.gitignore` and are **not** committed to GitHub:
+
+- `users.json` — all accounts and password hashes
+- `chat.json` — chat messages
+- `questions.json` — scraped questions
+- `.flask_secret` — Flask session secret
+- `data/` directory — exam JSON files
+
+If you deploy to a fresh server/container without copying these files, accounts, chat history, and exam data will be missing. Always preserve these files across deployments.
+
+### Helper scripts
+
+- `reset_password.py` — run on the server to reset a user's password when `users.json` still exists.
+- `backup_data.py` — run on the server to create a timestamped backup of all runtime data files. Consider running this regularly or after adding users/data.
+
 ## Quick Reference: Important Files / Symbols
 
 - `app.py` — Flask app with routes for exams, tests, scoring, chat, profile, history, flashcards, mastery, scraping.
