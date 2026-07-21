@@ -28,12 +28,12 @@ The last completed work was a **mobile-responsiveness pass** and hiding the avat
   - `saveProfile()` triggers an immediate own-avatar refresh in the chat.
   - Default avatar style in chat rendering changed from `"bottts"` to `"micah"`.
   - **NEW:** Moved the Micah builder into a dedicated `#avatar-modal`. Tapping `Customize Avatar` in the profile modal opens the avatar editor with a live preview that stays visible while scrolling options. The profile modal itself no longer shows the builder.
-  - **NEW:** Added Save and Cancel buttons inside the avatar modal. Save closes the avatar modal and keeps the new avatar; Cancel restores the previous avatar from a snapshot and returns to the profile modal. Escape also cancels.
-  - **NEW:** `openAvatarModal()` / `closeAvatarModal()` / `saveAvatarModal()` / `cancelAvatarModal()` and `avatarModal*` DOM refs.
+  - **NEW:** Added Save and Cancel buttons inside the avatar modal. **Save** persists the new avatar to the server (`persistProfile`) and returns to the profile modal; **Cancel** restores the previous avatar from a snapshot and returns to the profile modal. Escape also cancels.
+  - **NEW:** `openAvatarModal()` / `closeAvatarModal()` / `saveAvatarModal()` / `cancelAvatarModal()` / `persistProfile()` and `avatarModal*` DOM refs.
 - `static/index.html`
   - Replaced the inline avatar builder in the profile modal with a `Customize Avatar` button.
   - Added `#avatar-modal` markup: header with close button, sticky live preview, and scrollable options panel.
-  - Cache-busting versions bumped to `?v=17` for `style.css` and `app.js`.
+  - Cache-busting versions bumped to `?v=18` for `style.css` and `app.js`.
 - `static/style.css`
   - Added/updated Micah avatar builder and color-swatch styles.
   - **NEW:** Made modals scrollable on small screens (`overflow-y: auto`, `align-items: flex-start`, modal `margin: auto`).

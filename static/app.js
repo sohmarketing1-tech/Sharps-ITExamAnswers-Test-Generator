@@ -549,10 +549,6 @@ function closeAvatarModal() {
     if (els.avatarModal) els.avatarModal.classList.add("hidden");
 }
 
-function saveAvatarModal() {
-    closeAvatarModal();
-}
-
 function cancelAvatarModal() {
     if (avatarSnapshot) {
         profileDraft.avatar_seed = avatarSnapshot.seed;
@@ -765,27 +761,42 @@ function cancelProfile() {
     closeProfileModal();
 }
 
+async function persistProfile() {
+    const res = await fetch(API.profile, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profileDraft),
+        credentials: "same-origin",
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || "Could not save profile");
+    state.userProfile = { ...profileDraft };
+    applyProfileTheme(state.userProfile);
+    updateNavAvatar();
+    updateChatAvatars({});
+    if (state.currentTab === "community") {
+        loadChat();
+        loadChatAvatars();
+    }
+    return data;
+}
+
 async function saveProfile() {
     try {
-        const res = await fetch(API.profile, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(profileDraft),
-            credentials: "same-origin",
-        });
-        const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error || "Could not save profile");
-        state.userProfile = { ...profileDraft };
-        applyProfileTheme(state.userProfile);
-        updateNavAvatar();
-        updateChatAvatars({});
+        await persistProfile();
         closeProfileModal();
-        if (state.currentTab === "community") {
-            loadChat();
-            loadChatAvatars();
-        }
     } catch (err) {
         setProfileMessage(err.message, "error");
+    }
+}
+
+async function saveAvatarModal() {
+    try {
+        await persistProfile();
+        showToast("Avatar saved");
+        closeAvatarModal();
+    } catch (err) {
+        showToast(err.message, "warning");
     }
 }
 
