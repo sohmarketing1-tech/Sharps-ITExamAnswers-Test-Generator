@@ -294,6 +294,22 @@ function updateNavAvatar() {
     els.authUser.textContent = state.user || "";
 }
 
+async function loadProfile() {
+    if (!state.user) return;
+    try {
+        const res = await fetch(API.profile, { credentials: "same-origin", cache: "no-store" });
+        const data = await res.json();
+        if (data.ok && data.profile) {
+            state.userProfile = data.profile;
+            applyProfileTheme(getProfile());
+            updateNavAvatar();
+            updateChatAvatars({});
+        }
+    } catch (err) {
+        // ignore
+    }
+}
+
 function showScreen(name) {
     Object.values(screens).forEach((s) => s.classList.remove("active"));
     screens[name].classList.add("active");
@@ -734,7 +750,8 @@ function randomAvatar() {
     updateAvatarPreview();
 }
 
-function openProfileModal() {
+async function openProfileModal() {
+    await loadProfile();
     profileDraft = { ...getProfile(), avatar_style: "micah" };
     const opts = { ...(profileDraft.avatar_options || {}) };
     if (opts.skinColor !== undefined && opts.baseColor === undefined) {
@@ -2710,3 +2727,9 @@ checkAuth();
         switchTab("home");
     }
 })();
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        loadProfile();
+    }
+});
