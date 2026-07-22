@@ -1,0 +1,780 @@
+{
+  "title": "CCNA 1 v7 Modules 1 - 3: Basic Network Connectivity and Communications Exam Answers",
+  "url": "https://itexamanswers.net/ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers.html",
+  "questions": [
+    {
+      "id": 1,
+      "question": "During a routine inspection, a technician discovered that software that was installed on a computer was secretly collecting data about websites that were visited by users of the computer. Which type of threat is affecting this computer?",
+      "options": [
+        "DoS attack​",
+        "identity theft",
+        "spyware",
+        "zero-day attack"
+      ],
+      "correct_answer": "spyware"
+    },
+    {
+      "id": 2,
+      "question": "Which term refers to a network that provides secure access to the corporate offices by suppliers, customers and collaborators?",
+      "options": [
+        "Internet",
+        "intranet",
+        "extranet",
+        "extendednet"
+      ],
+      "correct_answer": "extranet"
+    },
+    {
+      "id": 3,
+      "question": "A large corporation has modified its network to allow users to access network resources from their personal laptops and smart phones. Which networking trend does this describe?",
+      "options": [
+        "cloud computing",
+        "online collaboration",
+        "bring your own device",
+        "video conferencing"
+      ],
+      "correct_answer": "bring your own device"
+    },
+    {
+      "id": 4,
+      "question": "What is an ISP?",
+      "options": [
+        "It is a standards body that develops cabling and wiring standards for networking.",
+        "It is a protocol that establishes how computers within a local network communicate.",
+        "It is an organization that enables individuals and businesses to connect to the Internet.",
+        "It is a networking device that combines the functionality of several different networking devices in one."
+      ],
+      "correct_answer": "It is an organization that enables individuals and businesses to connect to the Internet."
+    },
+    {
+      "id": 5,
+      "question": "An employee at a branch office is creating a quote for a customer. In order to do this, the employee needs to access confidential pricing information from internal servers at the Head Office. What type of network would the employee access?",
+      "options": [
+        "an intranet",
+        "the Internet",
+        "an extranet",
+        "a local area network"
+      ],
+      "correct_answer": "an intranet"
+    },
+    {
+      "id": 6,
+      "question": "Which statement describes the use of powerline networking technology?",
+      "options": [
+        "New \"smart\" electrical cabling is used to extend an existing home LAN.",
+        "A home LAN is installed without the use of physical cabling.",
+        "A device connects to an existing home LAN using an adapter and an existing electrical outlet.",
+        "Wireless access points use powerline adapters to distribute data through the home LAN."
+      ],
+      "correct_answer": "A device connects to an existing home LAN using an adapter and an existing electrical outlet."
+    },
+    {
+      "id": 7,
+      "question": "A networking technician is working on the wireless network at a medical clinic. The technician accidentally sets up the wireless network so that patients can see the medical records data of other patients. Which of the four network characteristics has been violated in this situation?",
+      "options": [
+        "fault tolerance",
+        "scalability",
+        "security",
+        "Quality of Service (QoS)",
+        "reliability"
+      ],
+      "correct_answer": "security"
+    },
+    {
+      "id": 8,
+      "question": "What two criteria are used to help select a network medium from various network media? (Choose two.)",
+      "options": [
+        "the types of data that need to be prioritized",
+        "the cost of the end devices utilized in the network",
+        "the distance the selected medium can successfully carry a signal",
+        "the number of intermediate devices installed in the network",
+        "the environment where the selected medium is to be installed"
+      ],
+      "correct_answer": "the distance the selected medium can successfully carry a signal | the environment where the selected medium is to be installed"
+    },
+    {
+      "id": 9,
+      "question": "What type of network traffic requires QoS?",
+      "options": [
+        "email",
+        "on-line purchasing",
+        "video conferencing",
+        "wiki"
+      ],
+      "correct_answer": "video conferencing"
+    },
+    {
+      "id": 10,
+      "question": "A user is implementing security on a small office network. Which two actions would provide the minimum security requirements for this network? (Choose two.)",
+      "options": [
+        "implementing a firewall",
+        "installing a wireless network",
+        "installing antivirus software",
+        "implementing an intrusion detection system",
+        "adding a dedicated intrusion prevention device"
+      ],
+      "correct_answer": "implementing a firewall | installing antivirus software"
+    },
+    {
+      "id": 11,
+      "question": "Passwords can be used to restrict access to all or parts of the Cisco IOS. Select the modes and interfaces that can be protected with passwords. (Choose three.)",
+      "options": [
+        "VTY interface",
+        "console interface",
+        "Ethernet interface",
+        "boot IOS mode",
+        "privileged EXEC mode",
+        "router configuration mode"
+      ],
+      "correct_answer": "VTY interface | console interface | privileged EXEC mode"
+    },
+    {
+      "id": 12,
+      "question": "Which interface allows remote management of a Layer 2 switch?",
+      "options": [
+        "the AUX interface",
+        "the console port interface",
+        "the switch virtual interface",
+        "the first Ethernet port interface"
+      ],
+      "correct_answer": "the switch virtual interface"
+    },
+    {
+      "id": 13,
+      "question": "What function does pressing the Tab key have when entering a command in IOS?",
+      "options": [
+        "It aborts the current command and returns to configuration mode.",
+        "It exits configuration mode and returns to user EXEC mode.",
+        "It moves the cursor to the beginning of the next line.",
+        "It completes the remainder of a partially typed word in a command."
+      ],
+      "correct_answer": "It completes the remainder of a partially typed word in a command."
+    },
+    {
+      "id": 14,
+      "question": "While trying to solve a network issue, a technician made multiple changes to the current router configuration file. The changes did not solve the problem and were not saved. What action can the technician take to discard the changes and work with the file in NVRAM?",
+      "options": [
+        "Issue the reload command without saving the running configuration.",
+        "Delete the vlan.dat file and reboot the device.",
+        "Close and reopen the terminal emulation software.",
+        "Issue the copy startup-config running-config command."
+      ],
+      "correct_answer": "Issue the reload command without saving the running configuration."
+    },
+    {
+      "id": 15,
+      "question": "An administrator uses the Ctrl-Shift-6 key combination on a switch after issuing the ping command. What is the purpose of using these keystrokes?",
+      "options": [
+        "to restart the ping process",
+        "to interrupt the ping process",
+        "to exit to a different configuration mode",
+        "to allow the user to complete the command"
+      ],
+      "correct_answer": "to interrupt the ping process"
+    },
+    {
+      "id": 16,
+      "question": "Refer to the exhibit. A network administrator is configuring access control to switch SW1. If the administrator uses a console connection to connect to the switch, which password is needed to access user EXEC mode?",
+      "options": [
+        "letmein",
+        "secretin",
+        "lineconin",
+        "linevtyin"
+      ],
+      "correct_answer": "lineconin",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-1-v7-Modules-1-3-Basic-Network-Connectivity-and-Communications-Exam-Answers-14.jpg"
+    },
+    {
+      "id": 17,
+      "question": "A technician configures a switch with these commands:",
+      "options": [
+        "Telnet access",
+        "SVI",
+        "password encryption",
+        "physical switchport access"
+      ],
+      "correct_answer": "SVI"
+    },
+    {
+      "id": 18,
+      "question": "Which command or key combination allows a user to return to the previous level in the command hierarchy?",
+      "options": [
+        "end",
+        "exit",
+        "Ctrl-Z",
+        "Ctrl-C"
+      ],
+      "correct_answer": "exit"
+    },
+    {
+      "id": 19,
+      "question": "What are two characteristics of RAM on a Cisco device? (Choose two.)",
+      "options": [
+        "RAM provides nonvolatile storage.",
+        "The configuration that is actively running on the device is stored in RAM.",
+        "The contents of RAM are lost during a power cycle.",
+        "RAM is a component in Cisco switches but not in Cisco routers.",
+        "RAM is able to store multiple versions of IOS and configuration files."
+      ],
+      "correct_answer": "The configuration that is actively running on the device is stored in RAM. | The contents of RAM are lost during a power cycle."
+    },
+    {
+      "id": 20,
+      "question": "Which two host names follow the guidelines for naming conventions on Cisco IOS devices? (Choose two.)",
+      "options": [
+        "Branch2!",
+        "RM-3-Switch-2A4",
+        "Floor(15)",
+        "HO Floor 17",
+        "SwBranch799"
+      ],
+      "correct_answer": "RM-3-Switch-2A4 | SwBranch799"
+    },
+    {
+      "id": 21,
+      "question": "How is SSH different from Telnet?",
+      "options": [
+        "SSH makes connections over the network, whereas Telnet is for out-of-band access.",
+        "SSH provides security to remote sessions by encrypting messages and using user authentication. Telnet is considered insecure and sends messages in plaintext.",
+        "SSH requires the use of the PuTTY terminal emulation program. Tera Term must be used to connect to devices through the use of Telnet.",
+        "SSH must be configured over an active network connection, whereas Telnet is used to connect to a device from a console connection."
+      ],
+      "correct_answer": "SSH provides security to remote sessions by encrypting messages and using user authentication. Telnet is considered insecure and sends messages in plaintext."
+    },
+    {
+      "id": 22,
+      "question": "What are three characteristics of an SVI? (Choose three.)",
+      "options": [
+        "It is designed as a security protocol to protect switch ports.",
+        "It is not associated with any physical interface on a switch.",
+        "It is a special interface that allows connectivity by different types of media.",
+        "It is required to allow connectivity by any device at any location.",
+        "It provides a means to remotely manage a switch.",
+        "It is associated with VLAN1 by default."
+      ],
+      "correct_answer": "It is not associated with any physical interface on a switch. | It provides a means to remotely manage a switch. | It is associated with VLAN1 by default."
+    },
+    {
+      "id": 23,
+      "question": "What command is used to verify the condition of the switch interfaces, including the status of the interfaces and a configured IP address?",
+      "options": [
+        "ipconfig",
+        "ping",
+        "traceroute",
+        "show ip interface brief"
+      ],
+      "correct_answer": "show ip interface brief"
+    },
+    {
+      "id": 24,
+      "question": "In the show running-config command, which part of the syntax is represented by running-config ?",
+      "options": [
+        "the command",
+        "a keyword",
+        "a variable",
+        "a prompt"
+      ],
+      "correct_answer": "a keyword"
+    },
+    {
+      "id": 25,
+      "question": "After making configuration changes on a Cisco switch, a network administrator issues a copy running-config startup-config command. What is the result of issuing this command?",
+      "options": [
+        "The new configuration will be stored in flash memory.",
+        "The new configuration will be loaded if the switch is restarted.",
+        "The current IOS file will be replaced with the newly configured file.",
+        "The configuration changes will be removed and the original configuration will be restored."
+      ],
+      "correct_answer": "The new configuration will be loaded if the switch is restarted."
+    },
+    {
+      "id": 26,
+      "question": "What command will prevent all unencrypted passwords from displaying in plain text in a configuration file?",
+      "options": [
+        "(config)# enable password secret",
+        "(config)# enable secret Secret_Password",
+        "(config-line)# password secret",
+        "(config)# service password-encryption",
+        "(config)# enable secret Encrypted_Password"
+      ],
+      "correct_answer": "(config)# service password-encryption"
+    },
+    {
+      "id": 27,
+      "question": "A network administrator enters the service password-encryption command into the configuration mode of a router. What does this command accomplish?",
+      "options": [
+        "This command encrypts passwords as they are transmitted across serial WAN links.",
+        "This command prevents someone from viewing the running configuration passwords.",
+        "This command enables a strong encryption algorithm for the enable secret password command.",
+        "This command automatically encrypts passwords in configuration files that are currently stored in NVRAM.",
+        "This command provides an exclusive encrypted password for external service personnel who are required to do router maintenance."
+      ],
+      "correct_answer": "This command prevents someone from viewing the running configuration passwords."
+    },
+    {
+      "id": 28,
+      "question": "What method can be used by two computers to ensure that packets are not dropped because too much data is being sent too quickly?",
+      "options": [
+        "encapsulation",
+        "flow control",
+        "access method",
+        "response timeout"
+      ],
+      "correct_answer": "flow control"
+    },
+    {
+      "id": 29,
+      "question": "Which statement accurately describes a TCP/IP encapsulation process when a PC is sending data to the network?",
+      "options": [
+        "Data is sent from the internet layer to the network access layer.",
+        "Packets are sent from the network access layer to the transport layer.",
+        "Segments are sent from the transport layer to the internet layer.",
+        "Frames are sent from the network access layer to the internet layer."
+      ],
+      "correct_answer": "Segments are sent from the transport layer to the internet layer."
+    },
+    {
+      "id": 30,
+      "question": "What three application layer protocols are part of the TCP/IP protocol suite? (Choose three.)",
+      "options": [
+        "ARP",
+        "DHCP",
+        "DNS",
+        "FTP",
+        "NAT",
+        "PPP"
+      ],
+      "correct_answer": "DHCP | DNS | FTP"
+    },
+    {
+      "id": 31,
+      "question": "Which name is assigned to the transport layer PDU?",
+      "options": [
+        "bits",
+        "data",
+        "frame",
+        "packet",
+        "segment"
+      ],
+      "correct_answer": "segment"
+    },
+    {
+      "id": 32,
+      "question": "When IPv4 addressing is manually configured on a web server, which property of the IPv4 configuration identifies the network and host portion for an IPv4 address?",
+      "options": [
+        "DNS server address",
+        "subnet mask",
+        "default gateway",
+        "DHCP server address",
+        "IPv4 address - uniquely identifies an end device on the network",
+        "Subnet mask - determines the network address portion and host portion for an IPv4 address",
+        "Default gateway - the IP address of the router interface used for communicating with hosts in another network",
+        "DNS server address - the IP address of the Domain Name System (DNS) server"
+      ],
+      "correct_answer": "subnet mask"
+    },
+    {
+      "id": 33,
+      "question": "What process involves placing one PDU inside of another PDU?",
+      "options": [
+        "encapsulation",
+        "encoding",
+        "segmentation",
+        "flow control"
+      ],
+      "correct_answer": "encapsulation"
+    },
+    {
+      "id": 34,
+      "question": "What layer is responsible for routing messages through an internetwork in the TCP/IP model?",
+      "options": [
+        "internet",
+        "transport",
+        "network access",
+        "session"
+      ],
+      "correct_answer": "internet"
+    },
+    {
+      "id": 35,
+      "question": "Which PDU format is used when bits are received from the network medium by the NIC of a host?",
+      "options": [
+        "file",
+        "frame",
+        "packet",
+        "segment"
+      ],
+      "correct_answer": "frame"
+    },
+    {
+      "id": 36,
+      "question": "Refer to the exhibit. ServerB is attempting to contact HostA. Which two statements correctly identify the addressing that ServerB will generate in the process? (Choose two.)",
+      "options": [
+        "ServerB will generate a packet with the destination IP address of RouterB.",
+        "ServerB will generate a frame with the destination MAC address of SwitchB.",
+        "ServerB will generate a packet with the destination IP address of RouterA.",
+        "ServerB will generate a frame with the destination MAC address of RouterB.",
+        "ServerB will generate a packet with the destination IP address of HostA.",
+        "ServerB will generate a frame with the destination MAC address of RouterA."
+      ],
+      "correct_answer": "ServerB will generate a frame with the destination MAC address of RouterB. | ServerB will generate a packet with the destination IP address of HostA.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i304745v1n1_214638.png"
+    },
+    {
+      "id": 37,
+      "question": "Which method allows a computer to react accordingly when it requests data from a server and the server takes too long to respond?",
+      "options": [
+        "encapsulation",
+        "flow control",
+        "access method",
+        "response timeout"
+      ],
+      "correct_answer": "response timeout"
+    },
+    {
+      "id": 38,
+      "question": "A web client is receiving a response for a web page from a web server. From the perspective of the client, what is the correct order of the protocol stack that is used to decode the received transmission?",
+      "options": [
+        "Ethernet, IP, TCP, HTTP",
+        "HTTP, TCP, IP, Ethernet",
+        "Ethernet, TCP, IP, HTTP",
+        "HTTP, Ethernet, IP, TCP"
+      ],
+      "correct_answer": "Ethernet, IP, TCP, HTTP"
+    },
+    {
+      "id": 39,
+      "question": "Which two OSI model layers have the same functionality as a single layer of the TCP/IP model? (Choose two.)",
+      "options": [
+        "data link",
+        "network",
+        "physical",
+        "session",
+        "transport"
+      ],
+      "correct_answer": "data link | physical"
+    },
+    {
+      "id": 40,
+      "question": "At which layer of the OSI model would a logical address be added during encapsulation?",
+      "options": [
+        "physical layer",
+        "data link layer",
+        "network layer",
+        "transport layer"
+      ],
+      "correct_answer": "network layer"
+    },
+    {
+      "id": 41,
+      "question": "What is a characteristic of multicast messages?",
+      "options": [
+        "They are sent to a select group of hosts.",
+        "They are sent to all hosts on a network.",
+        "They must be acknowledged.",
+        "They are sent to a single destination."
+      ],
+      "correct_answer": "They are sent to a select group of hosts."
+    },
+    {
+      "id": 42,
+      "question": "Which statement is correct about network protocols?",
+      "options": [
+        "Network protocols define the type of hardware that is used and how it is mounted in racks.",
+        "They define how messages are exchanged between the source and the destination.",
+        "They all function in the network access layer of TCP/IP.",
+        "They are only required for exchange of messages between devices on remote networks."
+      ],
+      "correct_answer": "They define how messages are exchanged between the source and the destination."
+    },
+    {
+      "id": 43,
+      "question": "What is an advantage of network devices using open standard protocols?",
+      "options": [
+        "Network communications is confined to data transfers between devices from the same vendor.",
+        "A client host and a server running different operating systems can successfully exchange data.",
+        "Internet access can be controlled by a single ISP in each market.",
+        "Competition and innovation are limited to specific types of products."
+      ],
+      "correct_answer": "A client host and a server running different operating systems can successfully exchange data."
+    },
+    {
+      "id": 44,
+      "question": "Which device performs the function of determining the path that messages should take through internetworks?",
+      "options": [
+        "a router",
+        "a firewall",
+        "a web server",
+        "a DSL modem"
+      ],
+      "correct_answer": "a router"
+    },
+    {
+      "id": 45,
+      "question": "Open the PT Activity. Perform the tasks in the activity instructions and then answer the question.",
+      "options": [
+        "192.168.5.10",
+        "192.168.10.5",
+        "192.168.10.1",
+        "192.168.5.0"
+      ],
+      "correct_answer": "192.168.5.10",
+      "image": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNDAgNDAiPgogICAgICAgICAgICAgICAgPGRlZnM+CiAgICAgICAgICAgICAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICAgICAgICAgICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPSIjMjY5ZGVmIiBvZmZzZXQ9IjAiLz4KICAgICAgICAgICAgICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzI2YmRlZiIgb2Zmc2V0PSIxIi8+CiAgICAgICAgICAgICAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgICAgICAgICAgICAgIDwvZGVmcz4KICAgICAgICAgICAgICAgIDxnPgogICAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9InVybCgjZ3JhZGllbnQpIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHJ4PSIzIiByeT0iMyIvPgogICAgICAgICAgICAgICAgICAgIDx0ZXh0IHg9IjUiIHk9IjE5IiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxM3B4IiBsZXR0ZXItc3BhY2luZz0iMSIgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgICAgICAgICAgICAgICAgIDx0c3Bhbj5QS0E8L3RzcGFuPgogICAgICAgICAgICAgICAgICAgICAgICA8dHNwYW4geD0iNiIgeT0iMjgiPl88L3RzcGFuPgogICAgICAgICAgICAgICAgICAgIDwvdGV4dD4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgPC9zdmc+CgoJCQk="
+    },
+    {
+      "id": 46,
+      "question": "Why would a Layer 2 switch need an IP address?",
+      "options": [
+        "to enable the switch to send broadcast frames to attached PCs",
+        "to enable the switch to function as a default gateway",
+        "to enable the switch to be managed remotely",
+        "to enable the switch to receive frames from attached PCs"
+      ],
+      "correct_answer": "to enable the switch to be managed remotely"
+    },
+    {
+      "id": 47,
+      "question": "Refer to the exhibit. An administrator is trying to configure the switch but receives the error message that is displayed in the exhibit. What is the problem?",
+      "options": [
+        "The entire command, configure terminal, must be used.",
+        "The administrator is already in global configuration mode.",
+        "The administrator must first enter privileged EXEC mode before issuing the command.",
+        "The administrator must connect via the console port to access global configuration mode."
+      ],
+      "correct_answer": "The administrator must first enter privileged EXEC mode before issuing the command.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i208399v1n1_Question201.png"
+    },
+    {
+      "id": 48,
+      "question": "What term describes a network owned by one organization that provides safe and secure access to individuals who work for a different organization?",
+      "options": [
+        "extranet",
+        "cloud",
+        "BYOD",
+        "quality of service"
+      ],
+      "correct_answer": "extranet"
+    },
+    {
+      "id": 49,
+      "question": "What term describes storing personal files on servers over the internet to provide access anywhere, anytime, and on any device?",
+      "options": [
+        "cloud",
+        "BYOD",
+        "quality of service",
+        "converged network"
+      ],
+      "correct_answer": "cloud"
+    },
+    {
+      "id": 50,
+      "question": "What term describes a network where one computer can be both client and server?",
+      "options": [
+        "peer-to-peer",
+        "cloud",
+        "BYOD",
+        "quality of service"
+      ],
+      "correct_answer": "peer-to-peer"
+    },
+    {
+      "id": 51,
+      "question": "What term describes a type of network used by people who work from home or from a small remote office?",
+      "options": [
+        "SOHO network",
+        "BYOD",
+        "quality of service",
+        "converged network"
+      ],
+      "correct_answer": "SOHO network"
+    },
+    {
+      "id": 52,
+      "question": "What term describes a computing model where server software runs on dedicated computers?",
+      "options": [
+        "client/server",
+        "internet",
+        "intranet",
+        "extranet"
+      ],
+      "correct_answer": "client/server"
+    },
+    {
+      "id": 53,
+      "question": "What term describes a technology that allows devices to connect to the LAN using an electrical outlet?",
+      "options": [
+        "powerline networking",
+        "internet",
+        "intranet",
+        "extranet"
+      ],
+      "correct_answer": "powerline networking"
+    },
+    {
+      "id": 54,
+      "question": "What term describes a policy that allows network devices to manage the flow of data to give priority to voice and video?",
+      "options": [
+        "quality of service",
+        "internet",
+        "intranet",
+        "extranet"
+      ],
+      "correct_answer": "quality of service"
+    },
+    {
+      "id": 55,
+      "question": "What term describes a private collection of LANs and WANs that belongs to an organization?",
+      "options": [
+        "intranet",
+        "internet",
+        "extranet",
+        "peer-to-peer"
+      ],
+      "correct_answer": "intranet"
+    },
+    {
+      "id": 56,
+      "question": "What term describes the ability to use personal devices across a business or campus network?",
+      "options": [
+        "BYOD",
+        "internet",
+        "intranet",
+        "extranet"
+      ],
+      "correct_answer": "BYOD"
+    },
+    {
+      "id": 57,
+      "question": "At which OSI layer is a source IP address added to a PDU during the encapsulation process?",
+      "options": [
+        "network layer",
+        "data link layer",
+        "transport layer",
+        "application layer"
+      ],
+      "correct_answer": "network layer"
+    },
+    {
+      "id": 58,
+      "question": "At which OSI layer is a destination port number added to a PDU during the encapsulation process?",
+      "options": [
+        "transport layer",
+        "data link layer",
+        "network layer",
+        "application layer"
+      ],
+      "correct_answer": "transport layer"
+    },
+    {
+      "id": 59,
+      "question": "At which OSI layer is data added to a PDU during the encapsulation process?",
+      "options": [
+        "application layer",
+        "data link layer",
+        "network layer",
+        "transport layer"
+      ],
+      "correct_answer": "application layer"
+    },
+    {
+      "id": 60,
+      "question": "At which OSI layer is a source IP address added to a PDU during the encapsulation process?",
+      "options": [
+        "network layer",
+        "data link layer",
+        "application layer",
+        "presentation layer"
+      ],
+      "correct_answer": "network layer"
+    },
+    {
+      "id": 61,
+      "question": "Which of the following is the name for all computers connected to a network that participate directly in network communication?",
+      "options": [
+        "Servers",
+        "Intermediary device",
+        "Host",
+        "media"
+      ],
+      "correct_answer": "Host"
+    },
+    {
+      "id": 62,
+      "question": "At which OSI layer is a destination IP address added to a PDU during the encapsulation process?",
+      "options": [
+        "network layer",
+        "application layer",
+        "transport layer",
+        "presentation layer"
+      ],
+      "correct_answer": "network layer"
+    },
+    {
+      "id": 63,
+      "question": "At which OSI layer is a source MAC address added to a PDU during the encapsulation process?",
+      "options": [
+        "data link layer",
+        "application layer",
+        "transport layer",
+        "presentation layer"
+      ],
+      "correct_answer": "data link layer"
+    },
+    {
+      "id": 64,
+      "question": "At which OSI layer is a source port number added to a PDU during the encapsulation process?",
+      "options": [
+        "transport layer",
+        "application layer",
+        "network layer",
+        "presentation layer",
+        "data link layer"
+      ],
+      "correct_answer": "transport layer"
+    },
+    {
+      "id": 65,
+      "question": "At which OSI layer is a destination MAC address added to a PDU during the encapsulation process?",
+      "options": [
+        "data link layer",
+        "transport layer",
+        "application layer",
+        "network layer"
+      ],
+      "correct_answer": "data link layer"
+    },
+    {
+      "id": 66,
+      "question": "When data is encoded as pulses of light, which media is being used to transmit the data?",
+      "options": [
+        "Wireless",
+        "Fire optic cable",
+        "Copper cable"
+      ],
+      "correct_answer": "Fire optic cable"
+    },
+    {
+      "id": 67,
+      "question": "Which two devices are intermediary devices? (Choose two)",
+      "options": [
+        "Host",
+        "Router",
+        "Switch",
+        "Servers"
+      ],
+      "correct_answer": "Router | Switch"
+    },
+    {
+      "id": 68,
+      "question": "A college is building a new dormitory on its campus. Workers are digging in the ground to install a new water pipe for the dormitory. A worker accidentally damages a fiber optic cable that connects two of the existing dormitories to the campus data center. Although the cable has been cut, students in the dormitories only experience a very short interruption of network services. What characteristic of the network is shown here?",
+      "options": [
+        "quality of service (QoS)",
+        "scalability",
+        "security",
+        "fault tolerance",
+        "integrity"
+      ],
+      "correct_answer": "fault tolerance"
+    }
+  ]
+}
