@@ -1,0 +1,10 @@
+# Paste exam URLs below (one per line).
+# You can optionally add a short display name after the URL.
+# Lines starting with # are ignored.
+# After pasting the URLs, run: python3 add_exam.py
+
+# Example:
+# https://itexamanswers.net/example-exam-answers.html "Example Exam Name"
+
+
+

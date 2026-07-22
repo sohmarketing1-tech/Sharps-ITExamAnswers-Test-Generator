@@ -9,6 +9,9 @@ URLS = [
     "https://itexamanswers.net/it-essentials-7-0-final-exam-chapters-1-9-answers-full.html",
     "https://itexamanswers.net/it-essentials-7-0-final-exam-chapters-10-14-answers-full.html",
     "https://itexamanswers.net/it-essentials-7-0-final-exam-composite-chapters-1-14-answers.html",
+    "https://itexamanswers.net/ccna-1-v5-1-v6-0-chapter-1-exam-answers-100-full.html",
+    "https://itexamanswers.net/ccna-1-v5-1-v6-0-chapter-2-exam-answers-100-full.html",
+    "https://itexamanswers.net/ccna-1-v5-1-v6-0-chapter-3-exam-answers-100-full.html",
 ]
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
@@ -46,9 +49,25 @@ def main():
         })
 
     manifest_path = DATA_DIR / "exams.json"
+    if manifest_path.exists():
+        try:
+            existing = json.load(open(manifest_path, "r", encoding="utf-8"))
+        except Exception:
+            existing = {"exams": []}
+    else:
+        existing = {"exams": []}
+
+    existing_by_filename = {e.get("filename"): idx for idx, e in enumerate(existing.get("exams", []))}
+    for exam in exams:
+        if exam["filename"] in existing_by_filename:
+            existing["exams"][existing_by_filename[exam["filename"]]] = exam
+        else:
+            existing["exams"].append(exam)
+
     with open(manifest_path, "w", encoding="utf-8") as f:
-        json.dump({"exams": exams}, f, indent=2, ensure_ascii=False)
+        json.dump(existing, f, indent=2, ensure_ascii=False)
     print(f"\nManifest saved to {manifest_path}")
+    print(f"Total exams: {len(existing['exams'])}")
 
 
 if __name__ == "__main__":

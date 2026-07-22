@@ -76,6 +76,8 @@ If you deploy to a fresh server/container without copying these files, accounts,
 
 - `reset_password.py` — run on the server to reset a user's password when `users.json` still exists.
 - `backup_data.py` — run on the server to create a timestamped backup of all runtime data files. Consider running this regularly or after adding users/data.
+- `add_exam.py` — run on the server to scrape a new `itexamanswers.net` exam URL and add it to `data/exams.json`. Supports optional short display names.
+- `batch_scrape.py` — scrape a list of URLs and merge them into the existing manifest (no longer overwrites the whole manifest).
 
 ## Quick Reference: Important Files / Symbols
 

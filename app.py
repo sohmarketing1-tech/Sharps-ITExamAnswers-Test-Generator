@@ -168,8 +168,10 @@ EXAM_DISPLAY_NAMES = {
 }
 
 
-def display_name_for(filename: str) -> str:
+def display_name_for(filename: str, fallback: str = "") -> str:
     """Return a friendly short name for a known exam file."""
+    if fallback:
+        return fallback
     return EXAM_DISPLAY_NAMES.get(filename, filename.replace("-", " ").replace(".json", "").title())
 
 
@@ -431,7 +433,7 @@ def get_exams():
                 manifest = json.load(f)
             for exam in manifest.get("exams", []):
                 filename = exam.get("filename", "")
-                display_name = display_name_for(filename)
+                display_name = display_name_for(filename, exam.get("display_name", ""))
                 # Count questions dynamically so the UI count stays accurate
                 # when questions are added to a file.
                 count = exam.get("count", 0)
