@@ -1,0 +1,876 @@
+{
+  "title": "CCNA 1 v7 Modules 4 - 7: Ethernet Concepts Exam Answers",
+  "url": "https://itexamanswers.net/ccna-1-v7-modules-4-7-ethernet-concepts-exam-answers.html",
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is the purpose of the OSI physical layer?",
+      "options": [
+        "controlling access to media",
+        "transmitting bits across the local media",
+        "performing error detection on received frames",
+        "exchanging frames between nodes over physical network media"
+      ],
+      "correct_answer": "transmitting bits across the local media"
+    },
+    {
+      "id": 2,
+      "question": "Why are two strands of fiber used for a single fiber optic connection?",
+      "options": [
+        "The two strands allow the data to travel for longer distances without degrading.",
+        "They prevent crosstalk from causing interference on the connection.",
+        "They increase the speed at which the data can travel.",
+        "They allow for full-duplex connectivity."
+      ],
+      "correct_answer": "They allow for full-duplex connectivity."
+    },
+    {
+      "id": 3,
+      "question": "Which characteristic describes crosstalk?",
+      "options": [
+        "the distortion of the network signal from fluorescent lighting",
+        "the distortion of the transmitted messages from signals carried in adjacent wires",
+        "the weakening of the network signal over long cable lengths",
+        "the loss of wireless signal over excessive distance from the access point"
+      ],
+      "correct_answer": "the distortion of the transmitted messages from signals carried in adjacent wires"
+    },
+    {
+      "id": 4,
+      "question": "Which procedure is used to reduce the effect of crosstalk in copper cables?",
+      "options": [
+        "requiring proper grounding connections",
+        "twisting opposing circuit wire pairs together",
+        "wrapping the bundle of wires with metallic shielding",
+        "designing a cable infrastructure to avoid crosstalk interference",
+        "avoiding sharp bends during installation"
+      ],
+      "correct_answer": "twisting opposing circuit wire pairs together"
+    },
+    {
+      "id": 5,
+      "question": "A network administrator is measuring the transfer of bits across the company backbone for a mission critical financial application. The administrator notices that the network throughput appears lower than the bandwidth expected. Which three factors could influence the differences in throughput? (Choose three.)",
+      "options": [
+        "the amount of traffic that is currently crossing the network",
+        "the sophistication of the encapsulation method applied to the data",
+        "the type of traffic that is crossing the network",
+        "the latency that is created by the number of network devices that the data is crossing",
+        "the bandwidth of the WAN connection to the Internet",
+        "the reliability of the gigabit Ethernet infrastructure of the backbone"
+      ],
+      "correct_answer": "the amount of traffic that is currently crossing the network | the type of traffic that is crossing the network | the latency that is created by the number of network devices that the data is crossing"
+    },
+    {
+      "id": 6,
+      "question": "What are two characteristics of fiber-optic cable? (Choose two.)",
+      "options": [
+        "It is not affected by EMI or RFI.",
+        "Each pair of cables is wrapped in metallic foil.",
+        "It combines the technique of cancellation, shielding, and twisting to protect data.",
+        "It typically contains 4 pairs of fiber-optic wires.",
+        "It is more expensive than UTP cabling is."
+      ],
+      "correct_answer": "It is not affected by EMI or RFI. | It is more expensive than UTP cabling is."
+    },
+    {
+      "id": 7,
+      "question": "What is a primary role of the Physical layer in transmitting data on the network?",
+      "options": [
+        "create the signals that represent the bits in each frame on to the media",
+        "provide physical addressing to the devices",
+        "determine the path packets take through the network",
+        "control data access to the media"
+      ],
+      "correct_answer": "create the signals that represent the bits in each frame on to the media"
+    },
+    {
+      "id": 8,
+      "question": "With the use of unshielded twisted-pair copper wire in a network, what causes crosstalk within the cable pairs?",
+      "options": [
+        "the magnetic field around the adjacent pairs of wire",
+        "the use of braided wire to shield the adjacent wire pairs",
+        "the reflection of the electrical wave back from the far end of the cable",
+        "the collision caused by two nodes trying to use the media simultaneously"
+      ],
+      "correct_answer": "the magnetic field around the adjacent pairs of wire"
+    },
+    {
+      "id": 9,
+      "question": "Refer to the graphic. What type of cabling is shown?",
+      "options": [
+        "STP",
+        "UTP",
+        "coax",
+        "fiber",
+        "UTP cable consists of four pairs of color-coded wires that have been twisted together and then encased in a flexible plastic sheath.",
+        "STP cable uses four pairs of wires, each wrapped in a foil shield, which are then wrapped in an overall metallic braid or foil.",
+        "Coaxial cable uses a copper conductor and a layer of flexible plastic insulation surrounds the copper conductor.",
+        "Fiber cable is a flexible, extremely thin, transparent strand of glass surrounded by plastic insulation."
+      ],
+      "correct_answer": "fiber",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-11_180314-300x234-1.jpg"
+    },
+    {
+      "id": 10,
+      "question": "In addition to the cable length, what two factors could interfere with the communication carried over UTP cables? (Choose two.)",
+      "options": [
+        "crosstalk",
+        "bandwidth",
+        "size of the network",
+        "signal modulation technique",
+        "electromagnetic interference",
+        "Electromagnetic interference (EMI) or radio frequency interference (RFI) - EMI and RFI signals can distort and corrupt the data signals being carried by copper media.",
+        "Crosstalk - Crosstalk is a disturbance caused by the electric or magnetic fields of a signal on one wire interfering with the signal in an adjacent wire."
+      ],
+      "correct_answer": "crosstalk | electromagnetic interference"
+    },
+    {
+      "id": 11,
+      "question": "Refer to the graphic. What type of cabling is shown?",
+      "options": [
+        "STP",
+        "UTP",
+        "coax",
+        "fiber",
+        "UTP cable consists of four pairs of color-coded wires that have been twisted together and then encased in a flexible plastic sheath.",
+        "STP cable uses four pairs of wires, each wrapped in a foil shield, which are then wrapped in an overall metallic braid or foil.",
+        "Coaxial cable uses a copper conductor and a layer of flexible plastic insulation surrounds the copper conductor.",
+        "Fiber cable is a flexible, extremely thin, transparent strand of glass surrounded by plastic insulation"
+      ],
+      "correct_answer": "UTP",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-11_180547.jpg"
+    },
+    {
+      "id": 12,
+      "question": "Which two devices commonly affect wireless networks? (Choose two.)",
+      "options": [
+        "Blu-ray players",
+        "home theaters",
+        "cordless phones",
+        "microwaves",
+        "incandescent light bulbs",
+        "external hard drives"
+      ],
+      "correct_answer": "cordless phones | microwaves"
+    },
+    {
+      "id": 13,
+      "question": "Which two statements describe the services provided by the data link layer? (Choose two.)",
+      "options": [
+        "It defines the end-to-end delivery addressing scheme.",
+        "It maintains the path between the source and destination devices during the data transmission.",
+        "It manages the access of frames to the network media.",
+        "It provides reliable delivery through link establishment and flow control.",
+        "It ensures that application data will be transmitted according to the prioritization.",
+        "It packages various Layer 3 PDUs into a frame format that is compatible with the network interface."
+      ],
+      "correct_answer": "It manages the access of frames to the network media. | It packages various Layer 3 PDUs into a frame format that is compatible with the network interface."
+    },
+    {
+      "id": 14,
+      "question": "What is the function of the CRC value that is found in the FCS field of a frame?",
+      "options": [
+        "to verify the integrity of the received frame",
+        "to verify the physical address in the frame",
+        "to verify the logical address in the frame",
+        "to compute the checksum header for the data field in the frame"
+      ],
+      "correct_answer": "to verify the integrity of the received frame"
+    },
+    {
+      "id": 15,
+      "question": "What is contained in the trailer of a data-link frame?",
+      "options": [
+        "logical address",
+        "physical address",
+        "data",
+        "error detection"
+      ],
+      "correct_answer": "error detection"
+    },
+    {
+      "id": 16,
+      "question": "Which statement describes a characteristic of the frame header fields of the data link layer?",
+      "options": [
+        "They all include the flow control and logical connection fields.",
+        "Ethernet frame header fields contain Layer 3 source and destination addresses.",
+        "They vary depending on protocols.",
+        "They include information on user applications."
+      ],
+      "correct_answer": "They vary depending on protocols."
+    },
+    {
+      "id": 17,
+      "question": "A network team is comparing physical WAN topologies for connecting remote sites to a headquarters building. Which topology provides high availability and connects some, but not all, remote sites?",
+      "options": [
+        "mesh",
+        "partial mesh",
+        "hub and spoke",
+        "point-to-point"
+      ],
+      "correct_answer": "partial mesh"
+    },
+    {
+      "id": 18,
+      "question": "Which two fields or features does Ethernet examine to determine if a received frame is passed to the data link layer or discarded by the NIC? (Choose two.)",
+      "options": [
+        "auto-MDIX",
+        "CEF",
+        "Frame Check Sequence",
+        "minimum frame size",
+        "source MAC address"
+      ],
+      "correct_answer": "Frame Check Sequence | minimum frame size"
+    },
+    {
+      "id": 19,
+      "question": "Which media communication type does not require media arbitration in the data link layer?",
+      "options": [
+        "deterministic",
+        "half-duplex",
+        "full-duplex",
+        "controlled access"
+      ],
+      "correct_answer": "full-duplex"
+    },
+    {
+      "id": 20,
+      "question": "Which statement describes an extended star topology?",
+      "options": [
+        "End devices connect to a central intermediate device, which in turn connects to other central intermediate devices.",
+        "End devices are connected together by a bus and each bus connects to a central intermediate device.",
+        "Each end system is connected to its respective neighbor via an intermediate device.",
+        "All end and intermediate devices are connected in a chain to each other."
+      ],
+      "correct_answer": "End devices connect to a central intermediate device, which in turn connects to other central intermediate devices."
+    },
+    {
+      "id": 21,
+      "question": "What is a characteristic of the LLC sublayer?",
+      "options": [
+        "It provides the logical addressing required that identifies the device.",
+        "It provides delimitation of data according to the physical signaling requirements of the medium.",
+        "It places information in the frame allowing multiple Layer 3 protocols to use the same network interface and media.",
+        "It defines software processes that provide services to the physical layer."
+      ],
+      "correct_answer": "It places information in the frame allowing multiple Layer 3 protocols to use the same network interface and media."
+    },
+    {
+      "id": 22,
+      "question": "What are three ways that media access control is used in networking? (Choose three.)",
+      "options": [
+        "Ethernet utilizes CSMA/CD.",
+        "Media access control provides placement of data frames onto the media.",
+        "Contention-based access is also known as deterministic.",
+        "802.11 utilizes CSMA/CD.",
+        "Data link layer protocols define the rules for access to different media.",
+        "Networks with controlled access have reduced performance due to data collisions."
+      ],
+      "correct_answer": "Ethernet utilizes CSMA/CD. | Media access control provides placement of data frames onto the media. | Data link layer protocols define the rules for access to different media."
+    },
+    {
+      "id": 23,
+      "question": "During the encapsulation process, what occurs at the data link layer for a PC connected to an Ethernet network?",
+      "options": [
+        "An IP address is added.",
+        "The logical address is added.",
+        "The physical address is added.",
+        "The process port number is added."
+      ],
+      "correct_answer": "The physical address is added."
+    },
+    {
+      "id": 24,
+      "question": "What three items are contained in an Ethernet header and trailer? (Choose three.)",
+      "options": [
+        "source IP address",
+        "source MAC address",
+        "destination IP address",
+        "destination MAC address",
+        "error-checking information",
+        "Frame start and stop indicator flags at the beginning and end of a frame",
+        "Addressing - for Ethernet networks this part of the header contains source and destination MAC addresses",
+        "Type field to indicate what Layer 3 protocol is being used",
+        "Error detection to determine if the frame arrived without error"
+      ],
+      "correct_answer": "source MAC address | destination MAC address | error-checking information"
+    },
+    {
+      "id": 25,
+      "question": "What type of communication rule would best describe CSMA/CD?",
+      "options": [
+        "access method",
+        "flow control",
+        "message encapsulation",
+        "message encoding"
+      ],
+      "correct_answer": "access method"
+    },
+    {
+      "id": 26,
+      "question": "Which three basic parts are common to all frame types supported by the data link layer? (Choose three.)",
+      "options": [
+        "header",
+        "type field",
+        "MTU size",
+        "data",
+        "trailer",
+        "CRC value",
+        "Header",
+        "Data",
+        "Trailer"
+      ],
+      "correct_answer": "header | data | trailer"
+    },
+    {
+      "id": 27,
+      "question": "Which statement is true about the CSMA/CD access method that is used in Ethernet?",
+      "options": [
+        "When a device hears a carrier signal and transmits, a collision cannot occur.",
+        "A jamming signal causes only devices that caused the collision to execute a backoff algorithm.",
+        "All network devices must listen before transmitting.",
+        "Devices involved in a collision get priority to transmit after the backoff period."
+      ],
+      "correct_answer": "All network devices must listen before transmitting."
+    },
+    {
+      "id": 28,
+      "question": "What is the auto-MDIX feature on a switch?",
+      "options": [
+        "the automatic configuration of an interface for 10/100/1000 Mb/s operation",
+        "the automatic configuration of an interface for a straight-through or a crossover Ethernet cable connection",
+        "the automatic configuration of full-duplex operation over a single Ethernet copper or optical cable",
+        "the ability to turn a switch interface on or off accordingly if an active connection is detected"
+      ],
+      "correct_answer": "the automatic configuration of an interface for a straight-through or a crossover Ethernet cable connection"
+    },
+    {
+      "id": 29,
+      "question": "Refer to the exhibit. What is the destination MAC address of the Ethernet frame as it leaves the web server if the final destination is PC1?",
+      "options": [
+        "00-60-2F-3A-07-AA",
+        "00-60-2F-3A-07-BB",
+        "00-60-2F-3A-07-CC",
+        "00-60-2F-3A-07-DD"
+      ],
+      "correct_answer": "00-60-2F-3A-07-CC",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i209881v1n2_209881.png"
+    },
+    {
+      "id": 30,
+      "question": "A Layer 2 switch is used to switch incoming frames from a 1000BASE-T port to a port connected to a 100Base-T network. Which method of memory buffering would work best for this task?",
+      "options": [
+        "port-based buffering",
+        "level 1 cache buffering",
+        "shared memory buffering",
+        "fixed configuration buffering"
+      ],
+      "correct_answer": "shared memory buffering"
+    },
+    {
+      "id": 31,
+      "question": "What are two examples of the cut-through switching method? (Choose two.)",
+      "options": [
+        "store-and-forward switching",
+        "fast-forward switching",
+        "CRC switching",
+        "fragment-free switching",
+        "QOS switching"
+      ],
+      "correct_answer": "fast-forward switching | fragment-free switching"
+    },
+    {
+      "id": 32,
+      "question": "Which frame forwarding method receives the entire frame and performs a CRC check to detect errors before forwarding the frame?",
+      "options": [
+        "cut-through switching",
+        "store-and-forward switching",
+        "fragment-free switching",
+        "fast-forward switching"
+      ],
+      "correct_answer": "store-and-forward switching"
+    },
+    {
+      "id": 33,
+      "question": "What is the purpose of the FCS field in a frame?",
+      "options": [
+        "to obtain the MAC address of the sending node",
+        "to verify the logical address of the sending node",
+        "to compute the CRC header for the data field",
+        "to determine if errors occurred in the transmission and reception"
+      ],
+      "correct_answer": "to determine if errors occurred in the transmission and reception"
+    },
+    {
+      "id": 34,
+      "question": "Which switching method has the lowest level of latency?",
+      "options": [
+        "cut-through",
+        "store-and-forward",
+        "fragment-free",
+        "fast-forward"
+      ],
+      "correct_answer": "fast-forward"
+    },
+    {
+      "id": 35,
+      "question": "A network administrator is connecting two modern switches using a straight-through cable. The switches are new and have never been configured. Which three statements are correct about the final result of the connection? (Choose three.)",
+      "options": [
+        "The link between the switches will work at the fastest speed that is supported by both switches.",
+        "The link between switches will work as full-duplex.",
+        "If both switches support different speeds, they will each work at their own fastest speed.",
+        "The auto-MDIX feature will configure the interfaces eliminating the need for a crossover cable.",
+        "The connection will not be possible unless the administrator changes the cable to a crossover cable.",
+        "The duplex capability has to be manually configured because it cannot be negotiated."
+      ],
+      "correct_answer": "The link between the switches will work at the fastest speed that is supported by both switches. | The link between switches will work as full-duplex. | The auto-MDIX feature will configure the interfaces eliminating the need for a crossover cable."
+    },
+    {
+      "id": 36,
+      "question": "Which advantage does the store-and-forward switching method have compared with the cut-through switching method?",
+      "options": [
+        "collision detecting",
+        "frame error checking",
+        "faster frame forwarding",
+        "frame forwarding using IPv4 Layer 3 and 4 information"
+      ],
+      "correct_answer": "frame error checking"
+    },
+    {
+      "id": 37,
+      "question": "When the store-and-forward method of switching is in use, what part of the Ethernet frame is used to perform an error check?",
+      "options": [
+        "CRC in the trailer",
+        "source MAC address in the header",
+        "destination MAC address in the header",
+        "protocol type in the header"
+      ],
+      "correct_answer": "CRC in the trailer"
+    },
+    {
+      "id": 38,
+      "question": "Which switching method uses the CRC value in a frame?",
+      "options": [
+        "cut-through",
+        "fast-forward",
+        "fragment-free",
+        "store-and-forward"
+      ],
+      "correct_answer": "store-and-forward"
+    },
+    {
+      "id": 39,
+      "question": "What are two actions performed by a Cisco switch? (Choose two.)",
+      "options": [
+        "building a routing table that is based on the first IP address in the frame header",
+        "using the source MAC addresses of frames to build and maintain a MAC address table",
+        "forwarding frames with unknown destination IP addresses to the default gateway",
+        "utilizing the MAC address table to forward frames via the destination MAC address",
+        "examining the destination MAC address to add new entries to the MAC address table",
+        "When a frame comes in, the switch examines the Layer 2 source address to build and maintain the Layer 2 MAC address table.",
+        "It examines the Layer 2 destination address to determine how to forward the frame. When the destination address is in the MAC address table, then the frame is sent out a particular port. When the address is unknown, the frame is sent to all ports that have devices connected to that network."
+      ],
+      "correct_answer": "using the source MAC addresses of frames to build and maintain a MAC address table | utilizing the MAC address table to forward frames via the destination MAC address"
+    },
+    {
+      "id": 40,
+      "question": "Which two statements describe features or functions of the logical link control sublayer in Ethernet standards? (Choose two.)",
+      "options": [
+        "Logical link control is implemented in software.",
+        "Logical link control is specified in the IEEE 802.3 standard.",
+        "The LLC sublayer adds a header and a trailer to the data.",
+        "The data link layer uses LLC to communicate with the upper layers of the protocol suite.",
+        "The LLC sublayer is responsible for the placement and retrieval of frames on and off the media."
+      ],
+      "correct_answer": "Logical link control is implemented in software. | The data link layer uses LLC to communicate with the upper layers of the protocol suite."
+    },
+    {
+      "id": 41,
+      "question": "What is the auto-MDIX feature?",
+      "options": [
+        "It enables a device to automatically configure an interface to use a straight-through or a crossover cable.",
+        "It enables a device to automatically configure the duplex settings of a segment.",
+        "It enables a device to automatically configure the speed of its interface.",
+        "It enables a switch to dynamically select the forwarding method."
+      ],
+      "correct_answer": "It enables a device to automatically configure an interface to use a straight-through or a crossover cable."
+    },
+    {
+      "id": 42,
+      "question": "What is one advantage of using the cut-through switching method instead of the store-and-forward switching method?",
+      "options": [
+        "has a positive impact on bandwidth by dropping most of the invalid frames",
+        "makes a fast forwarding decision based on the source MAC address of the frame",
+        "has a lower latency appropriate for high-performance computing applications​",
+        "provides the flexibility to support any mix of Ethernet speeds"
+      ],
+      "correct_answer": "has a lower latency appropriate for high-performance computing applications​"
+    },
+    {
+      "id": 43,
+      "question": "Which is a multicast MAC address?",
+      "options": [
+        "FF-FF-FF-FF-FF-FF",
+        "5C-26-0A-4B-19-3E",
+        "01-00-5E-00-00-03",
+        "00-26-0F-4B-00-3E"
+      ],
+      "correct_answer": "01-00-5E-00-00-03"
+    },
+    {
+      "id": 44,
+      "question": "Refer to the exhibit. What is wrong with the displayed termination?",
+      "options": [
+        "The woven copper braid should not have been removed.",
+        "The wrong type of connector is being used.",
+        "The untwisted length of each wire is too long.",
+        "The wires are too thick for the connector that is used."
+      ],
+      "correct_answer": "The untwisted length of each wire is too long.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i274300v1n1_209630-300x221-1.png"
+    },
+    {
+      "id": 45,
+      "question": "Open the PT Activity. Perform the tasks in the activity instructions and then answer the question.",
+      "options": [
+        "Fa0/1",
+        "Fa0/5",
+        "Fa0/9",
+        "Fa0/11"
+      ],
+      "correct_answer": "Fa0/11",
+      "image": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNDAgNDAiPgogICAgICAgICAgICAgICAgPGRlZnM+CiAgICAgICAgICAgICAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICAgICAgICAgICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPSIjMjY5ZGVmIiBvZmZzZXQ9IjAiLz4KICAgICAgICAgICAgICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzI2YmRlZiIgb2Zmc2V0PSIxIi8+CiAgICAgICAgICAgICAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgICAgICAgICAgICAgIDwvZGVmcz4KICAgICAgICAgICAgICAgIDxnPgogICAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9InVybCgjZ3JhZGllbnQpIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHJ4PSIzIiByeT0iMyIvPgogICAgICAgICAgICAgICAgICAgIDx0ZXh0IHg9IjUiIHk9IjE5IiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxM3B4IiBsZXR0ZXItc3BhY2luZz0iMSIgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgICAgICAgICAgICAgICAgIDx0c3Bhbj5QS0E8L3RzcGFuPgogICAgICAgICAgICAgICAgICAgICAgICA8dHNwYW4geD0iNiIgeT0iMjgiPl88L3RzcGFuPgogICAgICAgICAgICAgICAgICAgIDwvdGV4dD4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgPC9zdmc+CgoJCQk="
+    },
+    {
+      "id": 46,
+      "question": "What does the term \"attenuation\" mean in data communication?",
+      "options": [
+        "loss of signal strength as distance increases",
+        "time for a signal to reach its destination",
+        "leakage of signals from one cable pair to another",
+        "strengthening of a signal by a networking device"
+      ],
+      "correct_answer": "loss of signal strength as distance increases"
+    },
+    {
+      "id": 47,
+      "question": "What makes fiber preferable to copper cabling for interconnecting buildings? (Choose three.)",
+      "options": [
+        "greater distances per cable run",
+        "lower installation cost",
+        "limited susceptibility to EMI/RFI",
+        "durable connections",
+        "greater bandwidth potential",
+        "easily terminated"
+      ],
+      "correct_answer": "greater distances per cable run | limited susceptibility to EMI/RFI | greater bandwidth potential"
+    },
+    {
+      "id": 48,
+      "question": "What OSI physical layer term describes the process by which one wave modifies another wave?",
+      "options": [
+        "modulation",
+        "IEEE",
+        "EIA/TIA",
+        "air"
+      ],
+      "correct_answer": "modulation"
+    },
+    {
+      "id": 49,
+      "question": "What OSI physical layer term describes the capacity at which a medium can carry data?",
+      "options": [
+        "bandwidth",
+        "IEEE",
+        "EIA/TIA",
+        "air"
+      ],
+      "correct_answer": "bandwidth"
+    },
+    {
+      "id": 50,
+      "question": "What OSI physical layer term describes the measure of the transfer of bits across a medium over a given period of time?",
+      "options": [
+        "throughput",
+        "bandwidth",
+        "latency",
+        "goodput"
+      ],
+      "correct_answer": "throughput"
+    },
+    {
+      "id": 51,
+      "question": "What OSI physical layer term describes the amount of time, including delays, for data to travel from one point to another?",
+      "options": [
+        "latency",
+        "bandwidth",
+        "throughput",
+        "goodput"
+      ],
+      "correct_answer": "latency"
+    },
+    {
+      "id": 52,
+      "question": "What OSI physical layer term describes the amount of time, including delays, for data to travel from one point to another?",
+      "options": [
+        "latency",
+        "fiber-optic cable",
+        "air",
+        "copper cable"
+      ],
+      "correct_answer": "latency"
+    },
+    {
+      "id": 53,
+      "question": "What OSI physical layer term describes the measure of usable data transferred over a given period of time?",
+      "options": [
+        "goodput",
+        "fiber-optic cable",
+        "air",
+        "copper cable"
+      ],
+      "correct_answer": "goodput"
+    },
+    {
+      "id": 54,
+      "question": "What OSI physical layer term describes the physical medium which uses electrical pulses?",
+      "options": [
+        "copper cable",
+        "fiber-optic cable",
+        "air",
+        "goodput"
+      ],
+      "correct_answer": "copper cable"
+    },
+    {
+      "id": 55,
+      "question": "What OSI physical layer term describes the physical medium that uses the propagation of light?",
+      "options": [
+        "fiber-optic cable",
+        "goodput",
+        "latency",
+        "throughput"
+      ],
+      "correct_answer": "fiber-optic cable"
+    },
+    {
+      "id": 56,
+      "question": "What OSI physical layer term describes the physical medium for microwave transmissions?",
+      "options": [
+        "air",
+        "goodput",
+        "latency",
+        "throughput"
+      ],
+      "correct_answer": "air"
+    },
+    {
+      "id": 57,
+      "question": "Which two functions are performed at the MAC sublayer of the OSI data link layer? (Choose two.)",
+      "options": [
+        "Adds Layer 2 control information to network protocol data.",
+        "Places information in the frame that identifies which network layer protocol is being used for the frame.",
+        "Controls the NIC responsible for sending and receiving data on the physical medium.",
+        "Implements a trailer to detect transmission errors.",
+        "Enables IPv4 and IPv6 to utilize the same network interface and media."
+      ],
+      "correct_answer": "Controls the NIC responsible for sending and receiving data on the physical medium. | Implements a trailer to detect transmission errors."
+    },
+    {
+      "id": 58,
+      "question": "Which two functions are performed at the MAC sublayer of the OSI data link layer? (Choose two.) [Case 2]",
+      "options": [
+        "Provides synchronization between source and target nodes.",
+        "Integrates various physical technologies.",
+        "Communicates between the networking software at the upper layers and the device hardware at the lower layers.",
+        "Adds Layer 2 control information to network protocol data.",
+        "Enables IPv4 and IPv6 to utilize the same network interface and media."
+      ],
+      "correct_answer": "Provides synchronization between source and target nodes. | Integrates various physical technologies."
+    },
+    {
+      "id": 59,
+      "question": "Which two functions are performed at the MAC sublayer of the OSI data link layer? (Choose two.) [Case 3]",
+      "options": [
+        "Enables IPv4 and IPv6 to utilize the same network interface and media.",
+        "Provides synchronization between source and target nodes.",
+        "Implements a trailer to detect transmission errors.",
+        "Adds Layer 2 control information to network protocol data.",
+        "Places information in the frame that identifies which network layer protocol is being used for the frame."
+      ],
+      "correct_answer": "Provides synchronization between source and target nodes. | Implements a trailer to detect transmission errors."
+    },
+    {
+      "id": 60,
+      "question": "Which two functions are performed at the MAC sublayer of the OSI data link layer? (Choose two.) [Case 4]",
+      "options": [
+        "Enables IPv4 and IPv6 to utilize the same network interface and media.",
+        "Adds Layer 2 control information to network protocol data.",
+        "Integrates various physical technologies.",
+        "Communicates between the networking software at the upper layers and the device hardware at the lower layers.",
+        "Provides synchronization between source and target nodes."
+      ],
+      "correct_answer": "Integrates various physical technologies. | Provides synchronization between source and target nodes."
+    },
+    {
+      "id": 61,
+      "question": "Which two functions are performed at the MAC sublayer of the OSI data link layer? (Choose two.) [Case 5]",
+      "options": [
+        "Places information in the frame that identifies which network layer protocol is being used for the frame.",
+        "Integrates various physical technologies.",
+        "Adds Layer 2 control information to network protocol data.",
+        "Controls the NIC responsible for sending and receiving data on the physical medium.",
+        "Communicates between the networking software at the upper layers and the device hardware at the lower layers."
+      ],
+      "correct_answer": "Integrates various physical technologies. | Controls the NIC responsible for sending and receiving data on the physical medium."
+    },
+    {
+      "id": 62,
+      "question": "Which two functions are performed at the MAC sublayer of the OSI data link layer? (Choose two.) [Case 6]",
+      "options": [
+        "Controls the NIC responsible for sending and receiving data on the physical medium",
+        "Provides a mechanism to allow multiple devices to communicate over a shared medium.",
+        "Synchronization: It embeds preamble and delimiter flags into the frame, which provides synchronization between source and destination nodes so they can detect precisely where a transmission begins and ends.",
+        "Error Detection: It computes the Cyclic Redundancy Check (CRC) value and implements a trailer (FCS field) at the end of the frame, allowing the receiving NIC to check for data corruption.",
+        "Media Access: It dictates the physical rules for placing data frames onto the transmission medium depending on the topology (e.g., CSMA/CD)."
+      ],
+      "correct_answer": "Controls the NIC responsible for sending and receiving data on the physical medium | Provides a mechanism to allow multiple devices to communicate over a shared medium."
+    },
+    {
+      "id": 63,
+      "question": "Which two functions are performed at the LLC sublayer of the OSI data link layer? (Choose two.)",
+      "options": [
+        "Enables IPv4 and IPv6 to utilize the same network interface and media.",
+        "Places information in the frame that identifies which network layer protocol is being used for the frame.",
+        "Integrates various physical technologies.",
+        "Implements a process to delimit fields within a Layer 2 frame.",
+        "Controls the NIC responsible for sending and receiving data on the physical medium.",
+        "Interfacing with upper layers: It acts as an intermediary between network software (Layer 3 protocols) and the underlying hardware. By inserting control information into the frame that identifies which network layer protocol is being used, it enables multiple protocols, such as IPv4 and IPv6, to utilize the same network interface and media .",
+        "Initial control encapsulation: It is responsible for adding Layer 2 control information to the network protocol data units (PDUs) before handing them down to the MAC sublayer."
+      ],
+      "correct_answer": "Enables IPv4 and IPv6 to utilize the same network interface and media. | Places information in the frame that identifies which network layer protocol is being used for the frame."
+    },
+    {
+      "id": 64,
+      "question": "Which two functions are performed at the LLC sublayer of the OSI data link layer? (Choose two.)",
+      "options": [
+        "Adds Layer 2 control information to network protocol data.",
+        "Places information in the frame that identifies which network layer protocol is being used for the frame.",
+        "Performs data encapsulation.",
+        "Controls the NIC responsible for sending and receiving data on the physical medium.",
+        "Integrates various physical technologies.",
+        "Interfacing with upper layers: It acts as an intermediary between network software (Layer 3 protocols) and the underlying hardware. By inserting control information into the frame that identifies which network layer protocol is being used, it enables multiple protocols, such as IPv4 and IPv6, to utilize the same network interface and media .",
+        "Initial control encapsulation: It is responsible for adding Layer 2 control information to the network protocol data units (PDUs) before handing them down to the MAC sublayer."
+      ],
+      "correct_answer": "Adds Layer 2 control information to network protocol data. | Places information in the frame that identifies which network layer protocol is being used for the frame."
+    },
+    {
+      "id": 65,
+      "question": "Which two functions are performed at the LLC sublayer of the OSI data link layer? (Choose two.)",
+      "options": [
+        "Adds Layer 2 control information to network protocol data.",
+        "Enables IPv4 and IPv6 to utilize the same network interface and media.",
+        "Provides data link layer addressing.",
+        "Implements a trailer to detect transmission errors.",
+        "Provides synchronization between source and target nodes.",
+        "Interfacing with upper layers: It acts as an intermediary between network software (Layer 3 protocols) and the underlying hardware. By inserting control information into the frame that identifies which network layer protocol is being used, it enables multiple protocols, such as IPv4 and IPv6, to utilize the same network interface and media .",
+        "Initial control encapsulation: It is responsible for adding Layer 2 control information to the network protocol data units (PDUs) before handing them down to the MAC sublayer."
+      ],
+      "correct_answer": "Adds Layer 2 control information to network protocol data. | Enables IPv4 and IPv6 to utilize the same network interface and media."
+    },
+    {
+      "id": 66,
+      "question": "Which two functions are performed at the LLC sublayer of the OSI data link layer? (Choose two.)",
+      "options": [
+        "Enables IPv4 and IPv6 to utilize the same network interface and media.",
+        "Adds Layer 2 control information to network protocol data.",
+        "Integrates various physical technologies.",
+        "Implements a trailer to detect transmission errors.",
+        "Provides synchronization between source and target nodes.",
+        "Interfacing with upper layers: It acts as an intermediary between network software (Layer 3 protocols) and the underlying hardware. By inserting control information into the frame that identifies which network layer protocol is being used, it enables multiple protocols, such as IPv4 and IPv6, to utilize the same network interface and media .",
+        "Initial control encapsulation: It is responsible for adding Layer 2 control information to the network protocol data units (PDUs) before handing them down to the MAC sublayer."
+      ],
+      "correct_answer": "Enables IPv4 and IPv6 to utilize the same network interface and media. | Adds Layer 2 control information to network protocol data."
+    },
+    {
+      "id": 67,
+      "question": "What action will occur if a switch receives a frame with the destination MAC address FF:FF:FF:FF:FF:FF?",
+      "options": [
+        "The switch forwards it out all ports except the ingress port.",
+        "The switch refreshes the timer on that entry.",
+        "The switch does not forward the frame.",
+        "The switch sends the frame to a connected router because the destination MAC address is not local."
+      ],
+      "correct_answer": "The switch forwards it out all ports except the ingress port."
+    },
+    {
+      "id": 68,
+      "question": "What action will occur if a switch receives a frame with the destination MAC address 01:00:5E:00:00:D9?",
+      "options": [
+        "The switch forwards it out all ports except the ingress port.",
+        "The switch does not forward the frame.",
+        "The switch sends the frame to a connected router because the destination MAC address is not local.",
+        "The switch shares the MAC address table entry with any connected switches."
+      ],
+      "correct_answer": "The switch forwards it out all ports except the ingress port."
+    },
+    {
+      "id": 69,
+      "question": "What action will occur if a host receives a frame with a destination MAC address of FF:FF:FF:FF:FF:FF?",
+      "options": [
+        "The host will process the frame.",
+        "The host forwards the frame to the router.",
+        "The host sends the frame to the switch to update the MAC address table.",
+        "The host forwards the frame to all other hosts."
+      ],
+      "correct_answer": "The host will process the frame."
+    },
+    {
+      "id": 70,
+      "question": "What action will occur if a switch receives a frame and does have the source MAC address in the MAC table?",
+      "options": [
+        "The switch refreshes the timer on that entry.",
+        "The switch adds it to its MAC address table associated with the port number.",
+        "The switch forwards the frame to the associated port.",
+        "The switch sends the frame to a connected router because the destination MAC address is not local."
+      ],
+      "correct_answer": "The switch refreshes the timer on that entry."
+    },
+    {
+      "id": 71,
+      "question": "What action will occur if a host receives a frame with a destination MAC address of FF:FF:FF:FF:FF:FF?",
+      "options": [
+        "The host will process the frame.",
+        "The host returns the frame to the switch.",
+        "The host replies to the switch with its own IP address.",
+        "The host forwards the frame to all other hosts."
+      ],
+      "correct_answer": "The host will process the frame."
+    },
+    {
+      "id": 72,
+      "question": "What action will occur if a host receives a frame with a destination MAC address it does not recognize?",
+      "options": [
+        "The host will discard the frame.",
+        "The host replies to the switch with its own IP address.",
+        "The host forwards the frame to all other hosts.",
+        "The host returns the frame to the switch.",
+        "Its own unique physical MAC address.",
+        "A broadcast MAC address (FF-FF-FF-FF-FF-FF).",
+        "A multicast MAC address that the host is actively subscribed to."
+      ],
+      "correct_answer": "The host will discard the frame."
+    },
+    {
+      "id": 73,
+      "question": "Which type of UTP cable is used to connect a PC to a switch port?",
+      "options": [
+        "console",
+        "rollover",
+        "crossover",
+        "straight-through"
+      ],
+      "correct_answer": "straight-through"
+    }
+  ]
+}

@@ -1,0 +1,717 @@
+{
+  "title": "CCNA 1 v7 Modules 16 - 17: Building and Securing a Small Network Exam Answers",
+  "url": "https://itexamanswers.net/ccna-1-v7-modules-16-17-building-and-securing-a-small-network-exam-answers.html",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which component is designed to protect against unauthorized communications to and from a computer?",
+      "options": [
+        "security center",
+        "port scanner",
+        "antimalware",
+        "antivirus",
+        "firewall"
+      ],
+      "correct_answer": "firewall"
+    },
+    {
+      "id": 2,
+      "question": "Which command will block login attempts on RouterA for a period of 30 seconds if there are 2 failed login attempts within 10 seconds?",
+      "options": [
+        "RouterA(config)# login block-for 10 attempts 2 within 30",
+        "RouterA(config)# login block-for 30 attempts 2 within 10",
+        "RouterA(config)# login block-for 2 attempts 30 within 10",
+        "RouterA(config)# login block-for 30 attempts 10 within 2"
+      ],
+      "correct_answer": "RouterA(config)# login block-for 30 attempts 2 within 10"
+    },
+    {
+      "id": 3,
+      "question": "What is the purpose of the network security accounting function?",
+      "options": [
+        "to require users to prove who they are",
+        "to determine which resources a user can access",
+        "to keep track of the actions of a user",
+        "to provide challenge and response questions"
+      ],
+      "correct_answer": "to keep track of the actions of a user"
+    },
+    {
+      "id": 4,
+      "question": "What type of attack may involve the use of tools such as nslookup and fping?",
+      "options": [
+        "access attack",
+        "reconnaissance attack",
+        "denial of service attack",
+        "worm attack"
+      ],
+      "correct_answer": "reconnaissance attack"
+    },
+    {
+      "id": 5,
+      "question": "Which example of malicious code would be classified as a Trojan horse?",
+      "options": [
+        "malware that was written to look like a video game",
+        "malware that requires manual user intervention to spread between systems",
+        "malware that attaches itself to a legitimate program and spreads to other programs when launched",
+        "malware that can automatically spread from one system to another by exploiting a vulnerability in the target"
+      ],
+      "correct_answer": "malware that was written to look like a video game"
+    },
+    {
+      "id": 6,
+      "question": "What is the difference between a virus and a worm?",
+      "options": [
+        "Viruses self-replicate but worms do not.",
+        "Worms self-replicate but viruses do not.",
+        "Worms require a host file but viruses do not.",
+        "Viruses hide in legitimate programs but worms do not."
+      ],
+      "correct_answer": "Worms self-replicate but viruses do not."
+    },
+    {
+      "id": 7,
+      "question": "Which attack involves a compromise of data that occurs between two end points?",
+      "options": [
+        "denial-of-service",
+        "man-in-the-middle attack",
+        "extraction of security parameters",
+        "username enumeration",
+        "Man-In-the-middle attack (MITM) - The threat actor gets between devices in the system and intercepts all of the data being transmitted. This information could simply be collected or modified for a specific purpose and delivered to its original destination.",
+        "Eavesdropping attack - When devices are being installed, the threat actor can intercept data such as security keys that are used by constrained devices to establish communications once they are up and running.",
+        "SQL injection (SQLi) - Threat actors uses a flaw in the Structured Query Language (SQL) application that allows them to have access to modify the data or gain administrative privileges.",
+        "Routing attack - A threat actor could either place a rogue routing device on the network or modify routing packets to manipulate routers to send all packets to the chosen destination of the threat actor. The threat actor could then drop specific packets, known as selective forwarding, or drop all packets, known as a sinkhole attack."
+      ],
+      "correct_answer": "man-in-the-middle attack"
+    },
+    {
+      "id": 8,
+      "question": "Which type of attack involves an adversary attempting to gather information about a network to identify vulnerabilities?",
+      "options": [
+        "reconnaissance",
+        "DoS",
+        "dictionary",
+        "man-in-the-middle"
+      ],
+      "correct_answer": "reconnaissance"
+    },
+    {
+      "id": 9,
+      "question": "What is the purpose of the network security authentication function?",
+      "options": [
+        "to require users to prove who they are",
+        "to determine which resources a user can access",
+        "to keep track of the actions of a user",
+        "to provide challenge and response questions"
+      ],
+      "correct_answer": "to require users to prove who they are"
+    },
+    {
+      "id": 10,
+      "question": "Which firewall feature is used to ensure that packets coming into a network are legitimate responses to requests initiated from internal hosts?",
+      "options": [
+        "stateful packet inspection",
+        "URL filtering",
+        "application filtering",
+        "packet filtering"
+      ],
+      "correct_answer": "stateful packet inspection"
+    },
+    {
+      "id": 11,
+      "question": "When applied to a router, which command would help mitigate brute-force password attacks against the router?",
+      "options": [
+        "exec-timeout 30",
+        "service password-encryption",
+        "banner motd $Max failed logins = 5$",
+        "login block-for 60 attempts 5 within 60"
+      ],
+      "correct_answer": "login block-for 60 attempts 5 within 60"
+    },
+    {
+      "id": 12,
+      "question": "What feature of SSH makes it more secure than Telnet for a device management connection?",
+      "options": [
+        "confidentiality with IPsec",
+        "stronger password requirement",
+        "random one-time port connection",
+        "login information and data encryption"
+      ],
+      "correct_answer": "login information and data encryption"
+    },
+    {
+      "id": 13,
+      "question": "What is the advantage of using SSH over Telnet?",
+      "options": [
+        "SSH is easier to use.",
+        "SSH operates faster than Telnet.",
+        "SSH provides secure communications to access hosts.",
+        "SSH supports authentication for a connection request."
+      ],
+      "correct_answer": "SSH provides secure communications to access hosts."
+    },
+    {
+      "id": 14,
+      "question": "What is the role of an IPS?",
+      "options": [
+        "detecting and blocking of attacks in real time",
+        "connecting global threat information to Cisco network security devices",
+        "authenticating and validating traffic",
+        "filtering of nefarious websites"
+      ],
+      "correct_answer": "detecting and blocking of attacks in real time"
+    },
+    {
+      "id": 15,
+      "question": "A user is redesigning a network for a small company and wants to ensure security at a reasonable price. The user deploys a new application-aware firewall with intrusion detection capabilities on the ISP connection. The user installs a second firewall to separate the company network from the public network. Additionally, the user installs an IPS on the internal network of the company. What approach is the user implementing?",
+      "options": [
+        "attack based",
+        "risk based",
+        "structured",
+        "layered"
+      ],
+      "correct_answer": "layered"
+    },
+    {
+      "id": 16,
+      "question": "What is an accurate description of redundancy?",
+      "options": [
+        "configuring a router with a complete MAC address database to ensure that all frames can be forwarded to the correct destination",
+        "configuring a switch with proper security to ensure that all traffic forwarded through an interface is filtered",
+        "designing a network to use multiple virtual devices to ensure that all traffic uses the best path through the internetwork",
+        "designing a network to use multiple paths between switches to ensure there is no single point of failure"
+      ],
+      "correct_answer": "designing a network to use multiple paths between switches to ensure there is no single point of failure"
+    },
+    {
+      "id": 17,
+      "question": "A network administrator is upgrading a small business network to give high priority to real-time applications traffic. What two types of network services is the network administrator trying to accommodate? (Choose two.)",
+      "options": [
+        "voice",
+        "video",
+        "instant messaging",
+        "FTP",
+        "SNMP"
+      ],
+      "correct_answer": "voice | video"
+    },
+    {
+      "id": 18,
+      "question": "What is the purpose of a small company using a protocol analyzer utility to capture network traffic on the network segments where the company is considering a network upgrade?",
+      "options": [
+        "to identify the source and destination of local network traffic",
+        "to capture the Internet connection bandwidth requirement",
+        "to document and analyze network traffic requirements on each network segment",
+        "to establish a baseline for security analysis after the network is upgraded"
+      ],
+      "correct_answer": "to document and analyze network traffic requirements on each network segment"
+    },
+    {
+      "id": 19,
+      "question": "Refer to the exhibit. An administrator is testing connectivity to a remote device with the IP address 10.1.1.1. What does the output of this command indicate?",
+      "options": [
+        "Connectivity to the remote device was successful.",
+        "A router along the path did not have a route to the destination.",
+        "A ping packet is being blocked by a security device along the path.",
+        "The connection timed out while waiting for a reply from the remote device."
+      ],
+      "correct_answer": "A router along the path did not have a route to the destination.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i204753v1n2_Question209-1.png"
+    },
+    {
+      "id": 20,
+      "question": "Which method is used to send a ping message specifying the source address for the ping?",
+      "options": [
+        "Issue the ping command from within interface configuration mode.",
+        "Issue the ping command without specifying a destination IP address.",
+        "Issue the ping command without extended commands.",
+        "Issue the ping command after shutting down un-needed interfaces."
+      ],
+      "correct_answer": "Issue the ping command without specifying a destination IP address."
+    },
+    {
+      "id": 21,
+      "question": "A network engineer is analyzing reports from a recently performed network baseline. Which situation would depict a possible latency issue?",
+      "options": [
+        "a change in the bandwidth according to the show interfaces output",
+        "a next-hop timeout from a traceroute",
+        "an increase in host-to-host ping response times",
+        "a change in the amount of RAM according to the show version output"
+      ],
+      "correct_answer": "an increase in host-to-host ping response times"
+    },
+    {
+      "id": 22,
+      "question": "Which statement is true about Cisco IOS ping indicators?​",
+      "options": [
+        "'!' indicates that the ping was unsuccessful and that the device may have issues finding a DNS server.",
+        "'U' may indicate that a router along the path did not contain a route to the destination address and that the ping was unsuccessful.",
+        "'.' indicates that the ping was successful but the response time was longer than normal.",
+        "A combination of '.' and '!' indicates that a router along the path did not have a route to the destination address and responded with an ICMP unreachable message.​"
+      ],
+      "correct_answer": "'U' may indicate that a router along the path did not contain a route to the destination address and that the ping was unsuccessful."
+    },
+    {
+      "id": 23,
+      "question": "A user reports a lack of network connectivity. The technician takes control of the user machine and attempts to ping other computers on the network and these pings fail. The technician pings the default gateway and that also fails. What can be determined for sure by the results of these tests?",
+      "options": [
+        "The NIC in the PC is bad.",
+        "The TCP/IP protocol is not enabled.",
+        "The router that is attached to the same network as the workstation is down.",
+        "Nothing can be determined for sure at this point."
+      ],
+      "correct_answer": "Nothing can be determined for sure at this point."
+    },
+    {
+      "id": 24,
+      "question": "A network technician issues the C:> tracert -6 www.cisco.com command on a Windows PC. What is the purpose of the -6 command option?",
+      "options": [
+        "It forces the trace to use IPv6.",
+        "It limits the trace to only 6 hops.",
+        "It sets a 6 milliseconds timeout for each replay.",
+        "It sends 6 probes within each TTL time period."
+      ],
+      "correct_answer": "It forces the trace to use IPv6."
+    },
+    {
+      "id": 25,
+      "question": "Why would a network administrator use the tracert utility?",
+      "options": [
+        "to determine the active TCP connections on a PC",
+        "to check information about a DNS name in the DNS server",
+        "to identify where a packet was lost or delayed on a network",
+        "to display the IP address, default gateway, and DNS server address for a PC"
+      ],
+      "correct_answer": "to identify where a packet was lost or delayed on a network"
+    },
+    {
+      "id": 26,
+      "question": "A ping fails when performed from router R1 to directly connected router R2. The network administrator then proceeds to issue the show cdp neighbors command. Why would the network administrator issue this command if the ping failed between the two routers?",
+      "options": [
+        "The network administrator suspects a virus because the ping command did not work.",
+        "The network administrator wants to verify Layer 2 connectivity.",
+        "The network administrator wants to verify the IP address configured on router R2.",
+        "The network administrator wants to determine if connectivity can be established from a non-directly connected network."
+      ],
+      "correct_answer": "The network administrator wants to verify Layer 2 connectivity."
+    },
+    {
+      "id": 27,
+      "question": "A network engineer is troubleshooting connectivity issues among interconnected Cisco routers and switches. Which command should the engineer use to find the IP address information, host name, and IOS version of neighboring network devices?",
+      "options": [
+        "show version",
+        "show ip route",
+        "show interfaces",
+        "show cdp neighbors detail"
+      ],
+      "correct_answer": "show cdp neighbors detail"
+    },
+    {
+      "id": 28,
+      "question": "What information about a Cisco router can be verified using the show version command?",
+      "options": [
+        "the routing protocol version that is enabled",
+        "the value of the configuration register",
+        "the operational status of serial interfaces",
+        "the administrative distance used to reach networks"
+      ],
+      "correct_answer": "the value of the configuration register"
+    },
+    {
+      "id": 29,
+      "question": "Which command should be used on a Cisco router or switch to allow log messages to be displayed on remotely connected sessions using Telnet or SSH?",
+      "options": [
+        "debug all",
+        "logging synchronous",
+        "show running-config​",
+        "terminal monitor"
+      ],
+      "correct_answer": "terminal monitor"
+    },
+    {
+      "id": 30,
+      "question": "Which command can an administrator issue on a Cisco router to send debug messages to the vty lines?",
+      "options": [
+        "terminal monitor",
+        "logging console",
+        "logging buffered",
+        "logging synchronous"
+      ],
+      "correct_answer": "terminal monitor"
+    },
+    {
+      "id": 31,
+      "question": "By following a structured troubleshooting approach, a network administrator identified a network issue after a conversation with the user. What is the next step that the administrator should take?",
+      "options": [
+        "Verify full system functionality.",
+        "Test the theory to determine cause.",
+        "Establish a theory of probable causes.",
+        "Establish a plan of action to resolve the issue.",
+        "Identify the problem.",
+        "Verify full system functionality and implement preventive measures.",
+        "Document findings, actions, and outcomes."
+      ],
+      "correct_answer": "Establish a theory of probable causes."
+    },
+    {
+      "id": 32,
+      "question": "Users are complaining that they are unable to browse certain websites on the Internet. An administrator can successfully ping a web server via its IP address, but cannot browse to the domain name of the website. Which troubleshooting tool would be most useful in determining where the problem is?",
+      "options": [
+        "netstat",
+        "tracert",
+        "nslookup",
+        "ipconfig"
+      ],
+      "correct_answer": "nslookup"
+    },
+    {
+      "id": 33,
+      "question": "An employee complains that a Windows PC cannot connect to the Internet. A network technician issues the ipconfig command on the PC and is shown an IP address of 169.254.10.3. Which two conclusions can be drawn? (Choose two.)",
+      "options": [
+        "The PC cannot contact a DHCP server.",
+        "The DNS server address is misconfigured.",
+        "The default gateway address is not configured.",
+        "The PC is configured to obtain an IP address automatically.",
+        "The enterprise network is misconfigured for dynamic routing."
+      ],
+      "correct_answer": "The PC cannot contact a DHCP server. | The PC is configured to obtain an IP address automatically."
+    },
+    {
+      "id": 34,
+      "question": "Refer to the exhibit. Host H3 is having trouble communicating with host H1. The network administrator suspects a problem exists with the H3 workstation and wants to prove that there is no problem with the R2 configuration. What tool could the network administrator use on router R2 to prove that communication exists to host H1 from the interface on R2, which is the interface that H3 uses when communicating with remote networks?",
+      "options": [
+        "traceroute",
+        "show cdp neighbors",
+        "Telnet",
+        "an extended ping"
+      ],
+      "correct_answer": "an extended ping",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i350256v1n4_208086.jpg"
+    },
+    {
+      "id": 35,
+      "question": "Refer to the exhibit. Baseline documentation for a small company had ping round trip time statistics of 36/97/132 between hosts H1 and H3. Today the network administrator checked connectivity by pinging between hosts H1 and H3 that resulted in a round trip time of 1458/2390/6066. What does this indicate to the network administrator?",
+      "options": [
+        "Connectivity between H1 and H3 is fine.",
+        "H3 is not connected properly to the network.",
+        "Something is causing interference between H1 and R1.",
+        "Performance between the networks is within expected parameters.",
+        "Something is causing a time delay between the networks."
+      ],
+      "correct_answer": "Something is causing a time delay between the networks.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i350257v1n2_208088.jpg"
+    },
+    {
+      "id": 36,
+      "question": "Which network service automatically assigns IP addresses to devices on the network?",
+      "options": [
+        "DHCP",
+        "Telnet",
+        "DNS",
+        "traceroute"
+      ],
+      "correct_answer": "DHCP"
+    },
+    {
+      "id": 37,
+      "question": "Which command can an administrator execute to determine what interface a router will use to reach remote networks?",
+      "options": [
+        "show arp",
+        "show interfaces",
+        "show ip route",
+        "show protocols"
+      ],
+      "correct_answer": "show ip route"
+    },
+    {
+      "id": 38,
+      "question": "On which two interfaces or ports can security be improved by configuring executive timeouts? (Choose two.)",
+      "options": [
+        "Fast Ethernet interfaces",
+        "console ports",
+        "serial interfaces",
+        "vty ports",
+        "loopback interfaces"
+      ],
+      "correct_answer": "console ports | vty ports"
+    },
+    {
+      "id": 39,
+      "question": "When configuring SSH on a router to implement secure network management, a network engineer has issued the login local and transport input ssh line vty commands. What three additional configuration actions have to be performed to complete the SSH configuration? (Choose three.)",
+      "options": [
+        "Set the user privilege levels.",
+        "Generate the asymmetric RSA keys.",
+        "Configure the correct IP domain name.",
+        "Configure role-based CLI access.",
+        "Create a valid local username and password database.",
+        "Manually enable SSH after the RSA keys are generated."
+      ],
+      "correct_answer": "Generate the asymmetric RSA keys. | Configure the correct IP domain name. | Create a valid local username and password database."
+    },
+    {
+      "id": 40,
+      "question": "What is considered the most effective way to mitigate a worm attack?",
+      "options": [
+        "Change system passwords every 30 days.",
+        "Ensure that all systems have the most current virus definitions.",
+        "Ensure that AAA is configured in the network.",
+        "Download security updates from the operating system vendor and patch all vulnerable systems."
+      ],
+      "correct_answer": "Download security updates from the operating system vendor and patch all vulnerable systems."
+    },
+    {
+      "id": 41,
+      "question": "Which statement describes the ping and tracert commands?",
+      "options": [
+        "Tracert shows each hop, while ping shows a destination reply only.",
+        "Tracert uses IP addresses; ping does not.",
+        "Both ping and tracert can show results in a graphical display.",
+        "Ping shows whether the transmission is successful; tracert does not."
+      ],
+      "correct_answer": "Tracert shows each hop, while ping shows a destination reply only."
+    },
+    {
+      "id": 42,
+      "question": "A technician is to document the current configurations of all network devices in a college, including those in off-site buildings. Which protocol would be best to use to securely access the network devices?",
+      "options": [
+        "FTP",
+        "HTTP",
+        "SSH",
+        "Telnet"
+      ],
+      "correct_answer": "SSH"
+    },
+    {
+      "id": 43,
+      "question": "Open the PT Activity. Perform the tasks in the activity instructions and then answer the question.",
+      "options": [
+        "service password-encryption",
+        "transport input ssh",
+        "enable secret class",
+        "ip domain-name cisco.com"
+      ],
+      "correct_answer": "transport input ssh",
+      "image": "data:image/svg+xml;base64,CiAgICAgICAgICAgIDxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgNDAgNDAiPgogICAgICAgICAgICAgICAgPGRlZnM+CiAgICAgICAgICAgICAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iMCIgeTI9IjEiPgogICAgICAgICAgICAgICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPSIjMjY5ZGVmIiBvZmZzZXQ9IjAiLz4KICAgICAgICAgICAgICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzI2YmRlZiIgb2Zmc2V0PSIxIi8+CiAgICAgICAgICAgICAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgICAgICAgICAgICAgIDwvZGVmcz4KICAgICAgICAgICAgICAgIDxnPgogICAgICAgICAgICAgICAgICAgIDxyZWN0IGZpbGw9InVybCgjZ3JhZGllbnQpIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHJ4PSIzIiByeT0iMyIvPgogICAgICAgICAgICAgICAgICAgIDx0ZXh0IHg9IjUiIHk9IjE5IiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxM3B4IiBsZXR0ZXItc3BhY2luZz0iMSIgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgICAgICAgICAgICAgICAgIDx0c3Bhbj5QS0E8L3RzcGFuPgogICAgICAgICAgICAgICAgICAgICAgICA8dHNwYW4geD0iNiIgeT0iMjgiPl88L3RzcGFuPgogICAgICAgICAgICAgICAgICAgIDwvdGV4dD4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgPC9zdmc+CgoJCQk="
+    },
+    {
+      "id": 44,
+      "question": "An administrator decides to use \"WhatAreyouwaiting4\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is strong because it uses a passphrase.",
+        "It is weak because it is often the default password on new devices.",
+        "It is weak since it uses easily found personal information.",
+        "It is weak since it is a word that is easily found in the dictionary."
+      ],
+      "correct_answer": "It is strong because it uses a passphrase."
+    },
+    {
+      "id": 45,
+      "question": "An administrator decides to use \"pR3s!d7n&0\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters.",
+        "It is weak because it is often the default password on new devices.",
+        "It is weak since it uses easily found personal information.",
+        "It is weak since it is a word that is easily found in the dictionary."
+      ],
+      "correct_answer": "It is strong because it uses a minimum of 10 numbers, letters and special characters."
+    },
+    {
+      "id": 46,
+      "question": "An administrator decides to use \"5$7*4#033!\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is strong because it contains 10 numbers and special characters.",
+        "It is weak because it is often the default password on new devices.",
+        "It is weak since it uses easily found personal information.",
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters."
+      ],
+      "correct_answer": "It is strong because it contains 10 numbers and special characters."
+    },
+    {
+      "id": 47,
+      "question": "An administrator decides to use \"pR3s!d7n&0\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters.",
+        "It is weak since it is a word that is easily found in the dictionary.",
+        "It is strong because it uses a passphrase.",
+        "It is strong because it contains 10 numbers and special characters."
+      ],
+      "correct_answer": "It is strong because it uses a minimum of 10 numbers, letters and special characters."
+    },
+    {
+      "id": 48,
+      "question": "An administrator decides to use \"12345678!\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is weak because it uses a series of numbers or letters.",
+        "It is strong because it uses a passphrase.",
+        "It is weak since it is a word that is easily found in the dictionary.",
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters."
+      ],
+      "correct_answer": "It is weak because it uses a series of numbers or letters."
+    },
+    {
+      "id": 49,
+      "question": "An administrator decides to use \"admin\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is weak because it is often the default password on new devices.",
+        "It is strong because it uses a passphrase.",
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters.",
+        "It is strong because it contains 10 numbers and special characters."
+      ],
+      "correct_answer": "It is weak because it is often the default password on new devices."
+    },
+    {
+      "id": 50,
+      "question": "An administrator decides to use \"Feb121978\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is weak because it uses easily found personal information.",
+        "It is strong because it uses a passphrase.",
+        "It is weak since it is a word that is easily found in the dictionary.",
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters."
+      ],
+      "correct_answer": "It is weak because it uses easily found personal information."
+    },
+    {
+      "id": 51,
+      "question": "An administrator decides to use \"password\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is weak because it is a commonly used password.",
+        "It is weak since it is a word that is easily found in the dictionary.",
+        "It is strong because it uses a passphrase.",
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters."
+      ],
+      "correct_answer": "It is weak because it is a commonly used password."
+    },
+    {
+      "id": 52,
+      "question": "An administrator decides to use \"RobErT\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is weak since it uses easily found personal information.",
+        "It is strong because it uses a passphrase.",
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters.",
+        "It is strong because it contains 10 numbers and special characters."
+      ],
+      "correct_answer": "It is weak since it uses easily found personal information."
+    },
+    {
+      "id": 53,
+      "question": "An administrator decides to use \"Elizabeth\" as the password on a newly installed router. Which statement applies to the password choice?",
+      "options": [
+        "It is weak because it uses easily found personal information.",
+        "It is strong because it uses a passphrase.",
+        "It is weak since it is a word that is easily found in the dictionary.",
+        "It is strong because it uses a minimum of 10 numbers, letters and special characters."
+      ],
+      "correct_answer": "It is weak because it uses easily found personal information."
+    },
+    {
+      "id": 54,
+      "question": "A network technician is troubleshooting an issue and needs to verify the IP addresses of all interfaces on a router. What is the best command to use to accomplish the task?",
+      "options": [
+        "show ip interface brief",
+        "nslookup",
+        "ipconfig getifaddr en0",
+        "show ip route"
+      ],
+      "correct_answer": "show ip interface brief"
+    },
+    {
+      "id": 55,
+      "question": "Students who are connected to the same switch are having slower than normal response times. The administrator suspects a duplex setting issue. What is the best command to use to accomplish the task?",
+      "options": [
+        "show interfaces",
+        "ipconfig getifaddr en0",
+        "copy running-config startup-config",
+        "show ip nat translations"
+      ],
+      "correct_answer": "show interfaces"
+    },
+    {
+      "id": 56,
+      "question": "A user wants to know the IP address of the PC. What is the best command to use to accomplish the task?",
+      "options": [
+        "ipconfig",
+        "copy running-config startup-config",
+        "show interfaces",
+        "show ip nat translations"
+      ],
+      "correct_answer": "ipconfig"
+    },
+    {
+      "id": 57,
+      "question": "A student wants to save a router configuration to NVRAM. What is the best command to use to accomplish the task?",
+      "options": [
+        "copy running-config startup-config",
+        "show interfaces",
+        "show ip nat translations",
+        "show ip route"
+      ],
+      "correct_answer": "copy running-config startup-config"
+    },
+    {
+      "id": 58,
+      "question": "A support technician needs to know the IP address of the wireless interface on a MAC. What is the best command to use to accomplish the task?",
+      "options": [
+        "ipconfig getifaddr en0",
+        "copy running-config startup-config",
+        "show interfaces",
+        "show ip nat translations"
+      ],
+      "correct_answer": "ipconfig getifaddr en0"
+    },
+    {
+      "id": 59,
+      "question": "A network technician is troubleshooting an issue and needs to verify all of the IPv6 interface addresses on a router. What is the best command to use to accomplish the task?",
+      "options": [
+        "show ipv6 interface",
+        "show interfaces",
+        "show ip nat translations",
+        "show ip route"
+      ],
+      "correct_answer": "show ipv6 interface"
+    },
+    {
+      "id": 60,
+      "question": "A teacher is having difficulties connecting his PC to the classroom network. He needs to verify that a default gateway is configured correctly. What is the best command to use to accomplish the task?",
+      "options": [
+        "ipconfig",
+        "copy running-config startup-config",
+        "show interfaces",
+        "show ip nat translations"
+      ],
+      "correct_answer": "ipconfig"
+    },
+    {
+      "id": 61,
+      "question": "Only employees connected to IPv6 interfaces are having difficulty connecting to remote networks. The analyst wants to verify that IPv6 routing has been enabled. What is the best command to use to accomplish the task?",
+      "options": [
+        "show running-config",
+        "show interfaces",
+        "copy running-config startup-config",
+        "show ip nat translations"
+      ],
+      "correct_answer": "show running-config"
+    },
+    {
+      "id": 62,
+      "question": "An administrator is troubleshooting connectivity issues and needs to determine the IP address of a website. What is the best command to use to accomplish the task?",
+      "options": [
+        "nslookup",
+        "show ipv6 route",
+        "show ipv6 interface",
+        "copy startup-config running-config"
+      ],
+      "correct_answer": "nslookup"
+    },
+    {
+      "id": 63,
+      "question": "What is a characteristic of UDP?",
+      "options": [
+        "UDP datagrams take the same path and arrive in the correct order at the destination.​",
+        "Applications that use UDP are always considered unreliable.​",
+        "UDP reassembles the received datagrams in the order they were received.",
+        "UDP only passes data to the network when the destination is ready to receive the data."
+      ],
+      "correct_answer": "UDP reassembles the received datagrams in the order they were received."
+    }
+  ]
+}

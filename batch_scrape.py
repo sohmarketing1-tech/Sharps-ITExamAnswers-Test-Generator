@@ -10,6 +10,11 @@ URLS = [
     "https://itexamanswers.net/it-essentials-7-0-final-exam-chapters-10-14-answers-full.html",
     "https://itexamanswers.net/it-essentials-7-0-final-exam-composite-chapters-1-14-answers.html",
     "https://itexamanswers.net/ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers.html",
+    "https://itexamanswers.net/ccna-1-v7-modules-4-7-ethernet-concepts-exam-answers.html",
+    "https://itexamanswers.net/ccna-1-v7-modules-8-10-communicating-between-networks-exam-answers.html",
+    "https://itexamanswers.net/ccna-1-v7-modules-11-13-ip-addressing-exam-answers-full.html",
+    "https://itexamanswers.net/ccna-1-v7-modules-14-15-network-application-communications-exam-answers.html",
+    "https://itexamanswers.net/ccna-1-v7-modules-16-17-building-and-securing-a-small-network-exam-answers.html",
 ]
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
