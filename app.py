@@ -1,4 +1,5 @@
 import datetime
+import fcntl
 import json
 import os
 import random
@@ -142,18 +143,35 @@ def load_users() -> dict:
     try:
         with open(USERS_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
-    except Exception:
-        return {}
-    return data if isinstance(data, dict) else {}
+    except (OSError, json.JSONDecodeError) as err:
+        app.logger.exception("Unable to load the account store: %s", err)
+        raise RuntimeError("Account data is temporarily unavailable. Please try again shortly.") from err
+    if not isinstance(data, dict):
+        app.logger.error("Account store has an invalid format")
+        raise RuntimeError("Account data is temporarily unavailable. Please try again shortly.")
+    return data
 
 
 def save_users(users: dict) -> None:
     """Persist users and their mastery progress to disk."""
+    temp_file = USERS_FILE.with_name(f".{USERS_FILE.name}.{os.getpid()}.tmp")
+    backup_file = USERS_FILE.with_suffix(".json.bak")
+    lock_file = USERS_FILE.with_suffix(".json.lock")
     try:
-        with open(USERS_FILE, "w", encoding="utf-8") as f:
-            json.dump(users, f, indent=2, ensure_ascii=False)
-    except Exception:
-        pass
+        with open(lock_file, "a", encoding="utf-8") as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            if USERS_FILE.exists():
+                backup_file.write_bytes(USERS_FILE.read_bytes())
+            with open(temp_file, "w", encoding="utf-8") as f:
+                json.dump(users, f, indent=2, ensure_ascii=False)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(temp_file, USERS_FILE)
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+    except OSError as err:
+        temp_file.unlink(missing_ok=True)
+        app.logger.exception("Unable to save the account store: %s", err)
+        raise RuntimeError("Could not save account data. Please try again.") from err
 
 
 def current_user() -> str:
