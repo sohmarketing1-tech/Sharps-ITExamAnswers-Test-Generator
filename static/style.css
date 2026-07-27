@@ -1182,9 +1182,42 @@ body {
     -webkit-backdrop-filter: blur(12px);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
     .tab-nav {
-        margin: 16px auto;
+        width: calc(100% - 24px);
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 4px;
+        margin: 14px auto;
+        padding: 6px;
+        border-radius: 18px;
+    }
+
+    .tab-btn {
+        min-width: 0;
+        min-height: 56px;
+        padding: 7px 3px;
+        justify-content: center;
+        flex-direction: column;
+        gap: 3px;
+        font-size: 0.7rem;
+        line-height: 1.1;
+        white-space: nowrap;
+        grid-column: span 2;
+    }
+
+    .tab-btn svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    #tab-history {
+        grid-column: 2 / span 2;
+    }
+
+    #tab-community {
+        grid-column: 4 / span 2;
     }
 }
 
