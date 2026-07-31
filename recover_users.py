@@ -175,6 +175,7 @@ def main():
     parser.add_argument("--candidates-dir", type=Path, default=Path("."), help="Directory containing users.json candidates")
     parser.add_argument("--output", type=Path, default=Path("recovered_users.json"), help="Output file")
     parser.add_argument("--report", type=Path, default=Path("recovery_report.txt"), help="Report file")
+    parser.add_argument("--drop-unrecoverable", action="store_true", help="Remove users that have no valid password_hash in any candidate")
     args = parser.parse_args()
 
     candidates = find_candidates(args.candidates_dir)
@@ -187,6 +188,17 @@ def main():
         print(f"  {p.name}")
 
     merged, report = merge_users(candidates)
+
+    if args.drop_unrecoverable and report["unrecoverable_no_hash"]:
+        for username in report["unrecoverable_no_hash"]:
+            del merged[username]
+        report["dropped_users"] = report["unrecoverable_no_hash"]
+        report["total_users"] = len(merged)
+        report["users_with_valid_hash"] = sum(
+            1 for r in merged.values() if is_valid_hash(r.get("password_hash"))
+        )
+    else:
+        report["dropped_users"] = []
 
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(merged, f, indent=2, ensure_ascii=False)
@@ -220,6 +232,12 @@ def main():
     if report["unrecoverable_no_hash"]:
         report_text.append("Unrecoverable usernames (use reset_password.py for these if needed):")
         for u in report["unrecoverable_no_hash"]:
+            report_text.append(f"  - {u}")
+
+    if report["dropped_users"]:
+        report_text.append("")
+        report_text.append("Dropped from recovered file because they had no valid password_hash:")
+        for u in report["dropped_users"]:
             report_text.append(f"  - {u}")
 
     if report["merged_fixes"]:
