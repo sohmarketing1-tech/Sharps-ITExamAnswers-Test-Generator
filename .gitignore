@@ -33,3 +33,5 @@ questions.json
 users.json
 chat.json
 .flask_secret
+*.bak
+*.lock
