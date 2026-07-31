@@ -54,6 +54,10 @@
             </div>
             <button id="modal-submit" class="btn btn-primary btn-large btn-block">Log In</button>
             <button id="modal-cancel" class="btn btn-secondary btn-block">Cancel</button>
+            <div id="auth-loading" class="auth-loading hidden">
+                <div class="spinner" aria-hidden="true"></div>
+                <span id="auth-loading-text">Logging in...</span>
+            </div>
             <p id="modal-message" class="auth-message"></p>
         </div>
     </div>
@@ -573,6 +577,6 @@
     </div>
 
     <div id="toast" class="toast hidden"></div>
-    <script src="app.js?v=19"></script>
+    <script src="app.js?v=20"></script>
 </body>
 </html>

@@ -127,6 +127,8 @@ const els = {
     modalCancel: document.getElementById("modal-cancel"),
     modalTitle: document.getElementById("auth-modal-title"),
     modalMessage: document.getElementById("modal-message"),
+    authLoading: document.getElementById("auth-loading"),
+    authLoadingText: document.getElementById("auth-loading-text"),
     authModal: document.getElementById("auth-modal"),
     loginTrigger: document.getElementById("login-trigger"),
     registerTrigger: document.getElementById("register-trigger"),
@@ -325,6 +327,16 @@ function setAuthMessage(text, type = "") {
     els.modalMessage.className = "auth-message" + (type ? ` ${type}` : "");
 }
 
+function setAuthLoading(loading, text = "") {
+    const isLogin = state.authModalMode === "login";
+    els.modalSubmit.classList.toggle("hidden", loading);
+    els.modalCancel.classList.toggle("hidden", loading);
+    els.authLoading.classList.toggle("hidden", !loading);
+    if (loading) {
+        els.authLoadingText.textContent = text || (isLogin ? "Logging in..." : "Signing up...");
+    }
+}
+
 function setMasteryMessage(text, type = "") {
     els.masteryMessage.textContent = text;
     els.masteryMessage.className = "message" + (type ? ` ${type}` : "");
@@ -378,7 +390,7 @@ async function login() {
         setAuthMessage("Enter a username and password.", "error");
         return;
     }
-    els.modalSubmit.disabled = true;
+    setAuthLoading(true, "Logging in...");
     try {
         const res = await fetch(API.login, {
             method: "POST",
@@ -400,7 +412,7 @@ async function login() {
     } catch (err) {
         setAuthMessage(err.message, "error");
     } finally {
-        els.modalSubmit.disabled = false;
+        setAuthLoading(false);
     }
 }
 
@@ -420,7 +432,7 @@ async function register() {
         setAuthMessage("Passwords do not match.", "error");
         return;
     }
-    els.modalSubmit.disabled = true;
+    setAuthLoading(true, "Signing up...");
     try {
         const res = await fetch(API.register, {
             method: "POST",
@@ -442,11 +454,12 @@ async function register() {
     } catch (err) {
         setAuthMessage(err.message, "error");
     } finally {
-        els.modalSubmit.disabled = false;
+        setAuthLoading(false);
     }
 }
 
 function submitAuth() {
+    if (!els.authLoading.classList.contains("hidden")) return;
     if (state.authModalMode === "login") {
         login();
     } else if (state.authModalMode === "register") {
@@ -464,6 +477,7 @@ function openAuthModal(mode) {
     els.togglePassword.textContent = "Show";
     els.toggleConfirmPassword.textContent = "Show";
     setAuthMessage("");
+    setAuthLoading(false);
     const isLogin = mode === "login";
     els.modalTitle.textContent = isLogin ? "Log In" : "Sign Up";
     els.modalSubmit.textContent = isLogin ? "Log In" : "Sign Up";
@@ -519,6 +533,8 @@ async function logout() {
     } catch (err) {
         // Logout error is silent since the UI already reflects the action.
         console.error("Logout failed", err);
+    } finally {
+        closeProfileModal();
     }
 }
 
