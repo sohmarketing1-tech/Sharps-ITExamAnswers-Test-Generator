@@ -152,26 +152,70 @@ def load_users() -> dict:
     return data
 
 
+def _write_users(users: dict, temp_file: Path) -> None:
+    """Write users to a temp file and atomically replace the live file."""
+    with open(temp_file, "w", encoding="utf-8") as f:
+        json.dump(users, f, indent=2, ensure_ascii=False)
+        f.flush()
+    os.replace(temp_file, USERS_FILE)
+
+
 def save_users(users: dict) -> None:
     """Persist users and their mastery progress to disk."""
-    temp_file = USERS_FILE.with_name(f".{USERS_FILE.name}.{os.getpid()}.tmp")
+    temp_file = USERS_FILE.with_suffix(".json.tmp")
     backup_file = USERS_FILE.with_suffix(".json.bak")
     lock_file = USERS_FILE.with_suffix(".json.lock")
     try:
         with open(lock_file, "a", encoding="utf-8") as lock:
             fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
-            if USERS_FILE.exists():
-                backup_file.write_bytes(USERS_FILE.read_bytes())
-            with open(temp_file, "w", encoding="utf-8") as f:
-                json.dump(users, f, indent=2, ensure_ascii=False)
-                f.flush()
-                os.fsync(f.fileno())
-            os.replace(temp_file, USERS_FILE)
-            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+            try:
+                if USERS_FILE.exists():
+                    backup_file.write_bytes(USERS_FILE.read_bytes())
+                _write_users(users, temp_file)
+            finally:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
     except OSError as err:
-        temp_file.unlink(missing_ok=True)
         app.logger.exception("Unable to save the account store: %s", err)
         raise RuntimeError("Could not save account data. Please try again.") from err
+    finally:
+        try:
+            temp_file.unlink(missing_ok=True)
+        except OSError:
+            pass
+
+
+def modify_users(callback) -> None:
+    """Load the latest users, apply callback, and save atomically.
+
+    This prevents the read-modify-write race where a stale copy of users.json
+    overwrites a more recent save. The whole load/callback/save runs under the
+    file lock, so concurrent updates are serialized safely.
+    """
+    temp_file = USERS_FILE.with_suffix(".json.tmp")
+    backup_file = USERS_FILE.with_suffix(".json.bak")
+    lock_file = USERS_FILE.with_suffix(".json.lock")
+    try:
+        with open(lock_file, "a", encoding="utf-8") as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            try:
+                users = load_users()
+                result = callback(users)
+                if result is False:
+                    return False
+                if USERS_FILE.exists():
+                    backup_file.write_bytes(USERS_FILE.read_bytes())
+                _write_users(users, temp_file)
+                return result
+            finally:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+    except OSError as err:
+        app.logger.exception("Unable to save the account store: %s", err)
+        raise RuntimeError("Could not save account data. Please try again.") from err
+    finally:
+        try:
+            temp_file.unlink(missing_ok=True)
+        except OSError:
+            pass
 
 
 def current_user() -> str:
@@ -206,23 +250,24 @@ def _get_flashcard_reviews_for_user(users: dict, username: str, filename: str) -
 
 def _toggle_flashcard_review(username: str, filename: str, question_id) -> bool:
     """Toggle review status for a flashcard. Returns True if now marked, False if unmarked."""
-    users = load_users()
-    user = users.get(username)
-    if not user:
-        return False
-    exams = user.setdefault("exams", {})
-    exam = exams.setdefault(filename, {})
-    reviews = set(exam.get("flashcard_reviews", []))
-    qid = str(question_id)
-    if qid in reviews:
-        reviews.discard(qid)
-        marked = False
-    else:
-        reviews.add(qid)
-        marked = True
-    exam["flashcard_reviews"] = sorted(reviews, key=lambda x: int(x) if x.isdigit() else x)
-    save_users(users)
-    return marked
+    def _toggle(users: dict):
+        user_data = users.get(username)
+        if not user_data:
+            return False
+        exams = user_data.setdefault("exams", {})
+        exam = exams.setdefault(filename, {})
+        reviews = set(exam.get("flashcard_reviews", []))
+        qid = str(question_id)
+        if qid in reviews:
+            reviews.discard(qid)
+            exam["flashcard_reviews"] = sorted(reviews, key=lambda x: int(x) if x.isdigit() else x)
+            return False
+        else:
+            reviews.add(qid)
+            exam["flashcard_reviews"] = sorted(reviews, key=lambda x: int(x) if x.isdigit() else x)
+            return True
+
+    return modify_users(_toggle)
 
 
 def _update_streak(activity: dict) -> None:
@@ -248,13 +293,41 @@ def _update_streak(activity: dict) -> None:
 
 
 def track_user_activity(username: str) -> dict:
-    """Record that a user is active now and return their updated activity."""
+    """Record that a user is active now and return their updated activity.
+
+    This only updates an existing user record and only writes to disk when the
+    streak or last_seen value actually changes, so /api/ping does not hammer
+    users.json on every request.
+    """
+    from datetime import datetime, timezone, timedelta
+
+    def _update(users: dict) -> bool:
+        user_data = users.get(username)
+        if not user_data:
+            # Never create a skeleton user from a ping/me call.
+            return False
+        activity = user_data.setdefault("activity", {"streak": 0, "last_seen": None})
+        now = datetime.now(timezone.utc)
+        last_seen = activity.get("last_seen")
+        if last_seen:
+            try:
+                last_dt = datetime.fromisoformat(last_seen)
+            except Exception:
+                last_dt = None
+        else:
+            last_dt = None
+
+        # Only update last_seen if it is missing or older than 5 minutes.
+        # Streak is updated at most once per day by _update_streak.
+        if last_dt and (now - last_dt) < timedelta(minutes=5):
+            return False
+
+        _update_streak(activity)
+        return True
+
+    modify_users(_update)
     users = load_users()
-    user_data = users.setdefault(username, {})
-    activity = user_data.setdefault("activity", {"streak": 0, "last_seen": None})
-    _update_streak(activity)
-    save_users(users)
-    return activity
+    return users.get(username, {}).get("activity", {"streak": 0, "last_seen": None})
 
 
 def get_online_users(minutes: int = 15) -> list:
@@ -722,12 +795,16 @@ def save_history_attempt():
         "timer_minutes": max(0, int(attempt.get("timer_minutes", 0))),
     }
 
-    users = load_users()
-    user_data = users.setdefault(user, {})
-    history = user_data.setdefault("test_history", [])
-    history.insert(0, saved_attempt)
-    del history[50:]
-    save_users(users)
+    def _add_attempt(users: dict):
+        user_data = users.get(user)
+        if not user_data:
+            return False
+        history = user_data.setdefault("test_history", [])
+        history.insert(0, saved_attempt)
+        del history[50:]
+        return True
+
+    modify_users(_add_attempt)
     return jsonify({"ok": True, "attempt": saved_attempt})
 
 
@@ -746,15 +823,18 @@ def register():
         return jsonify({"ok": False, "error": "Username must be 3-30 characters."}), 400
     if len(password) < 4:
         return jsonify({"ok": False, "error": "Password must be at least 4 characters."}), 400
-    users = load_users()
-    if username in users:
+    def _register(users: dict):
+        if username in users:
+            return False
+        users[username] = {
+            "password_hash": generate_password_hash(password, method="pbkdf2:sha256"),
+            "mastery": {},
+            "activity": {"streak": 1, "last_seen": None},
+        }
+        return True
+
+    if not modify_users(_register):
         return jsonify({"ok": False, "error": "Username already exists."}), 409
-    users[username] = {
-        "password_hash": generate_password_hash(password, method="pbkdf2:sha256"),
-        "mastery": {},
-        "activity": {"streak": 1, "last_seen": None},
-    }
-    save_users(users)
     session["user"] = username
     track_user_activity(username)
     return jsonify({"ok": True, "user": username, "profile": {}})
@@ -799,39 +879,49 @@ def profile():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to manage your profile."}), 401
-    users = load_users()
-    user_data = users.setdefault(user, {})
     if request.method == "GET":
-        return jsonify({"ok": True, "profile": user_data.get("profile", {})})
+        users = load_users()
+        return jsonify({"ok": True, "profile": users.get(user, {}).get("profile", {})})
 
     data = request.get_json(silent=True) or {}
-    profile = user_data.setdefault("profile", {})
-    if "theme" in data and isinstance(data["theme"], str):
-        profile["theme"] = data["theme"][:30]
-    if "avatar_seed" in data:
-        profile["avatar_seed"] = str(data["avatar_seed"])[:120]
-    if "avatar_style" in data and isinstance(data["avatar_style"], str):
-        profile["avatar_style"] = data["avatar_style"][:40]
-    if "avatar_options" in data and isinstance(data["avatar_options"], dict):
-        def _clean_opt(v):
-            if isinstance(v, bool):
-                return v
-            if isinstance(v, (int, float)):
-                return v
-            return str(v)[:120]
-        profile["avatar_options"] = {str(k): _clean_opt(v) for k, v in data["avatar_options"].items()}
-    save_users(users)
+    updated_profile = None
+
+    def _update_profile(users: dict):
+        nonlocal updated_profile
+        user_data = users.get(user)
+        if not user_data:
+            return False
+        profile = user_data.setdefault("profile", {})
+        if "theme" in data and isinstance(data["theme"], str):
+            profile["theme"] = data["theme"][:30]
+        if "avatar_seed" in data:
+            profile["avatar_seed"] = str(data["avatar_seed"])[:120]
+        if "avatar_style" in data and isinstance(data["avatar_style"], str):
+            profile["avatar_style"] = data["avatar_style"][:40]
+        if "avatar_options" in data and isinstance(data["avatar_options"], dict):
+            def _clean_opt(v):
+                if isinstance(v, bool):
+                    return v
+                if isinstance(v, (int, float)):
+                    return v
+                return str(v)[:120]
+            profile["avatar_options"] = {str(k): _clean_opt(v) for k, v in data["avatar_options"].items()}
+        updated_profile = profile
+        return True
+
+    if not modify_users(_update_profile):
+        return jsonify({"ok": False, "error": "User record not found."}), 404
 
     # Update this user's existing chat messages to the new avatar
     chat_data = load_chat()
     for msg in chat_data.get("messages", []):
         if msg.get("username") == user:
-            msg["avatar_seed"] = profile.get("avatar_seed", user)
-            msg["avatar_style"] = profile.get("avatar_style", "bottts")
-            msg["avatar_options"] = profile.get("avatar_options", {})
+            msg["avatar_seed"] = updated_profile.get("avatar_seed", user)
+            msg["avatar_style"] = updated_profile.get("avatar_style", "micah")
+            msg["avatar_options"] = updated_profile.get("avatar_options", {})
     save_chat(chat_data)
 
-    return jsonify({"ok": True, "profile": profile})
+    return jsonify({"ok": True, "profile": updated_profile})
 
 
 @app.route("/api/ping", methods=["POST"])
@@ -942,13 +1032,17 @@ def save_flashcard_session():
         return jsonify({"ok": False, "error": "Not logged in"}), 401
     body = request.get_json(silent=True) or {}
     sess = body.get("session")
-    users = load_users()
-    user_data = users.setdefault(user, {})
-    if sess is None:
-        user_data.pop("flashcard_session", None)
-    else:
-        user_data["flashcard_session"] = sess
-    save_users(users)
+    def _save_session(users: dict):
+        user_data = users.get(user)
+        if not user_data:
+            return False
+        if sess is None:
+            user_data.pop("flashcard_session", None)
+        else:
+            user_data["flashcard_session"] = sess
+        return True
+
+    modify_users(_save_session)
     return jsonify({"ok": True})
 
 
@@ -957,9 +1051,14 @@ def delete_flashcard_session():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Not logged in"}), 401
-    users = load_users()
-    users.get(user, {}).pop("flashcard_session", None)
-    save_users(users)
+    def _delete_session(users: dict):
+        user_data = users.get(user)
+        if not user_data:
+            return False
+        user_data.pop("flashcard_session", None)
+        return True
+
+    modify_users(_delete_session)
     return jsonify({"ok": True})
 
 
@@ -996,29 +1095,33 @@ def mastery_batch():
     if not questions:
         return jsonify({"ok": False, "error": "No questions found."}), 503
 
-    users = load_users()
-    exam = _get_mastery_for_user(users, user, filename)
-    question_store = exam.setdefault("questions", {})
-    working_set = exam.setdefault("working_set", [])
+    working_set = []
 
-    mastered_qids = {qid for qid, entry in question_store.items() if entry.get("mastered")}
-    # Drop mastered questions from the working set.
-    working_set[:] = [qid for qid in working_set if qid not in mastered_qids]
+    def _build_working_set(users: dict):
+        nonlocal working_set
+        exam = _get_mastery_for_user(users, user, filename)
+        question_store = exam.setdefault("questions", {})
+        working_set = exam.setdefault("working_set", [])
 
-    # Refill the working set with non-mastered questions not already in it.
-    current_set = set(working_set)
-    candidates = [q for q in questions if str(q["id"]) not in mastered_qids and str(q["id"]) not in current_set]
-    # Prefer questions with the lowest streak so new questions appear before partially learned ones.
-    # When starting fresh (empty working set), shuffle first so each new session has a different order.
-    fresh_start = len(working_set) == 0
-    if fresh_start:
-        random.shuffle(candidates)
-    else:
-        candidates.sort(key=lambda q: question_store.get(str(q["id"]), {}).get("streak", 0))
-    while len(working_set) < n and candidates:
-        working_set.append(str(candidates.pop(0)["id"]))
+        mastered_qids = {qid for qid, entry in question_store.items() if entry.get("mastered")}
+        # Drop mastered questions from the working set.
+        working_set[:] = [qid for qid in working_set if qid not in mastered_qids]
 
-    save_users(users)
+        # Refill the working set with non-mastered questions not already in it.
+        current_set = set(working_set)
+        candidates = [q for q in questions if str(q["id"]) not in mastered_qids and str(q["id"]) not in current_set]
+        # Prefer questions with the lowest streak so new questions appear before partially learned ones.
+        # When starting fresh (empty working set), shuffle first so each new session has a different order.
+        fresh_start = len(working_set) == 0
+        if fresh_start:
+            random.shuffle(candidates)
+        else:
+            candidates.sort(key=lambda q: question_store.get(str(q["id"]), {}).get("streak", 0))
+        while len(working_set) < n and candidates:
+            working_set.append(str(candidates.pop(0)["id"]))
+        return True
+
+    modify_users(_build_working_set)
 
     selected = [q for q in questions if str(q["id"]) in working_set[:n]]
 
@@ -1060,25 +1163,29 @@ def mastery_submit():
 
     questions = provided_quiz
     id_map = {q["id"]: q for q in questions}
-    users = load_users()
-    exam = _get_mastery_for_user(users, user, filename)
-    question_store = exam.setdefault("questions", {})
-    working_set = exam.setdefault("working_set", [])
     newly_mastered = 0
 
-    for qid_str, selected in answers.items():
-        qid = int(qid_str)
-        q = id_map.get(qid)
-        if not q:
-            continue
-        is_correct = _is_answer_correct(q, selected)
-        entry = _get_question_entry(exam, str(qid))
-        if _update_mastery_entry(entry, is_correct):
-            newly_mastered += 1
-            if str(qid) in working_set:
-                working_set.remove(str(qid))
+    def _submit_mastery(users: dict):
+        nonlocal newly_mastered
+        exam = _get_mastery_for_user(users, user, filename)
+        question_store = exam.setdefault("questions", {})
+        working_set = exam.setdefault("working_set", [])
+        newly_mastered = 0
 
-    save_users(users)
+        for qid_str, selected in answers.items():
+            qid = int(qid_str)
+            q = id_map.get(qid)
+            if not q:
+                continue
+            is_correct = _is_answer_correct(q, selected)
+            entry = _get_question_entry(exam, str(qid))
+            if _update_mastery_entry(entry, is_correct):
+                newly_mastered += 1
+                if str(qid) in working_set:
+                    working_set.remove(str(qid))
+        return True
+
+    modify_users(_submit_mastery)
     all_questions = get_questions_for_test(filename)
     summary = get_mastery_summary(user, filename, all_questions)
     return jsonify({"ok": True, "summary": summary, "newly_mastered": newly_mastered})
@@ -1126,11 +1233,16 @@ def mastery_reset():
     filename = data.get("filename", "").strip()
     if not filename:
         return jsonify({"ok": False, "error": "Filename is required."}), 400
-    users = load_users()
-    user_data = users.setdefault(user, {})
-    if "mastery" in user_data and filename in user_data["mastery"]:
-        del user_data["mastery"][filename]
-        save_users(users)
+    def _reset_mastery(users: dict):
+        user_data = users.get(user)
+        if not user_data:
+            return False
+        if "mastery" in user_data and filename in user_data["mastery"]:
+            del user_data["mastery"][filename]
+            return True
+        return False
+
+    modify_users(_reset_mastery)
     all_questions = get_questions_for_test(filename)
     summary = get_mastery_summary(user, filename, all_questions)
     return jsonify({"ok": True, "summary": summary})
