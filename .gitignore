@@ -31,7 +31,9 @@ Thumbs.db
 stats.json
 questions.json
 users.json
+user_data.json
 chat.json
 .flask_secret
 *.bak
 *.lock
+*.tmp

@@ -21,6 +21,7 @@ BACKUP_DIR = BASE_DIR / "backups"
 
 FILES_TO_BACKUP = [
     BASE_DIR / "users.json",
+    BASE_DIR / "user_data.json",
     BASE_DIR / "chat.json",
     BASE_DIR / "questions.json",
     BASE_DIR / "stats.json",

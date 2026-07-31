@@ -29,6 +29,7 @@ def set_api_cache_headers(response):
 QUESTIONS_FILE = BASE_DIR / DEFAULT_OUTPUT
 DATA_DIR = BASE_DIR / "data"
 USERS_FILE = BASE_DIR / "users.json"
+USER_DATA_FILE = BASE_DIR / "user_data.json"
 CHAT_FILE = BASE_DIR / "chat.json"
 SECRET_FILE = BASE_DIR / ".flask_secret"
 
@@ -136,47 +137,47 @@ def get_questions_for_test(filename: str = ""):
 # User accounts and mastery progress
 # ---------------------------------------------------------------------------
 
-def load_users() -> dict:
-    """Load users and their mastery progress from disk."""
-    if not USERS_FILE.exists():
+def _load_json_file(file: Path, name: str) -> dict:
+    """Load a JSON dict from disk with a friendly error message."""
+    if not file.exists():
         return {}
     try:
-        with open(USERS_FILE, "r", encoding="utf-8") as f:
+        with open(file, "r", encoding="utf-8") as f:
             data = json.load(f)
     except (OSError, json.JSONDecodeError) as err:
-        app.logger.exception("Unable to load the account store: %s", err)
-        raise RuntimeError("Account data is temporarily unavailable. Please try again shortly.") from err
+        app.logger.exception("Unable to load %s: %s", name, err)
+        raise RuntimeError(f"{name} is temporarily unavailable. Please try again shortly.") from err
     if not isinstance(data, dict):
-        app.logger.error("Account store has an invalid format")
-        raise RuntimeError("Account data is temporarily unavailable. Please try again shortly.")
+        app.logger.error("%s has an invalid format", name)
+        raise RuntimeError(f"{name} is temporarily unavailable. Please try again shortly.")
     return data
 
 
-def _write_users(users: dict, temp_file: Path) -> None:
-    """Write users to a temp file and atomically replace the live file."""
+def _write_json_file(data: dict, temp_file: Path, target_file: Path) -> None:
+    """Write data to a temp file and atomically replace the live file."""
     with open(temp_file, "w", encoding="utf-8") as f:
-        json.dump(users, f, indent=2, ensure_ascii=False)
+        json.dump(data, f, indent=2, ensure_ascii=False)
         f.flush()
-    os.replace(temp_file, USERS_FILE)
+    os.replace(temp_file, target_file)
 
 
-def save_users(users: dict) -> None:
-    """Persist users and their mastery progress to disk."""
-    temp_file = USERS_FILE.with_suffix(".json.tmp")
-    backup_file = USERS_FILE.with_suffix(".json.bak")
-    lock_file = USERS_FILE.with_suffix(".json.lock")
+def _save_json_file(data: dict, file: Path) -> None:
+    """Persist a JSON dict to disk safely with a backup and lock."""
+    temp_file = file.with_suffix(".json.tmp")
+    backup_file = file.with_suffix(".json.bak")
+    lock_file = file.with_suffix(".json.lock")
     try:
         with open(lock_file, "a", encoding="utf-8") as lock:
             fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
             try:
-                if USERS_FILE.exists():
-                    backup_file.write_bytes(USERS_FILE.read_bytes())
-                _write_users(users, temp_file)
+                if file.exists():
+                    backup_file.write_bytes(file.read_bytes())
+                _write_json_file(data, temp_file, file)
             finally:
                 fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
     except OSError as err:
-        app.logger.exception("Unable to save the account store: %s", err)
-        raise RuntimeError("Could not save account data. Please try again.") from err
+        app.logger.exception("Unable to save %s: %s", file.name, err)
+        raise RuntimeError("Could not save data. Please try again.") from err
     finally:
         try:
             temp_file.unlink(missing_ok=True)
@@ -184,38 +185,68 @@ def save_users(users: dict) -> None:
             pass
 
 
-def modify_users(callback) -> None:
-    """Load the latest users, apply callback, and save atomically.
+def _modify_json_file(file: Path, callback) -> None:
+    """Load the latest JSON, apply callback, and save atomically.
 
-    This prevents the read-modify-write race where a stale copy of users.json
-    overwrites a more recent save. The whole load/callback/save runs under the
-    file lock, so concurrent updates are serialized safely.
+    This prevents the read-modify-write race where a stale copy overwrites
+    a more recent save. The whole load/callback/save runs under the file lock,
+    so concurrent updates are serialized safely.
     """
-    temp_file = USERS_FILE.with_suffix(".json.tmp")
-    backup_file = USERS_FILE.with_suffix(".json.bak")
-    lock_file = USERS_FILE.with_suffix(".json.lock")
+    temp_file = file.with_suffix(".json.tmp")
+    backup_file = file.with_suffix(".json.bak")
+    lock_file = file.with_suffix(".json.lock")
     try:
         with open(lock_file, "a", encoding="utf-8") as lock:
             fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
             try:
-                users = load_users()
-                result = callback(users)
+                data = _load_json_file(file, file.name)
+                result = callback(data)
                 if result is False:
                     return False
-                if USERS_FILE.exists():
-                    backup_file.write_bytes(USERS_FILE.read_bytes())
-                _write_users(users, temp_file)
+                if file.exists():
+                    backup_file.write_bytes(file.read_bytes())
+                _write_json_file(data, temp_file, file)
                 return result
             finally:
                 fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
     except OSError as err:
-        app.logger.exception("Unable to save the account store: %s", err)
-        raise RuntimeError("Could not save account data. Please try again.") from err
+        app.logger.exception("Unable to save %s: %s", file.name, err)
+        raise RuntimeError("Could not save data. Please try again.") from err
     finally:
         try:
             temp_file.unlink(missing_ok=True)
         except OSError:
             pass
+
+
+def load_users() -> dict:
+    """Load the small auth/profile file."""
+    return _load_json_file(USERS_FILE, "users.json")
+
+
+def save_users(users: dict) -> None:
+    """Persist the small auth/profile file."""
+    _save_json_file(users, USERS_FILE)
+
+
+def modify_users(callback) -> None:
+    """Load, modify, and save users.json atomically."""
+    return _modify_json_file(USERS_FILE, callback)
+
+
+def load_user_data() -> dict:
+    """Load the large per-user exam/progress file."""
+    return _load_json_file(USER_DATA_FILE, "user_data.json")
+
+
+def save_user_data(data: dict) -> None:
+    """Persist the large per-user exam/progress file."""
+    _save_json_file(data, USER_DATA_FILE)
+
+
+def modify_user_data(callback) -> None:
+    """Load, modify, and save user_data.json atomically."""
+    return _modify_json_file(USER_DATA_FILE, callback)
 
 
 def current_user() -> str:
@@ -237,9 +268,9 @@ def display_name_for(filename: str, fallback: str = "") -> str:
     return EXAM_DISPLAY_NAMES.get(filename, filename.replace("-", " ").replace(".json", "").title())
 
 
-def _get_flashcard_reviews_for_user(users: dict, username: str, filename: str) -> set:
+def _get_flashcard_reviews_for_user(user_data: dict, username: str, filename: str) -> set:
     """Return the set of question IDs a user has marked for flashcard review."""
-    user = users.get(username)
+    user = user_data.get(username)
     if not user:
         return set()
     exams = user.setdefault("exams", {})
@@ -250,11 +281,9 @@ def _get_flashcard_reviews_for_user(users: dict, username: str, filename: str) -
 
 def _toggle_flashcard_review(username: str, filename: str, question_id) -> bool:
     """Toggle review status for a flashcard. Returns True if now marked, False if unmarked."""
-    def _toggle(users: dict):
-        user_data = users.get(username)
-        if not user_data:
-            return False
-        exams = user_data.setdefault("exams", {})
+    def _toggle(user_data: dict):
+        record = user_data.setdefault(username, {})
+        exams = record.setdefault("exams", {})
         exam = exams.setdefault(filename, {})
         reviews = set(exam.get("flashcard_reviews", []))
         qid = str(question_id)
@@ -267,7 +296,7 @@ def _toggle_flashcard_review(username: str, filename: str, question_id) -> bool:
             exam["flashcard_reviews"] = sorted(reviews, key=lambda x: int(x) if x.isdigit() else x)
             return True
 
-    return modify_users(_toggle)
+    return modify_user_data(_toggle)
 
 
 def _update_streak(activity: dict) -> None:
@@ -402,13 +431,13 @@ def get_chat_messages(limit: int = 100) -> list:
     return messages[-limit:]
 
 
-def _get_mastery_for_user(users: dict, username: str, filename: str) -> dict:
+def _get_mastery_for_user(user_data: dict, username: str, filename: str) -> dict:
     """Return the per-exam mastery container, migrating from the old flat format if needed.
 
     Keys are normalized to strings so integer IDs from older data do not duplicate
     new string-key entries.
     """
-    mastery = users.setdefault(username, {}).setdefault("mastery", {})
+    mastery = user_data.setdefault(username, {}).setdefault("mastery", {})
     exam = mastery.setdefault(filename, {})
     # Old format stored question entries directly under the filename key.
     if "questions" not in exam:
@@ -471,8 +500,8 @@ def _update_mastery_entry(entry: dict, is_correct: bool) -> bool:
 
 def get_mastery_summary(username: str, filename: str, questions: list) -> dict:
     """Return mastery stats for a user and exam."""
-    users = load_users()
-    exam = _get_mastery_for_user(users, username, filename)
+    user_data = load_user_data()
+    exam = _get_mastery_for_user(user_data, username, filename)
     question_store = exam.get("questions", {})
     total = len(questions)
     mastered = 0
@@ -764,8 +793,8 @@ def get_history():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to view test history."}), 401
-    users = load_users()
-    attempts = users.get(user, {}).get("test_history", [])
+    user_data = load_user_data()
+    attempts = user_data.get(user, {}).get("test_history", [])
     return jsonify({"ok": True, "attempts": attempts})
 
 
@@ -795,16 +824,14 @@ def save_history_attempt():
         "timer_minutes": max(0, int(attempt.get("timer_minutes", 0))),
     }
 
-    def _add_attempt(users: dict):
-        user_data = users.get(user)
-        if not user_data:
-            return False
-        history = user_data.setdefault("test_history", [])
+    def _add_attempt(user_data: dict):
+        record = user_data.setdefault(user, {})
+        history = record.setdefault("test_history", [])
         history.insert(0, saved_attempt)
         del history[50:]
         return True
 
-    modify_users(_add_attempt)
+    modify_user_data(_add_attempt)
     return jsonify({"ok": True, "attempt": saved_attempt})
 
 
@@ -828,7 +855,6 @@ def register():
             return False
         users[username] = {
             "password_hash": generate_password_hash(password, method="pbkdf2:sha256"),
-            "mastery": {},
             "activity": {"streak": 1, "last_seen": None},
         }
         return True
@@ -990,8 +1016,8 @@ def flashcard_reviews():
     filename = request.args.get("filename", "").strip()
     if not filename:
         return jsonify({"ok": False, "error": "No filename provided."}), 400
-    users = load_users()
-    reviews = _get_flashcard_reviews_for_user(users, user, filename)
+    user_data = load_user_data()
+    reviews = _get_flashcard_reviews_for_user(user_data, user, filename)
     return jsonify({"ok": True, "reviews": sorted(reviews, key=lambda x: int(x) if x.isdigit() else x)})
 
 
@@ -1019,9 +1045,9 @@ def get_flashcard_session():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "session": None}), 200
-    users = load_users()
-    user_data = users.get(user, {})
-    saved = user_data.get("flashcard_session")
+    user_data = load_user_data()
+    record = user_data.get(user, {})
+    saved = record.get("flashcard_session")
     return jsonify({"ok": True, "session": saved})
 
 
@@ -1032,17 +1058,17 @@ def save_flashcard_session():
         return jsonify({"ok": False, "error": "Not logged in"}), 401
     body = request.get_json(silent=True) or {}
     sess = body.get("session")
-    def _save_session(users: dict):
-        user_data = users.get(user)
-        if not user_data:
-            return False
+    def _save_session(user_data: dict):
+        record = user_data.get(user)
+        if not record:
+            record = user_data.setdefault(user, {})
         if sess is None:
-            user_data.pop("flashcard_session", None)
+            record.pop("flashcard_session", None)
         else:
-            user_data["flashcard_session"] = sess
+            record["flashcard_session"] = sess
         return True
 
-    modify_users(_save_session)
+    modify_user_data(_save_session)
     return jsonify({"ok": True})
 
 
@@ -1051,14 +1077,14 @@ def delete_flashcard_session():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Not logged in"}), 401
-    def _delete_session(users: dict):
-        user_data = users.get(user)
-        if not user_data:
+    def _delete_session(user_data: dict):
+        record = user_data.get(user)
+        if not record:
             return False
-        user_data.pop("flashcard_session", None)
+        record.pop("flashcard_session", None)
         return True
 
-    modify_users(_delete_session)
+    modify_user_data(_delete_session)
     return jsonify({"ok": True})
 
 
@@ -1075,8 +1101,8 @@ def get_mastery():
     questions = get_questions_for_test(filename)
     if not questions:
         return jsonify({"ok": False, "error": "No questions found."}), 503
-    users = load_users()
-    mastery = _get_mastery_for_user(users, user, filename)
+    user_data = load_user_data()
+    mastery = _get_mastery_for_user(user_data, user, filename)
     summary = get_mastery_summary(user, filename, questions)
     return jsonify({"ok": True, "summary": summary, "mastery": mastery})
 
@@ -1097,9 +1123,9 @@ def mastery_batch():
 
     working_set = []
 
-    def _build_working_set(users: dict):
+    def _build_working_set(user_data: dict):
         nonlocal working_set
-        exam = _get_mastery_for_user(users, user, filename)
+        exam = _get_mastery_for_user(user_data, user, filename)
         question_store = exam.setdefault("questions", {})
         working_set = exam.setdefault("working_set", [])
 
@@ -1121,7 +1147,7 @@ def mastery_batch():
             working_set.append(str(candidates.pop(0)["id"]))
         return True
 
-    modify_users(_build_working_set)
+    modify_user_data(_build_working_set)
 
     selected = [q for q in questions if str(q["id"]) in working_set[:n]]
 
@@ -1165,9 +1191,9 @@ def mastery_submit():
     id_map = {q["id"]: q for q in questions}
     newly_mastered = 0
 
-    def _submit_mastery(users: dict):
+    def _submit_mastery(user_data: dict):
         nonlocal newly_mastered
-        exam = _get_mastery_for_user(users, user, filename)
+        exam = _get_mastery_for_user(user_data, user, filename)
         question_store = exam.setdefault("questions", {})
         working_set = exam.setdefault("working_set", [])
         newly_mastered = 0
@@ -1185,7 +1211,7 @@ def mastery_submit():
                     working_set.remove(str(qid))
         return True
 
-    modify_users(_submit_mastery)
+    modify_user_data(_submit_mastery)
     all_questions = get_questions_for_test(filename)
     summary = get_mastery_summary(user, filename, all_questions)
     return jsonify({"ok": True, "summary": summary, "newly_mastered": newly_mastered})
@@ -1204,8 +1230,8 @@ def mastery_debug():
     if not questions:
         return jsonify({"ok": False, "error": "No questions found."}), 503
 
-    users = load_users()
-    exam = _get_mastery_for_user(users, user, filename)
+    user_data = load_user_data()
+    exam = _get_mastery_for_user(user_data, user, filename)
     question_store = exam.get("questions", {})
     working_set = exam.get("working_set", [])
 
@@ -1233,16 +1259,16 @@ def mastery_reset():
     filename = data.get("filename", "").strip()
     if not filename:
         return jsonify({"ok": False, "error": "Filename is required."}), 400
-    def _reset_mastery(users: dict):
-        user_data = users.get(user)
-        if not user_data:
+    def _reset_mastery(user_data: dict):
+        record = user_data.get(user)
+        if not record:
             return False
-        if "mastery" in user_data and filename in user_data["mastery"]:
-            del user_data["mastery"][filename]
+        if "mastery" in record and filename in record["mastery"]:
+            del record["mastery"][filename]
             return True
         return False
 
-    modify_users(_reset_mastery)
+    modify_user_data(_reset_mastery)
     all_questions = get_questions_for_test(filename)
     summary = get_mastery_summary(user, filename, all_questions)
     return jsonify({"ok": True, "summary": summary})
