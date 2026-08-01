@@ -55,6 +55,40 @@ def is_case_label(text: str) -> bool:
     return bool(re.match(r"^Case\s+\d+:\s*", text, re.IGNORECASE))
 
 
+def is_explanation_tag(elem: Tag) -> bool:
+    """Detect the start of an explanation/green box section."""
+    if not isinstance(elem, Tag):
+        return False
+    text = clean_text(elem.get_text(" ", strip=True))
+    if re.match(r"^(Explanation|Topic)\s*[\d:.]", text, re.IGNORECASE):
+        return True
+    classes = elem.get("class", []) or []
+    if isinstance(classes, str):
+        classes = classes.split()
+    class_str = " ".join(classes).lower()
+    for marker in (
+        "message_box",
+        "explanation",
+        "et_pb_explanation",
+        "et-learn-more",
+        "answer-explanation",
+        "wpproquiz_explanation",
+    ):
+        if marker in class_str:
+            return True
+    return False
+
+
+def is_inside_explanation(elem: Tag) -> bool:
+    """Check whether an element lives inside an explanation section."""
+    parent = elem.parent
+    while parent and isinstance(parent, Tag):
+        if is_explanation_tag(parent):
+            return True
+        parent = parent.parent
+    return False
+
+
 def has_red_text(tag: Tag) -> bool:
     """Detect correct-answer markers that use red text (common on some exam pages)."""
     style = tag.get("style", "")
@@ -191,6 +225,12 @@ def scrape_questions(html: str, base_url: str = "") -> List[Dict[str, Any]]:
         if not text:
             continue
 
+        # Explanation boxes end the current question before they add extra bullets
+        if collecting and is_explanation_tag(elem):
+            flush_question()
+            collecting = False
+            continue
+
         # New numbered question
         if elem.name in ("p", "strong", "b", "li", "div") and is_question_start(text):
             cleaned = clean_text(text)
@@ -209,6 +249,10 @@ def scrape_questions(html: str, base_url: str = "") -> List[Dict[str, Any]]:
 
         # Collect options from <li> elements
         if elem.name == "li" and collecting:
+            # Ignore bullets inside the green explanation box
+            if is_inside_explanation(elem):
+                continue
+
             option_text = clean_text(text)
             if not option_text:
                 continue
@@ -243,7 +287,7 @@ def scrape_questions(html: str, base_url: str = "") -> List[Dict[str, Any]]:
         q_text = q["question"]
         if q_text.lower().startswith(("it essentials", "how to find", "press ctrl")):
             continue
-        key = (q_text, tuple(q["options"]))
+        key = (q_text, tuple(q["options"]), q.get("image"))
         if key in seen:
             continue
         seen.add(key)

@@ -101,11 +101,7 @@
         "STP",
         "UTP",
         "coax",
-        "fiber",
-        "UTP cable consists of four pairs of color-coded wires that have been twisted together and then encased in a flexible plastic sheath.",
-        "STP cable uses four pairs of wires, each wrapped in a foil shield, which are then wrapped in an overall metallic braid or foil.",
-        "Coaxial cable uses a copper conductor and a layer of flexible plastic insulation surrounds the copper conductor.",
-        "Fiber cable is a flexible, extremely thin, transparent strand of glass surrounded by plastic insulation."
+        "fiber"
       ],
       "correct_answer": "fiber",
       "image": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-11_180314-300x234-1.jpg"
@@ -118,9 +114,7 @@
         "bandwidth",
         "size of the network",
         "signal modulation technique",
-        "electromagnetic interference",
-        "Electromagnetic interference (EMI) or radio frequency interference (RFI) - EMI and RFI signals can distort and corrupt the data signals being carried by copper media.",
-        "Crosstalk - Crosstalk is a disturbance caused by the electric or magnetic fields of a signal on one wire interfering with the signal in an adjacent wire."
+        "electromagnetic interference"
       ],
       "correct_answer": "crosstalk | electromagnetic interference"
     },
@@ -131,11 +125,7 @@
         "STP",
         "UTP",
         "coax",
-        "fiber",
-        "UTP cable consists of four pairs of color-coded wires that have been twisted together and then encased in a flexible plastic sheath.",
-        "STP cable uses four pairs of wires, each wrapped in a foil shield, which are then wrapped in an overall metallic braid or foil.",
-        "Coaxial cable uses a copper conductor and a layer of flexible plastic insulation surrounds the copper conductor.",
-        "Fiber cable is a flexible, extremely thin, transparent strand of glass surrounded by plastic insulation"
+        "fiber"
       ],
       "correct_answer": "UTP",
       "image": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-11_180547.jpg"
@@ -287,11 +277,7 @@
         "source MAC address",
         "destination IP address",
         "destination MAC address",
-        "error-checking information",
-        "Frame start and stop indicator flags at the beginning and end of a frame",
-        "Addressing - for Ethernet networks this part of the header contains source and destination MAC addresses",
-        "Type field to indicate what Layer 3 protocol is being used",
-        "Error detection to determine if the frame arrived without error"
+        "error-checking information"
       ],
       "correct_answer": "source MAC address | destination MAC address | error-checking information"
     },
@@ -315,10 +301,7 @@
         "MTU size",
         "data",
         "trailer",
-        "CRC value",
-        "Header",
-        "Data",
-        "Trailer"
+        "CRC value"
       ],
       "correct_answer": "header | data | trailer"
     },
@@ -466,9 +449,7 @@
         "using the source MAC addresses of frames to build and maintain a MAC address table",
         "forwarding frames with unknown destination IP addresses to the default gateway",
         "utilizing the MAC address table to forward frames via the destination MAC address",
-        "examining the destination MAC address to add new entries to the MAC address table",
-        "When a frame comes in, the switch examines the Layer 2 source address to build and maintain the Layer 2 MAC address table.",
-        "It examines the Layer 2 destination address to determine how to forward the frame. When the destination address is in the MAC address table, then the frame is sent out a particular port. When the address is unknown, the frame is sent to all ports that have devices connected to that network."
+        "examining the destination MAC address to add new entries to the MAC address table"
       ],
       "correct_answer": "using the source MAC addresses of frames to build and maintain a MAC address table | utilizing the MAC address table to forward frames via the destination MAC address"
     },
@@ -726,74 +707,54 @@
     },
     {
       "id": 62,
-      "question": "Which two functions are performed at the MAC sublayer of the OSI data link layer? (Choose two.) [Case 6]",
-      "options": [
-        "Controls the NIC responsible for sending and receiving data on the physical medium",
-        "Provides a mechanism to allow multiple devices to communicate over a shared medium.",
-        "Synchronization: It embeds preamble and delimiter flags into the frame, which provides synchronization between source and destination nodes so they can detect precisely where a transmission begins and ends.",
-        "Error Detection: It computes the Cyclic Redundancy Check (CRC) value and implements a trailer (FCS field) at the end of the frame, allowing the receiving NIC to check for data corruption.",
-        "Media Access: It dictates the physical rules for placing data frames onto the transmission medium depending on the topology (e.g., CSMA/CD)."
-      ],
-      "correct_answer": "Controls the NIC responsible for sending and receiving data on the physical medium | Provides a mechanism to allow multiple devices to communicate over a shared medium."
-    },
-    {
-      "id": 63,
       "question": "Which two functions are performed at the LLC sublayer of the OSI data link layer? (Choose two.)",
       "options": [
         "Enables IPv4 and IPv6 to utilize the same network interface and media.",
         "Places information in the frame that identifies which network layer protocol is being used for the frame.",
         "Integrates various physical technologies.",
         "Implements a process to delimit fields within a Layer 2 frame.",
-        "Controls the NIC responsible for sending and receiving data on the physical medium.",
-        "Interfacing with upper layers: It acts as an intermediary between network software (Layer 3 protocols) and the underlying hardware. By inserting control information into the frame that identifies which network layer protocol is being used, it enables multiple protocols, such as IPv4 and IPv6, to utilize the same network interface and media .",
-        "Initial control encapsulation: It is responsible for adding Layer 2 control information to the network protocol data units (PDUs) before handing them down to the MAC sublayer."
+        "Controls the NIC responsible for sending and receiving data on the physical medium."
       ],
       "correct_answer": "Enables IPv4 and IPv6 to utilize the same network interface and media. | Places information in the frame that identifies which network layer protocol is being used for the frame."
     },
     {
-      "id": 64,
+      "id": 63,
       "question": "Which two functions are performed at the LLC sublayer of the OSI data link layer? (Choose two.)",
       "options": [
         "Adds Layer 2 control information to network protocol data.",
         "Places information in the frame that identifies which network layer protocol is being used for the frame.",
         "Performs data encapsulation.",
         "Controls the NIC responsible for sending and receiving data on the physical medium.",
-        "Integrates various physical technologies.",
-        "Interfacing with upper layers: It acts as an intermediary between network software (Layer 3 protocols) and the underlying hardware. By inserting control information into the frame that identifies which network layer protocol is being used, it enables multiple protocols, such as IPv4 and IPv6, to utilize the same network interface and media .",
-        "Initial control encapsulation: It is responsible for adding Layer 2 control information to the network protocol data units (PDUs) before handing them down to the MAC sublayer."
+        "Integrates various physical technologies."
       ],
       "correct_answer": "Adds Layer 2 control information to network protocol data. | Places information in the frame that identifies which network layer protocol is being used for the frame."
     },
     {
-      "id": 65,
+      "id": 64,
       "question": "Which two functions are performed at the LLC sublayer of the OSI data link layer? (Choose two.)",
       "options": [
         "Adds Layer 2 control information to network protocol data.",
         "Enables IPv4 and IPv6 to utilize the same network interface and media.",
         "Provides data link layer addressing.",
         "Implements a trailer to detect transmission errors.",
-        "Provides synchronization between source and target nodes.",
-        "Interfacing with upper layers: It acts as an intermediary between network software (Layer 3 protocols) and the underlying hardware. By inserting control information into the frame that identifies which network layer protocol is being used, it enables multiple protocols, such as IPv4 and IPv6, to utilize the same network interface and media .",
-        "Initial control encapsulation: It is responsible for adding Layer 2 control information to the network protocol data units (PDUs) before handing them down to the MAC sublayer."
+        "Provides synchronization between source and target nodes."
       ],
       "correct_answer": "Adds Layer 2 control information to network protocol data. | Enables IPv4 and IPv6 to utilize the same network interface and media."
     },
     {
-      "id": 66,
+      "id": 65,
       "question": "Which two functions are performed at the LLC sublayer of the OSI data link layer? (Choose two.)",
       "options": [
         "Enables IPv4 and IPv6 to utilize the same network interface and media.",
         "Adds Layer 2 control information to network protocol data.",
         "Integrates various physical technologies.",
         "Implements a trailer to detect transmission errors.",
-        "Provides synchronization between source and target nodes.",
-        "Interfacing with upper layers: It acts as an intermediary between network software (Layer 3 protocols) and the underlying hardware. By inserting control information into the frame that identifies which network layer protocol is being used, it enables multiple protocols, such as IPv4 and IPv6, to utilize the same network interface and media .",
-        "Initial control encapsulation: It is responsible for adding Layer 2 control information to the network protocol data units (PDUs) before handing them down to the MAC sublayer."
+        "Provides synchronization between source and target nodes."
       ],
       "correct_answer": "Enables IPv4 and IPv6 to utilize the same network interface and media. | Adds Layer 2 control information to network protocol data."
     },
     {
-      "id": 67,
+      "id": 66,
       "question": "What action will occur if a switch receives a frame with the destination MAC address FF:FF:FF:FF:FF:FF?",
       "options": [
         "The switch forwards it out all ports except the ingress port.",
@@ -804,7 +765,7 @@
       "correct_answer": "The switch forwards it out all ports except the ingress port."
     },
     {
-      "id": 68,
+      "id": 67,
       "question": "What action will occur if a switch receives a frame with the destination MAC address 01:00:5E:00:00:D9?",
       "options": [
         "The switch forwards it out all ports except the ingress port.",
@@ -815,7 +776,7 @@
       "correct_answer": "The switch forwards it out all ports except the ingress port."
     },
     {
-      "id": 69,
+      "id": 68,
       "question": "What action will occur if a host receives a frame with a destination MAC address of FF:FF:FF:FF:FF:FF?",
       "options": [
         "The host will process the frame.",
@@ -826,7 +787,7 @@
       "correct_answer": "The host will process the frame."
     },
     {
-      "id": 70,
+      "id": 69,
       "question": "What action will occur if a switch receives a frame and does have the source MAC address in the MAC table?",
       "options": [
         "The switch refreshes the timer on that entry.",
@@ -837,7 +798,7 @@
       "correct_answer": "The switch refreshes the timer on that entry."
     },
     {
-      "id": 71,
+      "id": 70,
       "question": "What action will occur if a host receives a frame with a destination MAC address of FF:FF:FF:FF:FF:FF?",
       "options": [
         "The host will process the frame.",
@@ -848,21 +809,18 @@
       "correct_answer": "The host will process the frame."
     },
     {
-      "id": 72,
+      "id": 71,
       "question": "What action will occur if a host receives a frame with a destination MAC address it does not recognize?",
       "options": [
         "The host will discard the frame.",
         "The host replies to the switch with its own IP address.",
         "The host forwards the frame to all other hosts.",
-        "The host returns the frame to the switch.",
-        "Its own unique physical MAC address.",
-        "A broadcast MAC address (FF-FF-FF-FF-FF-FF).",
-        "A multicast MAC address that the host is actively subscribed to."
+        "The host returns the frame to the switch."
       ],
       "correct_answer": "The host will discard the frame."
     },
     {
-      "id": 73,
+      "id": 72,
       "question": "Which type of UTP cable is used to connect a PC to a switch port?",
       "options": [
         "console",
