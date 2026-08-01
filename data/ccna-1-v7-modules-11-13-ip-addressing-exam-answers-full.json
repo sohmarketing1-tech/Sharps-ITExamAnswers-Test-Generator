@@ -465,11 +465,7 @@
         "host unreachable",
         "protocol unreachable",
         "port unreachable",
-        "network unreachable",
-        "Code 0: Network unreachable (the router lacks a valid path to the destination network).",
-        "Code 1: Host unreachable . This indicates that the packet successfully reached the local gateway or edge router responsible for the destination network segment, but the specific target host failed to respond (e.g., the device is powered off, disconnected, or its MAC address cannot be resolved via ARP).",
-        "Code 2: Protocol unreachable.",
-        "Code 3: Port unreachable."
+        "network unreachable"
       ],
       "correct_answer": "host unreachable"
     },
@@ -528,11 +524,7 @@
         "address unreachable",
         "network unreachable",
         "host unreachable",
-        "protocol unreachable",
-        "Code 0: No route to destination (the router lacks a path to that network).",
-        "Code 1: Communication with destination administratively prohibited (e.g., blocked by a firewall rule or ACL).",
-        "Code 2: Beyond scope of the source address.",
-        "Code 3: Address unreachable . This implies that the packet successfully reached the local gateway or edge router serving the destination segment, but that router failed to map or resolve the Layer 2 physical address (Neighbor Discovery/NDP failure) required to deliver the packet to the final host."
+        "protocol unreachable"
       ],
       "correct_answer": "address unreachable"
     },
@@ -565,9 +557,7 @@
         "fe80:9ea:0:2200::fe0:290",
         "fe80:9:20::b000:290",
         "fe80:9ea0::2020:0:bf:e0:9290",
-        "fe80:9ea0::2020::bf:e0:9290",
-        "Omit leading zeros: Remove any starting zeros from each 16-bit segment ( hextet ). Following this, 09ea becomes 9ea , 0000 becomes 0 , 0fe0 simplifies to fe0 , and 0290 reduces to 290 . (Note: Trailing zeros, such as those in 2200 , cannot be dropped).",
-        "Compress with double colons ( :: ): This rule allows you to replace the longest contiguous string of all-zero hextets with a single :: . This specific address features a single 0000 in the third hextet and a consecutive pair of 0000:0000 in the fifth and sixth hextets. You must choose the longest sequence to compress, which substitutes the consecutive pair with :: ."
+        "fe80:9ea0::2020::bf:e0:9290"
       ],
       "correct_answer": "fe80:9ea:0:2200::fe0:290"
     },
@@ -578,9 +568,7 @@
         "2002:42:10:c400::909",
         "200:420:110:c4b::910:0:90",
         "2002:4200::25:1090:0:99",
-        "2002:42::25:1090:0:99",
-        "Omit leading zeros: Drop any starting zeros within each 16-bit segment ( hextet ). Following this step, 0042 simplifies to 42 , 0010 becomes 10 , and 0909 reduces to 909 . Trailing zeros (such as the ones in c400 ) must be kept exactly as they are.",
-        "Compress with the double colon ( :: ): The contiguous string of three consecutive all-zero segments ( 0000:0000:0000 ) is fully replaced by a single :: notation."
+        "2002:42::25:1090:0:99"
       ],
       "correct_answer": "2002:42:10:c400::909"
     },
@@ -591,9 +579,7 @@
         "2001:db8::ab8:1:0:1000",
         "2001:db8::a0b0:8:1",
         "2001:db8:1::ab8:0:1",
-        "2001:db8:0:1::8:1",
-        "Omit leading zeros: Drop any starting zeros within each 16-bit segment ( hextet ). Following this step, 0db8 simplifies to db8 , 0ab8 becomes ab8 , 0001 reduces to 1 , and 0000 segments simplify to a single 0 . (Note: Trailing zeros, such as the ones in 1000 , cannot be omitted).",
-        "Compress with the double colon ( :: ): Replace the longest continuous string of all-zero hextets with a single :: notation. This address contains two all-zero sequences: a two-block sequence ( 0000:0000 ) in the 3rd and 4th segments, and a single block ( 0000 ) in the 7th segment. Compressing the longest sequence turns the two consecutive blocks into :: , while the 7th segment remains represented by a single 0 ."
+        "2001:db8:0:1::8:1"
       ],
       "correct_answer": "2001:db8::ab8:1:0:1000"
     },
@@ -604,9 +590,7 @@
         "2002:420:c4:1008:25:190::990",
         "2002:42:10:c400::909",
         "2002:4200::25:1090:0:99",
-        "2002:42::25:1090:0:99",
-        "Omit leading zeros in any 16-bit section (hextet). Following this rule: 0420 becomes 420 , 00c4 becomes c4 , 0025 becomes 25 , 0190 becomes 190 , and 0990 becomes 990 . Trailing zeros must not be dropped.",
-        "Use a double colon ( :: ) to replace any single, contiguous string of one or more segments consisting entirely of zeros. In this address, the seventh hextet is 0000 , which is compressed into :: ."
+        "2002:42::25:1090:0:99"
       ],
       "correct_answer": "2002:420:c4:1008:25:190::990"
     },
@@ -628,9 +612,7 @@
         "fe80::220:b3f:f0e0:29",
         "fe80:9ea:0:2200::fe0:290",
         "fe80:9ea0::2020:0:bf:e0:9290",
-        "fe80:9ea0::2020::bf:e0:9290",
-        "Omit leading zeros: In every hextet, any leading zeros are dropped. Thus, 0220 becomes 220 , 0b3f becomes b3f , and 0029 reduces to 29 .",
-        "Compress contiguous zeros using the double colon ( :: ): The three consecutive all-zero segments ( 0000:0000:0000 ) are replaced with a single :: notation."
+        "fe80:9ea0::2020::bf:e0:9290"
       ],
       "correct_answer": "fe80::220:b3f:f0e0:29"
     },
@@ -652,9 +634,7 @@
         "2002:42:10:c400::909",
         "2002:4200::25:1090:0:99",
         "2002:420:c4:1008:25:190::990",
-        "2002:42::25:1090:0:99",
-        "Omit leading zeros: Drop any starting zeros within each 16-bit segment ( hextet ). Following this step, 0042 simplifies to 42 , 0010 becomes 10 , and 0909 reduces to 909 . Trailing zeros (such as the ones in c400 ) must be kept exactly as they are.",
-        "Compress with the double colon ( :: ): The contiguous string of three consecutive all-zero segments ( 0000:0000:0000 ) is fully replaced by a single :: notation."
+        "2002:42::25:1090:0:99"
       ],
       "correct_answer": "2002:42:10:c400::909"
     },
@@ -665,9 +645,7 @@
         "fe80:9ea:0:2200::fe0:290",
         "fe80:9ea0::2020:0:bf:e0:9290",
         "fe80::220:b3f:f0e0:29",
-        "fe80::0220:0b3f:f0e0:0029",
-        "Omit leading zeros: Remove any starting zeros from each 16-bit segment ( hextet ). Following this, 09ea becomes 9ea , 0000 becomes 0 , 0fe0 simplifies to fe0 , and 0290 reduces to 290 . (Note: Trailing zeros, such as those in 2200 , cannot be dropped).",
-        "Compress with double colons ( :: ): This rule allows you to replace the longest contiguous string of all-zero hextets with a single :: . This specific address features a single 0000 in the third hextet and a consecutive pair of 0000:0000 in the fifth and sixth hextets. You must choose the longest sequence to compress, which substitutes the consecutive pair with :: ."
+        "fe80::0220:0b3f:f0e0:0029"
       ],
       "correct_answer": "fe80:9ea:0:2200::fe0:290"
     },
@@ -678,11 +656,7 @@
         "beyond scope of the source address",
         "communication with the destination administratively prohibited",
         "address unreachable",
-        "no route to destination",
-        "Code 0: No route to destination.",
-        "Code 1: Communication with destination administratively prohibited.",
-        "Code 2: Beyond scope of the source address . This tells the sender that the scope of its source IP address is too constrained (for example, a Link-Local Address) to successfully communicate with the destination IP address (such as a Global Unicast Address).",
-        "Code 3: Address unreachable."
+        "no route to destination"
       ],
       "correct_answer": "beyond scope of the source address"
     },
@@ -693,11 +667,7 @@
         "host unreachable",
         "beyond scope of the source address",
         "address unreachable",
-        "communication with the destination administratively prohibited",
-        "Code 0: Network unreachable (the router lacks a valid path to the destination network).",
-        "Code 1: Host unreachable . This indicates that the packet successfully reached the local gateway or edge router responsible for the destination network segment, but the specific target host failed to respond (e.g., the device is powered off, disconnected, or its MAC address cannot be resolved via ARP).",
-        "Code 2: Protocol unreachable.",
-        "Code 3: Port unreachable."
+        "communication with the destination administratively prohibited"
       ],
       "correct_answer": "host unreachable"
     },
@@ -708,11 +678,7 @@
         "address unreachable",
         "communication with the destination administratively prohibited",
         "beyond scope of the source address",
-        "no route to destination",
-        "Code 0: No route to destination.",
-        "Code 1: Communication with destination administratively prohibited.",
-        "Code 2: Beyond scope of the source address.",
-        "Code 3: Address unreachable (the targeted destination IP cannot be resolved or is physically unavailable on the local link)."
+        "no route to destination"
       ],
       "correct_answer": "address unreachable"
     },
@@ -734,11 +700,7 @@
         "port unreachable",
         "host unreachable",
         "protocol unreachable",
-        "network unreachable",
-        "Code 0: No route to destination (Network unreachable).",
-        "Code 1: Communication with destination administratively prohibited.",
-        "Code 3: Address unreachable (Host unreachable).",
-        "Code 4: Port unreachable ."
+        "network unreachable"
       ],
       "correct_answer": "port unreachable"
     },
@@ -771,11 +733,7 @@
         "beyond scope of the source address",
         "host unreachable",
         "protocol unreachable",
-        "network unreachable",
-        "Code 0: No route to destination.",
-        "Code 1: Communication with destination administratively prohibited.",
-        "Code 2: Beyond scope of the source address . This tells the sender that the scope of its source IP address is too constrained (for example, a Link-Local Address) to successfully communicate with the destination IP address (such as a Global Unicast Address).",
-        "Code 3: Address unreachable."
+        "network unreachable"
       ],
       "correct_answer": "beyond scope of the source address"
     }

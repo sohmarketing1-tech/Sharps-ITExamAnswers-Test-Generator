@@ -365,11 +365,7 @@
         "DNS server address",
         "subnet mask",
         "default gateway",
-        "DHCP server address",
-        "IPv4 address - uniquely identifies an end device on the network",
-        "Subnet mask - determines the network address portion and host portion for an IPv4 address",
-        "Default gateway - the IP address of the router interface used for communicating with hosts in another network",
-        "DNS server address - the IP address of the Domain Name System (DNS) server"
+        "DHCP server address"
       ],
       "correct_answer": "subnet mask"
     },

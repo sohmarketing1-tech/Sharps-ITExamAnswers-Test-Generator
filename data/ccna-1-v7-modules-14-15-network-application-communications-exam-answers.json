@@ -100,10 +100,7 @@
         "tracking the individual communication between applications on the source and destination hosts",
         "providing frame delimiting to identify bits making up a frame",
         "performing a cyclic redundancy check on the frame for errors",
-        "providing the interface between applications and the underlying network over which messages are transmitted",
-        "Tracking the individual communication streams between applications on the source and destination hosts",
-        "Segmenting data at the source and reassembling the data at the destination",
-        "Identifying the proper application for each communication stream through the use of port numbers"
+        "providing the interface between applications and the underlying network over which messages are transmitted"
       ],
       "correct_answer": "identifying the proper application for each communication stream | tracking the individual communication between applications on the source and destination hosts"
     },
@@ -137,12 +134,7 @@
         "Transmitted data segments are tracked.",
         "Destination devices reassemble messages and pass them to an application.",
         "Received data is unacknowledged.",
-        "Unacknowledged data packets are retransmitted.",
-        "Provides tracking of transmitted data segments",
-        "Destination devices will acknowledge received data.",
-        "Source devices will retransmit unacknowledged data.",
-        "Destination devices will not acknowledge received data",
-        "Headers use very little overhead and cause minimal delay.​"
+        "Unacknowledged data packets are retransmitted."
       ],
       "correct_answer": "Destination devices receive traffic with minimal delay. | Received data is unacknowledged."
     },
@@ -342,10 +334,7 @@
         "to request an HTML page from a web server",
         "to send error information from a web server to a web client",
         "to upload content to a web server from a web client",
-        "to retrieve client email from an email server using TCP port 110",
-        "GET - used by clients to request data from the web server",
-        "POST - used by clients to upload data to a web server",
-        "PUT - used by clients to upload data to a web server"
+        "to retrieve client email from an email server using TCP port 110"
       ],
       "correct_answer": "to request an HTML page from a web server"
     },

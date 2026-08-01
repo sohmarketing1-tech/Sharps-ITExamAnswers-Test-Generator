@@ -76,11 +76,7 @@
         "denial-of-service",
         "man-in-the-middle attack",
         "extraction of security parameters",
-        "username enumeration",
-        "Man-In-the-middle attack (MITM) - The threat actor gets between devices in the system and intercepts all of the data being transmitted. This information could simply be collected or modified for a specific purpose and delivered to its original destination.",
-        "Eavesdropping attack - When devices are being installed, the threat actor can intercept data such as security keys that are used by constrained devices to establish communications once they are up and running.",
-        "SQL injection (SQLi) - Threat actors uses a flaw in the Structured Query Language (SQL) application that allows them to have access to modify the data or gain administrative privileges.",
-        "Routing attack - A threat actor could either place a rogue routing device on the network or modify routing packets to manipulate routers to send all packets to the chosen destination of the threat actor. The threat actor could then drop specific packets, known as selective forwarding, or drop all packets, known as a sinkhole attack."
+        "username enumeration"
       ],
       "correct_answer": "man-in-the-middle attack"
     },
@@ -346,10 +342,7 @@
         "Verify full system functionality.",
         "Test the theory to determine cause.",
         "Establish a theory of probable causes.",
-        "Establish a plan of action to resolve the issue.",
-        "Identify the problem.",
-        "Verify full system functionality and implement preventive measures.",
-        "Document findings, actions, and outcomes."
+        "Establish a plan of action to resolve the issue."
       ],
       "correct_answer": "Establish a theory of probable causes."
     },

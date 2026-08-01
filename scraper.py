@@ -52,7 +52,7 @@ def is_question_start(text: str) -> bool:
 
 
 def is_case_label(text: str) -> bool:
-    return bool(re.match(r"^Case\s+\d+:\s*", text, re.IGNORECASE))
+    return bool(re.match(r"^(Case\s+\d+|Other case):?\s*", text, re.IGNORECASE))
 
 
 def is_explanation_tag(elem: Tag) -> bool:
@@ -104,7 +104,7 @@ def has_red_text(tag: Tag) -> bool:
 
 
 def extract_case_label(text: str) -> str:
-    m = re.match(r"^(Case\s+\d+):?\s*(.*)$", text, re.IGNORECASE)
+    m = re.match(r"^((?:Case\s+\d+|Other case)):?\s*(.*)$", text, re.IGNORECASE)
     if not m:
         return "", text
     return m.group(1), clean_text(m.group(2))

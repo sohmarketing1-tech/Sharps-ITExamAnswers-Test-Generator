@@ -98,11 +98,7 @@
         "routing packets toward the destination",
         "encapsulating PDUs from the transport layer",
         "placement of frames on the media",
-        "collision detection",
-        "addressing",
-        "encapsulation",
-        "routing",
-        "de-encapsulation"
+        "collision detection"
       ],
       "correct_answer": "routing packets toward the destination | encapsulating PDUs from the transport layer"
     },
@@ -146,11 +142,7 @@
         "smaller-sized header",
         "little requirement for processing checksums",
         "smaller-sized source and destination IP addresses",
-        "efficient packet handling",
-        "Better routing efficiency and efficient packet handling for performance and forwarding-rate scalability",
-        "No requirement for processing checksums",
-        "Simplified and more efficient extension header mechanisms (as opposed to the IPv4 Options field)",
-        "A Flow Label field for per-flow processing with no need to open the transport inner packet to identify the various traffic flows"
+        "efficient packet handling"
       ],
       "correct_answer": "efficient packet handling"
     },
@@ -522,14 +514,9 @@
         "header checksum",
         "source IPv4 address",
         "protocol",
-        "TTL",
-        "10.27.14.148",
-        "10.27.14.1",
-        "10.14.15.254",
-        "203.0.113.39",
-        "10.27.15.17"
+        "TTL"
       ],
-      "correct_answer": "header checksum | 10.27.14.148"
+      "correct_answer": "header checksum"
     },
     {
       "id": 46,
@@ -626,14 +613,9 @@
         "Local hosts learn the MAC address of the default gateway.",
         "The destination MAC address FF-FF-FF-FF-FF-FF appears in the header of the Ethernet frame.",
         "The source MAC address appears in the header of the Ethernet frame.",
-        "The port-to-MAC address table on a switch has the same entries as the ARP table on the switch.",
-        "192.168.235.234",
-        "192.168.235.1",
-        "10.234.235.254",
-        "203.0.113.3",
-        "192.168.234.114"
+        "The port-to-MAC address table on a switch has the same entries as the ARP table on the switch."
       ],
-      "correct_answer": "Local hosts learn the MAC address of the default gateway. | 192.168.235.234"
+      "correct_answer": "Local hosts learn the MAC address of the default gateway."
     },
     {
       "id": 55,
@@ -686,49 +668,9 @@
         "The type field 0x806 appears in the header of the Ethernet frame.",
         "The destination MAC address FF-FF-FF-FF-FF-FF appears in the header of the Ethernet frame.",
         "Entries in an ARP table are time-stamped and are purged after the timeout expires.",
-        "The port-to-MAC address table on a switch has the same entries as the ARP table on the switch.",
-        "172.29.157.156",
-        "172.29.157.1",
-        "10.156.157.254",
-        "198.51.100.177",
-        "172.29.156.36",
-        "192.168.191.189",
-        "192.168.191.1",
-        "10.190.191.254",
-        "198.51.100.213",
-        "192.168.190.70",
-        "192.168.225.223",
-        "192.168.225.1",
-        "10.224.225.254",
-        "203.0.113.246",
-        "192.168.224.103",
-        "10.118.62.196",
-        "10.118.62.1",
-        "10.62.63.254",
-        "209.165.200.87",
-        "10.118.63.65",
-        "172.19.98.230",
-        "172.19.98.1",
-        "10.98.99.254",
-        "209.165.200.120",
-        "172.19.99.99",
-        "172.20.132.13",
-        "172.20.132.1",
-        "10.132.133.254",
-        "198.51.100.156",
-        "172.20.133.132",
-        "192.168.167.166",
-        "192.168.167.1",
-        "10.166.167.254",
-        "198.51.100.189",
-        "192.168.166.46",
-        "192.168.201.200",
-        "192.168.201.1",
-        "10.200.201.254",
-        "203.0.113.222",
-        "192.168.200.80"
+        "The port-to-MAC address table on a switch has the same entries as the ARP table on the switch."
       ],
-      "correct_answer": "The type field 0x806 appears in the header of the Ethernet frame. | 172.29.157.156 | 192.168.191.189 | 192.168.225.223 | 10.118.62.196 | 172.19.98.230 | 172.20.132.13 | 192.168.167.166 | 192.168.201.200"
+      "correct_answer": "The type field 0x806 appears in the header of the Ethernet frame."
     }
   ]
 }
