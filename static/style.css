@@ -1265,6 +1265,7 @@ body {
         order: 1;
         flex: 0 0 auto;
         position: relative;
+        padding: calc(8px + constant(safe-area-inset-top)) 12px 8px;
         padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
     }
 
@@ -1299,6 +1300,7 @@ body {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
+        padding: 0 0 calc(constant(safe-area-inset-bottom) + 28px);
         padding: 0 0 calc(env(safe-area-inset-bottom) + 28px);
         z-index: 200;
         background: linear-gradient(145deg, rgba(var(--glass-base), 0.14) 0%, rgba(var(--glass-base), 0.06) 100%);
@@ -3623,6 +3625,7 @@ body {
 @media (max-width: 600px) {
     /* Header / nav */
     .top-nav {
+        padding: calc(8px + constant(safe-area-inset-top)) 12px 8px;
         padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
     }
 
