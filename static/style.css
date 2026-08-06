@@ -1172,25 +1172,50 @@ body {
 }
 
 @media (max-width: 700px) {
+    html,
+    body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .top-nav {
+        order: 1;
+        flex: 0 0 auto;
+        position: relative;
+    }
+
+    .container {
+        order: 2;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        padding-bottom: 24px;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .tab-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        order: 3;
+        position: static;
+        flex: 0 0 auto;
         width: 100%;
         margin: 0;
         border-radius: 16px 16px 0 0;
         border: none;
-        border-top: 1px solid rgba(var(--glass-base), 0.18);
+        border-top: 1px solid rgba(var(--glass-base), 0.2);
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
         padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
         z-index: 200;
-        background: rgba(var(--bg-base), 0.98);
-        box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.18);
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
+        background: rgba(var(--bg-base), 0.78);
+        box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.12);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
     }
 
     .tab-btn {
@@ -1219,11 +1244,6 @@ body {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-    }
-
-    .container,
-    .top-nav + .container {
-        padding-bottom: 90px;
     }
 }
 
