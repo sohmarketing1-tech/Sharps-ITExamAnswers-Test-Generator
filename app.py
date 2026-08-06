@@ -605,6 +605,11 @@ def exam_page(slug: str):
     )
 
 
+@app.route("/google46429450d03302f8.html")
+def google_verify():
+    return send_from_directory(app.static_folder, "google46429450d03302f8.html")
+
+
 @app.route("/sitemap.xml")
 def sitemap():
     today = datetime.date.today().isoformat()
