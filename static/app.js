@@ -789,7 +789,8 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
         return;
     }
     const groups = groupExamsByCategory(state.exams);
-    const activeCategory = (activeFilename && getCategoryForFilename(activeFilename)) || defaultCategory || groups[0].category;
+    const selectedCategory = activeFilename ? getCategoryForFilename(activeFilename) : "";
+    const activeCategory = container.dataset.viewCategory || selectedCategory || defaultCategory || groups[0].category;
 
     const label = document.createElement("div");
     label.className = "exam-category-label";
@@ -809,6 +810,7 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
         tab.setAttribute("role", "tab");
         tab.setAttribute("aria-selected", category === activeCategory ? "true" : "false");
         tab.addEventListener("click", () => {
+            container.dataset.viewCategory = category;
             renderExamGroups(container, activeFilename, onSelect, category);
         });
         tabs.appendChild(tab);
@@ -826,7 +828,8 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
         btn.innerHTML = `<span class="exam-name">${escapeHtml(exam.display_name || exam.title)}</span><span class="exam-count">${exam.count || 0} questions</span>`;
         btn.addEventListener("click", () => {
             onSelect(exam.filename);
-            renderExamGroups(container, exam.filename, onSelect, getCategoryForFilename(exam.filename));
+            container.dataset.viewCategory = getCategoryForFilename(exam.filename);
+            renderExamGroups(container, exam.filename, onSelect, container.dataset.viewCategory);
         });
         grid.appendChild(btn);
     });
