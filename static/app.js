@@ -153,6 +153,11 @@ const els = {
     profileUsername: document.getElementById("profile-username"),
     avatarUpload: document.getElementById("avatar-upload"),
     avatarUploadError: document.getElementById("avatar-upload-error"),
+    avatarCropModal: document.getElementById("avatar-crop-modal"),
+    cropImage: document.getElementById("crop-image"),
+    cropZoom: document.getElementById("crop-zoom"),
+    cropCancel: document.getElementById("crop-cancel"),
+    cropSave: document.getElementById("crop-save"),
     themePicker: document.getElementById("theme-picker"),
     profileSave: document.getElementById("profile-save"),
     profileCancel: document.getElementById("profile-cancel"),
@@ -219,6 +224,9 @@ const THEMES = [
 let profileDraft = { ...DEFAULT_PROFILE };
 let profileSavedTheme = DEFAULT_PROFILE.theme;
 let avatarSnapshot = null;
+
+let cropState = { scale: 1, offsetX: 0, offsetY: 0, dragging: false, startX: 0, startY: 0, imgWidth: 0, imgHeight: 0 };
+let cropImageLoaded = false;
 
 function getProfile() {
     return { ...DEFAULT_PROFILE, ...state.userProfile };
@@ -495,7 +503,7 @@ function updateAvatarPreview() {
     if (els.profileAvatarPreview) els.profileAvatarPreview.src = src;
 }
 
-function processAvatarFile(file, callback) {
+function openAvatarCrop(file) {
     const errorEl = els.avatarUploadError;
     if (!file || !file.type.startsWith("image/")) {
         if (errorEl) errorEl.textContent = "Please choose an image file.";
@@ -504,32 +512,109 @@ function processAvatarFile(file, callback) {
     if (errorEl) errorEl.textContent = "";
     const reader = new FileReader();
     reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            const size = Math.min(img.width, img.height);
-            const canvas = document.createElement("canvas");
-            canvas.width = 256;
-            canvas.height = 256;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, 256, 256);
-            const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-            if (dataUrl.length > 500_000) {
-                if (errorEl) errorEl.textContent = "Processed image is too large. Try a smaller photo.";
-                return;
-            }
-            callback(dataUrl);
-        };
-        img.onerror = () => { if (errorEl) errorEl.textContent = "Could not read image."; };
-        img.src = e.target.result;
+        if (els.cropImage) {
+            cropImageLoaded = false;
+            els.cropImage.src = e.target.result;
+            els.cropImage.onload = () => {
+                cropImageLoaded = true;
+                cropState.imgWidth = els.cropImage.naturalWidth;
+                cropState.imgHeight = els.cropImage.naturalHeight;
+                const baseScale = Math.max(256 / cropState.imgWidth, 256 / cropState.imgHeight);
+                cropState.scale = baseScale;
+                cropState.offsetX = 0;
+                cropState.offsetY = 0;
+                if (els.cropZoom) {
+                    els.cropZoom.min = baseScale.toFixed(3);
+                    els.cropZoom.max = Math.max(baseScale * 5, 5).toFixed(3);
+                    els.cropZoom.step = (Math.max(baseScale, 1) / 50).toFixed(3);
+                    els.cropZoom.value = baseScale.toFixed(3);
+                }
+                updateCropTransform();
+                if (els.avatarCropModal) els.avatarCropModal.classList.remove("hidden");
+            };
+            els.cropImage.onerror = () => {
+                if (errorEl) errorEl.textContent = "Could not read image.";
+            };
+        }
     };
     reader.readAsDataURL(file);
 }
 
-function handleAvatarUpload(file) {
-    processAvatarFile(file, (dataUrl) => {
-        profileDraft.avatar_image = dataUrl;
-        updateAvatarPreview();
-    });
+function closeAvatarCrop() {
+    if (els.avatarCropModal) els.avatarCropModal.classList.add("hidden");
+    cropImageLoaded = false;
+}
+
+function clampCropOffset() {
+    const halfW = cropState.imgWidth * cropState.scale / 2;
+    const halfH = cropState.imgHeight * cropState.scale / 2;
+    const maxX = halfW - 128;
+    const maxY = halfH - 128;
+    if (maxX > 0) {
+        cropState.offsetX = Math.max(-maxX, Math.min(maxX, cropState.offsetX));
+    } else {
+        cropState.offsetX = 0;
+    }
+    if (maxY > 0) {
+        cropState.offsetY = Math.max(-maxY, Math.min(maxY, cropState.offsetY));
+    } else {
+        cropState.offsetY = 0;
+    }
+}
+
+function updateCropTransform() {
+    if (!els.cropImage) return;
+    clampCropOffset();
+    els.cropImage.style.setProperty("--crop-scale", cropState.scale);
+    els.cropImage.style.setProperty("--crop-x", `${cropState.offsetX}px`);
+    els.cropImage.style.setProperty("--crop-y", `${cropState.offsetY}px`);
+}
+
+function onCropPointerDown(e) {
+    if (!cropImageLoaded) return;
+    e.preventDefault();
+    cropState.dragging = true;
+    const point = e.touches ? e.touches[0] : e;
+    cropState.startX = point.clientX - cropState.offsetX;
+    cropState.startY = point.clientY - cropState.offsetY;
+    if (els.cropImage) els.cropImage.style.cursor = "grabbing";
+}
+
+function onCropPointerMove(e) {
+    if (!cropState.dragging) return;
+    e.preventDefault();
+    const point = e.touches ? e.touches[0] : e;
+    cropState.offsetX = point.clientX - cropState.startX;
+    cropState.offsetY = point.clientY - cropState.startY;
+    updateCropTransform();
+}
+
+function onCropPointerUp() {
+    cropState.dragging = false;
+    if (els.cropImage) els.cropImage.style.cursor = "grab";
+}
+
+function saveAvatarCrop() {
+    if (!cropImageLoaded || !els.cropImage) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    const topLeftX = 128 + cropState.offsetX - (cropState.imgWidth * cropState.scale) / 2;
+    const topLeftY = 128 + cropState.offsetY - (cropState.imgHeight * cropState.scale) / 2;
+    const sx = (0 - topLeftX) / cropState.scale;
+    const sy = (0 - topLeftY) / cropState.scale;
+    const sw = 256 / cropState.scale;
+    const sh = 256 / cropState.scale;
+    ctx.drawImage(els.cropImage, sx, sy, sw, sh, 0, 0, 256, 256);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+    if (dataUrl.length > 500_000) {
+        if (els.avatarUploadError) els.avatarUploadError.textContent = "Processed image is too large. Try a smaller photo.";
+        return;
+    }
+    profileDraft.avatar_image = dataUrl;
+    updateAvatarPreview();
+    closeAvatarCrop();
 }
 
 function renderThemePicker(selectedKey) {
@@ -2436,7 +2521,28 @@ els.profileCancel.addEventListener("click", cancelProfile);
 if (els.avatarUpload) {
     els.avatarUpload.addEventListener("change", (e) => {
         const file = e.target.files && e.target.files[0];
-        if (file) handleAvatarUpload(file);
+        if (file) openAvatarCrop(file);
+    });
+}
+if (els.cropImage) {
+    els.cropImage.addEventListener("mousedown", onCropPointerDown);
+    els.cropImage.addEventListener("touchstart", onCropPointerDown, { passive: false });
+    window.addEventListener("mousemove", onCropPointerMove);
+    window.addEventListener("touchmove", onCropPointerMove, { passive: false });
+    window.addEventListener("mouseup", onCropPointerUp);
+    window.addEventListener("touchend", onCropPointerUp);
+}
+if (els.cropZoom) {
+    els.cropZoom.addEventListener("input", (e) => {
+        cropState.scale = parseFloat(e.target.value) || 1;
+        updateCropTransform();
+    });
+}
+if (els.cropCancel) els.cropCancel.addEventListener("click", closeAvatarCrop);
+if (els.cropSave) els.cropSave.addEventListener("click", saveAvatarCrop);
+if (els.avatarCropModal) {
+    els.avatarCropModal.addEventListener("click", (e) => {
+        if (e.target === els.avatarCropModal) closeAvatarCrop();
     });
 }
 els.profileModal.addEventListener("click", (e) => {
@@ -2458,6 +2564,10 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         if (!els.authModal.classList.contains("hidden")) closeAuthModal();
         if (!els.installModal.classList.contains("hidden")) closeInstallModal();
+        if (els.avatarCropModal && !els.avatarCropModal.classList.contains("hidden")) {
+            closeAvatarCrop();
+            return;
+        }
         if (!els.profileModal.classList.contains("hidden")) cancelProfile();
     }
 });
