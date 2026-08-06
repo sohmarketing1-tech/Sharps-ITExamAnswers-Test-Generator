@@ -1239,6 +1239,10 @@ body {
 }
 
 @media (max-width: 700px) {
+    html {
+        font-size: 15px;
+    }
+
     html,
     body {
         height: 100%;
@@ -1254,6 +1258,12 @@ body {
         order: 1;
         flex: 0 0 auto;
         position: relative;
+        padding: 8px 12px;
+    }
+
+    .header-logo {
+        height: 34px;
+        max-width: 140px;
     }
 
     .container {
@@ -1261,8 +1271,13 @@ body {
         flex: 1 1 auto;
         min-height: 0;
         overflow-y: auto;
+        padding: 14px;
         padding-bottom: 24px;
         -webkit-overflow-scrolling: touch;
+    }
+
+    .card {
+        padding: 18px;
     }
 
     .tab-nav {
@@ -1271,7 +1286,7 @@ body {
         flex: 0 0 auto;
         width: 100%;
         margin: 0;
-        border-radius: 16px 16px 0 0;
+        border-radius: 14px 14px 0 0;
         border: none;
         border-top: 1px solid rgba(var(--glass-base), 0.15);
         display: grid;
@@ -1291,18 +1306,18 @@ body {
         gap: 2px;
         padding: 0;
         border-radius: 0;
-        font-size: 0.65rem;
+        font-size: 0.7rem;
         line-height: 1.1;
-        min-height: 60px;
+        min-height: 52px;
         margin: 0;
     }
 
     .tab-nav .tab-btn:first-child {
-        border-radius: 16px 0 0 0;
+        border-radius: 14px 0 0 0;
     }
 
     .tab-nav .tab-btn:last-child {
-        border-radius: 0 16px 0 0;
+        border-radius: 0 14px 0 0;
     }
 
     .tab-btn.active {
@@ -1310,8 +1325,8 @@ body {
     }
 
     .tab-btn svg {
-        width: 22px;
-        height: 22px;
+        width: 18px;
+        height: 18px;
     }
 
     .tab-label {
@@ -2461,11 +2476,11 @@ body {
 /* Responsive */
 @media (max-width: 600px) {
     .container {
-        padding: 16px;
+        padding: 12px;
     }
 
     .card {
-        padding: 22px;
+        padding: 16px;
     }
 
     .button-row {
