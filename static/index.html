@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=49" />
+    <link rel="stylesheet" href="/style.css?v=50" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -386,7 +386,7 @@
                 </div>
 
                 <div class="quiz-footer">
-                    <button id="home-btn" class="btn btn-secondary btn-small">← Back Home</button>
+                    <button id="home-btn" class="btn btn-primary">← Back Home</button>
                 </div>
             </section>
 
@@ -407,9 +407,9 @@
                             Mastery marks a question immediately if you get it right the first time. If you miss it first, you need 3 correct answers total to master it.
                         </p>
                     </div>
-                    <div class="button-row centered">
-                        <button id="restart-btn" class="btn btn-primary btn-large">Back Home</button>
-                        <button id="retake-btn" class="btn btn-secondary btn-large">Retake Same Test</button>
+                    <div class="results-actions">
+                        <button id="restart-btn" class="btn btn-secondary btn-large">Back Home</button>
+                        <button id="retake-btn" class="btn btn-primary btn-large">Retake Same Test</button>
                         <button id="continue-mastery-btn" class="btn btn-success btn-large hidden">Continue Mastery</button>
                     </div>
                     <div id="add-questions-row" class="add-questions-row hidden">
@@ -625,6 +625,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=42" defer></script>
+    <script src="/app.js?v=43" defer></script>
 </body>
 </html>
