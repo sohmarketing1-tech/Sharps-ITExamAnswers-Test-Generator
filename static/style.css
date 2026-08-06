@@ -1187,19 +1187,26 @@ body {
         gap: 0;
         padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
         z-index: 200;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        background: rgba(var(--bg-base), 0.98);
+        box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.18);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
     }
 
     .tab-btn {
         flex-direction: column;
         justify-content: center;
         gap: 2px;
-        padding: 6px 2px;
-        border-radius: 0;
+        padding: 6px 4px;
+        border-radius: 10px;
         font-size: 0.65rem;
         line-height: 1.1;
         min-height: 56px;
+        margin: 0 2px;
+    }
+
+    .tab-btn.active {
+        border-radius: 12px;
     }
 
     .tab-btn svg {
