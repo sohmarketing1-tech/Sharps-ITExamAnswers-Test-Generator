@@ -74,16 +74,11 @@ const els = {
     startBtn: document.getElementById("start-btn"),
     setupMessage: document.getElementById("setup-message"),
     accountPrompt: document.getElementById("account-prompt"),
-    tabHome: document.getElementById("tab-home"),
     tabNav: document.querySelector(".tab-nav"),
     tabPractice: document.getElementById("tab-practice"),
     tabFlashcards: document.getElementById("tab-flashcards"),
     tabHistory: document.getElementById("tab-history"),
     tabCommunity: document.getElementById("tab-community"),
-    homePracticeBtn: document.querySelector('.home-card[data-tab="practice"]'),
-    homeFlashcardsBtn: document.querySelector('.home-card[data-tab="flashcards"]'),
-    homeHistoryBtn: document.querySelector('.home-card[data-tab="history"]'),
-    homeCommunityBtn: document.querySelector('.home-card[data-tab="community"]'),
     historyLoginPrompt: document.getElementById("history-login-prompt"),
     historyLoginBtn: document.getElementById("history-login-btn"),
     historyContent: document.getElementById("history-content"),
@@ -764,24 +759,63 @@ async function loadExams() {
     }
 }
 
-function renderExamButtons() {
-    els.examButtons.innerHTML = "";
+function getExamCategory(exam) {
+    const name = (exam.display_name || exam.title || exam.filename).toUpperCase();
+    if (name.includes("IT ESSENTIALS") || name.includes("ITE")) return "IT Essentials";
+    if (name.includes("CCNA")) return "CCNA";
+    return "Other";
+}
+
+function groupExamsByCategory(exams) {
+    const groups = {};
+    exams.forEach((exam) => {
+        const cat = getExamCategory(exam);
+        if (!groups[cat]) groups[cat] = [];
+        groups[cat].push(exam);
+    });
+    const order = ["IT Essentials", "CCNA", "Other"];
+    return order.filter((cat) => groups[cat]).map((cat) => ({ category: cat, exams: groups[cat] }));
+}
+
+function renderExamGroups(container, activeFilename, onSelect, openCategories) {
+    container.innerHTML = "";
     if (!state.exams.length) {
-        els.examButtons.innerHTML = '<p class="empty-state">No exams found.</p>';
+        container.innerHTML = '<p class="empty-state">No exams found.</p>';
         return;
     }
-    state.exams.forEach((exam) => {
-        const btn = document.createElement("button");
-        btn.className = "btn btn-exam";
-        btn.dataset.filename = exam.filename;
-        btn.innerHTML = `<span class="exam-name">${exam.display_name || exam.title}</span><span class="exam-count">${exam.count} questions</span>`;
-        btn.addEventListener("click", () => loadExam(exam.filename, true));
-        els.examButtons.appendChild(btn);
+    const groups = groupExamsByCategory(state.exams);
+    const chevron = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
+    groups.forEach(({ category, exams }) => {
+        const shouldOpen = openCategories ? openCategories.includes(category) : false;
+        const groupEl = document.createElement("div");
+        groupEl.className = "exam-group" + (shouldOpen ? " open" : "");
+        const header = document.createElement("button");
+        header.className = "exam-group-header";
+        header.type = "button";
+        header.innerHTML = `<span class="exam-group-title">${escapeHtml(category)}</span><span class="exam-group-count">${exams.length} exam${exams.length === 1 ? "" : "s"}</span><span class="exam-group-chevron">${chevron}</span>`;
+        header.addEventListener("click", () => groupEl.classList.toggle("open"));
+        const content = document.createElement("div");
+        content.className = "exam-group-content";
+        exams.forEach((exam) => {
+            const btn = document.createElement("button");
+            btn.className = "btn btn-exam" + (activeFilename === exam.filename ? " active" : "");
+            btn.dataset.filename = exam.filename;
+            btn.innerHTML = `<span class="exam-name">${escapeHtml(exam.display_name || exam.title)}</span><span class="exam-count">${exam.count || 0} questions</span>`;
+            btn.addEventListener("click", () => onSelect(exam.filename));
+            content.appendChild(btn);
+        });
+        groupEl.appendChild(header);
+        groupEl.appendChild(content);
+        container.appendChild(groupEl);
     });
 }
 
+function renderExamButtons() {
+    renderExamGroups(els.examButtons, state.currentFilename, loadExam, ["IT Essentials"]);
+}
+
 function updateExamButtonSelection(filename) {
-    Array.from(els.examButtons.children).forEach((btn) => {
+    Array.from(els.examButtons.querySelectorAll(".btn-exam")).forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.filename === filename);
     });
 }
@@ -1195,12 +1229,11 @@ function goHome() {
     state.mode = "practice";
     setMode("practice");
     state.currentTab = "home";
-    try { localStorage.setItem(TAB_KEY, "home"); } catch (e) {}
-    els.tabHome.classList.add("active");
-    els.tabPractice.classList.remove("active");
-    els.tabFlashcards.classList.remove("active");
-    els.tabHistory.classList.remove("active");
-    els.tabCommunity.classList.remove("active");
+    try { localStorage.removeItem(TAB_KEY); } catch (e) {}
+    if (els.tabPractice) els.tabPractice.classList.remove("active");
+    if (els.tabFlashcards) els.tabFlashcards.classList.remove("active");
+    if (els.tabHistory) els.tabHistory.classList.remove("active");
+    if (els.tabCommunity) els.tabCommunity.classList.remove("active");
     if (els.tabNav) els.tabNav.classList.add("hidden");
     showScreen("home");
 }
@@ -1240,15 +1273,19 @@ function switchTab(tabName) {
         stopTimer();
     }
     state.currentTab = tabName;
-    els.tabHome.classList.toggle("active", tabName === "home");
-    els.tabPractice.classList.toggle("active", tabName === "practice");
-    els.tabFlashcards.classList.toggle("active", tabName === "flashcards");
-    els.tabHistory.classList.toggle("active", tabName === "history");
-    els.tabCommunity.classList.toggle("active", tabName === "community");
+    if (els.tabPractice) els.tabPractice.classList.toggle("active", tabName === "practice");
+    if (els.tabFlashcards) els.tabFlashcards.classList.toggle("active", tabName === "flashcards");
+    if (els.tabHistory) els.tabHistory.classList.toggle("active", tabName === "history");
+    if (els.tabCommunity) els.tabCommunity.classList.toggle("active", tabName === "community");
+    if (els.tabNav) {
+        els.tabNav.classList.remove("hidden");
+        els.tabNav.classList.add("bottom-nav");
+    }
+    [els.tabPractice, els.tabFlashcards, els.tabHistory, els.tabCommunity].forEach((btn) => {
+        if (btn) btn.setAttribute("aria-selected", btn.classList.contains("active") ? "true" : "false");
+    });
     stopChatPolling();
-    if (tabName === "home") {
-        showScreen("home");
-    } else if (tabName === "practice") {
+    if (tabName === "practice") {
         showScreen("setup");
     } else if (tabName === "history") {
         showScreen("history");
@@ -1518,21 +1555,7 @@ function stopChatPolling() {
 }
 
 function renderFlashcardExamButtons() {
-    if (!state.exams.length) {
-        els.flashcardExamButtons.innerHTML = `<p class="empty-state">No exams loaded yet.</p>`;
-        return;
-    }
-    els.flashcardExamButtons.innerHTML = "";
-    state.exams.forEach((exam) => {
-        const btn = document.createElement("button");
-        btn.className = "btn btn-exam" + (state.flashcardFilename === exam.filename ? " active" : "");
-        btn.innerHTML = `
-            <span class="exam-name">${escapeHtml(exam.display_name || exam.title || exam.filename)}</span>
-            <span class="exam-count">${exam.count || 0} questions</span>
-        `;
-        btn.addEventListener("click", () => selectFlashcardExam(exam.filename));
-        els.flashcardExamButtons.appendChild(btn);
-    });
+    renderExamGroups(els.flashcardExamButtons, state.flashcardFilename, selectFlashcardExam, ["IT Essentials"]);
     els.flashcardStartBtn.disabled = !state.flashcardFilename;
 }
 
@@ -2601,11 +2624,16 @@ els.modeMastery.addEventListener("click", () => setMode("mastery"));
 els.masteryStartBtn.addEventListener("click", startMasterySession);
 els.masteryResetBtn.addEventListener("click", resetMastery);
 
-els.tabHome.addEventListener("click", () => switchTab("home"));
 els.tabPractice.addEventListener("click", () => switchTab("practice"));
 els.tabFlashcards.addEventListener("click", () => switchTab("flashcards"));
 els.tabHistory.addEventListener("click", () => switchTab("history"));
 els.tabCommunity.addEventListener("click", () => switchTab("community"));
+
+if (els.tabNav) {
+    els.tabNav.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.setAttribute("aria-selected", "false");
+    });
+}
 
 document.querySelectorAll("button[data-tab]").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -2702,7 +2730,7 @@ checkAuth();
     if (saved) {
         switchTab(saved);
     } else {
-        switchTab("home");
+        switchTab("practice");
     }
 })();
 
