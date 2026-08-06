@@ -2087,21 +2087,25 @@ body {
     display: flex;
     align-items: flex-start;
     gap: 10px;
+    justify-content: flex-start;
 }
 
 .chat-message-own {
-    flex-direction: row-reverse;
+    justify-content: flex-end;
+    flex-direction: row;
 }
 
 .chat-message-content {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
 }
 
 .chat-message-own .chat-message-content {
+    flex: 0 1 auto;
+    max-width: 80%;
     align-items: flex-end;
 }
 
