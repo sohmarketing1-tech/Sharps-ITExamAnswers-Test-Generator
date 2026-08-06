@@ -1300,8 +1300,8 @@ body {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
-        padding: 0 0 calc(constant(safe-area-inset-bottom) + 28px);
-        padding: 0 0 calc(env(safe-area-inset-bottom) + 28px);
+        padding: 0 0 calc(constant(safe-area-inset-bottom) + 48px);
+        padding: 0 0 calc(env(safe-area-inset-bottom) + 48px);
         z-index: 200;
         background: linear-gradient(145deg, rgba(var(--glass-base), 0.14) 0%, rgba(var(--glass-base), 0.06) 100%);
         box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.12);
@@ -1343,6 +1343,13 @@ body {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+}
+
+@media (max-width: 700px) and (display-mode: standalone) {
+    .tab-nav {
+        padding: 0 0 calc(constant(safe-area-inset-bottom) + 16px);
+        padding: 0 0 calc(env(safe-area-inset-bottom) + 16px);
     }
 }
 
