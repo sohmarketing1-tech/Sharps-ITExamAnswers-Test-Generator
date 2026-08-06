@@ -72,6 +72,18 @@ def exam_by_slug(slug: str):
     return None
 
 
+def build_exam_links_html() -> str:
+    items = []
+    for exam in load_exam_manifest():
+        filename = exam.get("filename", "")
+        if not filename.endswith(".json"):
+            continue
+        slug = filename[:-5]
+        display = display_name_for(filename, exam.get("display_name", ""))
+        items.append(f'<li><a href="{SITE_URL}/exams/{slug}/">{display} answers</a></li>')
+    return f'<ul class="exam-links">{ "".join(items) }</ul>' if items else ""
+
+
 def render_index_html(page_title: str, page_description: str, canonical_url: str,
                       h1_text: str, seo_intro: str, exam_filename: str = "") -> str:
     index_path = BASE_DIR / "static" / "index.html"
@@ -85,6 +97,7 @@ def render_index_html(page_title: str, page_description: str, canonical_url: str
         "$H1_TEXT$": h1_text,
         "$SEO_INTRO$": seo_intro,
         "$EXAM_FILENAME$": exam_filename,
+        "$EXAM_LINKS$": build_exam_links_html(),
     }
     for token, value in replacements.items():
         html = html.replace(token, value)
@@ -594,6 +607,7 @@ def exam_page(slug: str):
 
 @app.route("/sitemap.xml")
 def sitemap():
+    today = datetime.date.today().isoformat()
     slugs = []
     for exam in load_exam_manifest():
         filename = exam.get("filename", "")
@@ -601,9 +615,9 @@ def sitemap():
             slugs.append(filename[:-5])
     lines = ['<?xml version="1.0" encoding="UTF-8"?>']
     lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
-    lines.append(f"  <url><loc>{SITE_URL}/</loc><priority>1.0</priority></url>")
+    lines.append(f"  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><priority>1.0</priority></url>")
     for slug in slugs:
-        lines.append(f"  <url><loc>{SITE_URL}/exams/{slug}/</loc><priority>0.8</priority></url>")
+        lines.append(f"  <url><loc>{SITE_URL}/exams/{slug}/</loc><lastmod>{today}</lastmod><priority>0.8</priority></url>")
     lines.append("</urlset>")
     return Response("\n".join(lines), mimetype="application/xml")
 
