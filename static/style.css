@@ -232,8 +232,16 @@ html[data-theme="coffee"] {
     --orb-3-base: 251, 191, 36;
 }
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
+}
+
+input,
+textarea,
+select {
+    font-size: 16px;
 }
 
 body {
