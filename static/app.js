@@ -700,13 +700,8 @@ function setAvailableCount(count) {
 }
 
 function renderSkeletonExams(container) {
-    container.innerHTML = "";
-    for (let i = 0; i < 6; i++) {
-        const div = document.createElement("div");
-        div.className = "btn-exam skeleton";
-        div.innerHTML = '<span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span>';
-        container.appendChild(div);
-    }
+    if (!container) return;
+    container.innerHTML = '<option disabled selected>Loading exams…</option>';
 }
 
 function renderSkeletonChat(container) {
@@ -754,7 +749,7 @@ async function loadExams() {
         }
     } catch (err) {
         setMessage(err.message, "error");
-        els.examButtons.innerHTML = '<p class="empty-state">Error loading exams.</p>';
+        els.examButtons.innerHTML = '<option disabled selected>Error loading exams</option>';
         setAvailableCount(0);
     }
 }
@@ -777,47 +772,48 @@ function groupExamsByCategory(exams) {
     return order.filter((cat) => groups[cat]).map((cat) => ({ category: cat, exams: groups[cat] }));
 }
 
-function renderExamGroups(container, activeFilename, onSelect, openCategories) {
+function renderExamSelect(container, activeFilename, onSelect, placeholder = "Choose an exam") {
+    if (!container) return;
     container.innerHTML = "";
     if (!state.exams.length) {
-        container.innerHTML = '<p class="empty-state">No exams found.</p>';
+        container.innerHTML = '<option disabled selected>No exams found</option>';
         return;
     }
+    const placeholderOption = document.createElement("option");
+    placeholderOption.disabled = true;
+    placeholderOption.selected = !activeFilename;
+    placeholderOption.textContent = placeholder;
+    container.appendChild(placeholderOption);
     const groups = groupExamsByCategory(state.exams);
-    const chevron = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
     groups.forEach(({ category, exams }) => {
-        const shouldOpen = openCategories ? openCategories.includes(category) : false;
-        const groupEl = document.createElement("div");
-        groupEl.className = "exam-group" + (shouldOpen ? " open" : "");
-        const header = document.createElement("button");
-        header.className = "exam-group-header";
-        header.type = "button";
-        header.innerHTML = `<span class="exam-group-title">${escapeHtml(category)}</span><span class="exam-group-count">${exams.length} exam${exams.length === 1 ? "" : "s"}</span><span class="exam-group-chevron">${chevron}</span>`;
-        header.addEventListener("click", () => groupEl.classList.toggle("open"));
-        const content = document.createElement("div");
-        content.className = "exam-group-content";
+        const optgroup = document.createElement("optgroup");
+        optgroup.label = category;
         exams.forEach((exam) => {
-            const btn = document.createElement("button");
-            btn.className = "btn btn-exam" + (activeFilename === exam.filename ? " active" : "");
-            btn.dataset.filename = exam.filename;
-            btn.innerHTML = `<span class="exam-name">${escapeHtml(exam.display_name || exam.title)}</span><span class="exam-count">${exam.count || 0} questions</span>`;
-            btn.addEventListener("click", () => onSelect(exam.filename));
-            content.appendChild(btn);
+            const option = document.createElement("option");
+            option.value = exam.filename;
+            option.textContent = `${exam.display_name || exam.title} (${exam.count || 0} questions)`;
+            if (activeFilename === exam.filename) option.selected = true;
+            optgroup.appendChild(option);
         });
-        groupEl.appendChild(header);
-        groupEl.appendChild(content);
-        container.appendChild(groupEl);
+        container.appendChild(optgroup);
     });
+    container.onchange = (e) => {
+        const value = e.target.value;
+        if (value) onSelect(value);
+    };
+}
+
+function updateExamSelectSelection(container, filename) {
+    if (!container) return;
+    container.value = filename || "";
 }
 
 function renderExamButtons() {
-    renderExamGroups(els.examButtons, state.currentFilename, loadExam, ["IT Essentials"]);
+    renderExamSelect(els.examButtons, state.currentFilename, loadExam, "Select an exam");
 }
 
-function updateExamButtonSelection(filename) {
-    Array.from(els.examButtons.querySelectorAll(".btn-exam")).forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.filename === filename);
-    });
+function renderFlashcardExamButtons() {
+    renderExamSelect(els.flashcardExamButtons, state.flashcardFilename, selectFlashcardExam, "Select an exam for flashcards");
 }
 
 async function loadExam(filename, updateSelection = true) {
@@ -838,7 +834,7 @@ async function loadExam(filename, updateSelection = true) {
         state.currentFilename = data.filename;
         state.allQuestions = data.questions || [];
         updateHeader();
-        if (updateSelection) updateExamButtonSelection(filename);
+        if (updateSelection) updateExamSelectSelection(els.examButtons, filename);
         setAvailableCount(data.count);
         const requested = parseInt(els.questionCount.value, 10) || 20;
         els.questionCount.value = Math.min(requested, data.count);

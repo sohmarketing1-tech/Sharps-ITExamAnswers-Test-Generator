@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=37" />
+    <link rel="stylesheet" href="/style.css?v=38" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -259,14 +259,9 @@
                 </div>
                 <div class="setup-grid">
                     <div class="card">
-                        <div id="exam-buttons" class="exam-buttons">
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                        </div>
+                        <select id="exam-buttons" class="exam-select" aria-label="Choose an exam">
+                            <option disabled selected>Loading exams…</option>
+                        </select>
 
                         <div class="settings-row">
                             <div class="form-group">
@@ -521,14 +516,9 @@
                 </div>
                 <div class="setup-grid">
                     <div class="card">
-                        <div id="flashcard-exam-buttons" class="exam-buttons">
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                            <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
-                        </div>
+                        <select id="flashcard-exam-buttons" class="exam-select" aria-label="Choose an exam for flashcards">
+                            <option disabled selected>Loading exams…</option>
+                        </select>
 
                         <div class="form-group">
                             <label>Card style</label>
@@ -624,6 +614,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=33" defer></script>
+    <script src="/app.js?v=34" defer></script>
 </body>
 </html>
