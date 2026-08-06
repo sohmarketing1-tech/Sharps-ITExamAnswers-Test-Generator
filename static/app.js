@@ -1242,10 +1242,16 @@ function stopTimer() {
     els.timer.classList.remove("timer-warning");
 }
 
-function goHome() {
+function goBackToApp() {
     const onQuiz = screens.quiz.classList.contains("active");
     if (onQuiz && !confirm("Leave this test? Unsubmitted answers won't be saved.")) {
         return;
+    }
+    if (screens.results.classList.contains("active")) {
+        state.answers = {};
+        state.currentIndex = 0;
+        state.secondsElapsed = 0;
+        stopTimer();
     }
     stopTimer();
     state.testQuestions = [];
@@ -1254,14 +1260,12 @@ function goHome() {
     state.secondsElapsed = 0;
     state.mode = "practice";
     setMode("practice");
-    state.currentTab = "home";
-    try { localStorage.removeItem(TAB_KEY); } catch (e) {}
-    if (els.tabPractice) els.tabPractice.classList.remove("active");
-    if (els.tabFlashcards) els.tabFlashcards.classList.remove("active");
-    if (els.tabHistory) els.tabHistory.classList.remove("active");
-    if (els.tabCommunity) els.tabCommunity.classList.remove("active");
-    if (els.tabNav) els.tabNav.classList.add("hidden");
-    showScreen("home");
+    const tabName = state.currentTab && state.currentTab !== "home" ? state.currentTab : "practice";
+    if (state.currentTab === tabName) {
+        showScreen(tabName === "practice" ? "setup" : tabName);
+    } else {
+        switchTab(tabName);
+    }
 }
 
 const TAB_KEY = "answrit_active_tab";
@@ -2534,8 +2538,8 @@ function showResults(data) {
 }
 
 els.startBtn.addEventListener("click", startTest);
-els.homeBtn.addEventListener("click", goHome);
-els.homeLogo.addEventListener("click", goHome);
+els.homeBtn.addEventListener("click", goBackToApp);
+els.homeLogo.addEventListener("click", goBackToApp);
 els.prevBtn.addEventListener("click", () => navigate(-1));
 els.nextBtn.addEventListener("click", () => {
     if (state.currentIndex === state.testQuestions.length - 1) {
@@ -2555,7 +2559,7 @@ els.submitBtn.addEventListener("click", () => {
         submitTest();
     }
 });
-els.restartBtn.addEventListener("click", goHome);
+els.restartBtn.addEventListener("click", goBackToApp);
 els.retakeBtn.addEventListener("click", retakeSameTest);
 els.continueMasteryBtn.addEventListener("click", startMasterySession);
 if (els.addQuestionsBtn) els.addQuestionsBtn.addEventListener("click", addQuestionsToTest);

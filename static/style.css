@@ -345,6 +345,44 @@ body {
     flex-wrap: wrap;
 }
 
+@media (min-width: 701px) {
+    html {
+        font-size: 15px;
+    }
+
+    .top-nav {
+        padding: 12px 20px;
+    }
+
+    .header-logo {
+        height: 48px;
+        max-width: 200px;
+    }
+
+    .tab-nav {
+        margin: 16px auto;
+        padding: 6px;
+    }
+
+    .tab-btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+
+    .tab-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .container {
+        padding: 18px;
+    }
+
+    .card {
+        padding: 24px;
+    }
+}
+
 .header-logo-btn {
     background: transparent;
     border: none;
@@ -1923,7 +1961,7 @@ body {
 .exam-buttons {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 18px;
     margin-bottom: 18px;
 }
 
@@ -1984,6 +2022,7 @@ body {
     max-height: 236px;
     overflow-y: auto;
     padding-right: 4px;
+    padding-top: 6px;
 }
 
 .btn-exam {
