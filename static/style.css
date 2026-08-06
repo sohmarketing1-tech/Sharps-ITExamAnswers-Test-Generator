@@ -1894,76 +1894,52 @@ body {
 .exam-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 18px;
 }
 
-.exam-group {
-    background: rgba(var(--glass-base), 0.08);
-    border: 1px solid rgba(var(--glass-base), 0.18);
-    border-radius: 14px;
-    overflow: hidden;
-}
-
-.exam-group-header {
-    width: 100%;
+.exam-category-tabs {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    text-align: left;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.exam-group-title {
-    flex: 1 1 auto;
-}
-
-.exam-group-count {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-.exam-group-chevron {
-    width: 20px;
-    height: 20px;
-    color: var(--text-muted);
-    transition: transform 0.2s ease;
+.exam-category-tabs::-webkit-scrollbar {
     display: none;
 }
 
-.exam-group.open .exam-group-chevron {
-    transform: rotate(180deg);
+.exam-category-tab {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--glass-base), 0.25);
+    background: rgba(var(--glass-base), 0.08);
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
-.exam-group-content {
+.exam-category-tab:hover {
+    background: rgba(var(--glass-base), 0.16);
+    color: var(--text);
+}
+
+.exam-category-tab.active {
+    background: var(--primary-light);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent-base), 0.12);
+}
+
+.exam-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    padding: 0 10px 10px;
-}
-
-@media (max-width: 700px) {
-    .exam-group-chevron {
-        display: block;
-    }
-
-    .exam-group-content {
-        display: none;
-        grid-template-columns: 1fr;
-        gap: 8px;
-        padding: 0 10px 10px;
-    }
-
-    .exam-group.open .exam-group-content {
-        display: grid;
-    }
 }
 
 .btn-exam {
@@ -1972,18 +1948,19 @@ body {
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 14px 12px;
+    padding: 16px 12px;
     background: rgba(var(--glass-base), 0.9);
     border: 2px solid rgba(var(--glass-base), 0.45);
     border-radius: 14px;
     color: var(--primary);
     text-align: center;
-    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, transform 0.1s;
 }
 
 .btn-exam:hover {
     border-color: var(--accent);
     background: var(--primary-light);
+    transform: translateY(-2px);
 }
 
 .btn-exam.active {
@@ -1994,7 +1971,7 @@ body {
 
 .btn-exam .exam-name {
     font-weight: 800;
-    font-size: 1.05rem;
+    font-size: 1rem;
 }
 
 .btn-exam .exam-count {
@@ -2430,8 +2407,17 @@ body {
         text-align: left;
     }
 
-    .exam-buttons {
+    .exam-grid {
         grid-template-columns: 1fr;
+    }
+
+    .exam-category-tab {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .btn-exam {
+        padding: 12px 10px;
     }
 
     .settings-row {
@@ -3632,12 +3618,8 @@ body {
         border-radius: 14px;
     }
 
-    .exam-buttons {
-        gap: 10px;
-    }
-
-    .btn-exam {
-        padding: 12px 10px;
+    .exam-grid {
+        gap: 8px;
     }
 
     .btn-exam .exam-name {

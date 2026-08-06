@@ -777,41 +777,58 @@ function groupExamsByCategory(exams) {
     return order.filter((cat) => groups[cat]).map((cat) => ({ category: cat, exams: groups[cat] }));
 }
 
-function renderExamGroups(container, activeFilename, onSelect, openCategories) {
+function getCategoryForFilename(filename) {
+    const exam = state.exams.find((e) => e.filename === filename);
+    return exam ? getExamCategory(exam) : "";
+}
+
+function renderExamGroups(container, activeFilename, onSelect, defaultCategory = "") {
     container.innerHTML = "";
     if (!state.exams.length) {
         container.innerHTML = '<p class="empty-state">No exams found.</p>';
         return;
     }
     const groups = groupExamsByCategory(state.exams);
-    const chevron = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
-    groups.forEach(({ category, exams }) => {
-        const shouldOpen = openCategories ? openCategories.includes(category) : false;
-        const groupEl = document.createElement("div");
-        groupEl.className = "exam-group" + (shouldOpen ? " open" : "");
-        const header = document.createElement("button");
-        header.className = "exam-group-header";
-        header.type = "button";
-        header.innerHTML = `<span class="exam-group-title">${escapeHtml(category)}</span><span class="exam-group-count">${exams.length} exam${exams.length === 1 ? "" : "s"}</span><span class="exam-group-chevron">${chevron}</span>`;
-        header.addEventListener("click", () => groupEl.classList.toggle("open"));
-        const content = document.createElement("div");
-        content.className = "exam-group-content";
-        exams.forEach((exam) => {
-            const btn = document.createElement("button");
-            btn.className = "btn btn-exam" + (activeFilename === exam.filename ? " active" : "");
-            btn.dataset.filename = exam.filename;
-            btn.innerHTML = `<span class="exam-name">${escapeHtml(exam.display_name || exam.title)}</span><span class="exam-count">${exam.count || 0} questions</span>`;
-            btn.addEventListener("click", () => onSelect(exam.filename));
-            content.appendChild(btn);
+    const activeCategory = (activeFilename && getCategoryForFilename(activeFilename)) || defaultCategory || groups[0].category;
+
+    const tabs = document.createElement("div");
+    tabs.className = "exam-category-tabs";
+    tabs.setAttribute("role", "tablist");
+    tabs.setAttribute("aria-label", "Exam categories");
+    groups.forEach(({ category }) => {
+        const tab = document.createElement("button");
+        tab.type = "button";
+        tab.className = "exam-category-tab" + (category === activeCategory ? " active" : "");
+        tab.textContent = category;
+        tab.setAttribute("role", "tab");
+        tab.setAttribute("aria-selected", category === activeCategory ? "true" : "false");
+        tab.addEventListener("click", () => {
+            renderExamGroups(container, activeFilename, onSelect, category);
         });
-        groupEl.appendChild(header);
-        groupEl.appendChild(content);
-        container.appendChild(groupEl);
+        tabs.appendChild(tab);
     });
+    container.appendChild(tabs);
+
+    const activeGroup = groups.find((g) => g.category === activeCategory) || groups[0];
+    const grid = document.createElement("div");
+    grid.className = "exam-grid";
+    activeGroup.exams.forEach((exam) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-exam" + (activeFilename === exam.filename ? " active" : "");
+        btn.dataset.filename = exam.filename;
+        btn.innerHTML = `<span class="exam-name">${escapeHtml(exam.display_name || exam.title)}</span><span class="exam-count">${exam.count || 0} questions</span>`;
+        btn.addEventListener("click", () => {
+            onSelect(exam.filename);
+            renderExamGroups(container, exam.filename, onSelect, getCategoryForFilename(exam.filename));
+        });
+        grid.appendChild(btn);
+    });
+    container.appendChild(grid);
 }
 
 function renderExamButtons() {
-    renderExamGroups(els.examButtons, state.currentFilename, loadExam, ["IT Essentials"]);
+    renderExamGroups(els.examButtons, state.currentFilename, loadExam, "IT Essentials");
 }
 
 function updateExamButtonSelection(filename) {
@@ -1555,7 +1572,7 @@ function stopChatPolling() {
 }
 
 function renderFlashcardExamButtons() {
-    renderExamGroups(els.flashcardExamButtons, state.flashcardFilename, selectFlashcardExam, ["IT Essentials"]);
+    renderExamGroups(els.flashcardExamButtons, state.flashcardFilename, selectFlashcardExam, "IT Essentials");
     els.flashcardStartBtn.disabled = !state.flashcardFilename;
 }
 
