@@ -150,6 +150,7 @@ const els = {
     profileBtn: document.getElementById("profile-btn"),
     profileModal: document.getElementById("profile-modal"),
     profileAvatarPreview: document.getElementById("profile-avatar-preview"),
+    profileUsername: document.getElementById("profile-username"),
     avatarUpload: document.getElementById("avatar-upload"),
     avatarUploadError: document.getElementById("avatar-upload-error"),
     themePicker: document.getElementById("theme-picker"),
