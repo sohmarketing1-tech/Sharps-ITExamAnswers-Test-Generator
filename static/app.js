@@ -115,6 +115,10 @@ const els = {
     restartBtn: document.getElementById("restart-btn"),
     retakeBtn: document.getElementById("retake-btn"),
     continueMasteryBtn: document.getElementById("continue-mastery-btn"),
+    addQuestionsBtn: document.getElementById("add-questions-btn"),
+    addQuestionsCount: document.getElementById("add-questions-count"),
+    addQuestionsRow: document.getElementById("add-questions-row"),
+    addQuestionsAvailable: document.getElementById("add-questions-available"),
     reviewPanel: document.getElementById("review-panel"),
     reviewList: document.getElementById("review-list"),
     modalUsername: document.getElementById("modal-username"),
@@ -2070,6 +2074,104 @@ function retakeSameTest() {
     renderQuestion();
 }
 
+function getRemainingQuestions() {
+    const all = state.allQuestions || [];
+    const usedIds = new Set((state.lastTestQuestions || []).map((q) => q.id));
+    return all.filter((q) => !usedIds.has(q.id));
+}
+
+function setupAddQuestionsUI() {
+    if (!els.addQuestionsRow) return;
+    const isPractice = state.mode === "practice";
+    const remaining = getRemainingQuestions();
+    els.addQuestionsRow.classList.toggle("hidden", !isPractice);
+    if (!isPractice) return;
+
+    const currentCount = state.lastTestQuestions ? state.lastTestQuestions.length : 0;
+    const maxAdd = Math.max(0, remaining.length);
+    if (els.addQuestionsCount) {
+        els.addQuestionsCount.max = String(maxAdd || 1);
+        els.addQuestionsCount.value = String(Math.min(parseInt(els.addQuestionsCount.value, 10) || 5, maxAdd || 1));
+    }
+    if (els.addQuestionsAvailable) {
+        els.addQuestionsAvailable.textContent = `${maxAdd} new question${maxAdd === 1 ? "" : "s"} available · current test: ${currentCount}`;
+    }
+    if (els.addQuestionsBtn) {
+        els.addQuestionsBtn.disabled = maxAdd === 0;
+    }
+    updateAddQuestionsButtonText();
+}
+
+function updateAddQuestionsButtonText() {
+    if (!els.addQuestionsBtn || !els.addQuestionsCount) return;
+    const n = parseInt(els.addQuestionsCount.value, 10) || 5;
+    els.addQuestionsBtn.textContent = `Add ${n} question${n === 1 ? "" : "s"}`;
+}
+
+async function addQuestionsToTest() {
+    if (!state.currentFilename) {
+        showToast("No exam selected.", "error");
+        return;
+    }
+    let remaining = getRemainingQuestions();
+
+    // If we don't have the full question pool loaded, fetch it for the current exam.
+    if (!remaining.length && !state.allQuestions.length) {
+        try {
+            const res = await fetch(API.examQuestions, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ filename: state.currentFilename }),
+                credentials: "same-origin",
+                cache: "no-store",
+            });
+            const data = await res.json();
+            if (!res.ok || !data.ok) throw new Error(data.error || "Could not load exam questions");
+            state.allQuestions = data.questions || [];
+            remaining = getRemainingQuestions();
+        } catch (err) {
+            showToast(err.message, "error");
+            return;
+        }
+    }
+
+    const requested = parseInt(els.addQuestionsCount.value, 10) || 5;
+    const n = Math.max(1, Math.min(requested, remaining.length));
+    if (!n) {
+        showToast("No new questions left to add from this exam.", "error");
+        return;
+    }
+
+    const shuffled = [...remaining].sort(() => 0.5 - Math.random());
+    const added = shuffled.slice(0, n).map((q) => ({
+        id: q.id,
+        question: q.question,
+        options: q.options,
+        _correct_answer: q.correct_answer || q._correct_answer,
+        type: q.type,
+        terms: q.terms,
+        definitions: q.definitions,
+        correct_pairs: q.correct_pairs,
+        image: q.image,
+    }));
+
+    state.testQuestions = [...state.lastTestQuestions, ...added];
+    state.lastTestQuestions = [...state.testQuestions];
+    state.answers = {};
+    state.testQuestions.forEach((q) => {
+        state.answers[q.id] = q.type === "matching" ? {} : [];
+    });
+    state.currentIndex = 0;
+    state.secondsElapsed = 0;
+    state.multiSelect = false;
+    els.reviewPanel.classList.add("hidden");
+    showScreen("quiz");
+    els.timer.style.display = "";
+    startTimer();
+    renderQuestion();
+    showToast(`Added ${added.length} question${added.length === 1 ? "" : "s"}. Now ${state.testQuestions.length} total.`, "success");
+}
+
 function formatTime(totalSeconds) {
     const m = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
     const s = String(totalSeconds % 60).padStart(2, "0");
@@ -2489,6 +2591,7 @@ function showResults(data) {
         const deg = data.total ? Math.round((data.correct / data.total) * 360) : 0;
         scoreCircle.style.setProperty("--score-deg", `${deg}deg`);
     }
+    setupAddQuestionsUI();
     els.reviewPanel.classList.remove("hidden");
 
     els.reviewList.innerHTML = "";
@@ -2558,6 +2661,8 @@ els.submitBtn.addEventListener("click", () => {
 els.restartBtn.addEventListener("click", goHome);
 els.retakeBtn.addEventListener("click", retakeSameTest);
 els.continueMasteryBtn.addEventListener("click", startMasterySession);
+if (els.addQuestionsBtn) els.addQuestionsBtn.addEventListener("click", addQuestionsToTest);
+if (els.addQuestionsCount) els.addQuestionsCount.addEventListener("input", updateAddQuestionsButtonText);
 
 els.loginTrigger.addEventListener("click", () => openAuthModal("login"));
 els.registerTrigger.addEventListener("click", () => openAuthModal("register"));

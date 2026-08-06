@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" href="images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="images/answrit-icon.png" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css?v=20" />
+    <link rel="stylesheet" href="style.css?v=24" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -375,6 +375,16 @@
                         <button id="retake-btn" class="btn btn-secondary btn-large">Retake Same Test</button>
                         <button id="continue-mastery-btn" class="btn btn-success btn-large hidden">Continue Mastery</button>
                     </div>
+                    <div id="add-questions-row" class="add-questions-row hidden">
+                        <div class="add-questions-card">
+                            <div class="add-questions-title">Add more questions</div>
+                            <div class="add-questions-controls">
+                                <input type="number" id="add-questions-count" min="1" value="5" class="add-questions-input" />
+                                <button id="add-questions-btn" class="btn btn-secondary add-questions-btn">Add 5 questions</button>
+                            </div>
+                            <div id="add-questions-available" class="add-questions-available">0 new questions available · current test: 0</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="review-panel" class="review-panel hidden">
@@ -577,6 +587,6 @@
     </div>
 
     <div id="toast" class="toast hidden"></div>
-    <script src="app.js?v=20"></script>
+    <script src="app.js?v=24"></script>
 </body>
 </html>
