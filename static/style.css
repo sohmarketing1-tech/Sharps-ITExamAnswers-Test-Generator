@@ -1248,7 +1248,7 @@ body {
 
 @media (max-width: 700px) {
     html {
-        font-size: 15px;
+        font-size: 14px;
         height: 100%;
         overflow: hidden;
     }
@@ -1299,7 +1299,7 @@ body {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
-        padding: 0 0 calc(env(safe-area-inset-bottom) + 16px);
+        padding: 0 0 calc(env(safe-area-inset-bottom) + 28px);
         z-index: 200;
         background: linear-gradient(145deg, rgba(var(--glass-base), 0.14) 0%, rgba(var(--glass-base), 0.06) 100%);
         box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.12);
@@ -3623,7 +3623,7 @@ body {
 @media (max-width: 600px) {
     /* Header / nav */
     .top-nav {
-        padding: 10px 12px;
+        padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
     }
 
     .nav-inner {
@@ -3631,8 +3631,8 @@ body {
     }
 
     .header-logo {
-        height: 38px;
-        max-width: 150px;
+        height: 34px;
+        max-width: 140px;
     }
 
     .auth-actions {
