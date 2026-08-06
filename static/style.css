@@ -1206,16 +1206,16 @@ body {
         margin: 0;
         border-radius: 16px 16px 0 0;
         border: none;
-        border-top: 1px solid rgba(var(--glass-base), 0.2);
+        border-top: 1px solid rgba(var(--glass-base), 0.15);
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
         padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
         z-index: 200;
-        background: rgba(var(--bg-base), 0.78);
+        background: linear-gradient(145deg, rgba(var(--glass-base), 0.14) 0%, rgba(var(--glass-base), 0.06) 100%);
         box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.12);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
 
     .tab-btn {
