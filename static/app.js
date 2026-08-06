@@ -1396,7 +1396,6 @@ function switchTab(tabName) {
     els.tabFlashcards.classList.toggle("active", tabName === "flashcards");
     els.tabHistory.classList.toggle("active", tabName === "history");
     els.tabCommunity.classList.toggle("active", tabName === "community");
-    if (els.tabNav) els.tabNav.classList.toggle("hidden", tabName === "home");
     stopChatPolling();
     if (tabName === "home") {
         showScreen("home");
@@ -2647,7 +2646,6 @@ function showResults(data) {
 els.startBtn.addEventListener("click", startTest);
 els.homeBtn.addEventListener("click", goHome);
 els.homeLogo.addEventListener("click", goHome);
-els.homeStartBtn.addEventListener("click", () => switchTab("practice"));
 els.prevBtn.addEventListener("click", () => navigate(-1));
 els.nextBtn.addEventListener("click", () => {
     if (state.currentIndex === state.testQuestions.length - 1) {
@@ -2759,7 +2757,7 @@ els.tabFlashcards.addEventListener("click", () => switchTab("flashcards"));
 els.tabHistory.addEventListener("click", () => switchTab("history"));
 els.tabCommunity.addEventListener("click", () => switchTab("community"));
 
-document.querySelectorAll(".home-card[data-tab]").forEach((btn) => {
+document.querySelectorAll("button[data-tab]").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
 });
 els.historyLoginBtn.addEventListener("click", () => openAuthModal("login"));
