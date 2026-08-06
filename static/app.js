@@ -501,10 +501,6 @@ function processAvatarFile(file, callback) {
         if (errorEl) errorEl.textContent = "Please choose an image file.";
         return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-        if (errorEl) errorEl.textContent = "Image must be smaller than 2 MB.";
-        return;
-    }
     if (errorEl) errorEl.textContent = "";
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -516,7 +512,12 @@ function processAvatarFile(file, callback) {
             canvas.height = 256;
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, 256, 256);
-            callback(canvas.toDataURL("image/jpeg", 0.85));
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+            if (dataUrl.length > 500_000) {
+                if (errorEl) errorEl.textContent = "Processed image is too large. Try a smaller photo.";
+                return;
+            }
+            callback(dataUrl);
         };
         img.onerror = () => { if (errorEl) errorEl.textContent = "Could not read image."; };
         img.src = e.target.result;
