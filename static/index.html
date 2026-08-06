@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=44" />
+    <link rel="stylesheet" href="/style.css?v=45" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -92,7 +92,10 @@
 
     <div id="profile-modal" class="modal-overlay hidden">
         <div class="modal profile-modal">
-            <h3>Your Profile</h3>
+            <div class="profile-modal-header">
+                <h3>Your Profile</h3>
+                <button id="profile-close" class="profile-close-btn" aria-label="Close profile">&times;</button>
+            </div>
             <div class="profile-layout">
                 <div class="profile-column profile-column-left">
                     <div class="profile-preview">
@@ -106,8 +109,6 @@
                     <p id="avatar-upload-error" class="avatar-upload-error"></p>
                     <div class="profile-actions">
                         <button id="profile-save" class="btn btn-primary btn-large btn-block">Save</button>
-                        <button id="profile-cancel" class="btn btn-secondary btn-block">Cancel</button>
-                        <button id="profile-logout" class="btn btn-danger btn-block">Log Out</button>
                     </div>
                 </div>
                 <div class="profile-column profile-column-right">
@@ -117,6 +118,9 @@
                     </div>
                     <p id="profile-message" class="auth-message"></p>
                 </div>
+            </div>
+            <div class="profile-footer">
+                <button id="profile-logout" class="btn btn-danger btn-block">Log Out</button>
             </div>
         </div>
     </div>
@@ -624,6 +628,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=39" defer></script>
+    <script src="/app.js?v=40" defer></script>
 </body>
 </html>

@@ -155,7 +155,7 @@ const els = {
     cropSave: document.getElementById("crop-save"),
     themePicker: document.getElementById("theme-picker"),
     profileSave: document.getElementById("profile-save"),
-    profileCancel: document.getElementById("profile-cancel"),
+    profileClose: document.getElementById("profile-close"),
     profileLogout: document.getElementById("profile-logout"),
     profileMessage: document.getElementById("profile-message"),
     modePractice: document.getElementById("mode-practice"),
@@ -2566,7 +2566,7 @@ els.registerTrigger.addEventListener("click", () => openAuthModal("register"));
 els.profileBtn.addEventListener("click", openProfileModal);
 els.profileLogout.addEventListener("click", logout);
 els.profileSave.addEventListener("click", saveProfile);
-els.profileCancel.addEventListener("click", cancelProfile);
+els.profileClose.addEventListener("click", cancelProfile);
 if (els.avatarUpload) {
     els.avatarUpload.addEventListener("change", (e) => {
         const file = e.target.files && e.target.files[0];
