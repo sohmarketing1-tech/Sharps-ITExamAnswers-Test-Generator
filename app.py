@@ -775,8 +775,12 @@ def score_test():
     total = len(results)
     score = round((correct_count / total) * 100, 2) if total else 0
 
+    provided_filename = data.get("filename")
+    provided_title = data.get("title")
+    result_title = provided_title or (display_name_for(provided_filename) if provided_filename else None) or get_current_title()
+
     return jsonify({
-        "title": get_current_title(),
+        "title": result_title,
         "total": total,
         "correct": correct_count,
         "score": score,

@@ -2060,7 +2060,7 @@ function retakeSameTest() {
     if (!state.lastTestQuestions || !state.lastTestQuestions.length) return;
     stopTimer();
     els.timer.style.display = "";
-    state.testQuestions = [...state.lastTestQuestions];
+    state.testQuestions = shuffleArray([...state.lastTestQuestions]);
     state.answers = {};
     state.testQuestions.forEach((q) => {
         state.answers[q.id] = q.type === "matching" ? {} : [];
@@ -2155,7 +2155,7 @@ async function addQuestionsToTest() {
         image: q.image,
     }));
 
-    state.testQuestions = [...state.lastTestQuestions, ...added];
+    state.testQuestions = shuffleArray([...state.lastTestQuestions, ...added]);
     state.lastTestQuestions = [...state.testQuestions];
     state.answers = {};
     state.testQuestions.forEach((q) => {
@@ -2517,7 +2517,12 @@ async function submitTest() {
             relevantAnswers[qid] = selected;
         }
     }
-    const payload = { answers: relevantAnswers, quiz: state.testQuestions };
+    const payload = {
+        answers: relevantAnswers,
+        quiz: state.testQuestions,
+        filename: state.currentFilename,
+        title: state.title,
+    };
     try {
         const res = await fetch(API.score, {
             method: "POST",
