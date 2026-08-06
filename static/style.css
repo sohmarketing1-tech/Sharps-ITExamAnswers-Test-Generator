@@ -1210,7 +1210,7 @@ body {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
-        padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+        padding: 0 0 env(safe-area-inset-bottom);
         z-index: 200;
         background: linear-gradient(145deg, rgba(var(--glass-base), 0.14) 0%, rgba(var(--glass-base), 0.06) 100%);
         box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.12);
@@ -1222,16 +1222,24 @@ body {
         flex-direction: column;
         justify-content: center;
         gap: 2px;
-        padding: 6px 4px;
-        border-radius: 10px;
+        padding: 0;
+        border-radius: 0;
         font-size: 0.65rem;
         line-height: 1.1;
-        min-height: 56px;
-        margin: 0 2px;
+        min-height: 60px;
+        margin: 0;
+    }
+
+    .tab-nav .tab-btn:first-child {
+        border-radius: 16px 0 0 0;
+    }
+
+    .tab-nav .tab-btn:last-child {
+        border-radius: 0 16px 0 0;
     }
 
     .tab-btn.active {
-        border-radius: 12px;
+        border-radius: 0;
     }
 
     .tab-btn svg {
