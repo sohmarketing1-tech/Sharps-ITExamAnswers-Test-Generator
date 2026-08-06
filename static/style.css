@@ -2539,14 +2539,19 @@ body {
     }
 
     .add-questions-controls {
-        flex-direction: column;
-        align-items: stretch;
+        flex-wrap: nowrap;
         width: 100%;
     }
 
-    .add-questions-input,
+    .add-questions-input {
+        flex: 0 0 56px;
+        width: 56px;
+    }
+
     .add-questions-btn {
-        width: 100%;
+        flex: 1 1 auto;
+        font-size: 0.9rem;
+        padding: 10px 14px;
     }
 
     .button-row {
@@ -4142,11 +4147,17 @@ body {
 
 @media (max-width: 480px) {
     .add-questions-controls {
-        flex-direction: column;
-        align-items: stretch;
+        flex-wrap: nowrap;
+    }
+
+    .add-questions-input {
+        flex: 0 0 48px;
+        width: 48px;
     }
 
     .add-questions-btn {
-        width: 100%;
+        flex: 1 1 auto;
+        font-size: 0.85rem;
+        padding: 10px 10px;
     }
 }
