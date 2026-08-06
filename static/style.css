@@ -691,6 +691,25 @@ body {
     letter-spacing: 0.06em;
 }
 
+.avatar-upload-label {
+    display: inline-flex;
+    justify-content: center;
+    cursor: pointer;
+    margin: 4px 0 6px;
+}
+
+.avatar-upload-label input {
+    display: none;
+}
+
+.avatar-upload-error {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    text-align: center;
+    min-height: 1.2em;
+    margin: 0;
+}
+
 /* Avatar customization modal */
 .avatar-modal-overlay {
     z-index: 300;

@@ -150,16 +150,8 @@ const els = {
     profileBtn: document.getElementById("profile-btn"),
     profileModal: document.getElementById("profile-modal"),
     profileAvatarPreview: document.getElementById("profile-avatar-preview"),
-    profileUsername: document.getElementById("profile-username"),
-    micahBuilder: document.getElementById("avatar-modal-builder"),
-    avatarEditBtn: document.getElementById("avatar-edit-btn"),
-    avatarModal: document.getElementById("avatar-modal"),
-    avatarModalPreview: document.getElementById("avatar-modal-preview-img"),
-    avatarModalUsername: document.getElementById("avatar-modal-username"),
-    avatarModalClose: document.getElementById("avatar-modal-close"),
-    avatarModalRandom: document.getElementById("avatar-modal-random"),
-    avatarModalSave: document.getElementById("avatar-modal-save"),
-    avatarModalCancel: document.getElementById("avatar-modal-cancel"),
+    avatarUpload: document.getElementById("avatar-upload"),
+    avatarUploadError: document.getElementById("avatar-upload-error"),
     themePicker: document.getElementById("theme-picker"),
     profileSave: document.getElementById("profile-save"),
     profileCancel: document.getElementById("profile-cancel"),
@@ -211,7 +203,7 @@ const els = {
     flashcardExitBtn: document.getElementById("flashcard-exit-btn"),
 };
 
-const DEFAULT_PROFILE = { theme: "ocean", avatar_seed: "me", avatar_style: "micah", avatar_options: {} };
+const DEFAULT_PROFILE = { theme: "ocean", avatar_image: "" };
 const THEMES = [
     { key: "ocean", label: "Ocean" },
     { key: "midnight", label: "Midnight" },
@@ -223,36 +215,6 @@ const THEMES = [
     { key: "coffee", label: "Coffee" },
 ];
 
-const MICAH_OPTIONS = {
-    hair: ["dannyPhantom", "dougFunny", "fonze", "full", "mrClean", "mrT", "pixie", "turban"],
-    clothes: ["collared", "crew", "open"],
-    mouth: ["frown", "laughing", "nervous", "pucker", "sad", "smile", "smirk", "surprised"],
-    eyes: ["eyes", "eyesShadow", "round", "smiling", "smilingShadow"],
-    ears: ["attached", "detached"],
-    eyebrows: ["down", "eyelashesDown", "eyelashesUp", "up"],
-    nose: ["curve", "pointed", "tound"],
-    baseColor: "#f9c9b6",
-    hairColor: "#000000",
-    shirtColor: "#d2eff3",
-    glassesColor: "#000000",
-    eyesColor: "#000000",
-    glasses: false,
-    facialHair: false,
-    earrings: false,
-};
-
-const MICAH_COLORS = [
-    "#000000", "#ffffff", "#f9c9b6", "#ac6651", "#77311d", "#92400e",
-    "#f4d150", "#57534e", "#d2eff3", "#ef4444", "#3b82f6", "#22c55e",
-    "#a855f7", "#ec4899",
-];
-
-const MICAH_DEFAULTS = {};
-Object.keys(MICAH_OPTIONS).forEach((k) => {
-    const v = MICAH_OPTIONS[k];
-    MICAH_DEFAULTS[k] = Array.isArray(v) ? v[0] : v;
-});
-
 let profileDraft = { ...DEFAULT_PROFILE };
 let profileSavedTheme = DEFAULT_PROFILE.theme;
 let avatarSnapshot = null;
@@ -261,32 +223,12 @@ function getProfile() {
     return { ...DEFAULT_PROFILE, ...state.userProfile };
 }
 
-function avatarUrl(seed, style, options = {}, size = null) {
-    const s = seed || (state.user ? state.user : "guest");
-    const st = style || "bottts";
-    const base = `https://api.dicebear.com/10.x/${encodeURIComponent(st)}/svg?seed=${encodeURIComponent(s)}`;
-    let url = base;
-    if (st === "micah" && options && Object.keys(options).length > 0) {
-        const params = [];
-        const bools = ["glasses", "facialHair", "earrings"];
-        Object.entries(options).forEach(([key, value]) => {
-            if (value === undefined || value === null || value === "") return;
-            if (bools.includes(key)) {
-                const prob = value === true || value === "true" ? 100 : 0;
-                params.push(`${encodeURIComponent(key)}Probability=${prob}`);
-                return;
-            }
-            if (key.toLowerCase().endsWith("color")) {
-                const color = String(value).replace("#", "");
-                params.push(`${encodeURIComponent(key)}=${encodeURIComponent(color)}`);
-                return;
-            }
-            params.push(`${encodeURIComponent(key)}Variant=${encodeURIComponent(value)}`);
-        });
-        if (params.length) url = `${url}&${params.join("&")}`;
-    }
-    if (size) url = `${url}&size=${size}`;
-    return url;
+function getAvatarImage(avatarImage, username) {
+    if (avatarImage && typeof avatarImage === "string") return avatarImage;
+    const name = username || "guest";
+    const initials = name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" fill="%23${getComputedStyle(document.documentElement).getPropertyValue("--accent").trim().replace("#", "") || "3b82f6"}"/><text x="64" y="72" font-size="48" fill="%23fff" text-anchor="middle" font-family="sans-serif">${initials}</text></svg>`;
+    return "data:image/svg+xml," + encodeURIComponent(svg);
 }
 
 function applyProfileTheme(profile) {
@@ -296,7 +238,7 @@ function applyProfileTheme(profile) {
 
 function updateNavAvatar() {
     const profile = getProfile();
-    els.navAvatar.src = avatarUrl(profile.avatar_seed, profile.avatar_style, profile.avatar_options);
+    els.navAvatar.src = getAvatarImage(profile.avatar_image, state.user);
     els.authUser.textContent = state.user || "";
 }
 
@@ -547,186 +489,45 @@ function setProfileMessage(text, type = "") {
     els.profileMessage.className = "auth-message" + (type ? ` ${type}` : "");
 }
 
-function getMicahOption(key) {
-    const opts = profileDraft.avatar_options || {};
-    const raw = opts[key] !== undefined ? opts[key] : MICAH_OPTIONS[key];
-    if (["glasses", "facialHair", "earrings"].includes(key)) {
-        return raw === true || raw === "true" || raw === "True";
-    }
-    return Array.isArray(raw) ? raw[0] : raw;
-}
-
-function setMicahOption(key, value) {
-    profileDraft.avatar_options = { ...(profileDraft.avatar_options || {}), [key]: value };
-    updateAvatarPreview();
-    updateMicahBuilderActiveStates();
-}
-
 function updateAvatarPreview() {
-    const url = avatarUrl(profileDraft.avatar_seed, profileDraft.avatar_style, profileDraft.avatar_options);
-    if (els.profileAvatarPreview) els.profileAvatarPreview.src = url;
-    if (els.avatarModalPreview) els.avatarModalPreview.src = url;
+    const src = getAvatarImage(profileDraft.avatar_image, state.user);
+    if (els.profileAvatarPreview) els.profileAvatarPreview.src = src;
 }
 
-function openAvatarModal() {
-    if (!els.avatarModal) return;
-    avatarSnapshot = {
-        seed: profileDraft.avatar_seed,
-        style: profileDraft.avatar_style,
-        options: { ...(profileDraft.avatar_options || {}) },
-    };
-    if (els.avatarModalUsername) els.avatarModalUsername.textContent = state.user || "";
-    renderMicahBuilder();
-    updateAvatarPreview();
-    els.avatarModal.classList.remove("hidden");
-}
-
-function closeAvatarModal() {
-    if (els.avatarModal) els.avatarModal.classList.add("hidden");
-}
-
-function cancelAvatarModal() {
-    if (avatarSnapshot) {
-        profileDraft.avatar_seed = avatarSnapshot.seed;
-        profileDraft.avatar_style = avatarSnapshot.style;
-        profileDraft.avatar_options = { ...avatarSnapshot.options };
-        updateAvatarPreview();
+function processAvatarFile(file, callback) {
+    const errorEl = els.avatarUploadError;
+    if (!file || !file.type.startsWith("image/")) {
+        if (errorEl) errorEl.textContent = "Please choose an image file.";
+        return;
     }
-    closeAvatarModal();
-}
-
-function micahOptionUrl(key, value, size = 64) {
-    const opts = { ...MICAH_DEFAULTS, [key]: value };
-    return avatarUrl("preview", "micah", opts, size);
-}
-
-function updateMicahBuilderActiveStates() {
-    if (!els.micahBuilder) return;
-    Array.from(els.micahBuilder.querySelectorAll("[data-micah-key]")).forEach((btn) => {
-        const key = btn.dataset.micahKey;
-        const isToggle = btn.dataset.micahToggle === "true";
-        const active = isToggle ? getMicahOption(key) : String(getMicahOption(key)) === btn.dataset.micahValue;
-        btn.classList.toggle("active", active);
-    });
-    Array.from(els.micahBuilder.querySelectorAll(".micah-swatch")).forEach((btn) => {
-        const key = btn.dataset.micahColor;
-        const val = btn.dataset.micahColorValue;
-        btn.classList.toggle("active", String(getMicahOption(key)) === val);
-    });
-}
-
-function renderMicahBuilder() {
-    if (!els.micahBuilder) return;
-    els.micahBuilder.innerHTML = "";
-
-    const variantSections = [
-        { key: "hair", label: "Hair" },
-        { key: "clothes", label: "Shirt" },
-        { key: "mouth", label: "Mouth" },
-        { key: "eyes", label: "Eyes" },
-        { key: "ears", label: "Ears" },
-        { key: "eyebrows", label: "Eyebrows" },
-        { key: "nose", label: "Nose" },
-    ];
-
-    variantSections.forEach(({ key, label }) => {
-        const row = document.createElement("div");
-        row.className = "micah-row";
-        const title = document.createElement("div");
-        title.className = "micah-row-label";
-        title.textContent = label;
-        const options = document.createElement("div");
-        options.className = "micah-options-row";
-        (MICAH_OPTIONS[key] || []).forEach((val) => {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "micah-option";
-            btn.dataset.micahKey = key;
-            btn.dataset.micahValue = val;
-            btn.title = val.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
-            const img = document.createElement("img");
-            img.src = micahOptionUrl(key, val);
-            img.alt = "";
-            img.loading = "lazy";
-            btn.appendChild(img);
-            btn.addEventListener("click", () => setMicahOption(key, val));
-            options.appendChild(btn);
-        });
-        row.appendChild(title);
-        row.appendChild(options);
-        els.micahBuilder.appendChild(row);
-    });
-
-    const toggleSection = document.createElement("div");
-    toggleSection.className = "micah-row";
-    const toggleTitle = document.createElement("div");
-    toggleTitle.className = "micah-row-label";
-    toggleTitle.textContent = "Accessories";
-    const toggleOptions = document.createElement("div");
-    toggleOptions.className = "micah-options-row";
-    const toggleLabels = { glasses: "Glasses", facialHair: "Facial hair", earrings: "Earrings" };
-    ["glasses", "facialHair", "earrings"].forEach((key) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "micah-option";
-        btn.dataset.micahKey = key;
-        btn.dataset.micahValue = "true";
-        btn.dataset.micahToggle = "true";
-        btn.title = toggleLabels[key];
-        const img = document.createElement("img");
-        img.src = micahOptionUrl(key, true);
-        img.alt = "";
-        img.loading = "lazy";
-        btn.appendChild(img);
-        btn.addEventListener("click", () => setMicahOption(key, !getMicahOption(key)));
-        toggleOptions.appendChild(btn);
-    });
-    toggleSection.appendChild(toggleTitle);
-    toggleSection.appendChild(toggleOptions);
-    els.micahBuilder.appendChild(toggleSection);
-
-    const colorSection = document.createElement("div");
-    colorSection.className = "micah-row";
-    const colorTitle = document.createElement("div");
-    colorTitle.className = "micah-row-label";
-    colorTitle.textContent = "Colors";
-    const colorGrid = document.createElement("div");
-    colorGrid.className = "micah-colors-grid";
-    const colorLabels = {
-        baseColor: "Skin",
-        hairColor: "Hair",
-        shirtColor: "Shirt",
-        eyesColor: "Eyes",
-        glassesColor: "Glasses",
+    if (file.size > 2 * 1024 * 1024) {
+        if (errorEl) errorEl.textContent = "Image must be smaller than 2 MB.";
+        return;
+    }
+    if (errorEl) errorEl.textContent = "";
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            const size = Math.min(img.width, img.height);
+            const canvas = document.createElement("canvas");
+            canvas.width = 256;
+            canvas.height = 256;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 0, 0, 256, 256);
+            callback(canvas.toDataURL("image/jpeg", 0.85));
+        };
+        img.onerror = () => { if (errorEl) errorEl.textContent = "Could not read image."; };
+        img.src = e.target.result;
     };
-    Object.keys(colorLabels).forEach((key) => {
-        const field = document.createElement("div");
-        field.className = "micah-color";
-        const lbl = document.createElement("label");
-        lbl.textContent = colorLabels[key];
-        const swatches = document.createElement("div");
-        swatches.className = "micah-swatches";
-        swatches.dataset.micahColorKey = key;
-        MICAH_COLORS.forEach((color) => {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "micah-swatch";
-            btn.style.backgroundColor = color;
-            btn.dataset.micahColor = key;
-            btn.dataset.micahColorValue = color;
-            btn.title = color;
-            btn.addEventListener("click", () => setMicahOption(key, color));
-            swatches.appendChild(btn);
-        });
-        field.appendChild(lbl);
-        field.appendChild(swatches);
-        colorGrid.appendChild(field);
-    });
-    colorSection.appendChild(colorTitle);
-    colorSection.appendChild(colorGrid);
-    els.micahBuilder.appendChild(colorSection);
+    reader.readAsDataURL(file);
+}
 
-    updateMicahBuilderActiveStates();
+function handleAvatarUpload(file) {
+    processAvatarFile(file, (dataUrl) => {
+        profileDraft.avatar_image = dataUrl;
+        updateAvatarPreview();
+    });
 }
 
 function renderThemePicker(selectedKey) {
@@ -747,41 +548,12 @@ function renderThemePicker(selectedKey) {
     });
 }
 
-function randomMicahOptions() {
-    const opts = {};
-    ["hair", "clothes", "mouth", "eyes", "ears", "eyebrows", "nose"].forEach((key) => {
-        const arr = MICAH_OPTIONS[key];
-        opts[key] = arr[Math.floor(Math.random() * arr.length)];
-    });
-    ["glasses", "facialHair", "earrings"].forEach((key) => {
-        opts[key] = Math.random() > 0.5;
-    });
-    ["baseColor", "hairColor", "shirtColor", "eyesColor", "glassesColor"].forEach((key) => {
-        opts[key] = MICAH_COLORS[Math.floor(Math.random() * MICAH_COLORS.length)];
-    });
-    return opts;
-}
-
-function randomAvatar() {
-    profileDraft.avatar_seed = Math.random().toString(36).slice(2, 10);
-    profileDraft.avatar_style = "micah";
-    profileDraft.avatar_options = randomMicahOptions();
-    renderMicahBuilder();
-    updateAvatarPreview();
-}
-
 async function openProfileModal() {
     await loadProfile();
-    profileDraft = { ...getProfile(), avatar_style: "micah" };
-    const opts = { ...(profileDraft.avatar_options || {}) };
-    if (opts.skinColor !== undefined && opts.baseColor === undefined) {
-        opts.baseColor = opts.skinColor;
-    }
-    ["skinColor", "mouthColor", "eyeShadowColor", "eyebrowsColor", "facialHairColor", "earringColor"].forEach((key) => {
-        delete opts[key];
-    });
-    profileDraft.avatar_options = opts;
+    profileDraft = { ...getProfile() };
     profileSavedTheme = profileDraft.theme;
+    if (els.avatarUpload) els.avatarUpload.value = "";
+    if (els.avatarUploadError) els.avatarUploadError.textContent = "";
     els.profileUsername.textContent = state.user || "";
     updateAvatarPreview();
     renderThemePicker(profileDraft.theme);
@@ -824,16 +596,6 @@ async function saveProfile() {
         closeProfileModal();
     } catch (err) {
         setProfileMessage(err.message, "error");
-    }
-}
-
-async function saveAvatarModal() {
-    try {
-        await persistProfile();
-        showToast("Avatar saved");
-        closeAvatarModal();
-    } catch (err) {
-        showToast(err.message, "warning");
     }
 }
 
@@ -1564,11 +1326,7 @@ function renderChat(messages) {
             });
             const isOwn = msg.username === state.user;
             const profile = isOwn ? getProfile() : msg;
-            const avatarUrlSrc = avatarUrl(
-                profile.avatar_seed || msg.username,
-                profile.avatar_style || "micah",
-                profile.avatar_options || {}
-            );
+            const avatarUrlSrc = getAvatarImage(profile.avatar_image, msg.username);
             el.innerHTML = `
                 <img src="${escapeHtml(avatarUrlSrc)}" alt="" class="chat-avatar" loading="lazy" />
                 <div class="chat-message-content">
@@ -1601,11 +1359,7 @@ function updateChatAvatars(avatars) {
         } else {
             return;
         }
-        const src = avatarUrl(
-            profile.avatar_seed || username,
-            profile.avatar_style || "micah",
-            profile.avatar_options || {}
-        );
+        const src = getAvatarImage(profile.avatar_image, username);
         if (img.src !== src) img.src = src;
     });
 }
@@ -2677,14 +2431,12 @@ els.profileBtn.addEventListener("click", openProfileModal);
 els.profileLogout.addEventListener("click", logout);
 els.profileSave.addEventListener("click", saveProfile);
 els.profileCancel.addEventListener("click", cancelProfile);
-els.avatarEditBtn.addEventListener("click", openAvatarModal);
-els.avatarModalClose.addEventListener("click", cancelAvatarModal);
-els.avatarModalRandom.addEventListener("click", randomAvatar);
-els.avatarModalSave.addEventListener("click", saveAvatarModal);
-els.avatarModalCancel.addEventListener("click", cancelAvatarModal);
-els.avatarModal.addEventListener("click", (e) => {
-    if (e.target === els.avatarModal) cancelAvatarModal();
-});
+if (els.avatarUpload) {
+    els.avatarUpload.addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) handleAvatarUpload(file);
+    });
+}
 els.profileModal.addEventListener("click", (e) => {
     if (e.target === els.profileModal) cancelProfile();
 });
@@ -2704,10 +2456,6 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         if (!els.authModal.classList.contains("hidden")) closeAuthModal();
         if (!els.installModal.classList.contains("hidden")) closeInstallModal();
-        if (!els.avatarModal.classList.contains("hidden")) {
-            cancelAvatarModal();
-            return;
-        }
         if (!els.profileModal.classList.contains("hidden")) cancelProfile();
     }
 });
@@ -2719,16 +2467,6 @@ els.installModal.addEventListener("click", (e) => {
 });
 els.installTabIos.addEventListener("click", () => switchInstallTab("ios"));
 els.installTabAndroid.addEventListener("click", () => switchInstallTab("android"));
-
-document.querySelectorAll(".home-card").forEach((card) => {
-    card.addEventListener("mousemove", (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty("--mouse-x", `${x}%`);
-        card.style.setProperty("--mouse-y", `${y}%`);
-    });
-});
 
 const homeHero = document.querySelector(".home-hero");
 if (homeHero) {

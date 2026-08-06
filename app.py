@@ -469,9 +469,7 @@ def add_chat_message(username: str, message: str) -> dict:
         "username": username,
         "message": message.strip()[:500],
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "avatar_seed": profile.get("avatar_seed", username),
-        "avatar_style": profile.get("avatar_style", "bottts"),
-        "avatar_options": profile.get("avatar_options", {}),
+        "avatar_image": profile.get("avatar_image", ""),
     }
     messages.append(entry)
     data["messages"] = messages[-500:]
@@ -1029,18 +1027,8 @@ def profile():
         profile = user_data.setdefault("profile", {})
         if "theme" in data and isinstance(data["theme"], str):
             profile["theme"] = data["theme"][:30]
-        if "avatar_seed" in data:
-            profile["avatar_seed"] = str(data["avatar_seed"])[:120]
-        if "avatar_style" in data and isinstance(data["avatar_style"], str):
-            profile["avatar_style"] = data["avatar_style"][:40]
-        if "avatar_options" in data and isinstance(data["avatar_options"], dict):
-            def _clean_opt(v):
-                if isinstance(v, bool):
-                    return v
-                if isinstance(v, (int, float)):
-                    return v
-                return str(v)[:120]
-            profile["avatar_options"] = {str(k): _clean_opt(v) for k, v in data["avatar_options"].items()}
+        if "avatar_image" in data and isinstance(data["avatar_image"], str):
+            profile["avatar_image"] = data["avatar_image"][:200_000]
         updated_profile = profile
         return True
 
@@ -1051,9 +1039,7 @@ def profile():
     chat_data = load_chat()
     for msg in chat_data.get("messages", []):
         if msg.get("username") == user:
-            msg["avatar_seed"] = updated_profile.get("avatar_seed", user)
-            msg["avatar_style"] = updated_profile.get("avatar_style", "micah")
-            msg["avatar_options"] = updated_profile.get("avatar_options", {})
+            msg["avatar_image"] = updated_profile.get("avatar_image", "")
     save_chat(chat_data)
 
     return jsonify({"ok": True, "profile": updated_profile})
@@ -1105,9 +1091,7 @@ def chat_avatars():
             continue
         profile = users.get(username, {}).get("profile", {})
         avatars[username] = {
-            "avatar_seed": profile.get("avatar_seed", username),
-            "avatar_style": profile.get("avatar_style", "micah"),
-            "avatar_options": profile.get("avatar_options", {}),
+            "avatar_image": profile.get("avatar_image", ""),
         }
     return jsonify({"ok": True, "avatars": avatars})
 
