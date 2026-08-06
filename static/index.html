@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=48" />
+    <link rel="stylesheet" href="/style.css?v=49" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -365,9 +365,6 @@
             <!-- Quiz Screen -->
             <section id="quiz-screen" class="screen">
                 <div class="quiz-toolbar">
-                    <div class="quiz-toolbar-top">
-                        <button id="home-btn" class="btn btn-secondary btn-small">← Back Home</button>
-                    </div>
                     <div class="progress-track">
                         <div id="progress-bar" class="progress-bar"></div>
                     </div>
@@ -384,12 +381,12 @@
                 </div>
 
                 <div class="quiz-nav">
-                    <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
-                    <button id="next-btn" class="btn btn-primary">Next</button>
+                    <button id="prev-btn" class="btn btn-previous" disabled>Previous</button>
+                    <button id="next-btn" class="btn btn-next">Next</button>
                 </div>
 
                 <div class="quiz-footer">
-                    <button id="submit-btn" class="btn btn-success btn-large">Submit Test</button>
+                    <button id="home-btn" class="btn btn-secondary btn-small">← Back Home</button>
                 </div>
             </section>
 
@@ -628,6 +625,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=41" defer></script>
+    <script src="/app.js?v=42" defer></script>
 </body>
 </html>

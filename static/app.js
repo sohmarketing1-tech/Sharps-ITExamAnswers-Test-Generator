@@ -103,7 +103,6 @@ const els = {
     optionsContainer: document.getElementById("options-container"),
     prevBtn: document.getElementById("prev-btn"),
     nextBtn: document.getElementById("next-btn"),
-    submitBtn: document.getElementById("submit-btn"),
     resultsTitle: document.getElementById("results-title"),
     scoreValue: document.getElementById("score-value"),
     scoreDetail: document.getElementById("score-detail"),
@@ -1218,7 +1217,13 @@ function startTimer() {
             if (remaining <= 0) {
                 stopTimer();
                 showToast("⏱ Time's up! Submitting your test…", "warning", 5000);
-                setTimeout(() => els.submitBtn.click(), 1200);
+                setTimeout(() => {
+                    if (state.mode === "mastery") {
+                        submitMastery();
+                    } else {
+                        submitTest();
+                    }
+                }, 1200);
             }
         };
         update();
@@ -2550,13 +2555,6 @@ els.nextBtn.addEventListener("click", () => {
         }
     } else {
         navigate(1);
-    }
-});
-els.submitBtn.addEventListener("click", () => {
-    if (state.mode === "mastery") {
-        submitMastery();
-    } else {
-        submitTest();
     }
 });
 els.restartBtn.addEventListener("click", goBackToApp);

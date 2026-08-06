@@ -1828,13 +1828,51 @@ body {
 
 .quiz-nav {
     display: flex;
-    justify-content: space-between;
+    gap: 16px;
     margin-top: 20px;
+}
+
+.quiz-nav .btn {
+    flex: 1 1 0;
+}
+
+.btn-next {
+    background: var(--success);
+    color: #fff;
+    border: none;
+    box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3);
+}
+
+.btn-next:hover:not(:disabled) {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.btn-previous {
+    background: var(--danger);
+    color: #fff;
+    border: none;
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+}
+
+.btn-previous:hover:not(:disabled) {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.btn-next:disabled,
+.btn-previous:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .quiz-footer {
     text-align: center;
-    margin-top: 28px;
+    margin-top: 20px;
+}
+
+.quiz-footer .btn {
+    width: auto;
 }
 
 /* Results */
@@ -3801,21 +3839,21 @@ body {
     }
 
     .quiz-nav {
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
         margin-top: 16px;
     }
 
     .quiz-nav .btn {
-        width: 100%;
+        width: auto;
     }
 
     .quiz-footer {
-        margin-top: 20px;
+        margin-top: 16px;
     }
 
     .quiz-footer .btn {
-        width: 100%;
+        width: auto;
     }
 
     /* Results */
