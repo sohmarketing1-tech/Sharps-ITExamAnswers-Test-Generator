@@ -791,15 +791,21 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     const groups = groupExamsByCategory(state.exams);
     const activeCategory = (activeFilename && getCategoryForFilename(activeFilename)) || defaultCategory || groups[0].category;
 
+    const label = document.createElement("div");
+    label.className = "exam-category-label";
+    label.textContent = "Choose a category:";
+    container.appendChild(label);
+
     const tabs = document.createElement("div");
     tabs.className = "exam-category-tabs";
     tabs.setAttribute("role", "tablist");
     tabs.setAttribute("aria-label", "Exam categories");
+    const displayNames = { "IT Essentials": "ITE", CCNA: "CCNA", Other: "Other" };
     groups.forEach(({ category }) => {
         const tab = document.createElement("button");
         tab.type = "button";
         tab.className = "exam-category-tab" + (category === activeCategory ? " active" : "");
-        tab.textContent = category;
+        tab.textContent = displayNames[category] || category;
         tab.setAttribute("role", "tab");
         tab.setAttribute("aria-selected", category === activeCategory ? "true" : "false");
         tab.addEventListener("click", () => {
