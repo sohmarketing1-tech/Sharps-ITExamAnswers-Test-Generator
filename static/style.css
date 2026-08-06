@@ -1241,15 +1241,14 @@ body {
 @media (max-width: 700px) {
     html {
         font-size: 15px;
-    }
-
-    html,
-    body {
         height: 100%;
         overflow: hidden;
     }
 
     body {
+        height: 100%;
+        height: 100dvh;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
     }
@@ -1292,7 +1291,7 @@ body {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
-        padding: 0 0 env(safe-area-inset-bottom);
+        padding: 0 0 calc(env(safe-area-inset-bottom) + 16px);
         z-index: 200;
         background: linear-gradient(145deg, rgba(var(--glass-base), 0.14) 0%, rgba(var(--glass-base), 0.06) 100%);
         box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.12);
