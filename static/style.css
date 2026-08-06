@@ -1295,7 +1295,7 @@ body {
         width: calc(100% - 24px);
         margin: 0 12px calc(constant(safe-area-inset-bottom) + 48px);
         margin: 0 12px calc(env(safe-area-inset-bottom) + 48px);
-        border-radius: 16px;
+        border-radius: 999px;
         border: 1px solid rgba(var(--glass-base), 0.15);
         display: grid;
         grid-template-columns: repeat(4, 1fr);
