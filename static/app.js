@@ -900,6 +900,10 @@ async function loadExams() {
                 ? prefs.examFilename
                 : (data.current_filename || state.exams[0].filename);
             await loadExam(current, true);
+            if (typeof window.EXAM_FILENAME === "string" && window.EXAM_FILENAME && state.exams.find((e) => e.filename === window.EXAM_FILENAME)) {
+                await loadExam(window.EXAM_FILENAME, true);
+                switchTab("practice");
+            }
         } else {
             setMessage("No pre-scraped exams found.", "error");
             setAvailableCount(0);

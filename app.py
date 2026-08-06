@@ -7,7 +7,7 @@ import secrets
 from pathlib import Path
 from typing import Optional
 
-from flask import Flask, jsonify, request, send_from_directory, session
+from flask import Flask, jsonify, request, redirect, Response, send_from_directory, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from scraper import scrape_url, is_valid_itexamanswers_url, DEFAULT_TARGET_URL, DEFAULT_OUTPUT
@@ -15,6 +15,10 @@ from scraper import scrape_url, is_valid_itexamanswers_url, DEFAULT_TARGET_URL, 
 app = Flask(__name__, static_folder="static", static_url_path="")
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+SITE_URL = "https://answrit.net"
+DEFAULT_PAGE_TITLE = "AnswrIT - ITE & CCNA Exam Answers | Netacad & Navy IT Rate Study Guide"
+DEFAULT_PAGE_DESCRIPTION = "Free ITE answers, CCNA exam answers, and Netacad study help for the Navy IT rate A school and Cisco certification students. Practice tests, flashcards, and mastery tracking."
 
 
 @app.after_request
@@ -27,7 +31,6 @@ def set_api_cache_headers(response):
     return response
 
 QUESTIONS_FILE = BASE_DIR / DEFAULT_OUTPUT
-DATA_DIR = BASE_DIR / "data"
 USERS_FILE = BASE_DIR / "users.json"
 USER_DATA_FILE = BASE_DIR / "user_data.json"
 CHAT_FILE = BASE_DIR / "chat.json"
@@ -47,6 +50,45 @@ app_state = {
     "filename": None,
     "questions": [],
 }
+
+
+def load_exam_manifest() -> list:
+    manifest_path = DATA_DIR / "exams.json"
+    if not manifest_path.exists():
+        return []
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            manifest = json.load(f)
+        return manifest.get("exams", [])
+    except Exception:
+        return []
+
+
+def exam_by_slug(slug: str):
+    filename = f"{slug}.json"
+    for exam in load_exam_manifest():
+        if exam.get("filename") == filename:
+            return exam
+    return None
+
+
+def render_index_html(page_title: str, page_description: str, canonical_url: str,
+                      h1_text: str, seo_intro: str, exam_filename: str = "") -> str:
+    index_path = BASE_DIR / "static" / "index.html"
+    html = index_path.read_text(encoding="utf-8")
+    replacements = {
+        "$PAGE_TITLE$": page_title,
+        "$PAGE_DESCRIPTION$": page_description,
+        "$CANONICAL_URL$": canonical_url,
+        "$OG_URL$": canonical_url,
+        "$SITE_URL$": SITE_URL,
+        "$H1_TEXT$": h1_text,
+        "$SEO_INTRO$": seo_intro,
+        "$EXAM_FILENAME$": exam_filename,
+    }
+    for token, value in replacements.items():
+        html = html.replace(token, value)
+    return html
 
 
 def load_exam_from_file(filepath: Path) -> bool:
@@ -519,7 +561,51 @@ def get_mastery_summary(username: str, filename: str, questions: list) -> dict:
 
 @app.route("/")
 def index():
-    return send_from_directory(app.static_folder, "index.html")
+    return render_index_html(
+        page_title=DEFAULT_PAGE_TITLE,
+        page_description=DEFAULT_PAGE_DESCRIPTION,
+        canonical_url=f"{SITE_URL}/",
+        h1_text="AnswrIT - Free ITE & CCNA Exam Answers for Netacad Students",
+        seo_intro="Boost your scores with free ITE answers, CCNA answers, and Netacad study tools. Built for Navy IT rate A school students and anyone taking Cisco IT Essentials or CCNA certification exams.",
+    )
+
+
+@app.route("/exams/<slug>/")
+def exam_page(slug: str):
+    exam = exam_by_slug(slug)
+    if not exam:
+        return redirect("/", code=302)
+    filename = exam.get("filename", f"{slug}.json")
+    display = display_name_for(filename, exam.get("display_name", ""))
+    title = f"{display} Exam Answers - AnswrIT"
+    description = f"Free {display} exam answers and practice tests. Study flashcards, mastery mode, and timed quizzes for Netacad and Navy IT A school students."
+    canonical = f"{SITE_URL}/exams/{slug}/"
+    h1 = f"{display} Exam Answers & Practice Tests"
+    intro = f"Get free {display} exam answers, practice tests, and flashcards on AnswrIT. Built for Netacad students and Navy IT rate A school trainees."
+    return render_index_html(
+        page_title=title,
+        page_description=description,
+        canonical_url=canonical,
+        h1_text=h1,
+        seo_intro=intro,
+        exam_filename=filename,
+    )
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    slugs = []
+    for exam in load_exam_manifest():
+        filename = exam.get("filename", "")
+        if filename.endswith(".json"):
+            slugs.append(filename[:-5])
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+    lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    lines.append(f"  <url><loc>{SITE_URL}/</loc><priority>1.0</priority></url>")
+    for slug in slugs:
+        lines.append(f"  <url><loc>{SITE_URL}/exams/{slug}/</loc><priority>0.8</priority></url>")
+    lines.append("</urlset>")
+    return Response("\n".join(lines), mimetype="application/xml")
 
 
 @app.route("/api/state")

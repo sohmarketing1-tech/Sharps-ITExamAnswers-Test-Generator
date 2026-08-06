@@ -6,27 +6,27 @@
     <meta name="theme-color" content="#1a2f4d" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>AnswrIT - ITE & CCNA Exam Answers | Netacad & Navy IT Rate Study Guide</title>
-    <meta name="description" content="Free ITE answers, CCNA exam answers, and Netacad study help for the Navy IT rate A school and Cisco certification students. Practice tests, flashcards, and mastery tracking." />
+    <title>$PAGE_TITLE$</title>
+    <meta name="description" content="$PAGE_DESCRIPTION$" />
     <meta name="keywords" content="ITE answers, ITE exam answers, Netacad ITE, Cisco ITE, CCNA answers, CCNA exam answers, Navy IT rate A school, IT Essentials answers, Netacad answers, Cisco certification study guide, AnswrIT, answer it" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="/" />
-    <meta property="og:title" content="AnswrIT - ITE & CCNA Exam Answers" />
-    <meta property="og:description" content="Free ITE and CCNA exam answers with practice tests, flashcards, and mastery tracking for Netacad and Navy IT A school students." />
+    <link rel="canonical" href="$CANONICAL_URL$" />
+    <meta property="og:title" content="$PAGE_TITLE$" />
+    <meta property="og:description" content="$PAGE_DESCRIPTION$" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="/" />
-    <meta property="og:image" content="images/answrit-icon.png" />
+    <meta property="og:url" content="$OG_URL$" />
+    <meta property="og:image" content="$SITE_URL$/images/answrit-icon.png" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="AnswrIT - ITE & CCNA Exam Answers" />
-    <meta name="twitter:description" content="Free ITE and CCNA exam answers with practice tests and flashcards for Netacad and Navy IT A school students." />
+    <meta name="twitter:title" content="$PAGE_TITLE$" />
+    <meta name="twitter:description" content="$PAGE_DESCRIPTION$" />
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "AnswrIT",
         "alternateName": "Answer It",
-        "url": "/",
-        "description": "Free ITE answers, CCNA exam answers, and Netacad study tools for Navy IT rate A school and Cisco certification students.",
+        "url": "$SITE_URL$",
+        "description": "$PAGE_DESCRIPTION$",
         "potentialAction": {
             "@type": "SearchAction",
             "target": "/?q={search_term_string}",
@@ -34,10 +34,10 @@
         }
     }
     </script>
-    <link rel="icon" type="image/png" href="images/answrit-icon.png" />
-    <link rel="apple-touch-icon" href="images/answrit-icon.png" />
-    <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css?v=27" />
+    <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
+    <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="/style.css?v=27" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -49,7 +49,7 @@
     <nav class="top-nav">
         <div class="nav-inner">
             <button id="home-logo" class="header-logo-btn" aria-label="Home">
-                <img src="images/answrit-logo.png" alt="AnswrIT" class="header-logo" />
+                <img src="/images/answrit-logo.png" alt="AnswrIT" class="header-logo" />
             </button>
             <div id="nav-auth" class="nav-auth">
                 <div id="auth-logged-out" class="auth-actions">
@@ -195,8 +195,8 @@
             <section id="home-screen" class="screen active">
                 <div class="home-hero">
                     <div class="home-hero-badge">Study smarter · Pass faster</div>
-                    <h1>AnswrIT - Free ITE & CCNA Exam Answers for Netacad Students</h1>
-                    <p>Boost your scores with free ITE answers, CCNA answers, and Netacad study tools. Built for Navy IT rate A school students and anyone taking Cisco IT Essentials or CCNA certification exams.</p>
+                    <h1>$H1_TEXT$</h1>
+                    <p>$SEO_INTRO$</p>
                     <p class="home-hero-hint">Free to use · Save your progress when you sign up</p>
                     <button id="home-start-btn" class="btn btn-success btn-large">Get Started</button>
                 </div>
@@ -634,6 +634,7 @@
     </div>
 
     <div id="toast" class="toast hidden"></div>
-    <script src="app.js?v=26" defer></script>
+    <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
+    <script src="/app.js?v=27" defer></script>
 </body>
 </html>
