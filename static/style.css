@@ -1293,14 +1293,14 @@ body {
         position: static;
         flex: 0 0 auto;
         width: calc(100% - 24px);
-        margin: 0 12px;
+        margin: 0 12px calc(constant(safe-area-inset-bottom) + 48px);
+        margin: 0 12px calc(env(safe-area-inset-bottom) + 48px);
         border-radius: 16px;
         border: 1px solid rgba(var(--glass-base), 0.15);
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 0;
-        padding: 0 0 calc(constant(safe-area-inset-bottom) + 48px);
-        padding: 0 0 calc(env(safe-area-inset-bottom) + 48px);
+        gap: 4px;
+        padding: 4px 0;
         z-index: 200;
         background: linear-gradient(145deg, rgba(var(--glass-base), 0.18) 0%, rgba(var(--glass-base), 0.08) 100%);
         box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.12), 0 4px 16px rgba(var(--shadow-sm-base), 0.08);
@@ -1316,16 +1316,13 @@ body {
         border-radius: 999px;
         font-size: 0.7rem;
         line-height: 1.1;
-        min-height: 52px;
-        margin: 4px;
+        min-height: 44px;
+        margin: 0;
     }
 
-    .tab-nav .tab-btn:first-child {
-        border-radius: 12px 999px 999px 12px;
-    }
-
+    .tab-nav .tab-btn:first-child,
     .tab-nav .tab-btn:last-child {
-        border-radius: 999px 12px 12px 999px;
+        border-radius: 999px;
     }
 
     .tab-btn.active {
@@ -1347,8 +1344,8 @@ body {
 
 @media (max-width: 700px) and (display-mode: standalone) {
     .tab-nav {
-        padding: 0 0 calc(constant(safe-area-inset-bottom) + 16px);
-        padding: 0 0 calc(env(safe-area-inset-bottom) + 16px);
+        margin-bottom: calc(constant(safe-area-inset-bottom) + 16px);
+        margin-bottom: calc(env(safe-area-inset-bottom) + 16px);
     }
 }
 
