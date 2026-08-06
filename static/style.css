@@ -2866,6 +2866,62 @@ body {
     letter-spacing: 0.01em;
 }
 
+.seo-content {
+    margin: 28px auto 0;
+    max-width: 760px;
+    padding: 22px 26px;
+    border: 1px solid rgba(var(--glass-base), 0.15);
+    border-radius: 18px;
+    background: rgba(var(--glass-base), 0.06);
+    color: rgba(var(--glass-base), 0.85);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.seo-content h2,
+.seo-content h3 {
+    color: var(--text);
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.seo-content h2 {
+    font-size: 1.25rem;
+}
+
+.seo-content h3 {
+    font-size: 1.05rem;
+    margin-top: 18px;
+}
+
+.seo-content p {
+    margin: 0 0 14px;
+}
+
+.seo-content ul {
+    margin: 0 0 14px 18px;
+    padding: 0;
+}
+
+.seo-content li {
+    margin-bottom: 4px;
+}
+
+.seo-content dl {
+    margin: 0;
+}
+
+.seo-content dt {
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 10px;
+}
+
+.seo-content dd {
+    margin: 4px 0 0 0;
+}
+
 .home-actions {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

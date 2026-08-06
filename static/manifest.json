@@ -1,7 +1,7 @@
 {
   "name": "AnswrIT",
   "short_name": "AnswrIT",
-  "description": "IT exam practice tests, flashcards, and mastery mode.",
+  "description": "Free ITE answers, CCNA exam answers, and Netacad study tools for Navy IT A school and Cisco certification students.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a2f4d",
