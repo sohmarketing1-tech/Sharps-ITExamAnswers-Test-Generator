@@ -2502,12 +2502,15 @@ function showResults(data) {
     els.reviewPanel.classList.remove("hidden");
 
     els.reviewList.innerHTML = "";
-    data.results.forEach((r, i) => {
+    const orderedResults = data.results
+        .map((r, i) => ({ ...r, _originalNumber: i + 1 }))
+        .sort((a, b) => Number(a.is_correct) - Number(b.is_correct));
+    orderedResults.forEach((r) => {
         const item = document.createElement("div");
         item.className = `review-item ${r.is_correct ? "correct" : "wrong"}`;
 
         const heading = document.createElement("h4");
-        heading.textContent = `${i + 1}. ${r.question}`;
+        heading.textContent = `${r._originalNumber}. ${r.question}`;
         item.appendChild(heading);
 
         const selectedRow = document.createElement("div");
