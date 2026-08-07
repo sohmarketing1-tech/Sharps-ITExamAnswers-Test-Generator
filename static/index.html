@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=60" />
+    <link rel="stylesheet" href="/style.css?v=73" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -180,8 +180,9 @@
     <div class="tab-nav" role="tablist" aria-label="Main navigation">
         <button id="tab-practice" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="tab-label">Practice</span></button>
         <button id="tab-flashcards" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span class="tab-label">Flashcards</span></button>
+        <button id="tab-all-apps" class="tab-btn tab-btn-hub" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="tab-label">All Apps</span></button>
         <button id="tab-history" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="tab-label">History</span></button>
-        <button id="tab-community" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5a8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span class="tab-label">Chat</span></button>
+        <button id="tab-community" class="tab-btn hidden" role="tab" aria-selected="false" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5a8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span class="tab-label">Chat</span></button>
     </div>
 
     <div id="welcome-banner" class="welcome-banner hidden">
@@ -620,11 +621,1134 @@
                     </div>
                 </div>
             </section>
+
+            <!-- All Apps Gallery Screen -->
+            <section id="gallery-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">All Apps</h2>
+                            <p class="screen-header-subtitle">Every study tool in one place. More apps are on the way.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-gallery-grid">
+                    <button class="app-tile" data-gallery-app="binary">
+                        <span class="app-tile-icon app-tile-icon-binary" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+                        </span>
+                        <span class="app-tile-name">Binary Game</span>
+                        <span class="app-tile-subtitle">Learn to read/build binary</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="subnetDrills">
+                        <span class="app-tile-icon app-tile-icon-subnet" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h6M7 16h4"/></svg>
+                        </span>
+                        <span class="app-tile-name">Subnetting</span>
+                        <span class="app-tile-subtitle">Unlimited subnet drills</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="portMatch">
+                        <span class="app-tile-icon app-tile-icon-port" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 11v2M10 11v2M14 11v2M18 11v2"/></svg>
+                        </span>
+                        <span class="app-tile-name">Port Match</span>
+                        <span class="app-tile-subtitle">Match ports to services</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="osiSorter">
+                        <span class="app-tile-icon app-tile-icon-osi" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="4" x2="20" y2="4"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="14" x2="20" y2="14"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+                        </span>
+                        <span class="app-tile-name">OSI Sorter</span>
+                        <span class="app-tile-subtitle">Put the 7 layers in order</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="acronymDrill">
+                        <span class="app-tile-icon app-tile-icon-acronym" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        </span>
+                        <span class="app-tile-name">Acronym Drill</span>
+                        <span class="app-tile-subtitle">Flip cards for IT acronyms</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="cliMatch">
+                        <span class="app-tile-icon app-tile-icon-cli" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                        </span>
+                        <span class="app-tile-name">Command Match</span>
+                        <span class="app-tile-subtitle">Cisco IOS command drills</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="processSorter">
+                        <span class="app-tile-icon app-tile-icon-process" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10M7 7l3-3M7 7l3 3M17 17H7M17 17l-3-3M17 17l-3 3"/></svg>
+                        </span>
+                        <span class="app-tile-name">Process Sorter</span>
+                        <span class="app-tile-subtitle">TCP handshake &amp; DHCP DORA</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="raidMatch">
+                        <span class="app-tile-icon app-tile-icon-raid" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+                        </span>
+                        <span class="app-tile-name">RAID Match</span>
+                        <span class="app-tile-subtitle">Learn the RAID levels</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="ipv4Classify">
+                        <span class="app-tile-icon app-tile-icon-ipv4" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a15 15 0 0 1 0 18M3 12h18"/></svg>
+                        </span>
+                        <span class="app-tile-name">IPv4 Classifier</span>
+                        <span class="app-tile-subtitle">Public, private, or special?</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="osCmdMatch">
+                        <span class="app-tile-icon app-tile-icon-oscmd" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg>
+                        </span>
+                        <span class="app-tile-name">OS Command Match</span>
+                        <span class="app-tile-subtitle">Windows &amp; Linux commands</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="cableId">
+                        <span class="app-tile-icon app-tile-icon-cable" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v4a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V3M9 3H7a2 2 0 0 0-2 2v3M15 3h2a2 2 0 0 1 2 2v3M12 9v6M8 21v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/></svg>
+                        </span>
+                        <span class="app-tile-name">Cable ID</span>
+                        <span class="app-tile-subtitle">Identify connectors &amp; cables</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="topologyId">
+                        <span class="app-tile-icon app-tile-icon-topology" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="12" cy="12" r="2"/><path d="M12 7v3M12 12L6.5 17.5M12 12l5.5 5.5"/></svg>
+                        </span>
+                        <span class="app-tile-name">Topology ID</span>
+                        <span class="app-tile-subtitle">Star, bus, ring, mesh &amp; tree</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="secplusFlash">
+                        <span class="app-tile-icon app-tile-icon-secplus" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+                        </span>
+                        <span class="app-tile-name">Security+ Flashcards</span>
+                        <span class="app-tile-subtitle">Core cybersecurity concepts</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="natoPhonetic">
+                        <span class="app-tile-icon app-tile-icon-nato" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M8 9l4-4 4 4M6 19h12"/></svg>
+                        </span>
+                        <span class="app-tile-name">NATO Phonetic</span>
+                        <span class="app-tile-subtitle">Alpha, Bravo, Charlie&hellip;</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="precedenceMatch">
+                        <span class="app-tile-icon app-tile-icon-precedence" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+                        </span>
+                        <span class="app-tile-name">Message Precedence</span>
+                        <span class="app-tile-subtitle">Flash, Immediate, Priority, Routine</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="rfSpectrum">
+                        <span class="app-tile-icon app-tile-icon-rf" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 16 0M7 12a5 5 0 0 1 10 0M10 12a2 2 0 0 1 4 0"/><circle cx="12" cy="12" r="1"/></svg>
+                        </span>
+                        <span class="app-tile-name">RF Spectrum Match</span>
+                        <span class="app-tile-subtitle">LF to SHF frequency bands</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="serverRoles">
+                        <span class="app-tile-icon app-tile-icon-serverroles" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="6" rx="1"/><rect x="3" y="15" width="18" height="6" rx="1"/><line x1="7" y1="6" x2="7" y2="6"/><line x1="7" y1="18" x2="7" y2="18"/></svg>
+                        </span>
+                        <span class="app-tile-name">Server Roles Match</span>
+                        <span class="app-tile-subtitle">AD DS, DNS, DHCP &amp; more</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="ohmsLaw">
+                        <span class="app-tile-icon app-tile-icon-ohms" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 1 1 16 0M4 14v6M20 14v6M9 20h6"/></svg>
+                        </span>
+                        <span class="app-tile-name">Ohm's Law Calculator</span>
+                        <span class="app-tile-subtitle">Solve for V, I, R, or P</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="wirelessMatch">
+                        <span class="app-tile-icon app-tile-icon-wireless" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15.5 15.5 0 0 1 20 0M5.5 12a10.5 10.5 0 0 1 13 0M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1"/></svg>
+                        </span>
+                        <span class="app-tile-name">Wireless Standards</span>
+                        <span class="app-tile-subtitle">802.11 a/b/g/n/ac/ax</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="logicGates">
+                        <span class="app-tile-icon app-tile-icon-logic" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8v8h4a5 5 0 0 0 0-8H4z"/><path d="M14 4h2v16h-2M20 8v8"/></svg>
+                        </span>
+                        <span class="app-tile-name">Logic Gates</span>
+                        <span class="app-tile-subtitle">AND, OR, NOT, XOR &amp; more</span>
+                    </button>
+
+                    <button class="app-tile" data-gallery-app="cloudModels">
+                        <span class="app-tile-icon app-tile-icon-cloud" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-1-7.9 5 5 0 0 1 9.8-1.6A4.5 4.5 0 0 1 17 18H7z"/></svg>
+                        </span>
+                        <span class="app-tile-name">Cloud Service Models</span>
+                        <span class="app-tile-subtitle">IaaS, PaaS, SaaS &amp; DaaS</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Binary Game Screen -->
+            <section id="binary-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Binary Bits Game</h2>
+                            <p class="screen-header-subtitle">Tap the switches to match the target number. This is the one skill you need before subnetting will make sense.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card binary-setup">
+                    <div class="form-group">
+                        <label>Difficulty</label>
+                        <div class="mode-toggle binary-difficulty-toggle">
+                            <button id="binary-diff-easy" class="btn btn-primary mode-btn active" data-diff="easy">Easy</button>
+                            <button id="binary-diff-medium" class="btn btn-secondary mode-btn" data-diff="medium">Medium</button>
+                            <button id="binary-diff-hard" class="btn btn-secondary mode-btn" data-diff="hard">Hard</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card binary-game-card">
+                    <div class="binary-target">
+                        <p class="binary-target-label">Build this number</p>
+                        <h3 id="binary-target-value">0</h3>
+                    </div>
+
+                    <div id="binary-bits-row" class="binary-bits-row"></div>
+
+                    <p id="binary-current-row" class="binary-current-label">Your binary = <span id="binary-current-value">0</span></p>
+
+                    <p id="binary-game-message" class="message"></p>
+
+                    <div class="button-row">
+                        <button id="binary-next-btn" class="btn btn-secondary btn-large">Skip / New Number</button>
+                    </div>
+                </div>
+
+                <div class="binary-game-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="binary-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Streak</span>
+                        <strong id="binary-stat-streak">0</strong>
+                    </div>
+                    <div>
+                        <span>Best Streak</span>
+                        <strong id="binary-stat-best">0</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Subnetting Drills Screen -->
+            <section id="subnet-drills-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h6M7 16h4"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Subnetting</h2>
+                            <p class="screen-header-subtitle">Unlimited random practice problems with instant feedback and a full binary breakdown.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="subnet-drills-panel">
+                    <div class="card subnet-drill-setup">
+                        <div class="form-group">
+                            <label>Difficulty</label>
+                            <div class="mode-toggle subnet-difficulty-toggle">
+                                <button id="subnet-diff-easy" class="btn btn-primary mode-btn active" data-diff="easy">Class C only</button>
+                                <button id="subnet-diff-medium" class="btn btn-secondary mode-btn" data-diff="medium">Mixed classes</button>
+                                <button id="subnet-diff-hard" class="btn btn-secondary mode-btn" data-diff="hard">VLSM / host-based</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="subnet-drill-card" class="card subnet-drill-card">
+                        <div class="subnet-problem">
+                            <p class="subnet-problem-label">Given</p>
+                            <h3 id="subnet-problem-text">—</h3>
+                        </div>
+
+                        <div id="subnet-answer-grid" class="subnet-answer-grid">
+                            <div class="subnet-answer-field">
+                                <label for="subnet-answer-network">Network address</label>
+                                <input type="text" id="subnet-answer-network" placeholder="e.g. 192.168.1.0" autocomplete="off" />
+                            </div>
+                            <div class="subnet-answer-field">
+                                <label for="subnet-answer-broadcast">Broadcast address</label>
+                                <input type="text" id="subnet-answer-broadcast" placeholder="e.g. 192.168.1.63" autocomplete="off" />
+                            </div>
+                            <div class="subnet-answer-field">
+                                <label for="subnet-answer-first">First usable host</label>
+                                <input type="text" id="subnet-answer-first" placeholder="e.g. 192.168.1.1" autocomplete="off" />
+                            </div>
+                            <div class="subnet-answer-field">
+                                <label for="subnet-answer-last">Last usable host</label>
+                                <input type="text" id="subnet-answer-last" placeholder="e.g. 192.168.1.62" autocomplete="off" />
+                            </div>
+                            <div class="subnet-answer-field">
+                                <label for="subnet-answer-hosts">Usable hosts</label>
+                                <input type="text" id="subnet-answer-hosts" placeholder="e.g. 62" autocomplete="off" />
+                            </div>
+                        </div>
+
+                        <p id="subnet-drill-message" class="message"></p>
+
+                        <div class="button-row">
+                            <button id="subnet-check-btn" class="btn btn-primary btn-large">Check Answers</button>
+                            <button id="subnet-next-btn" class="btn btn-secondary btn-large">New Problem</button>
+                        </div>
+
+                        <div id="subnet-breakdown" class="subnet-breakdown hidden"></div>
+                    </div>
+
+                    <div class="subnet-drill-stats card">
+                        <div>
+                            <span>Solved</span>
+                            <strong id="subnet-stat-solved">0</strong>
+                        </div>
+                        <div>
+                            <span>Correct</span>
+                            <strong id="subnet-stat-correct">0</strong>
+                        </div>
+                        <div>
+                            <span>Accuracy</span>
+                            <strong id="subnet-stat-accuracy">—</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Port Match Screen -->
+            <section id="port-match-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 11v2M10 11v2M14 11v2M18 11v2"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Port Match</h2>
+                            <p class="screen-header-subtitle">Match common port numbers to the services that use them.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-setup">
+                    <div class="form-group">
+                        <label>Direction</label>
+                        <div class="mode-toggle port-direction-toggle">
+                            <button id="port-dir-forward" class="btn btn-primary mode-btn active" data-dir="forward">Port &rarr; Service</button>
+                            <button id="port-dir-reverse" class="btn btn-secondary mode-btn" data-dir="reverse">Service &rarr; Port</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p id="port-match-label" class="drill-question-label">What service uses this port?</p>
+                    <h3 id="port-match-question">—</h3>
+                    <div id="port-match-choices" class="drill-choices"></div>
+                    <p id="port-match-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="port-match-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="port-match-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="port-match-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="port-match-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Command Match Screen -->
+            <section id="cli-match-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Command Match</h2>
+                            <p class="screen-header-subtitle">Match Cisco IOS commands to what they actually do.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What does this command do?</p>
+                    <h3 id="cli-match-question" class="drill-question-code">—</h3>
+                    <div id="cli-match-choices" class="drill-choices drill-choices-text"></div>
+                    <p id="cli-match-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="cli-match-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="cli-match-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="cli-match-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="cli-match-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- OSI Sorter Screen -->
+            <section id="osi-sorter-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="4" x2="20" y2="4"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="14" x2="20" y2="14"/><line x1="4" y1="19" x2="20" y2="19"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">OSI Sorter</h2>
+                            <p class="screen-header-subtitle">Tap the 7 OSI layers in order, from Application (7) down to Physical (1).</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card osi-sorter-card">
+                    <div id="osi-sorter-chips" class="osi-sorter-chips"></div>
+                    <p id="osi-sorter-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="osi-mnemonic-btn" class="btn btn-secondary">Show Mnemonic</button>
+                        <button id="osi-reset-btn" class="btn btn-secondary btn-large">New Round</button>
+                    </div>
+                    <p id="osi-mnemonic-text" class="osi-mnemonic hidden">"All People Seem To Need Data Processing" — Application, Presentation, Session, Transport, Network, Data Link, Physical.</p>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Rounds Completed</span>
+                        <strong id="osi-stat-rounds">0</strong>
+                    </div>
+                    <div>
+                        <span>Mistakes (this round)</span>
+                        <strong id="osi-stat-mistakes">0</strong>
+                    </div>
+                    <div>
+                        <span>Best (fewest mistakes)</span>
+                        <strong id="osi-stat-best">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Acronym Drill Screen -->
+            <section id="acronym-drill-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Acronym Drill</h2>
+                            <p class="screen-header-subtitle">Flip through the acronyms every IT student needs to know cold.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card acronym-study-area">
+                    <p class="acronym-counter"><span id="acronym-counter-text">1 / 1</span></p>
+
+                    <div id="acronym-card" class="acronym-card">
+                        <div class="acronym-card-inner">
+                            <div class="acronym-card-front">
+                                <h3 id="acronym-front-text">—</h3>
+                                <span class="acronym-tap-hint">Tap to flip</span>
+                            </div>
+                            <div class="acronym-card-back">
+                                <p id="acronym-back-full" class="acronym-back-full">—</p>
+                                <p id="acronym-back-desc" class="acronym-back-desc">—</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button id="acronym-shuffle-btn" class="btn btn-secondary">Shuffle</button>
+                        <button id="acronym-prev-btn" class="btn btn-secondary">Previous</button>
+                        <button id="acronym-flip-btn" class="btn btn-primary btn-large">Flip</button>
+                        <button id="acronym-next-btn" class="btn btn-secondary">Next</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Process Sorter Screen -->
+            <section id="process-sorter-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10M7 7l3-3M7 7l3 3M17 17H7M17 17l-3-3M17 17l-3 3"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Process Sorter</h2>
+                            <p class="screen-header-subtitle">Tap the steps of a network process in the correct order.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-setup">
+                    <div class="form-group">
+                        <label>Process</label>
+                        <div class="mode-toggle process-mode-toggle">
+                            <button id="process-mode-tcp" class="btn btn-primary mode-btn active" data-process="tcp">TCP Handshake</button>
+                            <button id="process-mode-dora" class="btn btn-secondary mode-btn" data-process="dora">DHCP (DORA)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card osi-sorter-card">
+                    <div id="process-sorter-chips" class="osi-sorter-chips"></div>
+                    <p id="process-sorter-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="process-sorter-reset-btn" class="btn btn-secondary btn-large">New Round</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Rounds Completed</span>
+                        <strong id="process-sorter-stat-rounds">0</strong>
+                    </div>
+                    <div>
+                        <span>Mistakes (this round)</span>
+                        <strong id="process-sorter-stat-mistakes">0</strong>
+                    </div>
+                    <div>
+                        <span>Best (fewest mistakes)</span>
+                        <strong id="process-sorter-stat-best">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RAID Match Screen -->
+            <section id="raid-match-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">RAID Match</h2>
+                            <p class="screen-header-subtitle">Match each RAID level to what it actually does.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What does this RAID level do?</p>
+                    <h3 id="raid-match-question">—</h3>
+                    <div id="raid-match-choices" class="drill-choices drill-choices-text"></div>
+                    <p id="raid-match-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="raid-match-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="raid-match-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="raid-match-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="raid-match-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- IPv4 Classifier Screen -->
+            <section id="ipv4-classify-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a15 15 0 0 1 0 18M3 12h18"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">IPv4 Classifier</h2>
+                            <p class="screen-header-subtitle">Classify each address: public, private, loopback, APIPA, or multicast.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">How would you classify this address?</p>
+                    <h3 id="ipv4-classify-question" class="drill-question-code">—</h3>
+                    <div id="ipv4-classify-choices" class="drill-choices"></div>
+                    <p id="ipv4-classify-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="ipv4-classify-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="ipv4-classify-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="ipv4-classify-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="ipv4-classify-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- OS Command Match Screen -->
+            <section id="os-cmd-match-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">OS Command Match</h2>
+                            <p class="screen-header-subtitle">Windows and Linux commands — know what each one actually does.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What does this command do?</p>
+                    <h3 id="os-cmd-match-question" class="drill-question-code">—</h3>
+                    <div id="os-cmd-match-choices" class="drill-choices drill-choices-text"></div>
+                    <p id="os-cmd-match-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="os-cmd-match-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="os-cmd-match-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="os-cmd-match-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="os-cmd-match-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cable ID Screen -->
+            <section id="cable-id-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v4a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V3M9 3H7a2 2 0 0 0-2 2v3M15 3h2a2 2 0 0 1 2 2v3M12 9v6M8 21v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Cable ID</h2>
+                            <p class="screen-header-subtitle">Identify the connector or cable type shown.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What is this connector/cable?</p>
+                    <img id="cable-id-image" class="cable-id-image" src="" alt="Connector to identify" />
+                    <div id="cable-id-choices" class="drill-choices"></div>
+                    <p id="cable-id-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="cable-id-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="cable-id-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="cable-id-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="cable-id-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Topology ID Screen -->
+            <section id="topology-id-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="12" cy="12" r="2"/><path d="M12 7v3M12 12L6.5 17.5M12 12l5.5 5.5"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Topology ID</h2>
+                            <p class="screen-header-subtitle">Identify the network topology diagram shown.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What topology is this?</p>
+                    <div id="topology-id-diagram" class="topology-diagram"></div>
+                    <div id="topology-id-choices" class="drill-choices"></div>
+                    <p id="topology-id-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="topology-id-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="topology-id-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="topology-id-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="topology-id-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security+ Flashcards Screen -->
+            <section id="secplus-flash-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Security+ Flashcards</h2>
+                            <p class="screen-header-subtitle">Flip through core cybersecurity concepts.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card acronym-study-area">
+                    <p class="acronym-counter"><span id="secplus-counter-text">1 / 1</span></p>
+
+                    <div id="secplus-card" class="acronym-card">
+                        <div class="acronym-card-inner">
+                            <div class="acronym-card-front">
+                                <h3 id="secplus-front-text">—</h3>
+                                <span class="acronym-tap-hint">Tap to flip</span>
+                            </div>
+                            <div class="acronym-card-back">
+                                <p id="secplus-back-full" class="acronym-back-full">—</p>
+                                <p id="secplus-back-desc" class="acronym-back-desc">—</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button id="secplus-shuffle-btn" class="btn btn-secondary">Shuffle</button>
+                        <button id="secplus-prev-btn" class="btn btn-secondary">Previous</button>
+                        <button id="secplus-flip-btn" class="btn btn-primary btn-large">Flip</button>
+                        <button id="secplus-next-btn" class="btn btn-secondary">Next</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NATO Phonetic Screen -->
+            <section id="nato-phonetic-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M8 9l4-4 4 4M6 19h12"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">NATO Phonetic</h2>
+                            <p class="screen-header-subtitle">Match each letter to its phonetic alphabet word.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What is the phonetic word for this letter?</p>
+                    <h3 id="nato-phonetic-question" class="drill-question-code">—</h3>
+                    <div id="nato-phonetic-choices" class="drill-choices"></div>
+                    <p id="nato-phonetic-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="nato-phonetic-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="nato-phonetic-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="nato-phonetic-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="nato-phonetic-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Message Precedence Screen -->
+            <section id="precedence-match-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Message Precedence</h2>
+                            <p class="screen-header-subtitle">Match naval message precedence levels to their delivery requirements.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What does this precedence level mean?</p>
+                    <h3 id="precedence-match-question">—</h3>
+                    <div id="precedence-match-choices" class="drill-choices drill-choices-text"></div>
+                    <p id="precedence-match-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="precedence-match-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="precedence-match-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="precedence-match-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="precedence-match-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RF Spectrum Match Screen -->
+            <section id="rf-spectrum-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 16 0M7 12a5 5 0 0 1 10 0M10 12a2 2 0 0 1 4 0"/><circle cx="12" cy="12" r="1"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">RF Spectrum Match</h2>
+                            <p class="screen-header-subtitle">Match radio frequency bands to their range and typical use.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What describes this frequency band?</p>
+                    <h3 id="rf-spectrum-question">—</h3>
+                    <div id="rf-spectrum-choices" class="drill-choices drill-choices-text"></div>
+                    <p id="rf-spectrum-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="rf-spectrum-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="rf-spectrum-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="rf-spectrum-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="rf-spectrum-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Server Roles Match Screen -->
+            <section id="server-roles-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="6" rx="1"/><rect x="3" y="15" width="18" height="6" rx="1"/><line x1="7" y1="6" x2="7" y2="6"/><line x1="7" y1="18" x2="7" y2="18"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Server Roles Match</h2>
+                            <p class="screen-header-subtitle">Match each server role to what it does.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What does this server role do?</p>
+                    <h3 id="server-roles-question">—</h3>
+                    <div id="server-roles-choices" class="drill-choices drill-choices-text"></div>
+                    <p id="server-roles-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="server-roles-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="server-roles-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="server-roles-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="server-roles-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ohm's Law Calculator Screen -->
+            <section id="ohms-law-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 1 1 16 0M4 14v6M20 14v6M9 20h6"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Ohm's Law Calculator</h2>
+                            <p class="screen-header-subtitle">Enter any two values to solve for the rest. V = I &times; R, P = V &times; I.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card ohms-law-card">
+                    <div class="ohms-law-grid">
+                        <div class="form-group">
+                            <label for="ohms-voltage">Voltage (V)</label>
+                            <input type="number" id="ohms-voltage" placeholder="volts" step="any" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ohms-current">Current (I)</label>
+                            <input type="number" id="ohms-current" placeholder="amps" step="any" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ohms-resistance">Resistance (R)</label>
+                            <input type="number" id="ohms-resistance" placeholder="ohms" step="any" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ohms-power">Power (P)</label>
+                            <input type="number" id="ohms-power" placeholder="watts" step="any" />
+                        </div>
+                    </div>
+                    <p id="ohms-law-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="ohms-law-calc-btn" class="btn btn-primary btn-large">Calculate</button>
+                        <button id="ohms-law-reset-btn" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Wireless Standards Screen -->
+            <section id="wireless-match-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15.5 15.5 0 0 1 20 0M5.5 12a10.5 10.5 0 0 1 13 0M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Wireless Standards</h2>
+                            <p class="screen-header-subtitle">Match each 802.11 Wi-Fi standard to its specs.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What describes this Wi-Fi standard?</p>
+                    <h3 id="wireless-match-question">—</h3>
+                    <div id="wireless-match-choices" class="drill-choices drill-choices-text"></div>
+                    <p id="wireless-match-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="wireless-match-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="wireless-match-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="wireless-match-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="wireless-match-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Logic Gates Screen -->
+            <section id="logic-gates-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8v8h4a5 5 0 0 0 0-8H4z"/><path d="M14 4h2v16h-2M20 8v8"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Logic Gates</h2>
+                            <p class="screen-header-subtitle">Solve the output of each Boolean logic gate.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What is the output?</p>
+                    <h3 id="logic-gates-question" class="drill-question-code">—</h3>
+                    <div id="logic-gates-choices" class="drill-choices logic-gates-choices"></div>
+                    <p id="logic-gates-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="logic-gates-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="logic-gates-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="logic-gates-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="logic-gates-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cloud Service Models Screen -->
+            <section id="cloud-models-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-1-7.9 5 5 0 0 1 9.8-1.6A4.5 4.5 0 0 1 17 18H7z"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">Cloud Service Models</h2>
+                            <p class="screen-header-subtitle">Match each cloud model to what it provides.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card drill-question-card">
+                    <p class="drill-question-label">What does this cloud service model provide?</p>
+                    <h3 id="cloud-models-question">—</h3>
+                    <div id="cloud-models-choices" class="drill-choices drill-choices-text"></div>
+                    <p id="cloud-models-message" class="message"></p>
+                    <div class="button-row">
+                        <button id="cloud-models-next-btn" class="btn btn-secondary btn-large">Skip / New Question</button>
+                    </div>
+                </div>
+
+                <div class="drill-stats card">
+                    <div>
+                        <span>Solved</span>
+                        <strong id="cloud-models-stat-solved">0</strong>
+                    </div>
+                    <div>
+                        <span>Correct</span>
+                        <strong id="cloud-models-stat-correct">0</strong>
+                    </div>
+                    <div>
+                        <span>Accuracy</span>
+                        <strong id="cloud-models-stat-accuracy">—</strong>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=44" defer></script>
+    <script src="/app.js?v=57" defer></script>
 </body>
 </html>

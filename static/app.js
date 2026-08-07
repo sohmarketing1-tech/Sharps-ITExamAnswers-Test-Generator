@@ -54,6 +54,69 @@ const state = {
     chatMessages: [],
     chatMessagesKey: null,
     userProfile: {},
+    subnetDrill: {
+        difficulty: "easy",
+        current: null,
+        solved: 0,
+        correct: 0,
+    },
+    binaryGame: {
+        bits: 8,
+        difficulty: "easy",
+        target: 0,
+        bitValues: [],
+        solved: 0,
+        streak: 0,
+        bestStreak: 0,
+    },
+    portMatch: {
+        direction: "forward",
+        current: null,
+        solved: 0,
+        correct: 0,
+        answered: false,
+    },
+    cliMatch: {
+        current: null,
+        solved: 0,
+        correct: 0,
+        answered: false,
+    },
+    osiSorter: {
+        order: [],
+        nextIndex: 0,
+        mistakes: 0,
+        rounds: 0,
+        bestMistakes: null,
+        roundId: 0,
+    },
+    acronymDrill: {
+        deck: [],
+        index: 0,
+        flipped: false,
+    },
+    processSorter: {
+        mode: "tcp",
+        order: [],
+        nextIndex: 0,
+        mistakes: 0,
+        rounds: 0,
+        bestMistakes: null,
+        roundId: 0,
+    },
+    raidMatch: { current: null, solved: 0, correct: 0, answered: false },
+    ipv4Classify: { current: null, solved: 0, correct: 0, answered: false },
+    osCmdMatch: { current: null, solved: 0, correct: 0, answered: false },
+    cableId: { current: null, solved: 0, correct: 0, answered: false },
+    topologyId: { current: null, solved: 0, correct: 0, answered: false },
+    secplusFlash: { deck: [], index: 0, flipped: false },
+    natoPhonetic: { current: null, solved: 0, correct: 0, answered: false },
+    precedenceMatch: { current: null, solved: 0, correct: 0, answered: false },
+    rfSpectrum: { current: null, solved: 0, correct: 0, answered: false },
+    serverRoles: { current: null, solved: 0, correct: 0, answered: false },
+    wirelessMatch: { current: null, solved: 0, correct: 0, answered: false },
+    logicGates: { current: null, solved: 0, correct: 0, answered: false },
+    cloudModels: { current: null, solved: 0, correct: 0, answered: false },
 };
 
 // DOM refs
@@ -65,6 +128,28 @@ const screens = {
     history: document.getElementById("history-screen"),
     community: document.getElementById("community-screen"),
     flashcards: document.getElementById("flashcards-screen"),
+    gallery: document.getElementById("gallery-screen"),
+    binary: document.getElementById("binary-screen"),
+    subnetDrills: document.getElementById("subnet-drills-screen"),
+    portMatch: document.getElementById("port-match-screen"),
+    cliMatch: document.getElementById("cli-match-screen"),
+    osiSorter: document.getElementById("osi-sorter-screen"),
+    acronymDrill: document.getElementById("acronym-drill-screen"),
+    processSorter: document.getElementById("process-sorter-screen"),
+    raidMatch: document.getElementById("raid-match-screen"),
+    ipv4Classify: document.getElementById("ipv4-classify-screen"),
+    osCmdMatch: document.getElementById("os-cmd-match-screen"),
+    cableId: document.getElementById("cable-id-screen"),
+    topologyId: document.getElementById("topology-id-screen"),
+    secplusFlash: document.getElementById("secplus-flash-screen"),
+    natoPhonetic: document.getElementById("nato-phonetic-screen"),
+    precedenceMatch: document.getElementById("precedence-match-screen"),
+    rfSpectrum: document.getElementById("rf-spectrum-screen"),
+    serverRoles: document.getElementById("server-roles-screen"),
+    ohmsLaw: document.getElementById("ohms-law-screen"),
+    wirelessMatch: document.getElementById("wireless-match-screen"),
+    logicGates: document.getElementById("logic-gates-screen"),
+    cloudModels: document.getElementById("cloud-models-screen"),
 };
 
 const els = {
@@ -79,6 +164,7 @@ const els = {
     tabFlashcards: document.getElementById("tab-flashcards"),
     tabHistory: document.getElementById("tab-history"),
     tabCommunity: document.getElementById("tab-community"),
+    tabAllApps: document.getElementById("tab-all-apps"),
     historyLoginPrompt: document.getElementById("history-login-prompt"),
     historyLoginBtn: document.getElementById("history-login-btn"),
     historyContent: document.getElementById("history-content"),
@@ -201,6 +287,177 @@ const els = {
     flashcardMarkBtn: document.getElementById("flashcard-mark-btn"),
     flashcardReviewBadge: document.getElementById("flashcard-review-badge"),
     flashcardExitBtn: document.getElementById("flashcard-exit-btn"),
+    subnetDrillsPanel: document.getElementById("subnet-drills-panel"),
+    subnetDiffEasy: document.getElementById("subnet-diff-easy"),
+    subnetDiffMedium: document.getElementById("subnet-diff-medium"),
+    subnetDiffHard: document.getElementById("subnet-diff-hard"),
+    subnetProblemText: document.getElementById("subnet-problem-text"),
+    subnetAnswerNetwork: document.getElementById("subnet-answer-network"),
+    subnetAnswerBroadcast: document.getElementById("subnet-answer-broadcast"),
+    subnetAnswerFirst: document.getElementById("subnet-answer-first"),
+    subnetAnswerLast: document.getElementById("subnet-answer-last"),
+    subnetAnswerHosts: document.getElementById("subnet-answer-hosts"),
+    subnetDrillMessage: document.getElementById("subnet-drill-message"),
+    subnetCheckBtn: document.getElementById("subnet-check-btn"),
+    subnetNextBtn: document.getElementById("subnet-next-btn"),
+    subnetBreakdown: document.getElementById("subnet-breakdown"),
+    subnetStatSolved: document.getElementById("subnet-stat-solved"),
+    subnetStatCorrect: document.getElementById("subnet-stat-correct"),
+    subnetStatAccuracy: document.getElementById("subnet-stat-accuracy"),
+    binaryDiffEasy: document.getElementById("binary-diff-easy"),
+    binaryDiffMedium: document.getElementById("binary-diff-medium"),
+    binaryDiffHard: document.getElementById("binary-diff-hard"),
+    binaryTargetValue: document.getElementById("binary-target-value"),
+    binaryBitsRow: document.getElementById("binary-bits-row"),
+    binaryCurrentRow: document.getElementById("binary-current-row"),
+    binaryCurrentValue: document.getElementById("binary-current-value"),
+    binaryGameMessage: document.getElementById("binary-game-message"),
+    binaryNextBtn: document.getElementById("binary-next-btn"),
+    binaryStatSolved: document.getElementById("binary-stat-solved"),
+    binaryStatStreak: document.getElementById("binary-stat-streak"),
+    binaryStatBest: document.getElementById("binary-stat-best"),
+    portDirForward: document.getElementById("port-dir-forward"),
+    portDirReverse: document.getElementById("port-dir-reverse"),
+    portMatchLabel: document.getElementById("port-match-label"),
+    portMatchQuestion: document.getElementById("port-match-question"),
+    portMatchChoices: document.getElementById("port-match-choices"),
+    portMatchMessage: document.getElementById("port-match-message"),
+    portMatchNextBtn: document.getElementById("port-match-next-btn"),
+    portMatchStatSolved: document.getElementById("port-match-stat-solved"),
+    portMatchStatCorrect: document.getElementById("port-match-stat-correct"),
+    portMatchStatAccuracy: document.getElementById("port-match-stat-accuracy"),
+    cliMatchQuestion: document.getElementById("cli-match-question"),
+    cliMatchChoices: document.getElementById("cli-match-choices"),
+    cliMatchMessage: document.getElementById("cli-match-message"),
+    cliMatchNextBtn: document.getElementById("cli-match-next-btn"),
+    cliMatchStatSolved: document.getElementById("cli-match-stat-solved"),
+    cliMatchStatCorrect: document.getElementById("cli-match-stat-correct"),
+    cliMatchStatAccuracy: document.getElementById("cli-match-stat-accuracy"),
+    osiSorterChips: document.getElementById("osi-sorter-chips"),
+    osiSorterMessage: document.getElementById("osi-sorter-message"),
+    osiMnemonicBtn: document.getElementById("osi-mnemonic-btn"),
+    osiMnemonicText: document.getElementById("osi-mnemonic-text"),
+    osiResetBtn: document.getElementById("osi-reset-btn"),
+    osiStatRounds: document.getElementById("osi-stat-rounds"),
+    osiStatMistakes: document.getElementById("osi-stat-mistakes"),
+    osiStatBest: document.getElementById("osi-stat-best"),
+    acronymCounterText: document.getElementById("acronym-counter-text"),
+    acronymCard: document.getElementById("acronym-card"),
+    acronymFrontText: document.getElementById("acronym-front-text"),
+    acronymBackFull: document.getElementById("acronym-back-full"),
+    acronymBackDesc: document.getElementById("acronym-back-desc"),
+    acronymShuffleBtn: document.getElementById("acronym-shuffle-btn"),
+    acronymPrevBtn: document.getElementById("acronym-prev-btn"),
+    acronymFlipBtn: document.getElementById("acronym-flip-btn"),
+    acronymNextBtn: document.getElementById("acronym-next-btn"),
+    processModeTcp: document.getElementById("process-mode-tcp"),
+    processModeDora: document.getElementById("process-mode-dora"),
+    processSorterChips: document.getElementById("process-sorter-chips"),
+    processSorterMessage: document.getElementById("process-sorter-message"),
+    processSorterResetBtn: document.getElementById("process-sorter-reset-btn"),
+    processSorterStatRounds: document.getElementById("process-sorter-stat-rounds"),
+    processSorterStatMistakes: document.getElementById("process-sorter-stat-mistakes"),
+    processSorterStatBest: document.getElementById("process-sorter-stat-best"),
+    raidMatchQuestion: document.getElementById("raid-match-question"),
+    raidMatchChoices: document.getElementById("raid-match-choices"),
+    raidMatchMessage: document.getElementById("raid-match-message"),
+    raidMatchNextBtn: document.getElementById("raid-match-next-btn"),
+    raidMatchStatSolved: document.getElementById("raid-match-stat-solved"),
+    raidMatchStatCorrect: document.getElementById("raid-match-stat-correct"),
+    raidMatchStatAccuracy: document.getElementById("raid-match-stat-accuracy"),
+    ipv4ClassifyQuestion: document.getElementById("ipv4-classify-question"),
+    ipv4ClassifyChoices: document.getElementById("ipv4-classify-choices"),
+    ipv4ClassifyMessage: document.getElementById("ipv4-classify-message"),
+    ipv4ClassifyNextBtn: document.getElementById("ipv4-classify-next-btn"),
+    ipv4ClassifyStatSolved: document.getElementById("ipv4-classify-stat-solved"),
+    ipv4ClassifyStatCorrect: document.getElementById("ipv4-classify-stat-correct"),
+    ipv4ClassifyStatAccuracy: document.getElementById("ipv4-classify-stat-accuracy"),
+    osCmdMatchQuestion: document.getElementById("os-cmd-match-question"),
+    osCmdMatchChoices: document.getElementById("os-cmd-match-choices"),
+    osCmdMatchMessage: document.getElementById("os-cmd-match-message"),
+    osCmdMatchNextBtn: document.getElementById("os-cmd-match-next-btn"),
+    osCmdMatchStatSolved: document.getElementById("os-cmd-match-stat-solved"),
+    osCmdMatchStatCorrect: document.getElementById("os-cmd-match-stat-correct"),
+    osCmdMatchStatAccuracy: document.getElementById("os-cmd-match-stat-accuracy"),
+    cableIdImage: document.getElementById("cable-id-image"),
+    cableIdChoices: document.getElementById("cable-id-choices"),
+    cableIdMessage: document.getElementById("cable-id-message"),
+    cableIdNextBtn: document.getElementById("cable-id-next-btn"),
+    cableIdStatSolved: document.getElementById("cable-id-stat-solved"),
+    cableIdStatCorrect: document.getElementById("cable-id-stat-correct"),
+    cableIdStatAccuracy: document.getElementById("cable-id-stat-accuracy"),
+    topologyIdDiagram: document.getElementById("topology-id-diagram"),
+    topologyIdChoices: document.getElementById("topology-id-choices"),
+    topologyIdMessage: document.getElementById("topology-id-message"),
+    topologyIdNextBtn: document.getElementById("topology-id-next-btn"),
+    topologyIdStatSolved: document.getElementById("topology-id-stat-solved"),
+    topologyIdStatCorrect: document.getElementById("topology-id-stat-correct"),
+    topologyIdStatAccuracy: document.getElementById("topology-id-stat-accuracy"),
+    secplusCounterText: document.getElementById("secplus-counter-text"),
+    secplusCard: document.getElementById("secplus-card"),
+    secplusFrontText: document.getElementById("secplus-front-text"),
+    secplusBackFull: document.getElementById("secplus-back-full"),
+    secplusBackDesc: document.getElementById("secplus-back-desc"),
+    secplusShuffleBtn: document.getElementById("secplus-shuffle-btn"),
+    secplusPrevBtn: document.getElementById("secplus-prev-btn"),
+    secplusFlipBtn: document.getElementById("secplus-flip-btn"),
+    secplusNextBtn: document.getElementById("secplus-next-btn"),
+    natoPhoneticQuestion: document.getElementById("nato-phonetic-question"),
+    natoPhoneticChoices: document.getElementById("nato-phonetic-choices"),
+    natoPhoneticMessage: document.getElementById("nato-phonetic-message"),
+    natoPhoneticNextBtn: document.getElementById("nato-phonetic-next-btn"),
+    natoPhoneticStatSolved: document.getElementById("nato-phonetic-stat-solved"),
+    natoPhoneticStatCorrect: document.getElementById("nato-phonetic-stat-correct"),
+    natoPhoneticStatAccuracy: document.getElementById("nato-phonetic-stat-accuracy"),
+    precedenceMatchQuestion: document.getElementById("precedence-match-question"),
+    precedenceMatchChoices: document.getElementById("precedence-match-choices"),
+    precedenceMatchMessage: document.getElementById("precedence-match-message"),
+    precedenceMatchNextBtn: document.getElementById("precedence-match-next-btn"),
+    precedenceMatchStatSolved: document.getElementById("precedence-match-stat-solved"),
+    precedenceMatchStatCorrect: document.getElementById("precedence-match-stat-correct"),
+    precedenceMatchStatAccuracy: document.getElementById("precedence-match-stat-accuracy"),
+    rfSpectrumQuestion: document.getElementById("rf-spectrum-question"),
+    rfSpectrumChoices: document.getElementById("rf-spectrum-choices"),
+    rfSpectrumMessage: document.getElementById("rf-spectrum-message"),
+    rfSpectrumNextBtn: document.getElementById("rf-spectrum-next-btn"),
+    rfSpectrumStatSolved: document.getElementById("rf-spectrum-stat-solved"),
+    rfSpectrumStatCorrect: document.getElementById("rf-spectrum-stat-correct"),
+    rfSpectrumStatAccuracy: document.getElementById("rf-spectrum-stat-accuracy"),
+    serverRolesQuestion: document.getElementById("server-roles-question"),
+    serverRolesChoices: document.getElementById("server-roles-choices"),
+    serverRolesMessage: document.getElementById("server-roles-message"),
+    serverRolesNextBtn: document.getElementById("server-roles-next-btn"),
+    serverRolesStatSolved: document.getElementById("server-roles-stat-solved"),
+    serverRolesStatCorrect: document.getElementById("server-roles-stat-correct"),
+    serverRolesStatAccuracy: document.getElementById("server-roles-stat-accuracy"),
+    ohmsVoltage: document.getElementById("ohms-voltage"),
+    ohmsCurrent: document.getElementById("ohms-current"),
+    ohmsResistance: document.getElementById("ohms-resistance"),
+    ohmsPower: document.getElementById("ohms-power"),
+    ohmsLawMessage: document.getElementById("ohms-law-message"),
+    ohmsLawCalcBtn: document.getElementById("ohms-law-calc-btn"),
+    ohmsLawResetBtn: document.getElementById("ohms-law-reset-btn"),
+    wirelessMatchQuestion: document.getElementById("wireless-match-question"),
+    wirelessMatchChoices: document.getElementById("wireless-match-choices"),
+    wirelessMatchMessage: document.getElementById("wireless-match-message"),
+    wirelessMatchNextBtn: document.getElementById("wireless-match-next-btn"),
+    wirelessMatchStatSolved: document.getElementById("wireless-match-stat-solved"),
+    wirelessMatchStatCorrect: document.getElementById("wireless-match-stat-correct"),
+    wirelessMatchStatAccuracy: document.getElementById("wireless-match-stat-accuracy"),
+    logicGatesQuestion: document.getElementById("logic-gates-question"),
+    logicGatesChoices: document.getElementById("logic-gates-choices"),
+    logicGatesMessage: document.getElementById("logic-gates-message"),
+    logicGatesNextBtn: document.getElementById("logic-gates-next-btn"),
+    logicGatesStatSolved: document.getElementById("logic-gates-stat-solved"),
+    logicGatesStatCorrect: document.getElementById("logic-gates-stat-correct"),
+    logicGatesStatAccuracy: document.getElementById("logic-gates-stat-accuracy"),
+    cloudModelsQuestion: document.getElementById("cloud-models-question"),
+    cloudModelsChoices: document.getElementById("cloud-models-choices"),
+    cloudModelsMessage: document.getElementById("cloud-models-message"),
+    cloudModelsNextBtn: document.getElementById("cloud-models-next-btn"),
+    cloudModelsStatSolved: document.getElementById("cloud-models-stat-solved"),
+    cloudModelsStatCorrect: document.getElementById("cloud-models-stat-correct"),
+    cloudModelsStatAccuracy: document.getElementById("cloud-models-stat-accuracy"),
 };
 
 const DEFAULT_PROFILE = { theme: "ocean", avatar_image: "" };
@@ -1308,15 +1565,17 @@ function switchTab(tabName) {
         stopTimer();
     }
     state.currentTab = tabName;
+    const galleryApps = ["gallery", "binary", "subnetDrills", "portMatch", "cliMatch", "osiSorter", "acronymDrill", "processSorter", "raidMatch", "ipv4Classify", "osCmdMatch", "cableId", "topologyId", "secplusFlash", "natoPhonetic", "precedenceMatch", "rfSpectrum", "serverRoles", "ohmsLaw", "wirelessMatch", "logicGates", "cloudModels"];
     if (els.tabPractice) els.tabPractice.classList.toggle("active", tabName === "practice");
     if (els.tabFlashcards) els.tabFlashcards.classList.toggle("active", tabName === "flashcards");
     if (els.tabHistory) els.tabHistory.classList.toggle("active", tabName === "history");
     if (els.tabCommunity) els.tabCommunity.classList.toggle("active", tabName === "community");
+    if (els.tabAllApps) els.tabAllApps.classList.toggle("active", galleryApps.includes(tabName));
     if (els.tabNav) {
         els.tabNav.classList.remove("hidden");
         els.tabNav.classList.add("bottom-nav");
     }
-    [els.tabPractice, els.tabFlashcards, els.tabHistory, els.tabCommunity].forEach((btn) => {
+    [els.tabPractice, els.tabFlashcards, els.tabHistory, els.tabCommunity, els.tabAllApps].forEach((btn) => {
         if (btn) btn.setAttribute("aria-selected", btn.classList.contains("active") ? "true" : "false");
     });
     stopChatPolling();
@@ -1334,6 +1593,70 @@ function switchTab(tabName) {
         showScreen("flashcards");
         renderFlashcardExamButtons();
         renderFlashcardResume();
+    } else if (tabName === "gallery") {
+        showScreen("gallery");
+    } else if (tabName === "binary") {
+        showScreen("binary");
+        if (!state.binaryGame.bitValues.length) generateBinaryProblem();
+    } else if (tabName === "subnetDrills") {
+        showScreen("subnetDrills");
+        if (!state.subnetDrill.current) generateSubnetProblem();
+    } else if (tabName === "portMatch") {
+        showScreen("portMatch");
+        if (!state.portMatch.current) generatePortMatchQuestion();
+    } else if (tabName === "cliMatch") {
+        showScreen("cliMatch");
+        if (!state.cliMatch.current) generateCliMatchQuestion();
+    } else if (tabName === "osiSorter") {
+        showScreen("osiSorter");
+        if (!state.osiSorter.order.length) startOsiRound();
+    } else if (tabName === "acronymDrill") {
+        showScreen("acronymDrill");
+        if (!state.acronymDrill.deck.length) initAcronymDrill();
+    } else if (tabName === "processSorter") {
+        showScreen("processSorter");
+        if (!state.processSorter.order.length) startProcessRound();
+    } else if (tabName === "raidMatch") {
+        showScreen("raidMatch");
+        if (!state.raidMatch.current) generateRaidMatchQuestion();
+    } else if (tabName === "ipv4Classify") {
+        showScreen("ipv4Classify");
+        if (!state.ipv4Classify.current) generateIpv4ClassifyQuestion();
+    } else if (tabName === "osCmdMatch") {
+        showScreen("osCmdMatch");
+        if (!state.osCmdMatch.current) generateOsCmdMatchQuestion();
+    } else if (tabName === "cableId") {
+        showScreen("cableId");
+        if (!state.cableId.current) generateCableIdQuestion();
+    } else if (tabName === "topologyId") {
+        showScreen("topologyId");
+        if (!state.topologyId.current) generateTopologyIdQuestion();
+    } else if (tabName === "secplusFlash") {
+        showScreen("secplusFlash");
+        if (!state.secplusFlash.deck.length) initSecplusFlash();
+    } else if (tabName === "natoPhonetic") {
+        showScreen("natoPhonetic");
+        if (!state.natoPhonetic.current) generateNatoPhoneticQuestion();
+    } else if (tabName === "precedenceMatch") {
+        showScreen("precedenceMatch");
+        if (!state.precedenceMatch.current) generatePrecedenceMatchQuestion();
+    } else if (tabName === "rfSpectrum") {
+        showScreen("rfSpectrum");
+        if (!state.rfSpectrum.current) generateRfSpectrumQuestion();
+    } else if (tabName === "serverRoles") {
+        showScreen("serverRoles");
+        if (!state.serverRoles.current) generateServerRolesQuestion();
+    } else if (tabName === "ohmsLaw") {
+        showScreen("ohmsLaw");
+    } else if (tabName === "wirelessMatch") {
+        showScreen("wirelessMatch");
+        if (!state.wirelessMatch.current) generateWirelessMatchQuestion();
+    } else if (tabName === "logicGates") {
+        showScreen("logicGates");
+        if (!state.logicGates.current) generateLogicGatesQuestion();
+    } else if (tabName === "cloudModels") {
+        showScreen("cloudModels");
+        if (!state.cloudModels.current) generateCloudModelsQuestion();
     }
 }
 
@@ -2659,6 +2982,14 @@ els.tabPractice.addEventListener("click", () => switchTab("practice"));
 els.tabFlashcards.addEventListener("click", () => switchTab("flashcards"));
 els.tabHistory.addEventListener("click", () => switchTab("history"));
 els.tabCommunity.addEventListener("click", () => switchTab("community"));
+els.tabAllApps.addEventListener("click", () => switchTab("gallery"));
+
+document.querySelectorAll(".app-tile[data-gallery-app]").forEach((tile) => {
+    tile.addEventListener("click", () => switchTab(tile.dataset.galleryApp));
+});
+document.querySelectorAll("[data-back-to-gallery]").forEach((btn) => {
+    btn.addEventListener("click", () => switchTab("gallery"));
+});
 
 if (els.tabNav) {
     els.tabNav.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -2747,6 +3078,1754 @@ function updateFlashcardSteps() {
     s2.className = "setup-step" + (examPicked ? " active" : "");
     s3.className = "setup-step" + (examPicked ? " active" : "");
 }
+
+// ── Subnetting: Drills ──────────────────────────────────────────────────────
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function ipToInt(ip) {
+    return ip.split(".").reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+}
+
+function intToIp(int) {
+    return [(int >>> 24) & 255, (int >>> 16) & 255, (int >>> 8) & 255, int & 255].join(".");
+}
+
+function toBinaryOctets(ip) {
+    return ip.split(".").map((o) => parseInt(o, 10).toString(2).padStart(8, "0")).join(".");
+}
+
+function randomBaseIp(classType) {
+    if (classType === "A") return `${randInt(1, 126)}.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(0, 255)}`;
+    if (classType === "B") return `${randInt(128, 191)}.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(0, 255)}`;
+    return `${randInt(192, 223)}.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(0, 255)}`;
+}
+
+function computeSubnetInfo(ipStr, cidr) {
+    const ipInt = ipToInt(ipStr);
+    const maskInt = cidr === 0 ? 0 : (0xFFFFFFFF << (32 - cidr)) >>> 0;
+    const network = (ipInt & maskInt) >>> 0;
+    const hostBits = 32 - cidr;
+    const broadcast = (network | (hostBits === 0 ? 0 : (0xFFFFFFFF >>> cidr))) >>> 0;
+    const totalHosts = hostBits >= 2 ? Math.pow(2, hostBits) - 2 : 0;
+    const first = totalHosts > 0 ? network + 1 : network;
+    const last = totalHosts > 0 ? broadcast - 1 : broadcast;
+    return {
+        network: intToIp(network),
+        broadcast: intToIp(broadcast),
+        first: intToIp(first),
+        last: intToIp(last),
+        hosts: totalHosts,
+        mask: intToIp(maskInt),
+        cidr,
+    };
+}
+
+function generateSubnetProblem() {
+    const diff = state.subnetDrill.difficulty;
+    let ipStr, cidr, promptExtra = "";
+    if (diff === "easy") {
+        ipStr = randomBaseIp("C");
+        cidr = randInt(25, 30);
+    } else if (diff === "medium") {
+        const cls = ["A", "B", "C"][randInt(0, 2)];
+        ipStr = randomBaseIp(cls);
+        cidr = cls === "A" ? randInt(9, 28) : cls === "B" ? randInt(17, 29) : randInt(25, 30);
+    } else {
+        const cls = ["A", "B", "C"][randInt(0, 2)];
+        ipStr = randomBaseIp(cls);
+        const hostsNeeded = randInt(2, 500);
+        let hostBits = 2;
+        while (Math.pow(2, hostBits) - 2 < hostsNeeded) hostBits++;
+        cidr = 32 - hostBits;
+        promptExtra = ` You need at least ${hostsNeeded} usable hosts on this subnet.`;
+    }
+    const info = computeSubnetInfo(ipStr, cidr);
+    state.subnetDrill.current = { ipStr, cidr, info, promptExtra };
+    renderSubnetProblem();
+}
+
+function renderSubnetProblem() {
+    const d = state.subnetDrill.current;
+    if (!d) return;
+    els.subnetProblemText.textContent = `${d.ipStr} / ${d.cidr}${d.promptExtra}`;
+    [els.subnetAnswerNetwork, els.subnetAnswerBroadcast, els.subnetAnswerFirst, els.subnetAnswerLast, els.subnetAnswerHosts].forEach((input) => {
+        input.value = "";
+        input.classList.remove("input-correct", "input-wrong");
+    });
+    els.subnetDrillMessage.textContent = "";
+    els.subnetDrillMessage.className = "message";
+    els.subnetBreakdown.classList.add("hidden");
+    els.subnetBreakdown.innerHTML = "";
+}
+
+function updateSubnetStats() {
+    els.subnetStatSolved.textContent = state.subnetDrill.solved;
+    els.subnetStatCorrect.textContent = state.subnetDrill.correct;
+    els.subnetStatAccuracy.textContent = state.subnetDrill.solved
+        ? `${Math.round((state.subnetDrill.correct / state.subnetDrill.solved) * 100)}%`
+        : "—";
+}
+
+function renderSubnetBreakdown() {
+    const d = state.subnetDrill.current;
+    const info = d.info;
+    els.subnetBreakdown.classList.remove("hidden");
+    els.subnetBreakdown.innerHTML = `
+        <h4>Step-by-step breakdown</h4>
+        <div class="subnet-breakdown-row"><span>IP address</span><code>${d.ipStr} &rarr; ${toBinaryOctets(d.ipStr)}</code></div>
+        <div class="subnet-breakdown-row"><span>Subnet mask (/${d.cidr})</span><code>${info.mask} &rarr; ${toBinaryOctets(info.mask)}</code></div>
+        <div class="subnet-breakdown-row"><span>Network address</span><code>${info.network}</code></div>
+        <div class="subnet-breakdown-row"><span>Broadcast address</span><code>${info.broadcast}</code></div>
+        <div class="subnet-breakdown-row"><span>Usable host range</span><code>${info.hosts > 0 ? `${info.first} &ndash; ${info.last}` : "None"}</code></div>
+        <div class="subnet-breakdown-row"><span>Usable hosts</span><code>${info.hosts}</code></div>
+    `;
+}
+
+function checkSubnetAnswers() {
+    const d = state.subnetDrill.current;
+    if (!d) return;
+    const info = d.info;
+    const fields = [
+        { input: els.subnetAnswerNetwork, correct: info.network },
+        { input: els.subnetAnswerBroadcast, correct: info.broadcast },
+        { input: els.subnetAnswerFirst, correct: info.hosts > 0 ? info.first : "N/A" },
+        { input: els.subnetAnswerLast, correct: info.hosts > 0 ? info.last : "N/A" },
+        { input: els.subnetAnswerHosts, correct: String(info.hosts) },
+    ];
+    let allCorrect = true;
+    fields.forEach(({ input, correct }) => {
+        const val = input.value.trim();
+        const isRight = val.toLowerCase() === String(correct).toLowerCase();
+        input.classList.toggle("input-correct", isRight);
+        input.classList.toggle("input-wrong", !isRight);
+        if (!isRight) allCorrect = false;
+    });
+    state.subnetDrill.solved += 1;
+    if (allCorrect) state.subnetDrill.correct += 1;
+    updateSubnetStats();
+    els.subnetDrillMessage.textContent = allCorrect ? "All correct! Nice work." : "Some answers were off — check the breakdown below.";
+    els.subnetDrillMessage.className = "message " + (allCorrect ? "success" : "error");
+    renderSubnetBreakdown();
+}
+
+function setSubnetDifficulty(diff) {
+    state.subnetDrill.difficulty = diff;
+    [[els.subnetDiffEasy, "easy"], [els.subnetDiffMedium, "medium"], [els.subnetDiffHard, "hard"]].forEach(([btn, key]) => {
+        btn.classList.toggle("active", key === diff);
+        btn.classList.toggle("btn-primary", key === diff);
+        btn.classList.toggle("btn-secondary", key !== diff);
+    });
+    generateSubnetProblem();
+}
+
+els.subnetDiffEasy.addEventListener("click", () => setSubnetDifficulty("easy"));
+els.subnetDiffMedium.addEventListener("click", () => setSubnetDifficulty("medium"));
+els.subnetDiffHard.addEventListener("click", () => setSubnetDifficulty("hard"));
+els.subnetCheckBtn.addEventListener("click", checkSubnetAnswers);
+els.subnetNextBtn.addEventListener("click", generateSubnetProblem);
+
+// ── Binary Bits Game ─────────────────────────────────────────────────────────
+function generateBinaryProblem() {
+    const bits = state.binaryGame.bits;
+    const max = Math.pow(2, bits) - 1;
+    let target;
+    do {
+        target = randInt(0, max);
+    } while (target === state.binaryGame.target && max > 1);
+    state.binaryGame.target = target;
+    state.binaryGame.bitValues = new Array(bits).fill(0);
+    renderBinaryGame();
+}
+
+function renderBinaryGame() {
+    const g = state.binaryGame;
+    const showPlaces = g.difficulty === "easy";
+    const showCurrent = g.difficulty !== "hard";
+    els.binaryTargetValue.textContent = g.target;
+    els.binaryGameMessage.textContent = "";
+    els.binaryGameMessage.className = "message";
+    els.binaryCurrentRow.classList.toggle("hidden", !showCurrent);
+    els.binaryBitsRow.innerHTML = "";
+    for (let i = 0; i < g.bits; i++) {
+        const bitValue = Math.pow(2, g.bits - 1 - i);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "binary-bit-toggle";
+        btn.dataset.index = i;
+        btn.innerHTML = `<span class="binary-bit-value">${g.bitValues[i]}</span><span class="binary-bit-place${showPlaces ? "" : " hidden"}">${bitValue}</span>`;
+        btn.classList.toggle("on", g.bitValues[i] === 1);
+        btn.addEventListener("click", () => toggleBinaryBit(i));
+        els.binaryBitsRow.appendChild(btn);
+    }
+    updateBinaryCurrentValue();
+}
+
+function updateBinaryCurrentValue() {
+    const g = state.binaryGame;
+    const current = g.bitValues.reduce((acc, bit, idx) => acc + bit * Math.pow(2, g.bits - 1 - idx), 0);
+    els.binaryCurrentValue.textContent = current;
+    return current;
+}
+
+function toggleBinaryBit(index) {
+    const g = state.binaryGame;
+    g.bitValues[index] = g.bitValues[index] === 1 ? 0 : 1;
+    const btn = els.binaryBitsRow.querySelector(`[data-index="${index}"]`);
+    if (btn) {
+        btn.classList.toggle("on", g.bitValues[index] === 1);
+        btn.querySelector(".binary-bit-value").textContent = g.bitValues[index];
+    }
+    const current = updateBinaryCurrentValue();
+    if (current === g.target) {
+        g.solved += 1;
+        g.streak += 1;
+        if (g.streak > g.bestStreak) g.bestStreak = g.streak;
+        updateBinaryStats();
+        els.binaryGameMessage.textContent = "Correct! 🎉";
+        els.binaryGameMessage.className = "message success";
+        setTimeout(generateBinaryProblem, 700);
+    }
+}
+
+function updateBinaryStats() {
+    els.binaryStatSolved.textContent = state.binaryGame.solved;
+    els.binaryStatStreak.textContent = state.binaryGame.streak;
+    els.binaryStatBest.textContent = state.binaryGame.bestStreak;
+}
+
+function setBinaryDifficulty(diff) {
+    state.binaryGame.difficulty = diff;
+    state.binaryGame.streak = 0;
+    updateBinaryStats();
+    [[els.binaryDiffEasy, "easy"], [els.binaryDiffMedium, "medium"], [els.binaryDiffHard, "hard"]].forEach(([btn, key]) => {
+        btn.classList.toggle("active", key === diff);
+        btn.classList.toggle("btn-primary", key === diff);
+        btn.classList.toggle("btn-secondary", key !== diff);
+    });
+    generateBinaryProblem();
+}
+
+els.binaryDiffEasy.addEventListener("click", () => setBinaryDifficulty("easy"));
+els.binaryDiffMedium.addEventListener("click", () => setBinaryDifficulty("medium"));
+els.binaryDiffHard.addEventListener("click", () => setBinaryDifficulty("hard"));
+els.binaryNextBtn.addEventListener("click", () => {
+    state.binaryGame.streak = 0;
+    updateBinaryStats();
+    generateBinaryProblem();
+});
+
+// ── Port Match ───────────────────────────────────────────────────────────────
+const PORT_DATA = [
+    { port: 21, service: "FTP" },
+    { port: 22, service: "SSH" },
+    { port: 23, service: "Telnet" },
+    { port: 25, service: "SMTP" },
+    { port: 53, service: "DNS" },
+    { port: 67, service: "DHCP" },
+    { port: 69, service: "TFTP" },
+    { port: 80, service: "HTTP" },
+    { port: 110, service: "POP3" },
+    { port: 123, service: "NTP" },
+    { port: 143, service: "IMAP" },
+    { port: 161, service: "SNMP" },
+    { port: 389, service: "LDAP" },
+    { port: 443, service: "HTTPS" },
+    { port: 445, service: "SMB" },
+    { port: 514, service: "Syslog" },
+    { port: 3306, service: "MySQL" },
+    { port: 3389, service: "RDP" },
+];
+
+function generatePortMatchQuestion() {
+    const p = state.portMatch;
+    let item;
+    do {
+        item = PORT_DATA[randInt(0, PORT_DATA.length - 1)];
+    } while (item === p.current && PORT_DATA.length > 1);
+    p.current = item;
+    p.answered = false;
+    renderPortMatchQuestion();
+}
+
+function renderPortMatchQuestion() {
+    const p = state.portMatch;
+    const forward = p.direction === "forward";
+    els.portMatchLabel.textContent = forward ? "What service uses this port?" : "What port does this service use?";
+    els.portMatchQuestion.textContent = forward ? p.current.port : p.current.service;
+    els.portMatchMessage.textContent = "";
+    els.portMatchMessage.className = "message";
+
+    const correctValue = forward ? p.current.service : p.current.port;
+    const pool = PORT_DATA.filter((x) => x !== p.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([correctValue, ...wrongItems.map((x) => (forward ? x.service : x.port))]);
+
+    els.portMatchChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkPortMatchAnswer(choice, correctValue, btn));
+        els.portMatchChoices.appendChild(btn);
+    });
+}
+
+function checkPortMatchAnswer(choice, correctValue, btn) {
+    const p = state.portMatch;
+    if (p.answered) return;
+    p.answered = true;
+    p.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) p.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.portMatchChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === String(correctValue)) b.classList.add("correct");
+    });
+    els.portMatchMessage.textContent = isCorrect ? "Correct!" : `Not quite — the answer is ${correctValue}.`;
+    els.portMatchMessage.className = "message " + (isCorrect ? "success" : "error");
+    updatePortMatchStats();
+    setTimeout(generatePortMatchQuestion, 900);
+}
+
+function updatePortMatchStats() {
+    const p = state.portMatch;
+    els.portMatchStatSolved.textContent = p.solved;
+    els.portMatchStatCorrect.textContent = p.correct;
+    els.portMatchStatAccuracy.textContent = p.solved ? Math.round((p.correct / p.solved) * 100) + "%" : "—";
+}
+
+function setPortDirection(dir) {
+    state.portMatch.direction = dir;
+    els.portDirForward.classList.toggle("active", dir === "forward");
+    els.portDirForward.classList.toggle("btn-primary", dir === "forward");
+    els.portDirForward.classList.toggle("btn-secondary", dir !== "forward");
+    els.portDirReverse.classList.toggle("active", dir === "reverse");
+    els.portDirReverse.classList.toggle("btn-primary", dir === "reverse");
+    els.portDirReverse.classList.toggle("btn-secondary", dir !== "reverse");
+    generatePortMatchQuestion();
+}
+
+els.portDirForward.addEventListener("click", () => setPortDirection("forward"));
+els.portDirReverse.addEventListener("click", () => setPortDirection("reverse"));
+els.portMatchNextBtn.addEventListener("click", generatePortMatchQuestion);
+
+// ── Command Match ────────────────────────────────────────────────────────────
+const CLI_DATA = [
+    { command: "show running-config", desc: "Displays the current active configuration running in memory." },
+    { command: "show ip interface brief", desc: "Shows a summary of each interface's IP address and up/down status." },
+    { command: "show interfaces", desc: "Displays detailed statistics for all interfaces, including packet counts and errors." },
+    { command: "show ip route", desc: "Displays the device's routing table." },
+    { command: "show vlan brief", desc: "Lists all VLANs configured on the switch and which ports belong to each." },
+    { command: "show mac address-table", desc: "Displays the MAC addresses the switch has learned and their associated ports." },
+    { command: "ping", desc: "Tests reachability of another device by sending ICMP echo requests." },
+    { command: "traceroute", desc: "Shows the path (hop by hop) packets take to reach a destination." },
+    { command: "configure terminal", desc: "Enters global configuration mode so you can change device settings." },
+    { command: "interface vlan 1", desc: "Enters configuration mode for the VLAN 1 virtual interface." },
+    { command: "ip address 192.168.1.1 255.255.255.0", desc: "Assigns an IP address and subnet mask to the current interface." },
+    { command: "no shutdown", desc: "Administratively enables an interface (brings it up)." },
+    { command: "hostname R1", desc: "Sets the device's hostname, shown in the CLI prompt." },
+    { command: "enable", desc: "Enters privileged EXEC mode, unlocking more powerful commands." },
+    { command: "copy running-config startup-config", desc: "Saves the current running configuration so it persists after a reboot." },
+    { command: "reload", desc: "Restarts the device." },
+    { command: "show version", desc: "Displays the IOS version, uptime, and hardware details of the device." },
+    { command: "show cdp neighbors", desc: "Lists directly connected Cisco devices discovered via CDP." },
+];
+
+function generateCliMatchQuestion() {
+    const c = state.cliMatch;
+    let item;
+    do {
+        item = CLI_DATA[randInt(0, CLI_DATA.length - 1)];
+    } while (item === c.current && CLI_DATA.length > 1);
+    c.current = item;
+    c.answered = false;
+    renderCliMatchQuestion();
+}
+
+function renderCliMatchQuestion() {
+    const c = state.cliMatch;
+    els.cliMatchQuestion.textContent = c.current.command;
+    els.cliMatchMessage.textContent = "";
+    els.cliMatchMessage.className = "message";
+
+    const pool = CLI_DATA.filter((x) => x !== c.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([c.current.desc, ...wrongItems.map((x) => x.desc)]);
+
+    els.cliMatchChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn drill-choice-btn-text";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkCliMatchAnswer(choice, c.current.desc, btn));
+        els.cliMatchChoices.appendChild(btn);
+    });
+}
+
+function checkCliMatchAnswer(choice, correctValue, btn) {
+    const c = state.cliMatch;
+    if (c.answered) return;
+    c.answered = true;
+    c.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) c.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.cliMatchChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.cliMatchMessage.textContent = isCorrect ? "Correct!" : "Not quite — check the highlighted answer.";
+    els.cliMatchMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateCliMatchStats();
+    setTimeout(generateCliMatchQuestion, 1100);
+}
+
+function updateCliMatchStats() {
+    const c = state.cliMatch;
+    els.cliMatchStatSolved.textContent = c.solved;
+    els.cliMatchStatCorrect.textContent = c.correct;
+    els.cliMatchStatAccuracy.textContent = c.solved ? Math.round((c.correct / c.solved) * 100) + "%" : "—";
+}
+
+els.cliMatchNextBtn.addEventListener("click", generateCliMatchQuestion);
+
+// ── OSI Sorter ───────────────────────────────────────────────────────────────
+const OSI_LAYERS = [
+    { num: 7, name: "Application" },
+    { num: 6, name: "Presentation" },
+    { num: 5, name: "Session" },
+    { num: 4, name: "Transport" },
+    { num: 3, name: "Network" },
+    { num: 2, name: "Data Link" },
+    { num: 1, name: "Physical" },
+];
+
+function startOsiRound() {
+    const o = state.osiSorter;
+    o.roundId += 1;
+    o.order = shuffleArray(OSI_LAYERS);
+    o.nextIndex = 0;
+    o.mistakes = 0;
+    els.osiSorterMessage.textContent = "";
+    els.osiSorterMessage.className = "message";
+    els.osiMnemonicText.classList.add("hidden");
+    updateOsiStats();
+    renderOsiChips();
+}
+
+function renderOsiChips() {
+    const o = state.osiSorter;
+    els.osiSorterChips.innerHTML = "";
+    o.order.forEach((layer) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "osi-chip";
+        chip.dataset.num = layer.num;
+        chip.innerHTML = `<span class="osi-chip-num">${layer.num}</span><span class="osi-chip-name">${escapeHtml(layer.name)}</span>`;
+        chip.addEventListener("click", () => tapOsiChip(layer, chip));
+        els.osiSorterChips.appendChild(chip);
+    });
+}
+
+function tapOsiChip(layer, chip) {
+    const o = state.osiSorter;
+    if (chip.classList.contains("placed")) return;
+    const expectedNum = 7 - o.nextIndex;
+    if (layer.num === expectedNum) {
+        chip.classList.add("placed");
+        chip.disabled = true;
+        o.nextIndex += 1;
+        if (o.nextIndex === OSI_LAYERS.length) {
+            o.rounds += 1;
+            if (o.bestMistakes === null || o.mistakes < o.bestMistakes) o.bestMistakes = o.mistakes;
+            updateOsiStats();
+            els.osiSorterMessage.textContent = "All 7 layers in order! 🎉";
+            els.osiSorterMessage.className = "message success";
+            const completedRoundId = o.roundId;
+            setTimeout(() => {
+                if (state.osiSorter.roundId === completedRoundId) startOsiRound();
+            }, 1200);
+        }
+    } else {
+        o.mistakes += 1;
+        updateOsiStats();
+        chip.classList.add("shake");
+        setTimeout(() => chip.classList.remove("shake"), 400);
+        els.osiSorterMessage.textContent = "Not next — try again.";
+        els.osiSorterMessage.className = "message error";
+    }
+}
+
+function updateOsiStats() {
+    const o = state.osiSorter;
+    els.osiStatRounds.textContent = o.rounds;
+    els.osiStatMistakes.textContent = o.mistakes;
+    els.osiStatBest.textContent = o.bestMistakes === null ? "—" : o.bestMistakes;
+}
+
+els.osiResetBtn.addEventListener("click", startOsiRound);
+els.osiMnemonicBtn.addEventListener("click", () => {
+    els.osiMnemonicText.classList.toggle("hidden");
+});
+
+// ── Acronym Drill ────────────────────────────────────────────────────────────
+const ACRONYM_DATA = [
+    { acronym: "LAN", full: "Local Area Network", desc: "A network confined to a small geographic area, like a home, office, or building." },
+    { acronym: "WAN", full: "Wide Area Network", desc: "A network that spans a large geographic area, connecting multiple LANs together." },
+    { acronym: "DNS", full: "Domain Name System", desc: "Translates human-readable domain names (like google.com) into IP addresses." },
+    { acronym: "DHCP", full: "Dynamic Host Configuration Protocol", desc: "Automatically assigns IP addresses and other network settings to devices." },
+    { acronym: "NAT", full: "Network Address Translation", desc: "Translates private IP addresses to a public IP address so devices can reach the internet." },
+    { acronym: "VLAN", full: "Virtual Local Area Network", desc: "Logically separates a physical network into multiple isolated broadcast domains." },
+    { acronym: "STP", full: "Spanning Tree Protocol", desc: "Prevents switching loops in a network with redundant paths." },
+    { acronym: "ARP", full: "Address Resolution Protocol", desc: "Maps an IP address to a MAC address on a local network." },
+    { acronym: "ICMP", full: "Internet Control Message Protocol", desc: "Used for diagnostics and error reporting, like ping and traceroute." },
+    { acronym: "TCP", full: "Transmission Control Protocol", desc: "A connection-oriented protocol that guarantees reliable, ordered delivery of data." },
+    { acronym: "UDP", full: "User Datagram Protocol", desc: "A connectionless protocol that sends data fast but without delivery guarantees." },
+    { acronym: "IP", full: "Internet Protocol", desc: "The core protocol for addressing and routing packets across networks." },
+    { acronym: "MAC", full: "Media Access Control", desc: "A hardware address burned into a network interface card, unique to that device." },
+    { acronym: "OSI", full: "Open Systems Interconnection", desc: "A 7-layer conceptual model describing how network communication works." },
+    { acronym: "VPN", full: "Virtual Private Network", desc: "Creates a secure, encrypted tunnel over a public network like the internet." },
+    { acronym: "FTP", full: "File Transfer Protocol", desc: "Used to transfer files between a client and server over a network." },
+    { acronym: "HTTP", full: "HyperText Transfer Protocol", desc: "The protocol used to load websites in a browser." },
+    { acronym: "HTTPS", full: "HTTP Secure", desc: "HTTP encrypted with TLS/SSL for secure web browsing." },
+    { acronym: "SSH", full: "Secure Shell", desc: "Provides an encrypted way to remotely access and manage a device's command line." },
+    { acronym: "RDP", full: "Remote Desktop Protocol", desc: "Allows remote graphical access to a Windows computer's desktop." },
+    { acronym: "SNMP", full: "Simple Network Management Protocol", desc: "Used to monitor and manage devices on a network, like switches and routers." },
+    { acronym: "SMTP", full: "Simple Mail Transfer Protocol", desc: "Used to send email between mail servers." },
+    { acronym: "POP3", full: "Post Office Protocol version 3", desc: "Downloads email from a server to a single device, typically removing it from the server." },
+    { acronym: "IMAP", full: "Internet Message Access Protocol", desc: "Syncs email across multiple devices by keeping messages on the server." },
+    { acronym: "CIDR", full: "Classless Inter-Domain Routing", desc: "A method for allocating IP addresses using variable-length prefixes, like /24." },
+    { acronym: "VLSM", full: "Variable Length Subnet Masking", desc: "Allows subnets of different sizes within the same network for efficient addressing." },
+    { acronym: "ACL", full: "Access Control List", desc: "A set of rules that permit or deny traffic based on criteria like IP address or port." },
+    { acronym: "QoS", full: "Quality of Service", desc: "Prioritizes certain types of network traffic (like voice or video) over others." },
+    { acronym: "VoIP", full: "Voice over IP", desc: "Transmits voice calls as data over an IP network instead of traditional phone lines." },
+    { acronym: "ISP", full: "Internet Service Provider", desc: "A company that provides internet access to homes and businesses." },
+];
+
+function initAcronymDrill() {
+    state.acronymDrill.deck = shuffleArray(ACRONYM_DATA);
+    state.acronymDrill.index = 0;
+    state.acronymDrill.flipped = false;
+    renderAcronymCard();
+}
+
+function renderAcronymCard() {
+    const a = state.acronymDrill;
+    const item = a.deck[a.index];
+    els.acronymFrontText.textContent = item.acronym;
+    els.acronymBackFull.textContent = item.full;
+    els.acronymBackDesc.textContent = item.desc;
+    els.acronymCounterText.textContent = `${a.index + 1} / ${a.deck.length}`;
+    els.acronymCard.classList.toggle("flipped", a.flipped);
+}
+
+function flipAcronymCard() {
+    state.acronymDrill.flipped = !state.acronymDrill.flipped;
+    els.acronymCard.classList.toggle("flipped", state.acronymDrill.flipped);
+}
+
+function goToAcronym(delta) {
+    const a = state.acronymDrill;
+    a.index = (a.index + delta + a.deck.length) % a.deck.length;
+    a.flipped = false;
+    renderAcronymCard();
+}
+
+els.acronymCard.addEventListener("click", flipAcronymCard);
+els.acronymFlipBtn.addEventListener("click", flipAcronymCard);
+els.acronymPrevBtn.addEventListener("click", () => goToAcronym(-1));
+els.acronymNextBtn.addEventListener("click", () => goToAcronym(1));
+els.acronymShuffleBtn.addEventListener("click", () => {
+    state.acronymDrill.deck = shuffleArray(state.acronymDrill.deck);
+    state.acronymDrill.index = 0;
+    state.acronymDrill.flipped = false;
+    renderAcronymCard();
+});
+
+// ── Process Sorter (TCP Handshake / DHCP DORA) ────────────────────────────────
+const PROCESS_DATA = {
+    tcp: [
+        { num: 1, name: "SYN (client → server)" },
+        { num: 2, name: "SYN-ACK (server → client)" },
+        { num: 3, name: "ACK (client → server)" },
+    ],
+    dora: [
+        { num: 1, name: "Discover (client broadcasts)" },
+        { num: 2, name: "Offer (server responds)" },
+        { num: 3, name: "Request (client requests offered IP)" },
+        { num: 4, name: "Acknowledge (server confirms)" },
+    ],
+};
+
+function startProcessRound() {
+    const p = state.processSorter;
+    p.roundId += 1;
+    const items = PROCESS_DATA[p.mode];
+    p.order = shuffleArray(items);
+    p.nextIndex = 0;
+    p.mistakes = 0;
+    els.processSorterMessage.textContent = "";
+    els.processSorterMessage.className = "message";
+    updateProcessStats();
+    renderProcessChips();
+}
+
+function renderProcessChips() {
+    const p = state.processSorter;
+    els.processSorterChips.innerHTML = "";
+    p.order.forEach((step) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "osi-chip";
+        chip.dataset.num = step.num;
+        chip.innerHTML = `<span class="osi-chip-num">${step.num}</span><span class="osi-chip-name">${escapeHtml(step.name)}</span>`;
+        chip.addEventListener("click", () => tapProcessChip(step, chip));
+        els.processSorterChips.appendChild(chip);
+    });
+}
+
+function tapProcessChip(step, chip) {
+    const p = state.processSorter;
+    if (chip.classList.contains("placed")) return;
+    const expectedNum = p.nextIndex + 1;
+    if (step.num === expectedNum) {
+        chip.classList.add("placed");
+        chip.disabled = true;
+        p.nextIndex += 1;
+        if (p.nextIndex === PROCESS_DATA[p.mode].length) {
+            p.rounds += 1;
+            if (p.bestMistakes === null || p.mistakes < p.bestMistakes) p.bestMistakes = p.mistakes;
+            updateProcessStats();
+            els.processSorterMessage.textContent = "Correct sequence! 🎉";
+            els.processSorterMessage.className = "message success";
+            const completedRoundId = p.roundId;
+            setTimeout(() => {
+                if (state.processSorter.roundId === completedRoundId) startProcessRound();
+            }, 1200);
+        }
+    } else {
+        p.mistakes += 1;
+        updateProcessStats();
+        chip.classList.add("shake");
+        setTimeout(() => chip.classList.remove("shake"), 400);
+        els.processSorterMessage.textContent = "Not next — try again.";
+        els.processSorterMessage.className = "message error";
+    }
+}
+
+function updateProcessStats() {
+    const p = state.processSorter;
+    els.processSorterStatRounds.textContent = p.rounds;
+    els.processSorterStatMistakes.textContent = p.mistakes;
+    els.processSorterStatBest.textContent = p.bestMistakes === null ? "—" : p.bestMistakes;
+}
+
+function setProcessMode(mode) {
+    const p = state.processSorter;
+    p.mode = mode;
+    p.rounds = 0;
+    p.bestMistakes = null;
+    els.processModeTcp.classList.toggle("active", mode === "tcp");
+    els.processModeTcp.classList.toggle("btn-primary", mode === "tcp");
+    els.processModeTcp.classList.toggle("btn-secondary", mode !== "tcp");
+    els.processModeDora.classList.toggle("active", mode === "dora");
+    els.processModeDora.classList.toggle("btn-primary", mode === "dora");
+    els.processModeDora.classList.toggle("btn-secondary", mode !== "dora");
+    startProcessRound();
+}
+
+els.processModeTcp.addEventListener("click", () => setProcessMode("tcp"));
+els.processModeDora.addEventListener("click", () => setProcessMode("dora"));
+els.processSorterResetBtn.addEventListener("click", startProcessRound);
+
+// ── RAID Match ─────────────────────────────────────────────────────────────
+const RAID_DATA = [
+    { level: "RAID 0", desc: "Stripes data across drives for speed, but has zero fault tolerance — one drive failure loses everything." },
+    { level: "RAID 1", desc: "Mirrors data across two drives for full redundancy, at the cost of half your usable storage." },
+    { level: "RAID 5", desc: "Stripes data and parity across 3+ drives, tolerating a single drive failure without data loss." },
+    { level: "RAID 6", desc: "Like RAID 5 but with double parity, tolerating two simultaneous drive failures." },
+    { level: "RAID 10", desc: "Combines mirroring and striping (mirrored pairs, then striped) for both speed and redundancy." },
+];
+
+function generateRaidMatchQuestion() {
+    const r = state.raidMatch;
+    let item;
+    do {
+        item = RAID_DATA[randInt(0, RAID_DATA.length - 1)];
+    } while (item === r.current && RAID_DATA.length > 1);
+    r.current = item;
+    r.answered = false;
+    renderRaidMatchQuestion();
+}
+
+function renderRaidMatchQuestion() {
+    const r = state.raidMatch;
+    els.raidMatchQuestion.textContent = r.current.level;
+    els.raidMatchMessage.textContent = "";
+    els.raidMatchMessage.className = "message";
+
+    const pool = RAID_DATA.filter((x) => x !== r.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([r.current.desc, ...wrongItems.map((x) => x.desc)]);
+
+    els.raidMatchChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn drill-choice-btn-text";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkRaidMatchAnswer(choice, r.current.desc, btn));
+        els.raidMatchChoices.appendChild(btn);
+    });
+}
+
+function checkRaidMatchAnswer(choice, correctValue, btn) {
+    const r = state.raidMatch;
+    if (r.answered) return;
+    r.answered = true;
+    r.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) r.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.raidMatchChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.raidMatchMessage.textContent = isCorrect ? "Correct!" : "Not quite — check the highlighted answer.";
+    els.raidMatchMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateRaidMatchStats();
+    setTimeout(generateRaidMatchQuestion, 1100);
+}
+
+function updateRaidMatchStats() {
+    const r = state.raidMatch;
+    els.raidMatchStatSolved.textContent = r.solved;
+    els.raidMatchStatCorrect.textContent = r.correct;
+    els.raidMatchStatAccuracy.textContent = r.solved ? Math.round((r.correct / r.solved) * 100) + "%" : "—";
+}
+
+els.raidMatchNextBtn.addEventListener("click", generateRaidMatchQuestion);
+
+// ── IPv4 Classifier ──────────────────────────────────────────────────────────
+const IPV4_CATEGORIES = ["Private", "Public", "Loopback", "APIPA / Link-Local", "Multicast"];
+
+function generateRandomIpv4(category) {
+    switch (category) {
+        case "Private": {
+            const kind = randInt(0, 2);
+            if (kind === 0) return `10.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(1, 254)}`;
+            if (kind === 1) return `172.${randInt(16, 31)}.${randInt(0, 255)}.${randInt(1, 254)}`;
+            return `192.168.${randInt(0, 255)}.${randInt(1, 254)}`;
+        }
+        case "Loopback":
+            return `127.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(1, 254)}`;
+        case "APIPA / Link-Local":
+            return `169.254.${randInt(0, 255)}.${randInt(1, 254)}`;
+        case "Multicast":
+            return `${randInt(224, 239)}.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(1, 254)}`;
+        default: {
+            let first;
+            do {
+                first = randInt(1, 223);
+            } while ([10, 127].includes(first) || (first >= 172 && first <= 172) || first === 192 || (first >= 224 && first <= 239));
+            return `${first}.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(1, 254)}`;
+        }
+    }
+}
+
+function generateIpv4ClassifyQuestion() {
+    const c = state.ipv4Classify;
+    const category = IPV4_CATEGORIES[randInt(0, IPV4_CATEGORIES.length - 1)];
+    c.current = { ip: generateRandomIpv4(category), category };
+    c.answered = false;
+    renderIpv4ClassifyQuestion();
+}
+
+function renderIpv4ClassifyQuestion() {
+    const c = state.ipv4Classify;
+    els.ipv4ClassifyQuestion.textContent = c.current.ip;
+    els.ipv4ClassifyMessage.textContent = "";
+    els.ipv4ClassifyMessage.className = "message";
+
+    const wrongCategories = shuffleArray(IPV4_CATEGORIES.filter((x) => x !== c.current.category)).slice(0, 3);
+    const choices = shuffleArray([c.current.category, ...wrongCategories]);
+
+    els.ipv4ClassifyChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkIpv4ClassifyAnswer(choice, c.current.category, btn));
+        els.ipv4ClassifyChoices.appendChild(btn);
+    });
+}
+
+function checkIpv4ClassifyAnswer(choice, correctValue, btn) {
+    const c = state.ipv4Classify;
+    if (c.answered) return;
+    c.answered = true;
+    c.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) c.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.ipv4ClassifyChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.ipv4ClassifyMessage.textContent = isCorrect ? "Correct!" : `Not quite — this is ${correctValue}.`;
+    els.ipv4ClassifyMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateIpv4ClassifyStats();
+    setTimeout(generateIpv4ClassifyQuestion, 1000);
+}
+
+function updateIpv4ClassifyStats() {
+    const c = state.ipv4Classify;
+    els.ipv4ClassifyStatSolved.textContent = c.solved;
+    els.ipv4ClassifyStatCorrect.textContent = c.correct;
+    els.ipv4ClassifyStatAccuracy.textContent = c.solved ? Math.round((c.correct / c.solved) * 100) + "%" : "—";
+}
+
+els.ipv4ClassifyNextBtn.addEventListener("click", generateIpv4ClassifyQuestion);
+
+// ── OS Command Match ─────────────────────────────────────────────────────────
+const OS_CMD_DATA = [
+    { command: "ipconfig /all", desc: "(Windows) Displays detailed IP configuration for all network adapters." },
+    { command: "ifconfig", desc: "(Linux/Unix) Displays or configures network interface settings." },
+    { command: "ip addr show", desc: "(Linux) Displays IP addresses and network interface information." },
+    { command: "netstat -an", desc: "Displays all active network connections and listening ports." },
+    { command: "nslookup", desc: "Queries DNS to resolve a hostname to an IP address (or vice versa)." },
+    { command: "ping", desc: "Tests connectivity to another host by sending ICMP echo requests." },
+    { command: "tracert", desc: "(Windows) Shows the path packets take to a destination, hop by hop." },
+    { command: "traceroute", desc: "(Linux/Unix) Shows the path packets take to a destination, hop by hop." },
+    { command: "chmod 755 file.sh", desc: "(Linux) Changes file permissions — here, read/write/execute for owner, read/execute for others." },
+    { command: "chown user:group file", desc: "(Linux) Changes the owner and group of a file." },
+    { command: "grep -i error log.txt", desc: "(Linux) Searches a file for lines matching a pattern, ignoring case." },
+    { command: "ls -la", desc: "(Linux) Lists all files in a directory, including hidden ones, with detailed info." },
+    { command: "sudo systemctl restart sshd", desc: "(Linux) Restarts the SSH service with elevated privileges." },
+    { command: "tasklist", desc: "(Windows) Lists all currently running processes." },
+    { command: "ps aux", desc: "(Linux) Lists all currently running processes with detailed info." },
+    { command: "kill -9 1234", desc: "(Linux) Forcefully terminates the process with PID 1234." },
+    { command: "taskkill /PID 1234 /F", desc: "(Windows) Forcefully terminates the process with PID 1234." },
+    { command: "netsh winsock reset", desc: "(Windows) Resets the Winsock catalog, often used to fix network stack issues." },
+    { command: "df -h", desc: "(Linux) Shows disk space usage in human-readable format." },
+    { command: "route print", desc: "(Windows) Displays the local routing table." },
+];
+
+function generateOsCmdMatchQuestion() {
+    const c = state.osCmdMatch;
+    let item;
+    do {
+        item = OS_CMD_DATA[randInt(0, OS_CMD_DATA.length - 1)];
+    } while (item === c.current && OS_CMD_DATA.length > 1);
+    c.current = item;
+    c.answered = false;
+    renderOsCmdMatchQuestion();
+}
+
+function renderOsCmdMatchQuestion() {
+    const c = state.osCmdMatch;
+    els.osCmdMatchQuestion.textContent = c.current.command;
+    els.osCmdMatchMessage.textContent = "";
+    els.osCmdMatchMessage.className = "message";
+
+    const pool = OS_CMD_DATA.filter((x) => x !== c.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([c.current.desc, ...wrongItems.map((x) => x.desc)]);
+
+    els.osCmdMatchChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn drill-choice-btn-text";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkOsCmdMatchAnswer(choice, c.current.desc, btn));
+        els.osCmdMatchChoices.appendChild(btn);
+    });
+}
+
+function checkOsCmdMatchAnswer(choice, correctValue, btn) {
+    const c = state.osCmdMatch;
+    if (c.answered) return;
+    c.answered = true;
+    c.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) c.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.osCmdMatchChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.osCmdMatchMessage.textContent = isCorrect ? "Correct!" : "Not quite — check the highlighted answer.";
+    els.osCmdMatchMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateOsCmdMatchStats();
+    setTimeout(generateOsCmdMatchQuestion, 1100);
+}
+
+function updateOsCmdMatchStats() {
+    const c = state.osCmdMatch;
+    els.osCmdMatchStatSolved.textContent = c.solved;
+    els.osCmdMatchStatCorrect.textContent = c.correct;
+    els.osCmdMatchStatAccuracy.textContent = c.solved ? Math.round((c.correct / c.solved) * 100) + "%" : "—";
+}
+
+els.osCmdMatchNextBtn.addEventListener("click", generateOsCmdMatchQuestion);
+
+// ── Cable ID ─────────────────────────────────────────────────────────────────
+const CABLE_DATA = [
+    { name: "RJ45", image: "/images/connector-rj45.jpg" },
+    { name: "RJ11", image: "/images/connector-rj11.jpg" },
+    { name: "Fiber LC", image: "/images/connector-fiber-lc.jpg" },
+    { name: "Fiber SC", image: "/images/connector-fiber-sc.jpeg" },
+    { name: "Fiber ST", image: "/images/connector-fiber-st.jpeg" },
+    { name: "BNC", image: "/images/connector-bnc.jpg" },
+    { name: "DB9", image: "/images/connector-db9.jpg" },
+    { name: "DB25", image: "/images/connector-db25.jpg" },
+];
+
+function generateCableIdQuestion() {
+    const c = state.cableId;
+    let item;
+    do {
+        item = CABLE_DATA[randInt(0, CABLE_DATA.length - 1)];
+    } while (item === c.current && CABLE_DATA.length > 1);
+    c.current = item;
+    c.answered = false;
+    renderCableIdQuestion();
+}
+
+function renderCableIdQuestion() {
+    const c = state.cableId;
+    els.cableIdImage.src = c.current.image;
+    els.cableIdImage.alt = "Identify this connector";
+    els.cableIdMessage.textContent = "";
+    els.cableIdMessage.className = "message";
+
+    const pool = CABLE_DATA.filter((x) => x !== c.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([c.current.name, ...wrongItems.map((x) => x.name)]);
+
+    els.cableIdChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkCableIdAnswer(choice, c.current.name, btn));
+        els.cableIdChoices.appendChild(btn);
+    });
+}
+
+function checkCableIdAnswer(choice, correctValue, btn) {
+    const c = state.cableId;
+    if (c.answered) return;
+    c.answered = true;
+    c.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) c.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.cableIdChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.cableIdMessage.textContent = isCorrect ? "Correct!" : `Not quite — this is ${correctValue}.`;
+    els.cableIdMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateCableIdStats();
+    setTimeout(generateCableIdQuestion, 1000);
+}
+
+function updateCableIdStats() {
+    const c = state.cableId;
+    els.cableIdStatSolved.textContent = c.solved;
+    els.cableIdStatCorrect.textContent = c.correct;
+    els.cableIdStatAccuracy.textContent = c.solved ? Math.round((c.correct / c.solved) * 100) + "%" : "—";
+}
+
+els.cableIdNextBtn.addEventListener("click", generateCableIdQuestion);
+
+// ── Topology ID ──────────────────────────────────────────────────────────────
+function topologySvg(inner) {
+    return `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+}
+
+const TOPOLOGY_DATA = [
+    {
+        name: "Star",
+        svg: topologySvg(`
+            <line class="topology-line" x1="150" y1="100" x2="220" y2="100"/>
+            <line class="topology-line" x1="150" y1="100" x2="185" y2="39"/>
+            <line class="topology-line" x1="150" y1="100" x2="115" y2="39"/>
+            <line class="topology-line" x1="150" y1="100" x2="80" y2="100"/>
+            <line class="topology-line" x1="150" y1="100" x2="115" y2="161"/>
+            <line class="topology-line" x1="150" y1="100" x2="185" y2="161"/>
+            <circle class="topology-node topology-node-center" cx="150" cy="100" r="12"/>
+            <circle class="topology-node" cx="220" cy="100" r="9"/>
+            <circle class="topology-node" cx="185" cy="39" r="9"/>
+            <circle class="topology-node" cx="115" cy="39" r="9"/>
+            <circle class="topology-node" cx="80" cy="100" r="9"/>
+            <circle class="topology-node" cx="115" cy="161" r="9"/>
+            <circle class="topology-node" cx="185" cy="161" r="9"/>
+        `),
+    },
+    {
+        name: "Bus",
+        svg: topologySvg(`
+            <line class="topology-line topology-line-thick" x1="30" y1="100" x2="270" y2="100"/>
+            <line class="topology-line" x1="30" y1="85" x2="30" y2="115"/>
+            <line class="topology-line" x1="270" y1="85" x2="270" y2="115"/>
+            <circle class="topology-node" cx="70" cy="100" r="9"/>
+            <circle class="topology-node" cx="120" cy="100" r="9"/>
+            <circle class="topology-node" cx="170" cy="100" r="9"/>
+            <circle class="topology-node" cx="220" cy="100" r="9"/>
+        `),
+    },
+    {
+        name: "Ring",
+        svg: topologySvg(`
+            <polygon class="topology-line topology-ring" points="220,100 171.6,33.4 93.4,58.9 93.4,141.1 171.6,166.6"/>
+            <circle class="topology-node" cx="220" cy="100" r="9"/>
+            <circle class="topology-node" cx="171.6" cy="33.4" r="9"/>
+            <circle class="topology-node" cx="93.4" cy="58.9" r="9"/>
+            <circle class="topology-node" cx="93.4" cy="141.1" r="9"/>
+            <circle class="topology-node" cx="171.6" cy="166.6" r="9"/>
+        `),
+    },
+    {
+        name: "Mesh",
+        svg: topologySvg(`
+            <line class="topology-line" x1="220" y1="100" x2="171.6" y2="33.4"/>
+            <line class="topology-line" x1="220" y1="100" x2="93.4" y2="58.9"/>
+            <line class="topology-line" x1="220" y1="100" x2="93.4" y2="141.1"/>
+            <line class="topology-line" x1="220" y1="100" x2="171.6" y2="166.6"/>
+            <line class="topology-line" x1="171.6" y1="33.4" x2="93.4" y2="58.9"/>
+            <line class="topology-line" x1="171.6" y1="33.4" x2="93.4" y2="141.1"/>
+            <line class="topology-line" x1="171.6" y1="33.4" x2="171.6" y2="166.6"/>
+            <line class="topology-line" x1="93.4" y1="58.9" x2="93.4" y2="141.1"/>
+            <line class="topology-line" x1="93.4" y1="58.9" x2="171.6" y2="166.6"/>
+            <line class="topology-line" x1="93.4" y1="141.1" x2="171.6" y2="166.6"/>
+            <circle class="topology-node" cx="220" cy="100" r="9"/>
+            <circle class="topology-node" cx="171.6" cy="33.4" r="9"/>
+            <circle class="topology-node" cx="93.4" cy="58.9" r="9"/>
+            <circle class="topology-node" cx="93.4" cy="141.1" r="9"/>
+            <circle class="topology-node" cx="171.6" cy="166.6" r="9"/>
+        `),
+    },
+    {
+        name: "Tree",
+        svg: topologySvg(`
+            <line class="topology-line" x1="150" y1="40" x2="90" y2="110"/>
+            <line class="topology-line" x1="150" y1="40" x2="210" y2="110"/>
+            <line class="topology-line" x1="90" y1="110" x2="60" y2="175"/>
+            <line class="topology-line" x1="90" y1="110" x2="120" y2="175"/>
+            <line class="topology-line" x1="210" y1="110" x2="180" y2="175"/>
+            <line class="topology-line" x1="210" y1="110" x2="240" y2="175"/>
+            <circle class="topology-node topology-node-center" cx="150" cy="40" r="10"/>
+            <circle class="topology-node" cx="90" cy="110" r="9"/>
+            <circle class="topology-node" cx="210" cy="110" r="9"/>
+            <circle class="topology-node" cx="60" cy="175" r="8"/>
+            <circle class="topology-node" cx="120" cy="175" r="8"/>
+            <circle class="topology-node" cx="180" cy="175" r="8"/>
+            <circle class="topology-node" cx="240" cy="175" r="8"/>
+        `),
+    },
+];
+
+function generateTopologyIdQuestion() {
+    const t = state.topologyId;
+    let item;
+    do {
+        item = TOPOLOGY_DATA[randInt(0, TOPOLOGY_DATA.length - 1)];
+    } while (item === t.current && TOPOLOGY_DATA.length > 1);
+    t.current = item;
+    t.answered = false;
+    renderTopologyIdQuestion();
+}
+
+function renderTopologyIdQuestion() {
+    const t = state.topologyId;
+    els.topologyIdDiagram.innerHTML = t.current.svg;
+    els.topologyIdMessage.textContent = "";
+    els.topologyIdMessage.className = "message";
+
+    const pool = TOPOLOGY_DATA.filter((x) => x !== t.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([t.current.name, ...wrongItems.map((x) => x.name)]);
+
+    els.topologyIdChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkTopologyIdAnswer(choice, t.current.name, btn));
+        els.topologyIdChoices.appendChild(btn);
+    });
+}
+
+function checkTopologyIdAnswer(choice, correctValue, btn) {
+    const t = state.topologyId;
+    if (t.answered) return;
+    t.answered = true;
+    t.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) t.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.topologyIdChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.topologyIdMessage.textContent = isCorrect ? "Correct!" : `Not quite — this is a ${correctValue} topology.`;
+    els.topologyIdMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateTopologyIdStats();
+    setTimeout(generateTopologyIdQuestion, 1000);
+}
+
+function updateTopologyIdStats() {
+    const t = state.topologyId;
+    els.topologyIdStatSolved.textContent = t.solved;
+    els.topologyIdStatCorrect.textContent = t.correct;
+    els.topologyIdStatAccuracy.textContent = t.solved ? Math.round((t.correct / t.solved) * 100) + "%" : "—";
+}
+
+els.topologyIdNextBtn.addEventListener("click", generateTopologyIdQuestion);
+
+// ── Security+ Flashcards ─────────────────────────────────────────────────────
+const SECPLUS_DATA = [
+    { term: "CIA Triad", full: "Confidentiality, Integrity, Availability", desc: "The three core goals of information security: keep data private, keep it accurate/unaltered, and keep it accessible when needed." },
+    { term: "AAA", full: "Authentication, Authorization, Accounting", desc: "The framework for controlling access: who you are, what you're allowed to do, and a log of what you did." },
+    { term: "MFA", full: "Multi-Factor Authentication", desc: "Requires two or more independent credentials (something you know, have, or are) to verify identity." },
+    { term: "Zero Trust", full: "Never trust, always verify", desc: "A security model that assumes no user or device is trusted by default, even inside the network perimeter." },
+    { term: "Least Privilege", full: "Minimum necessary access", desc: "Users and systems should only have the access rights needed to perform their job, nothing more." },
+    { term: "Defense in Depth", full: "Layered security controls", desc: "Uses multiple overlapping security measures so that if one layer fails, others still protect the system." },
+    { term: "Phishing", full: "Social engineering via deceptive messages", desc: "An attack that tricks users into revealing sensitive info or clicking malicious links, usually via email." },
+    { term: "Ransomware", full: "Malware that encrypts data for extortion", desc: "Malicious software that locks or encrypts a victim's files and demands payment to restore access." },
+    { term: "Malware", full: "Malicious software", desc: "Any software designed to damage, disrupt, or gain unauthorized access to a system — viruses, worms, trojans, etc." },
+    { term: "Firewall", full: "Traffic filtering device/software", desc: "Monitors and controls incoming/outgoing network traffic based on a defined set of security rules." },
+    { term: "IDS", full: "Intrusion Detection System", desc: "Monitors network or system traffic for suspicious activity and alerts administrators, but doesn't block it." },
+    { term: "IPS", full: "Intrusion Prevention System", desc: "Like an IDS, but actively blocks or prevents detected threats in real time." },
+    { term: "PKI", full: "Public Key Infrastructure", desc: "The system of certificates, keys, and authorities used to manage encryption and digital identity verification." },
+    { term: "Symmetric Encryption", full: "Same key encrypts and decrypts", desc: "A single shared secret key is used for both encrypting and decrypting data. Fast, but key distribution is a challenge." },
+    { term: "Asymmetric Encryption", full: "Public/private key pair", desc: "Uses a public key to encrypt and a private key to decrypt (or vice versa for signing). Solves key distribution issues." },
+    { term: "Hashing", full: "One-way data fingerprint", desc: "Converts data into a fixed-length value that can't be reversed, used to verify integrity (e.g., password storage)." },
+    { term: "Social Engineering", full: "Human-based manipulation", desc: "Manipulating people into breaking security procedures or revealing confidential information." },
+    { term: "DDoS", full: "Distributed Denial of Service", desc: "Overwhelms a target with traffic from many sources to make a service unavailable." },
+    { term: "Patch Management", full: "Keeping software updated", desc: "The process of acquiring, testing, and installing updates to fix vulnerabilities and bugs." },
+    { term: "Honeypot", full: "Decoy system", desc: "A trap system designed to lure attackers so their behavior can be observed and studied." },
+];
+
+function initSecplusFlash() {
+    state.secplusFlash.deck = shuffleArray(SECPLUS_DATA);
+    state.secplusFlash.index = 0;
+    state.secplusFlash.flipped = false;
+    renderSecplusCard();
+}
+
+function renderSecplusCard() {
+    const s = state.secplusFlash;
+    const item = s.deck[s.index];
+    els.secplusFrontText.textContent = item.term;
+    els.secplusBackFull.textContent = item.full;
+    els.secplusBackDesc.textContent = item.desc;
+    els.secplusCounterText.textContent = `${s.index + 1} / ${s.deck.length}`;
+    els.secplusCard.classList.toggle("flipped", s.flipped);
+}
+
+function flipSecplusCard() {
+    state.secplusFlash.flipped = !state.secplusFlash.flipped;
+    els.secplusCard.classList.toggle("flipped", state.secplusFlash.flipped);
+}
+
+function goToSecplus(delta) {
+    const s = state.secplusFlash;
+    s.index = (s.index + delta + s.deck.length) % s.deck.length;
+    s.flipped = false;
+    renderSecplusCard();
+}
+
+els.secplusCard.addEventListener("click", flipSecplusCard);
+els.secplusFlipBtn.addEventListener("click", flipSecplusCard);
+els.secplusPrevBtn.addEventListener("click", () => goToSecplus(-1));
+els.secplusNextBtn.addEventListener("click", () => goToSecplus(1));
+els.secplusShuffleBtn.addEventListener("click", () => {
+    state.secplusFlash.deck = shuffleArray(state.secplusFlash.deck);
+    state.secplusFlash.index = 0;
+    state.secplusFlash.flipped = false;
+    renderSecplusCard();
+});
+
+// ── NATO Phonetic ─────────────────────────────────────────────────────────────
+const NATO_DATA = [
+    { letter: "A", word: "Alpha", decoys: ["Apple", "Anchor", "Arrow"] },
+    { letter: "B", word: "Bravo", decoys: ["Banana", "Bishop", "Blaze"] },
+    { letter: "C", word: "Charlie", decoys: ["Cactus", "Comet", "Cobra"] },
+    { letter: "D", word: "Delta", decoys: ["Dagger", "Diamond", "Dolphin"] },
+    { letter: "E", word: "Echo", decoys: ["Eagle", "Ember", "Emerald"] },
+    { letter: "F", word: "Foxtrot", decoys: ["Falcon", "Fable", "Frost"] },
+    { letter: "G", word: "Golf", decoys: ["Garnet", "Glacier", "Gravel"] },
+    { letter: "H", word: "Hotel", decoys: ["Harbor", "Hazard", "Hunter"] },
+    { letter: "I", word: "India", decoys: ["Iceberg", "Ivory", "Impulse"] },
+    { letter: "J", word: "Juliett", decoys: ["Jasper", "Jaguar", "Jungle"] },
+    { letter: "K", word: "Kilo", decoys: ["Kraken", "Kernel", "Karma"] },
+    { letter: "L", word: "Lima", decoys: ["Lantern", "Laser", "Lynx"] },
+    { letter: "M", word: "Mike", decoys: ["Marlin", "Mango", "Mercury"] },
+    { letter: "N", word: "November", decoys: ["Nebula", "Nectar", "Nomad"] },
+    { letter: "O", word: "Oscar", decoys: ["Onyx", "Otter", "Oracle"] },
+    { letter: "P", word: "Papa", decoys: ["Panther", "Pepper", "Puzzle"] },
+    { letter: "Q", word: "Quebec", decoys: ["Quartz", "Quill", "Quasar"] },
+    { letter: "R", word: "Romeo", decoys: ["Raptor", "Raven", "Ripple"] },
+    { letter: "S", word: "Sierra", decoys: ["Saber", "Storm", "Spark"] },
+    { letter: "T", word: "Tango", decoys: ["Talon", "Thunder", "Tempest"] },
+    { letter: "U", word: "Uniform", decoys: ["Umbra", "Utopia", "Urchin"] },
+    { letter: "V", word: "Victor", decoys: ["Vortex", "Viper", "Velvet"] },
+    { letter: "W", word: "Whiskey", decoys: ["Wraith", "Willow", "Wander"] },
+    { letter: "X", word: "X-ray", decoys: ["Xenon", "Xylophone", "Xerox"] },
+    { letter: "Y", word: "Yankee", decoys: ["Yonder", "Yeti", "Yield"] },
+    { letter: "Z", word: "Zulu", decoys: ["Zephyr", "Zenith", "Zircon"] },
+];
+
+function generateNatoPhoneticQuestion() {
+    const n = state.natoPhonetic;
+    let item;
+    do {
+        item = NATO_DATA[randInt(0, NATO_DATA.length - 1)];
+    } while (item === n.current && NATO_DATA.length > 1);
+    n.current = item;
+    n.answered = false;
+    renderNatoPhoneticQuestion();
+}
+
+function renderNatoPhoneticQuestion() {
+    const n = state.natoPhonetic;
+    els.natoPhoneticQuestion.textContent = n.current.letter;
+    els.natoPhoneticMessage.textContent = "";
+    els.natoPhoneticMessage.className = "message";
+
+    const choices = shuffleArray([n.current.word, ...n.current.decoys]);
+
+    els.natoPhoneticChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkNatoPhoneticAnswer(choice, n.current.word, btn));
+        els.natoPhoneticChoices.appendChild(btn);
+    });
+}
+
+function checkNatoPhoneticAnswer(choice, correctValue, btn) {
+    const n = state.natoPhonetic;
+    if (n.answered) return;
+    n.answered = true;
+    n.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) n.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.natoPhoneticChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.natoPhoneticMessage.textContent = isCorrect ? "Correct!" : `Not quite — it's ${correctValue}.`;
+    els.natoPhoneticMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateNatoPhoneticStats();
+    setTimeout(generateNatoPhoneticQuestion, 900);
+}
+
+function updateNatoPhoneticStats() {
+    const n = state.natoPhonetic;
+    els.natoPhoneticStatSolved.textContent = n.solved;
+    els.natoPhoneticStatCorrect.textContent = n.correct;
+    els.natoPhoneticStatAccuracy.textContent = n.solved ? Math.round((n.correct / n.solved) * 100) + "%" : "—";
+}
+
+els.natoPhoneticNextBtn.addEventListener("click", generateNatoPhoneticQuestion);
+
+// ── Message Precedence ────────────────────────────────────────────────────────
+const PRECEDENCE_DATA = [
+    { level: "FLASH", desc: "Reserved for initial enemy contact reports or reports of vital importance — deliver within minutes, right behind Flash Override." },
+    { level: "IMMEDIATE", desc: "For situations that gravely affect national/allied forces and require immediate action — deliver within 30 minutes." },
+    { level: "PRIORITY", desc: "For messages requiring prompt action or containing important information — deliver within 3 hours." },
+    { level: "ROUTINE", desc: "For all other official message traffic that doesn't require urgent handling — deliver within 6 hours." },
+];
+
+function generatePrecedenceMatchQuestion() {
+    const p = state.precedenceMatch;
+    let item;
+    do {
+        item = PRECEDENCE_DATA[randInt(0, PRECEDENCE_DATA.length - 1)];
+    } while (item === p.current && PRECEDENCE_DATA.length > 1);
+    p.current = item;
+    p.answered = false;
+    renderPrecedenceMatchQuestion();
+}
+
+function renderPrecedenceMatchQuestion() {
+    const p = state.precedenceMatch;
+    els.precedenceMatchQuestion.textContent = p.current.level;
+    els.precedenceMatchMessage.textContent = "";
+    els.precedenceMatchMessage.className = "message";
+
+    const pool = PRECEDENCE_DATA.filter((x) => x !== p.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([p.current.desc, ...wrongItems.map((x) => x.desc)]);
+
+    els.precedenceMatchChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn drill-choice-btn-text";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkPrecedenceMatchAnswer(choice, p.current.desc, btn));
+        els.precedenceMatchChoices.appendChild(btn);
+    });
+}
+
+function checkPrecedenceMatchAnswer(choice, correctValue, btn) {
+    const p = state.precedenceMatch;
+    if (p.answered) return;
+    p.answered = true;
+    p.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) p.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.precedenceMatchChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.precedenceMatchMessage.textContent = isCorrect ? "Correct!" : "Not quite — check the highlighted answer.";
+    els.precedenceMatchMessage.className = "message " + (isCorrect ? "success" : "error");
+    updatePrecedenceMatchStats();
+    setTimeout(generatePrecedenceMatchQuestion, 1100);
+}
+
+function updatePrecedenceMatchStats() {
+    const p = state.precedenceMatch;
+    els.precedenceMatchStatSolved.textContent = p.solved;
+    els.precedenceMatchStatCorrect.textContent = p.correct;
+    els.precedenceMatchStatAccuracy.textContent = p.solved ? Math.round((p.correct / p.solved) * 100) + "%" : "—";
+}
+
+els.precedenceMatchNextBtn.addEventListener("click", generatePrecedenceMatchQuestion);
+
+// ── RF Spectrum Match ─────────────────────────────────────────────────────────
+const RF_SPECTRUM_DATA = [
+    { band: "LF (Low Frequency)", desc: "30–300 kHz. Long wavelength, used for navigation beacons and submarine communications." },
+    { band: "MF (Medium Frequency)", desc: "300 kHz–3 MHz. Used mainly for AM radio broadcasting." },
+    { band: "HF (High Frequency)", desc: "3–30 MHz. Reflects off the ionosphere for long-range, over-the-horizon communication." },
+    { band: "VHF (Very High Frequency)", desc: "30–300 MHz. Used for FM radio, TV broadcast, and line-of-sight aircraft/marine communication." },
+    { band: "UHF (Ultra High Frequency)", desc: "300 MHz–3 GHz. Used for TV broadcast, cell phones, GPS, and satellite communication." },
+    { band: "SHF (Super High Frequency)", desc: "3–30 GHz. Used for satellite links, radar, and Wi-Fi." },
+];
+
+function generateRfSpectrumQuestion() {
+    const r = state.rfSpectrum;
+    let item;
+    do {
+        item = RF_SPECTRUM_DATA[randInt(0, RF_SPECTRUM_DATA.length - 1)];
+    } while (item === r.current && RF_SPECTRUM_DATA.length > 1);
+    r.current = item;
+    r.answered = false;
+    renderRfSpectrumQuestion();
+}
+
+function renderRfSpectrumQuestion() {
+    const r = state.rfSpectrum;
+    els.rfSpectrumQuestion.textContent = r.current.band;
+    els.rfSpectrumMessage.textContent = "";
+    els.rfSpectrumMessage.className = "message";
+
+    const pool = RF_SPECTRUM_DATA.filter((x) => x !== r.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([r.current.desc, ...wrongItems.map((x) => x.desc)]);
+
+    els.rfSpectrumChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn drill-choice-btn-text";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkRfSpectrumAnswer(choice, r.current.desc, btn));
+        els.rfSpectrumChoices.appendChild(btn);
+    });
+}
+
+function checkRfSpectrumAnswer(choice, correctValue, btn) {
+    const r = state.rfSpectrum;
+    if (r.answered) return;
+    r.answered = true;
+    r.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) r.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.rfSpectrumChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.rfSpectrumMessage.textContent = isCorrect ? "Correct!" : "Not quite — check the highlighted answer.";
+    els.rfSpectrumMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateRfSpectrumStats();
+    setTimeout(generateRfSpectrumQuestion, 1100);
+}
+
+function updateRfSpectrumStats() {
+    const r = state.rfSpectrum;
+    els.rfSpectrumStatSolved.textContent = r.solved;
+    els.rfSpectrumStatCorrect.textContent = r.correct;
+    els.rfSpectrumStatAccuracy.textContent = r.solved ? Math.round((r.correct / r.solved) * 100) + "%" : "—";
+}
+
+els.rfSpectrumNextBtn.addEventListener("click", generateRfSpectrumQuestion);
+
+// ── Server Roles Match ────────────────────────────────────────────────────────
+const SERVER_ROLES_DATA = [
+    { role: "AD DS (Active Directory Domain Services)", desc: "Provides centralized authentication and a directory of users, computers, and resources in a domain." },
+    { role: "DNS Server", desc: "Resolves hostnames to IP addresses (and vice versa) for the network." },
+    { role: "DHCP Server", desc: "Automatically assigns IP addresses and network settings to devices as they join the network." },
+    { role: "File Server", desc: "Provides centralized storage where users can save, access, and share files over the network." },
+    { role: "Print Server", desc: "Manages and shares printers on the network so multiple users can send print jobs to them." },
+    { role: "Web Server (IIS)", desc: "Hosts websites and web applications, serving content to clients over HTTP/HTTPS." },
+    { role: "Certificate Authority (AD CS)", desc: "Issues and manages digital certificates used for encryption and identity verification." },
+    { role: "DFS (Distributed File System)", desc: "Organizes and replicates shared folders across multiple servers into a single logical namespace." },
+];
+
+function generateServerRolesQuestion() {
+    const s = state.serverRoles;
+    let item;
+    do {
+        item = SERVER_ROLES_DATA[randInt(0, SERVER_ROLES_DATA.length - 1)];
+    } while (item === s.current && SERVER_ROLES_DATA.length > 1);
+    s.current = item;
+    s.answered = false;
+    renderServerRolesQuestion();
+}
+
+function renderServerRolesQuestion() {
+    const s = state.serverRoles;
+    els.serverRolesQuestion.textContent = s.current.role;
+    els.serverRolesMessage.textContent = "";
+    els.serverRolesMessage.className = "message";
+
+    const pool = SERVER_ROLES_DATA.filter((x) => x !== s.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([s.current.desc, ...wrongItems.map((x) => x.desc)]);
+
+    els.serverRolesChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn drill-choice-btn-text";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkServerRolesAnswer(choice, s.current.desc, btn));
+        els.serverRolesChoices.appendChild(btn);
+    });
+}
+
+function checkServerRolesAnswer(choice, correctValue, btn) {
+    const s = state.serverRoles;
+    if (s.answered) return;
+    s.answered = true;
+    s.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) s.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.serverRolesChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.serverRolesMessage.textContent = isCorrect ? "Correct!" : "Not quite — check the highlighted answer.";
+    els.serverRolesMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateServerRolesStats();
+    setTimeout(generateServerRolesQuestion, 1100);
+}
+
+function updateServerRolesStats() {
+    const s = state.serverRoles;
+    els.serverRolesStatSolved.textContent = s.solved;
+    els.serverRolesStatCorrect.textContent = s.correct;
+    els.serverRolesStatAccuracy.textContent = s.solved ? Math.round((s.correct / s.solved) * 100) + "%" : "—";
+}
+
+els.serverRolesNextBtn.addEventListener("click", generateServerRolesQuestion);
+
+// ── Ohm's Law Calculator ─────────────────────────────────────────────────────
+function calculateOhmsLaw() {
+    const inputs = {
+        v: els.ohmsVoltage.value.trim() === "" ? null : parseFloat(els.ohmsVoltage.value),
+        i: els.ohmsCurrent.value.trim() === "" ? null : parseFloat(els.ohmsCurrent.value),
+        r: els.ohmsResistance.value.trim() === "" ? null : parseFloat(els.ohmsResistance.value),
+        p: els.ohmsPower.value.trim() === "" ? null : parseFloat(els.ohmsPower.value),
+    };
+    const knownCount = Object.values(inputs).filter((x) => x !== null && !Number.isNaN(x)).length;
+
+    if (knownCount < 2) {
+        els.ohmsLawMessage.textContent = "Enter at least two values to solve for the rest.";
+        els.ohmsLawMessage.className = "message error";
+        return;
+    }
+
+    let { v, i, r, p } = inputs;
+    try {
+        if (v !== null && i !== null) {
+            r = r === null ? v / i : r;
+            p = v * i;
+        } else if (v !== null && r !== null) {
+            i = i === null ? v / r : i;
+            p = v * (i !== null ? i : v / r);
+        } else if (i !== null && r !== null) {
+            v = v === null ? i * r : v;
+            p = (v !== null ? v : i * r) * i;
+        } else if (v !== null && p !== null) {
+            i = i === null ? p / v : i;
+            r = r === null ? v / (p / v) : r;
+        } else if (i !== null && p !== null) {
+            v = v === null ? p / i : v;
+            r = r === null ? (p / i) / i : r;
+        } else if (r !== null && p !== null) {
+            v = v === null ? Math.sqrt(p * r) : v;
+            i = i === null ? Math.sqrt(p / r) : i;
+        } else {
+            els.ohmsLawMessage.textContent = "Enter at least two values to solve for the rest.";
+            els.ohmsLawMessage.className = "message error";
+            return;
+        }
+    } catch (e) {
+        els.ohmsLawMessage.textContent = "Couldn't solve with those values.";
+        els.ohmsLawMessage.className = "message error";
+        return;
+    }
+
+    if ([v, i, r, p].some((x) => x === null || Number.isNaN(x) || !Number.isFinite(x))) {
+        els.ohmsLawMessage.textContent = "Couldn't solve with those values — check for a zero denominator.";
+        els.ohmsLawMessage.className = "message error";
+        return;
+    }
+
+    const round = (n) => Math.round(n * 10000) / 10000;
+    els.ohmsVoltage.value = round(v);
+    els.ohmsCurrent.value = round(i);
+    els.ohmsResistance.value = round(r);
+    els.ohmsPower.value = round(p);
+    els.ohmsLawMessage.textContent = `V = ${round(v)}V, I = ${round(i)}A, R = ${round(r)}\u03a9, P = ${round(p)}W`;
+    els.ohmsLawMessage.className = "message success";
+}
+
+els.ohmsLawCalcBtn.addEventListener("click", calculateOhmsLaw);
+els.ohmsLawResetBtn.addEventListener("click", () => {
+    els.ohmsVoltage.value = "";
+    els.ohmsCurrent.value = "";
+    els.ohmsResistance.value = "";
+    els.ohmsPower.value = "";
+    els.ohmsLawMessage.textContent = "";
+    els.ohmsLawMessage.className = "message";
+});
+
+// ── Wireless Standards Match ──────────────────────────────────────────────────
+const WIRELESS_DATA = [
+    { standard: "802.11a", desc: "Up to 54 Mbps, 5 GHz band. Shorter range than 802.11b due to higher frequency." },
+    { standard: "802.11b", desc: "Up to 11 Mbps, 2.4 GHz band. Longer range but slower and more prone to interference." },
+    { standard: "802.11g", desc: "Up to 54 Mbps, 2.4 GHz band. Backward compatible with 802.11b." },
+    { standard: "802.11n (Wi-Fi 4)", desc: "Up to 600 Mbps using MIMO, operates on both 2.4 GHz and 5 GHz bands." },
+    { standard: "802.11ac (Wi-Fi 5)", desc: "Over 1 Gbps using wider channels and MU-MIMO, operates on the 5 GHz band." },
+    { standard: "802.11ax (Wi-Fi 6)", desc: "Up to ~9.6 Gbps with OFDMA for better efficiency in crowded networks, operates on 2.4/5/6 GHz." },
+];
+
+function generateWirelessMatchQuestion() {
+    const w = state.wirelessMatch;
+    let item;
+    do {
+        item = WIRELESS_DATA[randInt(0, WIRELESS_DATA.length - 1)];
+    } while (item === w.current && WIRELESS_DATA.length > 1);
+    w.current = item;
+    w.answered = false;
+    renderWirelessMatchQuestion();
+}
+
+function renderWirelessMatchQuestion() {
+    const w = state.wirelessMatch;
+    els.wirelessMatchQuestion.textContent = w.current.standard;
+    els.wirelessMatchMessage.textContent = "";
+    els.wirelessMatchMessage.className = "message";
+
+    const pool = WIRELESS_DATA.filter((x) => x !== w.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([w.current.desc, ...wrongItems.map((x) => x.desc)]);
+
+    els.wirelessMatchChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn drill-choice-btn-text";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkWirelessMatchAnswer(choice, w.current.desc, btn));
+        els.wirelessMatchChoices.appendChild(btn);
+    });
+}
+
+function checkWirelessMatchAnswer(choice, correctValue, btn) {
+    const w = state.wirelessMatch;
+    if (w.answered) return;
+    w.answered = true;
+    w.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) w.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.wirelessMatchChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.wirelessMatchMessage.textContent = isCorrect ? "Correct!" : "Not quite — check the highlighted answer.";
+    els.wirelessMatchMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateWirelessMatchStats();
+    setTimeout(generateWirelessMatchQuestion, 1100);
+}
+
+function updateWirelessMatchStats() {
+    const w = state.wirelessMatch;
+    els.wirelessMatchStatSolved.textContent = w.solved;
+    els.wirelessMatchStatCorrect.textContent = w.correct;
+    els.wirelessMatchStatAccuracy.textContent = w.solved ? Math.round((w.correct / w.solved) * 100) + "%" : "—";
+}
+
+els.wirelessMatchNextBtn.addEventListener("click", generateWirelessMatchQuestion);
+
+// ── Logic Gates ────────────────────────────────────────────────────────────────
+const LOGIC_GATES = [
+    { gate: "AND", inputs: 2, fn: (a, b) => (a && b ? 1 : 0) },
+    { gate: "OR", inputs: 2, fn: (a, b) => (a || b ? 1 : 0) },
+    { gate: "NOT", inputs: 1, fn: (a) => (a ? 0 : 1) },
+    { gate: "XOR", inputs: 2, fn: (a, b) => (a !== b ? 1 : 0) },
+    { gate: "NAND", inputs: 2, fn: (a, b) => (a && b ? 0 : 1) },
+    { gate: "NOR", inputs: 2, fn: (a, b) => (a || b ? 0 : 1) },
+    { gate: "XNOR", inputs: 2, fn: (a, b) => (a === b ? 1 : 0) },
+];
+
+function generateLogicGatesQuestion() {
+    const l = state.logicGates;
+    const gate = LOGIC_GATES[randInt(0, LOGIC_GATES.length - 1)];
+    const a = randInt(0, 1);
+    const b = randInt(0, 1);
+    const output = gate.inputs === 1 ? gate.fn(a) : gate.fn(a, b);
+    l.current = { gate: gate.gate, a, b, inputs: gate.inputs, output };
+    l.answered = false;
+    renderLogicGatesQuestion();
+}
+
+function renderLogicGatesQuestion() {
+    const l = state.logicGates;
+    const c = l.current;
+    els.logicGatesQuestion.textContent = c.inputs === 1 ? `${c.gate}(${c.a}) = ?` : `${c.gate}(${c.a}, ${c.b}) = ?`;
+    els.logicGatesMessage.textContent = "";
+    els.logicGatesMessage.className = "message";
+
+    els.logicGatesChoices.innerHTML = "";
+    [0, 1].forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkLogicGatesAnswer(choice, c.output, btn));
+        els.logicGatesChoices.appendChild(btn);
+    });
+}
+
+function checkLogicGatesAnswer(choice, correctValue, btn) {
+    const l = state.logicGates;
+    if (l.answered) return;
+    l.answered = true;
+    l.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) l.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.logicGatesChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (Number(b.textContent) === correctValue) b.classList.add("correct");
+    });
+    els.logicGatesMessage.textContent = isCorrect ? "Correct!" : `Not quite — the answer is ${correctValue}.`;
+    els.logicGatesMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateLogicGatesStats();
+    setTimeout(generateLogicGatesQuestion, 800);
+}
+
+function updateLogicGatesStats() {
+    const l = state.logicGates;
+    els.logicGatesStatSolved.textContent = l.solved;
+    els.logicGatesStatCorrect.textContent = l.correct;
+    els.logicGatesStatAccuracy.textContent = l.solved ? Math.round((l.correct / l.solved) * 100) + "%" : "—";
+}
+
+els.logicGatesNextBtn.addEventListener("click", generateLogicGatesQuestion);
+
+// ── Cloud Service Models ──────────────────────────────────────────────────────
+const CLOUD_MODELS_DATA = [
+    { model: "IaaS (Infrastructure as a Service)", desc: "Provides virtualized computing infrastructure — servers, storage, and networking — that you manage yourself. Example: AWS EC2, Azure VMs." },
+    { model: "PaaS (Platform as a Service)", desc: "Provides a platform for developing and deploying applications without managing the underlying infrastructure. Example: Heroku, Azure App Service." },
+    { model: "SaaS (Software as a Service)", desc: "Delivers fully-managed software applications over the internet, ready to use. Example: Gmail, Microsoft 365, Salesforce." },
+    { model: "DaaS (Desktop as a Service)", desc: "Delivers a virtual desktop environment hosted in the cloud, accessible from any device. Example: Amazon WorkSpaces, Windows 365." },
+];
+
+function generateCloudModelsQuestion() {
+    const c = state.cloudModels;
+    let item;
+    do {
+        item = CLOUD_MODELS_DATA[randInt(0, CLOUD_MODELS_DATA.length - 1)];
+    } while (item === c.current && CLOUD_MODELS_DATA.length > 1);
+    c.current = item;
+    c.answered = false;
+    renderCloudModelsQuestion();
+}
+
+function renderCloudModelsQuestion() {
+    const c = state.cloudModels;
+    els.cloudModelsQuestion.textContent = c.current.model;
+    els.cloudModelsMessage.textContent = "";
+    els.cloudModelsMessage.className = "message";
+
+    const pool = CLOUD_MODELS_DATA.filter((x) => x !== c.current);
+    const wrongItems = shuffleArray(pool).slice(0, 3);
+    const choices = shuffleArray([c.current.desc, ...wrongItems.map((x) => x.desc)]);
+
+    els.cloudModelsChoices.innerHTML = "";
+    choices.forEach((choice) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "drill-choice-btn drill-choice-btn-text";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkCloudModelsAnswer(choice, c.current.desc, btn));
+        els.cloudModelsChoices.appendChild(btn);
+    });
+}
+
+function checkCloudModelsAnswer(choice, correctValue, btn) {
+    const c = state.cloudModels;
+    if (c.answered) return;
+    c.answered = true;
+    c.solved += 1;
+    const isCorrect = choice === correctValue;
+    if (isCorrect) c.correct += 1;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    els.cloudModelsChoices.querySelectorAll(".drill-choice-btn").forEach((b) => {
+        b.disabled = true;
+        if (b.textContent === correctValue) b.classList.add("correct");
+    });
+    els.cloudModelsMessage.textContent = isCorrect ? "Correct!" : "Not quite — check the highlighted answer.";
+    els.cloudModelsMessage.className = "message " + (isCorrect ? "success" : "error");
+    updateCloudModelsStats();
+    setTimeout(generateCloudModelsQuestion, 1100);
+}
+
+function updateCloudModelsStats() {
+    const c = state.cloudModels;
+    els.cloudModelsStatSolved.textContent = c.solved;
+    els.cloudModelsStatCorrect.textContent = c.correct;
+    els.cloudModelsStatAccuracy.textContent = c.solved ? Math.round((c.correct / c.solved) * 100) + "%" : "—";
+}
+
+els.cloudModelsNextBtn.addEventListener("click", generateCloudModelsQuestion);
 
 // Initialize — wrap defaults in _restoringPrefs so savePrefs is not called
 state._restoringPrefs = true;
