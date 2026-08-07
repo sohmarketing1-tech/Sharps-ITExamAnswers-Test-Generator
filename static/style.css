@@ -2045,22 +2045,23 @@ body {
 }
 
 .exam-category-label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
 }
 
 .exam-category-tabs {
-    display: inline-flex;
-    align-self: flex-start;
-    gap: 4px;
-    padding: 4px;
-    background: rgba(var(--glass-base), 0.1);
-    border: 1px solid rgba(var(--glass-base), 0.15);
+    display: flex;
+    width: 100%;
+    gap: 6px;
+    padding: 6px;
+    background: rgba(var(--glass-base), 0.12);
+    border: 2px solid rgba(var(--accent-base), 0.35);
     border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(var(--shadow-sm-base), 0.15);
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -2071,26 +2072,27 @@ body {
 }
 
 .exam-category-tab {
-    flex: 0 0 auto;
-    padding: 8px 16px;
+    flex: 1 1 0;
+    padding: 14px 20px;
     border-radius: 999px;
     border: none;
     background: transparent;
     color: var(--text-muted);
-    font-weight: 700;
-    font-size: 0.9rem;
+    font-weight: 800;
+    font-size: 1.05rem;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 
 .exam-category-tab:hover {
     color: var(--text);
+    transform: translateY(-1px);
 }
 
 .exam-category-tab.active {
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(var(--accent-base), 0.25);
+    box-shadow: 0 4px 14px rgba(var(--accent-base), 0.4);
 }
 
 .exam-grid {
@@ -2614,8 +2616,8 @@ body {
     }
 
     .exam-category-tab {
-        padding: 6px 12px;
-        font-size: 0.85rem;
+        padding: 12px 14px;
+        font-size: 0.95rem;
     }
 
     .btn-exam {
