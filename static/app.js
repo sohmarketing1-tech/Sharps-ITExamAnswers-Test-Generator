@@ -1,6 +1,20 @@
 const DEFAULT_MASTERY_SIZE = 10;
 const MASTERY_STREAK_REQUIRED_FALLBACK = 3;
 
+// Feature-detect touch capability instead of relying on screen width so
+// tablets (iPads etc.) reporting desktop-sized viewports still get swipe
+// navigation + onboarding, while touchscreen-less laptops keep the classic
+// keyboard/mouse Next/Previous buttons.
+const isTouchDevice = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
+if (isTouchDevice) {
+    document.body.classList.add("touch-nav");
+}
+
+const SWIPE_ONBOARD_KEY = "answrit_swipe_onboard_count";
+const SWIPE_ONBOARD_MAX_RUNS = 5;
+const FLASHCARD_SWIPE_ONBOARD_KEY = "answrit_flashcard_swipe_onboard_count";
+const FLASHCARD_SWIPE_ONBOARD_MAX_RUNS = 5;
+
 const API = {
     exams: "/api/exams",
     load: "/api/load",
@@ -40,6 +54,8 @@ const state = {
     timerLimitSeconds: 0,
     fiveMinWarned: false,
     multiSelect: false,
+    swipeOnboardingPending: false,
+    flashcardSwipeOnboardingPending: false,
     mode: "practice", // "practice" or "mastery"
     user: null,
     masterySummary: null,
@@ -198,6 +214,14 @@ const els = {
     optionsContainer: document.getElementById("options-container"),
     prevBtn: document.getElementById("prev-btn"),
     nextBtn: document.getElementById("next-btn"),
+    questionCard: document.getElementById("question-card"),
+    questionCardStackNext: document.getElementById("question-card-stack-next"),
+    cardPrevArrow: document.getElementById("card-prev-arrow"),
+    cardNextArrow: document.getElementById("card-next-arrow"),
+    swipeOnboarding: document.getElementById("swipe-onboarding"),
+    swipeOnboardingLabel: document.getElementById("swipe-onboarding-label"),
+    swipeDirectionFlash: document.getElementById("swipe-direction-flash"),
+    swipeDirectionFlashLabel: document.getElementById("swipe-direction-flash-label"),
     resultsTitle: document.getElementById("results-title"),
     scoreValue: document.getElementById("score-value"),
     scoreDetail: document.getElementById("score-detail"),
@@ -295,6 +319,7 @@ const els = {
     flashcardDiscardBtn: document.getElementById("flashcard-discard-btn"),
     flashcardSessionStatus: document.getElementById("flashcard-session-status"),
     flashcardStudyArea: document.getElementById("flashcard-study-area"),
+    flashcardStackNext: document.getElementById("flashcard-stack-next"),
     flashcard: document.getElementById("flashcard"),
     flashcardInner: document.querySelector("#flashcard .flashcard-inner"),
     flashcardFrontFace: document.querySelector("#flashcard .flashcard-front"),
@@ -309,6 +334,12 @@ const els = {
     flashcardFlipBtn: document.getElementById("flashcard-flip-btn"),
     flashcardPrevBtn: document.getElementById("flashcard-prev-btn"),
     flashcardNextBtn: document.getElementById("flashcard-next-btn"),
+    flashcardPrevArrows: document.querySelectorAll("#flashcard .flashcard-prev-arrow"),
+    flashcardNextArrows: document.querySelectorAll("#flashcard .flashcard-next-arrow"),
+    flashcardSwipeOnboarding: document.getElementById("flashcard-swipe-onboarding"),
+    flashcardSwipeOnboardingLabel: document.getElementById("flashcard-swipe-onboarding-label"),
+    flashcardSwipeDirectionFlash: document.getElementById("flashcard-swipe-direction-flash"),
+    flashcardSwipeDirectionFlashLabel: document.getElementById("flashcard-swipe-direction-flash-label"),
     flashcardMarkBtn: document.getElementById("flashcard-mark-btn"),
     flashcardReviewBadge: document.getElementById("flashcard-review-badge"),
     flashcardExitBtn: document.getElementById("flashcard-exit-btn"),
@@ -1454,6 +1485,7 @@ async function startMasterySession() {
         state.currentIndex = 0;
         state.secondsElapsed = 0;
         state.multiSelect = false;
+        markQuizRunStart();
         showScreen("quiz");
         els.timer.style.display = "none";
         stopTimer();
@@ -1632,6 +1664,7 @@ async function startTest() {
     state.currentIndex = 0;
     state.secondsElapsed = 0;
     state.multiSelect = false;
+    markQuizRunStart();
     showScreen("quiz");
     els.timer.style.display = "";
     startTimer();
@@ -2193,6 +2226,7 @@ async function startFlashcards() {
         state.flashcardQuestions = allQuestions;
         state.flashcardIndex = 0;
         state.flashcardFlipped = false;
+        markFlashcardRunStart();
         showFlashcardStudyArea();
         renderFlashcard();
         saveFlashcardSession();
@@ -2395,8 +2429,11 @@ function renderFlashcard() {
 
     els.flashcardPrevBtn.disabled = state.flashcardIndex === 0;
     els.flashcardNextBtn.disabled = state.flashcardIndex === state.flashcardQuestions.length - 1;
+    els.flashcardPrevArrows.forEach((btn) => { btn.disabled = state.flashcardIndex === 0; });
+    els.flashcardNextArrows.forEach((btn) => { btn.disabled = state.flashcardIndex === state.flashcardQuestions.length - 1; });
 
     adjustFlashcardHeight();
+    maybeShowFlashcardSwipeOnboarding();
 }
 
 function flipFlashcard() {
@@ -2412,6 +2449,16 @@ function nextFlashcard() {
         renderFlashcard();
         saveFlashcardSession();
     }
+}
+
+function handleFlashcardNextAction() {
+    if (state.flashcardIndex >= state.flashcardQuestions.length - 1) return;
+    animateFlashcardNavigate("next", () => nextFlashcard());
+}
+
+function handleFlashcardPrevAction() {
+    if (state.flashcardIndex <= 0) return;
+    animateFlashcardNavigate("prev", () => prevFlashcard());
 }
 
 function prevFlashcard() {
@@ -2874,6 +2921,13 @@ function renderQuestion() {
     els.prevBtn.disabled = state.currentIndex === 0;
     els.nextBtn.disabled = false;
     els.nextBtn.textContent = state.currentIndex === total - 1 ? "Finish" : "Next";
+    els.cardPrevArrow.disabled = state.currentIndex === 0;
+    els.cardNextArrow.disabled = false;
+    els.cardNextArrow.classList.toggle("is-finish", state.currentIndex === total - 1);
+
+    if (isTouchDevice) {
+        maybeShowSwipeOnboarding();
+    }
 
     if (q.type === "matching") {
         renderMatchingQuestion(q);
@@ -2999,6 +3053,400 @@ function navigate(direction) {
     if (state.currentIndex >= total) state.currentIndex = total - 1;
     renderQuestion();
 }
+
+// Call once when a brand-new exam/mastery run begins (not on retakes or
+// "add more questions" continuations). Flags the swipe onboarding to play
+// on the very first question, capped at the user's first 5 runs total.
+function markQuizRunStart() {
+    markSwipeOnboardingRun(SWIPE_ONBOARD_KEY, SWIPE_ONBOARD_MAX_RUNS, (v) => { state.swipeOnboardingPending = v; });
+}
+
+function maybeShowSwipeOnboarding() {
+    if (state.currentIndex !== 0 || !state.swipeOnboardingPending) return;
+    state.swipeOnboardingPending = false;
+    quizSwipeOnboarding.show();
+}
+
+function showSwipeDirectionFlash(direction) {
+    flashSwipeDirection(els.swipeDirectionFlash, els.swipeDirectionFlashLabel, direction);
+}
+
+// Call once when a brand-new flashcard session begins (not on resume).
+// Flags the swipe onboarding to play on the very first card, capped at the
+// user's first 5 runs total.
+function markFlashcardRunStart() {
+    markSwipeOnboardingRun(FLASHCARD_SWIPE_ONBOARD_KEY, FLASHCARD_SWIPE_ONBOARD_MAX_RUNS, (v) => { state.flashcardSwipeOnboardingPending = v; });
+}
+
+function maybeShowFlashcardSwipeOnboarding() {
+    if (state.flashcardIndex !== 0 || !state.flashcardSwipeOnboardingPending) return;
+    state.flashcardSwipeOnboardingPending = false;
+    flashcardSwipeOnboarding.show();
+}
+
+function showFlashcardSwipeDirectionFlash(direction) {
+    flashSwipeDirection(els.flashcardSwipeDirectionFlash, els.flashcardSwipeDirectionFlashLabel, direction);
+}
+
+// ---- Generic swipeable-card helpers (shared by the quiz card and flashcards) ----
+
+// Call once when a brand-new run begins. Flags a swipe onboarding demo to
+// play on the very first item, capped at the user's first N runs total.
+function markSwipeOnboardingRun(storageKey, maxRuns, setPending) {
+    if (!isTouchDevice) return;
+    let count = 0;
+    try {
+        count = parseInt(localStorage.getItem(storageKey) || "0", 10) || 0;
+    } catch (e) { /* ignore */ }
+    if (count < maxRuns) {
+        setPending(true);
+        try { localStorage.setItem(storageKey, String(count + 1)); } catch (e) { /* ignore */ }
+    } else {
+        setPending(false);
+    }
+}
+
+// Demo timings (ms) — a slower, more deliberate ~2.5s sequence so the user
+// has time to actually notice and read the gesture before it moves.
+const ONBOARD_SLIDE_MS = 450;
+const ONBOARD_HOLD_MS = 350;
+const ONBOARD_READ_PAUSE_MS = 200;
+
+// Builds a self-contained swipe-onboarding demo controller for a given card:
+// plays a gentle half-swipe left ("Next"), a hold so the user can see the
+// peek, a return to center, then the same demo mirrored right ("Previous").
+// The "next card in the deck" silhouette grows in behind it each time,
+// exactly like real navigation.
+function createSwipeOnboarding({ overlay, card, stackNext, label, nextText, prevText }) {
+    let timeouts = [];
+
+    function hide() {
+        timeouts.forEach(clearTimeout);
+        timeouts = [];
+        card.classList.remove("onboarding-half-left", "onboarding-half-right");
+        card.style.transition = "";
+        if (stackNext) stackNext.classList.remove("show-peek", "show");
+        overlay.classList.add("hidden");
+    }
+
+    function show() {
+        overlay.classList.remove("hidden");
+        card.classList.remove("onboarding-half-left", "onboarding-half-right");
+        card.style.transition = `transform ${ONBOARD_SLIDE_MS}ms ease, box-shadow 0.18s ease`;
+
+        label.textContent = nextText;
+
+        timeouts.forEach(clearTimeout);
+        timeouts = [];
+
+        let t = ONBOARD_READ_PAUSE_MS;
+
+        // Phase 1: half-swipe left to peek "Next".
+        timeouts.push(setTimeout(() => {
+            card.classList.add("onboarding-half-left");
+            if (stackNext) stackNext.classList.add("show-peek");
+        }, t));
+        t += ONBOARD_SLIDE_MS + ONBOARD_HOLD_MS;
+
+        // Phase 2: return to center.
+        timeouts.push(setTimeout(() => {
+            card.classList.remove("onboarding-half-left");
+            if (stackNext) stackNext.classList.remove("show-peek");
+        }, t));
+        t += ONBOARD_SLIDE_MS + ONBOARD_READ_PAUSE_MS;
+
+        // Phase 3: half-swipe right to peek "Previous".
+        timeouts.push(setTimeout(() => {
+            label.textContent = prevText;
+            card.classList.add("onboarding-half-right");
+            if (stackNext) stackNext.classList.add("show-peek");
+        }, t));
+        t += ONBOARD_SLIDE_MS + ONBOARD_HOLD_MS;
+
+        // Phase 4: return to center and end the demo.
+        timeouts.push(setTimeout(() => {
+            card.classList.remove("onboarding-half-right");
+            if (stackNext) stackNext.classList.remove("show-peek");
+        }, t));
+        t += ONBOARD_SLIDE_MS;
+
+        timeouts.push(setTimeout(hide, t + 150));
+
+        overlay.addEventListener("click", hide, { once: true });
+    }
+
+    return { show, hide };
+}
+
+const quizSwipeOnboarding = createSwipeOnboarding({
+    overlay: els.swipeOnboarding,
+    card: els.questionCard,
+    stackNext: els.questionCardStackNext,
+    label: els.swipeOnboardingLabel,
+    nextText: "Swipe left for Next",
+    prevText: "Swipe right for Previous",
+});
+
+const flashcardSwipeOnboarding = createSwipeOnboarding({
+    overlay: els.flashcardSwipeOnboarding,
+    card: els.flashcard,
+    stackNext: els.flashcardStackNext,
+    label: els.flashcardSwipeOnboardingLabel,
+    nextText: "Swipe left for Next",
+    prevText: "Swipe right for Previous",
+});
+
+// Briefly flashes the word "Next"/"Previous" over a card so the user gets
+// unambiguous confirmation of which way they just navigated.
+function flashSwipeDirection(el, label, direction) {
+    if (!el || !label) return;
+    label.textContent = direction === "next" ? "Next" : "Previous";
+    el.classList.remove("show");
+    void el.offsetWidth;
+    el.classList.add("show");
+    clearTimeout(el._flashTimeout);
+    el._flashTimeout = setTimeout(() => el.classList.remove("show"), 260);
+}
+
+// Renders a lightweight, non-interactive preview of a question into the
+// stack-next silhouette so it already shows real content as it grows in
+// behind the departing card — whichever direction (Next or Previous) is
+// actually being navigated to. Includes the same nav-arrows row as the real
+// card so both are the exact same height (otherwise the swap visibly "pops"
+// taller/shorter once the real card's arrow row appears).
+function renderCardPreviewInto(container, q, questionNumber, isLastQuestion) {
+    container.innerHTML = "";
+    if (!q) return;
+
+    const badge = document.createElement("span");
+    badge.className = "question-badge";
+    badge.textContent = `Question ${questionNumber}`;
+    container.appendChild(badge);
+
+    const h3 = document.createElement("h3");
+    const span = document.createElement("span");
+    span.textContent = q.question;
+    h3.appendChild(span);
+    container.appendChild(h3);
+
+    if (q.type === "matching") {
+        const hint = document.createElement("p");
+        hint.className = "option-text";
+        hint.textContent = "Match the terms to their definitions…";
+        container.appendChild(hint);
+    } else {
+        const optsDiv = document.createElement("div");
+        optsDiv.className = "options";
+        (q.options || []).forEach((opt) => {
+            const optionEl = document.createElement("label");
+            optionEl.className = "option";
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.disabled = true;
+            const textSpan = document.createElement("span");
+            textSpan.className = "option-text";
+            textSpan.textContent = opt;
+            optionEl.appendChild(input);
+            optionEl.appendChild(textSpan);
+            optsDiv.appendChild(optionEl);
+        });
+        container.appendChild(optsDiv);
+    }
+
+    const navArrows = document.createElement("div");
+    navArrows.className = "card-nav-arrows";
+    navArrows.innerHTML = `
+        <button class="card-arrow-btn card-arrow-prev" disabled aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="card-arrow-btn card-arrow-next${isLastQuestion ? " is-finish" : ""}" disabled aria-hidden="true">
+            <svg class="card-arrow-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <span class="card-arrow-finish-label">Finish</span>
+        </button>
+    `;
+    container.appendChild(navArrows);
+}
+
+// Renders a lightweight, non-interactive preview of a flashcard's front face
+// into the stack-next silhouette so it already shows real content as it
+// grows in behind the departing card. Destination cards always land
+// unflipped, so only the front face needs previewing. Includes the same
+// nav-arrows row as the real card so both are the exact same height.
+function renderFlashcardPreviewInto(container, q) {
+    container.innerHTML = "";
+    if (!q) return;
+
+    const label = document.createElement("span");
+    label.className = "flashcard-label";
+    label.textContent = "Question";
+    container.appendChild(label);
+
+    const h3 = document.createElement("h3");
+    h3.textContent = q.question;
+    container.appendChild(h3);
+
+    const imageDiv = document.createElement("div");
+    imageDiv.className = "flashcard-image";
+    if (q.image) {
+        const img = document.createElement("img");
+        img.src = q.image;
+        img.alt = "Question image";
+        imageDiv.appendChild(img);
+    }
+    container.appendChild(imageDiv);
+
+    const optionsDiv = document.createElement("div");
+    optionsDiv.className = "flashcard-options";
+    if (state.flashcardMode === "choices" && q.options && q.options.length) {
+        const ul = document.createElement("ul");
+        q.options.forEach((opt) => {
+            const li = document.createElement("li");
+            li.textContent = opt;
+            ul.appendChild(li);
+        });
+        optionsDiv.appendChild(ul);
+    }
+    container.appendChild(optionsDiv);
+
+    const navArrows = document.createElement("div");
+    navArrows.className = "card-nav-arrows";
+    navArrows.innerHTML = `
+        <button class="card-arrow-btn card-arrow-prev" disabled aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="card-arrow-btn card-arrow-next" disabled aria-hidden="true">
+            <svg class="card-arrow-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+    `;
+    container.appendChild(navArrows);
+}
+
+// Tinder-style card slide: the real card slides fully off-screen in the
+// direction of travel, while the next/previous item's real content (drawn
+// by `renderPreview`) grows into place behind it — that single grow
+// animation IS the entrance; once it finishes, the real front card silently
+// takes over the exact same fully-grown spot (no second re-animated
+// grow-in, which previously caused a visible stutter/restart). Falls back
+// to an instant render on non-touch devices. `getInFlight`/`setInFlight`
+// let each card type (quiz vs flashcard) track its own in-progress flag.
+const CARD_SWIPE_ANIM_MS = 220;
+function animateCardSwipe(card, stackNext, direction, doNavigate, renderPreview, getInFlight, setInFlight) {
+    if (!isTouchDevice || getInFlight()) {
+        doNavigate();
+        return;
+    }
+    setInFlight(true);
+    const outClass = direction === "next" ? "swipe-slide-out-left" : "swipe-slide-out-right";
+
+    if (stackNext && renderPreview) {
+        renderPreview(stackNext);
+        stackNext.classList.add("show");
+    }
+
+    card.classList.add(outClass);
+
+    setTimeout(() => {
+        doNavigate();
+        // Snap the real card directly into the identical fully-grown resting
+        // state the stack-next card just finished animating to — an instant,
+        // invisible handoff rather than a second grow-in transition.
+        card.classList.add("swipe-slide-no-transition");
+        card.classList.remove(outClass);
+        if (stackNext) {
+            stackNext.classList.add("swipe-slide-no-transition");
+            stackNext.classList.remove("show");
+        }
+        void card.offsetWidth;
+        card.classList.remove("swipe-slide-no-transition");
+        if (stackNext) stackNext.classList.remove("swipe-slide-no-transition");
+        setInFlight(false);
+    }, CARD_SWIPE_ANIM_MS);
+}
+
+let quizCardAnimInFlight = false;
+function animateCardNavigate(direction, doNavigate) {
+    const targetIndex = direction === "next" ? state.currentIndex + 1 : state.currentIndex - 1;
+    const clampedIndex = Math.max(0, Math.min(targetIndex, state.testQuestions.length - 1));
+    const isLastQuestion = clampedIndex === state.testQuestions.length - 1;
+    showSwipeDirectionFlash(direction);
+    animateCardSwipe(
+        els.questionCard,
+        els.questionCardStackNext,
+        direction,
+        doNavigate,
+        (container) => renderCardPreviewInto(container, state.testQuestions[clampedIndex], clampedIndex + 1, isLastQuestion),
+        () => quizCardAnimInFlight,
+        (v) => { quizCardAnimInFlight = v; }
+    );
+}
+
+let flashcardCardAnimInFlight = false;
+function animateFlashcardNavigate(direction, doNavigate) {
+    const targetIndex = direction === "next" ? state.flashcardIndex + 1 : state.flashcardIndex - 1;
+    const clampedIndex = Math.max(0, Math.min(targetIndex, state.flashcardQuestions.length - 1));
+    showFlashcardSwipeDirectionFlash(direction);
+    animateCardSwipe(
+        els.flashcard,
+        els.flashcardStackNext,
+        direction,
+        doNavigate,
+        (container) => renderFlashcardPreviewInto(container, state.flashcardQuestions[clampedIndex]),
+        () => flashcardCardAnimInFlight,
+        (v) => { flashcardCardAnimInFlight = v; }
+    );
+}
+
+// Wires up horizontal swipe-to-navigate on a card (touch devices only):
+// swipe left = next, swipe right = previous. Gated by distance/time/angle
+// thresholds so it doesn't fire on taps (flipping/selecting) or vertical
+// scrolling. `isBlocked()` lets callers suppress swipes while e.g. an
+// onboarding overlay is showing.
+function wireSwipeNavigation(card, onNext, onPrev, isBlocked) {
+    if (!isTouchDevice) return;
+    const SWIPE_MIN_DISTANCE = 60;
+    const SWIPE_MAX_VERTICAL = 60;
+    const SWIPE_MAX_DURATION = 700;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+
+    card.addEventListener("touchstart", (e) => {
+        if (!e.touches.length) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+    }, { passive: true });
+
+    card.addEventListener("touchend", (e) => {
+        if (isBlocked && isBlocked()) return;
+        if (!e.changedTouches.length) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        const dt = Date.now() - touchStartTime;
+        if (dt > SWIPE_MAX_DURATION) return;
+        if (Math.abs(dx) < SWIPE_MIN_DISTANCE) return;
+        if (Math.abs(dy) > SWIPE_MAX_VERTICAL) return;
+        if (dx < 0) {
+            onNext();
+        } else {
+            onPrev();
+        }
+    }, { passive: true });
+}
+
+wireSwipeNavigation(
+    els.questionCard,
+    handleNextAction,
+    handlePrevAction,
+    () => !els.swipeOnboarding.classList.contains("hidden")
+);
+
+wireSwipeNavigation(
+    els.flashcard,
+    handleFlashcardNextAction,
+    handleFlashcardPrevAction,
+    () => !els.flashcardSwipeOnboarding.classList.contains("hidden")
+);
 
 async function submitTest() {
     stopTimer();
@@ -3139,14 +3587,20 @@ function showResults(data) {
 els.startBtn.addEventListener("click", startTest);
 els.homeBtn.addEventListener("click", goBackToApp);
 els.homeLogo.addEventListener("click", goBackToApp);
-els.prevBtn.addEventListener("click", () => navigate(-1));
+
+function handlePrevAction() {
+    if (els.prevBtn.disabled) return;
+    animateCardNavigate("prev", () => navigate(-1));
+}
+
 let navInFlight = false;
-els.nextBtn.addEventListener("click", async () => {
-    if (navInFlight) return;
-    navInFlight = true;
+async function handleNextAction() {
+    if (navInFlight || els.nextBtn.disabled) return;
     if (state.currentIndex === state.testQuestions.length - 1) {
+        navInFlight = true;
         const originalText = els.nextBtn.textContent;
         els.nextBtn.disabled = true;
+        els.cardNextArrow.disabled = true;
         els.nextBtn.innerHTML = `<span class="btn-spinner"></span>Submitting…`;
         try {
             if (state.mode === "mastery") {
@@ -3158,15 +3612,20 @@ els.nextBtn.addEventListener("click", async () => {
             // Only restore the button if we're still on the quiz screen (i.e. submission failed before navigating away).
             if (screens.quiz.classList.contains("active")) {
                 els.nextBtn.disabled = false;
+                els.cardNextArrow.disabled = false;
                 els.nextBtn.textContent = originalText;
             }
             navInFlight = false;
         }
     } else {
-        navigate(1);
-        navInFlight = false;
+        animateCardNavigate("next", () => navigate(1));
     }
-});
+}
+
+els.prevBtn.addEventListener("click", handlePrevAction);
+els.nextBtn.addEventListener("click", handleNextAction);
+els.cardPrevArrow.addEventListener("click", handlePrevAction);
+els.cardNextArrow.addEventListener("click", handleNextAction);
 els.restartBtn.addEventListener("click", goBackToApp);
 els.retakeBtn.addEventListener("click", retakeSameTest);
 els.continueMasteryBtn.addEventListener("click", startMasterySession);
@@ -3305,10 +3764,15 @@ els.flashcardModeChoices.addEventListener("click", () => setFlashcardMode("choic
 els.flashcardFilterAll.addEventListener("click", () => setFlashcardFilter("all"));
 els.flashcardFilterReview.addEventListener("click", () => setFlashcardFilter("review"));
 els.flashcardStartBtn.addEventListener("click", startFlashcards);
-els.flashcard.addEventListener("click", flipFlashcard);
+els.flashcard.addEventListener("click", (e) => {
+    if (e.target.closest(".card-arrow-btn")) return;
+    flipFlashcard();
+});
 els.flashcardFlipBtn.addEventListener("click", flipFlashcard);
-els.flashcardNextBtn.addEventListener("click", nextFlashcard);
-els.flashcardPrevBtn.addEventListener("click", prevFlashcard);
+els.flashcardNextBtn.addEventListener("click", handleFlashcardNextAction);
+els.flashcardPrevBtn.addEventListener("click", handleFlashcardPrevAction);
+els.flashcardNextArrows.forEach((btn) => btn.addEventListener("click", handleFlashcardNextAction));
+els.flashcardPrevArrows.forEach((btn) => btn.addEventListener("click", handleFlashcardPrevAction));
 els.flashcardShuffleBtn.addEventListener("click", shuffleFlashcards);
 els.flashcardMarkBtn.addEventListener("click", toggleFlashcardReview);
 els.flashcardExitBtn.addEventListener("click", showFlashcardSetup);

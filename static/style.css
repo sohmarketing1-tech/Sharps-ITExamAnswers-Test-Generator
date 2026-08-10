@@ -1915,9 +1915,72 @@ body {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/* Question card stack — wraps the real card plus a "next card in the deck"
+   silhouette that grows into place behind it during swipe navigation. */
+.question-card-stack {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.question-card-stack-next {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    z-index: 0;
+    opacity: 0;
+    transform: scale(0.88);
+    transition: transform 0.22s ease, opacity 0.22s ease;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.question-card-stack-next.show,
+.question-card-stack-next.show-peek {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Flashcard stack — same "next card in the deck" grow-in-place pattern as
+   the quiz card stack above, wrapping the real flip card. */
+.flashcard-stack {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+}
+
+.flashcard-stack-next {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    z-index: 0;
+    opacity: 0;
+    transform: scale(0.88);
+    transition: transform 0.22s ease, opacity 0.22s ease;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.flashcard-stack-next.show,
+.flashcard-stack-next.show-peek {
+    opacity: 1;
+    transform: scale(1);
+}
+
 /* Question card */
 .question-card {
     position: relative;
+    z-index: 1;
+    margin-bottom: 0;
+}
+
+/* Re-assert the stack-next preview's absolute positioning: it also carries
+   the .question-card class (so it inherits h3/badge/options styling), but
+   that rule's position/z-index/margin would otherwise win here since it's
+   declared later with equal specificity. */
+.question-card-stack-next {
+    position: absolute;
+    z-index: 0;
+    margin: 0;
 }
 
 .question-badge {
@@ -1951,6 +2014,186 @@ body {
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     background: var(--surface);
+}
+
+/* Compact in-card nav arrows (touch devices only) */
+.card-nav-arrows {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 22px;
+    padding-top: 4px;
+}
+
+.touch-nav .card-nav-arrows {
+    display: flex;
+}
+
+.touch-nav .quiz-nav {
+    display: none;
+}
+
+.touch-nav #flashcard-prev-btn,
+.touch-nav #flashcard-next-btn {
+    display: none;
+}
+
+.card-arrow-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(var(--glass-base), 0.45);
+    background: rgba(var(--surface-base), 0.9);
+    color: var(--primary);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s ease, opacity 0.15s, width 0.15s ease, border-radius 0.15s ease, padding 0.15s ease;
+}
+
+.card-arrow-btn:active:not(:disabled) {
+    transform: scale(0.9);
+}
+
+.card-arrow-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.card-arrow-finish-label {
+    display: none;
+}
+
+.card-arrow-next.is-finish {
+    width: auto;
+    padding: 0 22px;
+    border-radius: 999px;
+    background: var(--success);
+    color: #fff;
+    border-color: transparent;
+}
+
+.card-arrow-next.is-finish .card-arrow-icon {
+    display: none;
+}
+
+.card-arrow-next.is-finish .card-arrow-finish-label {
+    display: inline;
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+/* Shared slide-out transform classes: used both for real swipe navigation
+   feedback (applied to #question-card) and the onboarding demo (applied to
+   the #swipe-onboarding blank-card overlay), so both animate identically. */
+.swipe-slide-out-left {
+    transform: translateX(-115%) rotate(-8deg) !important;
+    opacity: 0 !important;
+}
+
+.swipe-slide-out-right {
+    transform: translateX(115%) rotate(8deg) !important;
+    opacity: 0 !important;
+}
+
+.swipe-slide-no-transition {
+    transition: none !important;
+}
+
+/* Onboarding demo: a gentler partial "peek" swipe on the real card (quiz or
+   flashcard) so the user sees which way to go without the card fully
+   leaving the screen. */
+.onboarding-half-left {
+    transform: translateX(-42%) rotate(-4deg);
+}
+
+.onboarding-half-right {
+    transform: translateX(42%) rotate(4deg);
+}
+
+/* Real swipe/tap navigation feedback — the actual card slides in the
+   direction of travel (Tinder-style) before the next question renders. */
+.question-card {
+    transition: transform 0.22s ease, box-shadow 0.18s ease, opacity 0.22s ease;
+}
+
+/* Big directional word that flashes briefly over the card to confirm
+   which way the user just swiped. */
+.swipe-direction-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.swipe-direction-flash.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.swipe-direction-flash-label {
+    color: var(--primary);
+    background: rgba(var(--surface-base), 0.95);
+    border-radius: 999px;
+    padding: 14px 28px;
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: 0.3px;
+    box-shadow: var(--shadow-lg);
+}
+
+/* Swipe onboarding overlay — transparent click-catcher sitting on top of the
+   real (unaltered) first question card, which itself performs the half-swipe
+   demo. Only a small centered instructional bubble is visible, so the
+   actual card content stays visible underneath. */
+.swipe-onboarding {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.swipe-onboarding.hidden {
+    display: none;
+}
+
+.swipe-onboarding-bubble {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(var(--surface-base), 0.97);
+    border: 1px solid rgba(var(--glass-base), 0.5);
+    border-radius: 999px;
+    padding: 12px 22px;
+    box-shadow: var(--shadow-lg);
+}
+
+.swipe-onboarding-label {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.swipe-onboarding-skip {
+    margin: 0;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-style: italic;
 }
 
 .options {
@@ -2525,11 +2768,14 @@ body {
 }
 
 .flashcard {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: 600px;
     min-height: 360px;
     perspective: 1200px;
     cursor: pointer;
+    transition: transform 0.22s ease, opacity 0.22s ease;
 }
 
 .flashcard-inner {
@@ -2572,6 +2818,15 @@ body {
 .flashcard-front,
 .flashcard-back {
     transition: visibility 0s linear 0.25s;
+}
+
+/* Re-assert the stack-next preview's own grow-in transition: it also
+   carries the .flashcard-front class (so it inherits the front face's
+   layout/typography), but the rule above's `transition` shorthand would
+   otherwise fully replace it since `transition` isn't additive across
+   rules and this is declared later with equal specificity. */
+.flashcard-stack-next {
+    transition: transform 0.22s ease, opacity 0.22s ease;
 }
 
 .flashcard-front {
@@ -4276,6 +4531,16 @@ body {
 
     .flashcard-back-main p {
         font-size: 1rem;
+    }
+
+    .swipe-onboarding-label {
+        font-size: 0.9rem;
+        white-space: normal;
+    }
+
+    .swipe-onboarding-bubble {
+        padding: 10px 16px;
+        max-width: 85%;
     }
 }
 

@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=91" />
+    <link rel="stylesheet" href="/style.css?v=101" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -390,11 +390,36 @@
                     <span id="quiz-round-dots" class="mastery-streak-dots"></span>
                 </div>
 
-                <div id="question-card" class="card question-card">
-                    <span id="question-badge" class="question-badge">Question 1</span>
-                    <h3 id="question-text"></h3>
-                    <div id="options-container" class="options"></div>
-                    <p id="quiz-feedback" class="hidden"></p>
+                <div class="question-card-stack">
+                    <div id="question-card-stack-next" class="card question-card question-card-stack-next" aria-hidden="true"></div>
+
+                    <div id="question-card" class="card question-card">
+                        <span id="question-badge" class="question-badge">Question 1</span>
+                        <h3 id="question-text"></h3>
+                        <div id="options-container" class="options"></div>
+                        <p id="quiz-feedback" class="hidden"></p>
+
+                        <div class="card-nav-arrows">
+                            <button id="card-prev-arrow" class="card-arrow-btn card-arrow-prev" disabled aria-label="Previous question">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <button id="card-next-arrow" class="card-arrow-btn card-arrow-next" aria-label="Next question">
+                                <svg class="card-arrow-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                <span class="card-arrow-finish-label">Finish</span>
+                            </button>
+                        </div>
+
+                        <div id="swipe-direction-flash" class="swipe-direction-flash">
+                            <span id="swipe-direction-flash-label" class="swipe-direction-flash-label">Next</span>
+                        </div>
+                    </div>
+
+                    <div id="swipe-onboarding" class="swipe-onboarding hidden">
+                        <div class="swipe-onboarding-bubble">
+                            <p id="swipe-onboarding-label" class="swipe-onboarding-label">Swipe left for Next</p>
+                        </div>
+                        <p class="swipe-onboarding-skip">Tap anywhere to skip</p>
+                    </div>
                 </div>
 
                 <div class="quiz-nav">
@@ -609,21 +634,52 @@
                         </div>
                     </div>
 
-                    <div id="flashcard" class="flashcard" title="Click or press Space to flip">
-                        <div class="flashcard-inner">
-                            <div class="flashcard-front">
-                                <span class="flashcard-label">Question</span>
-                                <h3 id="flashcard-front-text"></h3>
-                                <div id="flashcard-front-image" class="flashcard-image"></div>
-                                <div id="flashcard-front-options" class="flashcard-options"></div>
-                            </div>
-                            <div class="flashcard-back">
-                                <p id="flashcard-back-question" class="flashcard-back-question"></p>
-                                <div class="flashcard-back-main">
-                                    <span class="flashcard-label">Answer</span>
-                                    <p id="flashcard-back-text"></p>
+                    <div class="flashcard-stack">
+                        <div id="flashcard-stack-next" class="flashcard-front flashcard-stack-next" aria-hidden="true"></div>
+
+                        <div id="flashcard" class="flashcard" title="Click or press Space to flip">
+                            <div class="flashcard-inner">
+                                <div class="flashcard-front">
+                                    <span class="flashcard-label">Question</span>
+                                    <h3 id="flashcard-front-text"></h3>
+                                    <div id="flashcard-front-image" class="flashcard-image"></div>
+                                    <div id="flashcard-front-options" class="flashcard-options"></div>
+                                    <div class="card-nav-arrows">
+                                        <button class="card-arrow-btn card-arrow-prev flashcard-prev-arrow" disabled aria-label="Previous card">
+                                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                        </button>
+                                        <button class="card-arrow-btn card-arrow-next flashcard-next-arrow" aria-label="Next card">
+                                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flashcard-back">
+                                    <p id="flashcard-back-question" class="flashcard-back-question"></p>
+                                    <div class="flashcard-back-main">
+                                        <span class="flashcard-label">Answer</span>
+                                        <p id="flashcard-back-text"></p>
+                                    </div>
+                                    <div class="card-nav-arrows">
+                                        <button class="card-arrow-btn card-arrow-prev flashcard-prev-arrow" disabled aria-label="Previous card">
+                                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                        </button>
+                                        <button class="card-arrow-btn card-arrow-next flashcard-next-arrow" aria-label="Next card">
+                                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div id="flashcard-swipe-direction-flash" class="swipe-direction-flash">
+                                <span id="flashcard-swipe-direction-flash-label" class="swipe-direction-flash-label">Next</span>
+                            </div>
+                        </div>
+
+                        <div id="flashcard-swipe-onboarding" class="swipe-onboarding hidden">
+                            <div class="swipe-onboarding-bubble">
+                                <p id="flashcard-swipe-onboarding-label" class="swipe-onboarding-label">Swipe left for Next</p>
+                            </div>
+                            <p class="swipe-onboarding-skip">Tap anywhere to skip</p>
                         </div>
                     </div>
 
@@ -1771,6 +1827,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=71" defer></script>
+    <script src="/app.js?v=81" defer></script>
 </body>
 </html>
