@@ -42,6 +42,7 @@ const state = {
     masterySummary: null,
     lastSavedAnswers: {}, // qid -> saved answer array
     currentTab: "home",
+    authChecked: false,
     flashcardFilename: null,
     historyAttempts: [],
     flashcardMode: "question", // "question" or "choices"
@@ -166,6 +167,7 @@ const els = {
     tabHistory: document.getElementById("tab-history"),
     tabCommunity: document.getElementById("tab-community"),
     tabAllApps: document.getElementById("tab-all-apps"),
+    historyLoading: document.getElementById("history-loading"),
     historyLoginPrompt: document.getElementById("history-login-prompt"),
     historyLoginBtn: document.getElementById("history-login-btn"),
     historyContent: document.getElementById("history-content"),
@@ -582,6 +584,7 @@ async function checkAuth() {
         state.user = null;
         state.userProfile = {};
     }
+    state.authChecked = true;
     applyProfileTheme(getProfile());
     renderAuthState();
     renderAccountPrompt();
@@ -1677,6 +1680,10 @@ function switchTab(tabName) {
 }
 
 async function loadHistory() {
+    if (!state.authChecked) {
+        renderHistory();
+        return;
+    }
     if (!state.user) {
         state.historyAttempts = [];
         renderHistory();
@@ -1693,6 +1700,13 @@ async function loadHistory() {
 }
 
 function renderHistory() {
+    if (!state.authChecked) {
+        if (els.historyLoading) els.historyLoading.classList.remove("hidden");
+        els.historyLoginPrompt.classList.add("hidden");
+        els.historyContent.classList.add("hidden");
+        return;
+    }
+    if (els.historyLoading) els.historyLoading.classList.add("hidden");
     const loggedIn = !!state.user;
     els.historyLoginPrompt.classList.toggle("hidden", loggedIn);
     els.historyContent.classList.toggle("hidden", !loggedIn);
