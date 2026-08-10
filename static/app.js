@@ -240,7 +240,6 @@ const els = {
     cropCancel: document.getElementById("crop-cancel"),
     cropSave: document.getElementById("crop-save"),
     themePicker: document.getElementById("theme-picker"),
-    profileSave: document.getElementById("profile-save"),
     profileClose: document.getElementById("profile-close"),
     profileLogout: document.getElementById("profile-logout"),
     profileMessage: document.getElementById("profile-message"),
@@ -276,10 +275,14 @@ const els = {
     flashcardSessionStatus: document.getElementById("flashcard-session-status"),
     flashcardStudyArea: document.getElementById("flashcard-study-area"),
     flashcard: document.getElementById("flashcard"),
+    flashcardInner: document.querySelector("#flashcard .flashcard-inner"),
+    flashcardFrontFace: document.querySelector("#flashcard .flashcard-front"),
+    flashcardBackFace: document.querySelector("#flashcard .flashcard-back"),
     flashcardFrontText: document.getElementById("flashcard-front-text"),
     flashcardFrontImage: document.getElementById("flashcard-front-image"),
     flashcardFrontOptions: document.getElementById("flashcard-front-options"),
     flashcardBackText: document.getElementById("flashcard-back-text"),
+    flashcardBackQuestion: document.getElementById("flashcard-back-question"),
     flashcardCounter: document.getElementById("flashcard-counter"),
     flashcardShuffleBtn: document.getElementById("flashcard-shuffle-btn"),
     flashcardFlipBtn: document.getElementById("flashcard-flip-btn"),
@@ -470,7 +473,6 @@ const THEMES = [
 ];
 
 let profileDraft = { ...DEFAULT_PROFILE };
-let profileSavedTheme = DEFAULT_PROFILE.theme;
 let avatarSnapshot = null;
 
 let cropState = { scale: 1, offsetX: 0, offsetY: 0, dragging: false, startX: 0, startY: 0, imgWidth: 0, imgHeight: 0 };
@@ -862,6 +864,7 @@ function saveAvatarCrop() {
     }
     profileDraft.avatar_image = dataUrl;
     updateAvatarPreview();
+    autoSaveProfile();
     closeAvatarCrop();
 }
 
@@ -878,6 +881,7 @@ function renderThemePicker(selectedKey) {
             profileDraft.theme = theme.key;
             renderThemePicker(theme.key);
             applyProfileTheme(profileDraft);
+            autoSaveProfile();
         });
         els.themePicker.appendChild(btn);
     });
@@ -886,7 +890,6 @@ function renderThemePicker(selectedKey) {
 async function openProfileModal() {
     await loadProfile();
     profileDraft = { ...getProfile() };
-    profileSavedTheme = profileDraft.theme;
     if (els.avatarUpload) els.avatarUpload.value = "";
     if (els.avatarUploadError) els.avatarUploadError.textContent = "";
     els.profileUsername.textContent = state.user || "";
@@ -898,11 +901,6 @@ async function openProfileModal() {
 
 function closeProfileModal() {
     els.profileModal.classList.add("hidden");
-}
-
-function cancelProfile() {
-    applyProfileTheme({ theme: profileSavedTheme });
-    closeProfileModal();
 }
 
 async function persistProfile() {
@@ -925,10 +923,14 @@ async function persistProfile() {
     return data;
 }
 
-async function saveProfile() {
+let profileMessageTimeout = null;
+
+async function autoSaveProfile() {
     try {
         await persistProfile();
-        closeProfileModal();
+        setProfileMessage("Saved", "success");
+        clearTimeout(profileMessageTimeout);
+        profileMessageTimeout = setTimeout(() => setProfileMessage(""), 1500);
     } catch (err) {
         setProfileMessage(err.message, "error");
     }
@@ -1262,7 +1264,7 @@ async function startMasterySession() {
             setMasteryMessage("All questions mastered! Great job.", "success");
             return;
         }
-        state.testQuestions = data.quiz;
+        state.testQuestions = withShuffledOptions(data.quiz);
         state.lastTestQuestions = [...data.quiz];
         state.answers = {};
         state.lastSavedAnswers = {};
@@ -1423,14 +1425,15 @@ async function startTest() {
             throw new Error(err.error || "Could not generate test");
         }
         const data = await res.json();
-        state.testQuestions = data.quiz;
+        state.testQuestions = withShuffledOptions(data.quiz);
         state.lastTestQuestions = [...data.quiz];
         if (data.title) state.title = data.title;
         updateHeader();
     } catch (err) {
         if (state.allQuestions.length) {
-            state.testQuestions = generateLocalQuiz(n);
-            state.lastTestQuestions = [...state.testQuestions];
+            const localQuiz = generateLocalQuiz(n);
+            state.testQuestions = withShuffledOptions(localQuiz);
+            state.lastTestQuestions = [...localQuiz];
             updateHeader();
         } else {
             setMessage(err.message, "error");
@@ -1721,12 +1724,10 @@ function renderHistory() {
             </div>
             <div class="history-item-score"><strong>${attempt.score}%</strong><span>${attempt.correct} / ${attempt.total} correct · ${formatTime(attempt.duration_seconds || 0)}</span></div>
             <div class="history-item-actions">
-                <button class="btn btn-secondary btn-small">Review Results</button>
-                <button class="btn btn-primary btn-small">Retake This Test</button>
+                <button class="btn btn-primary btn-small">Review Results</button>
             </div>`;
-        const [reviewBtn, retakeBtn] = item.querySelectorAll("button");
+        const reviewBtn = item.querySelector("button");
         reviewBtn.addEventListener("click", () => reviewHistoryAttempt(attempt));
-        retakeBtn.addEventListener("click", () => retakeHistoryAttempt(attempt));
         els.historyList.appendChild(item);
     });
 }
@@ -1739,17 +1740,8 @@ function reviewHistoryAttempt(attempt) {
     state.testQuestions = attempt.quiz || [];
     state.answers = attempt.answers || {};
     state.secondsElapsed = attempt.duration_seconds || 0;
-    showResults({ ...attempt, duration_seconds: attempt.duration_seconds || 0 });
-}
-
-function retakeHistoryAttempt(attempt) {
-    if (!attempt.quiz || !attempt.quiz.length) return;
-    state.mode = "practice";
-    state.currentFilename = attempt.filename;
-    state.title = attempt.title;
-    state.lastTestQuestions = [...attempt.quiz];
     if (els.timerDuration) els.timerDuration.value = String(attempt.timer_minutes || 0);
-    retakeSameTest();
+    showResults({ ...attempt, duration_seconds: attempt.duration_seconds || 0 });
 }
 
 async function saveHistoryAttempt(data, answers) {
@@ -2155,11 +2147,23 @@ async function resumeFlashcardSession() {
     saveFlashcardSession();
 }
 
+const FLASHCARD_MIN_HEIGHT = 360;
+
+function adjustFlashcardHeight() {
+    if (!els.flashcardInner || !els.flashcardFrontFace || !els.flashcardBackFace) return;
+    const contentHeight = Math.max(els.flashcardFrontFace.scrollHeight, els.flashcardBackFace.scrollHeight);
+    els.flashcardInner.style.minHeight = `${Math.max(FLASHCARD_MIN_HEIGHT, contentHeight)}px`;
+}
+
 function renderFlashcard() {
     const q = state.flashcardQuestions[state.flashcardIndex];
     if (!q) return;
 
     els.flashcard.classList.toggle("flipped", state.flashcardFlipped);
+
+    // Reset to the baseline height before measuring, so a shorter card after
+    // a taller one shrinks back down instead of staying stretched.
+    if (els.flashcardInner) els.flashcardInner.style.minHeight = `${FLASHCARD_MIN_HEIGHT}px`;
 
     els.flashcardFrontText.textContent = q.question;
 
@@ -2168,14 +2172,15 @@ function renderFlashcard() {
         const img = document.createElement("img");
         img.src = q.image;
         img.alt = "Question image";
-        img.onerror = () => { img.style.display = "none"; };
+        img.onerror = () => { img.style.display = "none"; adjustFlashcardHeight(); };
+        img.onload = adjustFlashcardHeight;
         els.flashcardFrontImage.appendChild(img);
     }
 
     els.flashcardFrontOptions.innerHTML = "";
     if (state.flashcardMode === "choices" && q.options && q.options.length) {
         const ul = document.createElement("ul");
-        q.options.forEach((opt) => {
+        shuffleArray(q.options).forEach((opt) => {
             const li = document.createElement("li");
             li.textContent = opt;
             ul.appendChild(li);
@@ -2185,6 +2190,7 @@ function renderFlashcard() {
 
     const correct = q.correct_answer || q._correct_answer || "";
     els.flashcardBackText.textContent = correct;
+    if (els.flashcardBackQuestion) els.flashcardBackQuestion.textContent = q.question;
     els.flashcardCounter.textContent = `Card ${state.flashcardIndex + 1} of ${state.flashcardQuestions.length}`;
 
     const isMarked = state.flashcardReviews.has(String(q.id));
@@ -2195,6 +2201,8 @@ function renderFlashcard() {
 
     els.flashcardPrevBtn.disabled = state.flashcardIndex === 0;
     els.flashcardNextBtn.disabled = state.flashcardIndex === state.flashcardQuestions.length - 1;
+
+    adjustFlashcardHeight();
 }
 
 function flipFlashcard() {
@@ -2298,7 +2306,7 @@ function retakeSameTest() {
     if (!state.lastTestQuestions || !state.lastTestQuestions.length) return;
     stopTimer();
     els.timer.style.display = "";
-    state.testQuestions = shuffleArray([...state.lastTestQuestions]);
+    state.testQuestions = withShuffledOptions(shuffleArray([...state.lastTestQuestions]));
     state.answers = {};
     state.testQuestions.forEach((q) => {
         state.answers[q.id] = q.type === "matching" ? {} : [];
@@ -2423,8 +2431,8 @@ async function addQuestionsToTest() {
             image: q.image,
         }));
 
-        state.testQuestions = shuffleArray([...state.lastTestQuestions, ...added]);
-        state.lastTestQuestions = [...state.testQuestions];
+        state.lastTestQuestions = shuffleArray([...state.lastTestQuestions, ...added]);
+        state.testQuestions = withShuffledOptions(state.lastTestQuestions);
         state.answers = {};
         state.testQuestions.forEach((q) => {
             state.answers[q.id] = q.type === "matching" ? {} : [];
@@ -2461,6 +2469,16 @@ function shuffleArray(array) {
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
+}
+
+// Returns a copy of the questions with each question's answer-choice order
+// randomized, so the same question doesn't always show its correct answer
+// in the same position across attempts. Matching questions (terms/definitions)
+// are already shuffled at render time and are left untouched here.
+function withShuffledOptions(questions) {
+    return (questions || []).map((q) =>
+        Array.isArray(q.options) ? { ...q, options: shuffleArray(q.options) } : q
+    );
 }
 
 function createMatchingTerm(term, options = {}) {
@@ -2658,6 +2676,10 @@ function updateProgress() {
 
 function renderQuestion() {
     const q = state.testQuestions[state.currentIndex];
+    const total = state.testQuestions.length;
+    els.prevBtn.disabled = state.currentIndex === 0;
+    els.nextBtn.disabled = false;
+    els.nextBtn.textContent = state.currentIndex === total - 1 ? "Finish" : "Next";
 
     if (q.type === "matching") {
         renderMatchingQuestion(q);
@@ -2708,10 +2730,6 @@ function renderQuestion() {
             updateAnswer(q.id, input.checked, opt);
         });
     });
-
-    const total = state.testQuestions.length;
-    els.prevBtn.disabled = state.currentIndex === 0;
-    els.nextBtn.textContent = state.currentIndex === total - 1 ? "Finish" : "Next";
 }
 
 let masterySaveTimeout = null;
@@ -2803,8 +2821,8 @@ async function submitTest() {
         });
         if (!res.ok) throw new Error("Scoring failed");
         const data = await res.json();
-        await saveHistoryAttempt(data, relevantAnswers);
         showResults(data);
+        saveHistoryAttempt(data, relevantAnswers);
     } catch (err) {
         // Offline fallback: score locally using the cached questions.
         const results = computeResults(state.testQuestions, relevantAnswers);
@@ -2816,8 +2834,8 @@ async function submitTest() {
             score: results.length ? Math.round((correct / results.length) * 100) : 0,
             results,
         };
-        await saveHistoryAttempt(localData, relevantAnswers);
         showResults(localData);
+        saveHistoryAttempt(localData, relevantAnswers);
     }
 }
 
@@ -2920,18 +2938,30 @@ els.homeBtn.addEventListener("click", goBackToApp);
 els.homeLogo.addEventListener("click", goBackToApp);
 els.prevBtn.addEventListener("click", () => navigate(-1));
 let navInFlight = false;
-els.nextBtn.addEventListener("click", () => {
+els.nextBtn.addEventListener("click", async () => {
     if (navInFlight) return;
     navInFlight = true;
-    setTimeout(() => { navInFlight = false; }, 400);
     if (state.currentIndex === state.testQuestions.length - 1) {
-        if (state.mode === "mastery") {
-            submitMastery();
-        } else {
-            submitTest();
+        const originalText = els.nextBtn.textContent;
+        els.nextBtn.disabled = true;
+        els.nextBtn.innerHTML = `<span class="btn-spinner"></span>Submitting…`;
+        try {
+            if (state.mode === "mastery") {
+                await submitMastery();
+            } else {
+                await submitTest();
+            }
+        } finally {
+            // Only restore the button if we're still on the quiz screen (i.e. submission failed before navigating away).
+            if (screens.quiz.classList.contains("active")) {
+                els.nextBtn.disabled = false;
+                els.nextBtn.textContent = originalText;
+            }
+            navInFlight = false;
         }
     } else {
         navigate(1);
+        navInFlight = false;
     }
 });
 els.restartBtn.addEventListener("click", goBackToApp);
@@ -2948,8 +2978,7 @@ els.loginTrigger.addEventListener("click", () => openAuthModal("login"));
 els.registerTrigger.addEventListener("click", () => openAuthModal("register"));
 els.profileBtn.addEventListener("click", openProfileModal);
 els.profileLogout.addEventListener("click", logout);
-els.profileSave.addEventListener("click", saveProfile);
-els.profileClose.addEventListener("click", cancelProfile);
+els.profileClose.addEventListener("click", closeProfileModal);
 if (els.avatarUpload) {
     els.avatarUpload.addEventListener("change", (e) => {
         const file = e.target.files && e.target.files[0];
@@ -2978,7 +3007,7 @@ if (els.avatarCropModal) {
     });
 }
 els.profileModal.addEventListener("click", (e) => {
-    if (e.target === els.profileModal) cancelProfile();
+    if (e.target === els.profileModal) closeProfileModal();
 });
 
 els.modalSubmit.addEventListener("click", submitAuth);
@@ -3000,7 +3029,7 @@ document.addEventListener("keydown", (e) => {
             closeAvatarCrop();
             return;
         }
-        if (!els.profileModal.classList.contains("hidden")) cancelProfile();
+        if (!els.profileModal.classList.contains("hidden")) closeProfileModal();
     }
 });
 
@@ -3581,7 +3610,7 @@ function renderOsiChips() {
         chip.type = "button";
         chip.className = "osi-chip";
         chip.dataset.num = layer.num;
-        chip.innerHTML = `<span class="osi-chip-num">${layer.num}</span><span class="osi-chip-name">${escapeHtml(layer.name)}</span>`;
+        chip.innerHTML = `<span class="osi-chip-num"></span><span class="osi-chip-name">${escapeHtml(layer.name)}</span>`;
         chip.addEventListener("click", () => tapOsiChip(layer, chip));
         els.osiSorterChips.appendChild(chip);
     });
@@ -3595,6 +3624,8 @@ function tapOsiChip(layer, chip) {
         chip.classList.add("placed");
         chip.disabled = true;
         o.nextIndex += 1;
+        const numEl = chip.querySelector(".osi-chip-num");
+        if (numEl) numEl.textContent = o.nextIndex;
         if (o.nextIndex === OSI_LAYERS.length) {
             o.rounds += 1;
             if (o.bestMistakes === null || o.mistakes < o.bestMistakes) o.bestMistakes = o.mistakes;
@@ -3738,7 +3769,7 @@ function renderProcessChips() {
         chip.type = "button";
         chip.className = "osi-chip";
         chip.dataset.num = step.num;
-        chip.innerHTML = `<span class="osi-chip-num">${step.num}</span><span class="osi-chip-name">${escapeHtml(step.name)}</span>`;
+        chip.innerHTML = `<span class="osi-chip-num"></span><span class="osi-chip-name">${escapeHtml(step.name)}</span>`;
         chip.addEventListener("click", () => tapProcessChip(step, chip));
         els.processSorterChips.appendChild(chip);
     });
@@ -3752,6 +3783,8 @@ function tapProcessChip(step, chip) {
         chip.classList.add("placed");
         chip.disabled = true;
         p.nextIndex += 1;
+        const numEl = chip.querySelector(".osi-chip-num");
+        if (numEl) numEl.textContent = p.nextIndex;
         if (p.nextIndex === PROCESS_DATA[p.mode].length) {
             p.rounds += 1;
             if (p.bestMistakes === null || p.mistakes < p.bestMistakes) p.bestMistakes = p.mistakes;

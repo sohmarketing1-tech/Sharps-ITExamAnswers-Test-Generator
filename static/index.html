@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=80" />
+    <link rel="stylesheet" href="/style.css?v=87" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -107,9 +107,6 @@
                         <span class="btn btn-secondary btn-small avatar-edit-btn">Upload Photo</span>
                     </label>
                     <p id="avatar-upload-error" class="avatar-upload-error"></p>
-                    <div class="profile-actions">
-                        <button id="profile-save" class="btn btn-primary btn-large btn-block">Save</button>
-                    </div>
                 </div>
                 <div class="profile-column profile-column-right">
                     <div class="profile-section">
@@ -585,8 +582,11 @@
                                 <div id="flashcard-front-options" class="flashcard-options"></div>
                             </div>
                             <div class="flashcard-back">
-                                <span class="flashcard-label">Answer</span>
-                                <p id="flashcard-back-text"></p>
+                                <p id="flashcard-back-question" class="flashcard-back-question"></p>
+                                <div class="flashcard-back-main">
+                                    <span class="flashcard-label">Answer</span>
+                                    <p id="flashcard-back-text"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1735,6 +1735,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=61" defer></script>
+    <script src="/app.js?v=67" defer></script>
 </body>
 </html>
