@@ -895,14 +895,19 @@ def score_test():
 # Practice test history
 # ---------------------------------------------------------------------------
 
+HISTORY_MAX_ENTRIES = 10
+
+
 @app.route("/api/history", methods=["GET"])
 def get_history():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to view test history."}), 401
     user_data = load_user_data()
-    attempts = user_data.get(user, {}).get("test_history", [])
-    return jsonify({"ok": True, "attempts": attempts})
+    record = user_data.get(user, {})
+    attempts = record.get("test_history", [])
+    tests_taken = record.get("tests_taken", len(attempts))
+    return jsonify({"ok": True, "attempts": attempts, "tests_taken": tests_taken})
 
 
 @app.route("/api/history", methods=["POST"])
@@ -916,29 +921,39 @@ def save_history_attempt():
     if any(key not in attempt for key in required) or not isinstance(attempt["quiz"], list):
         return jsonify({"ok": False, "error": "Invalid test history entry."}), 400
 
-    saved_attempt = {
-        "id": secrets.token_urlsafe(12),
-        "completed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "filename": str(attempt["filename"]),
-        "title": str(attempt["title"]),
-        "quiz": attempt["quiz"],
-        "answers": attempt.get("answers", {}),
-        "results": attempt["results"],
-        "total": int(attempt["total"]),
-        "correct": int(attempt["correct"]),
-        "score": attempt["score"],
-        "duration_seconds": max(0, int(attempt.get("duration_seconds", 0))),
-        "timer_minutes": max(0, int(attempt.get("timer_minutes", 0))),
-    }
+    filename = str(attempt["filename"])
 
     def _add_attempt(user_data: dict):
         record = user_data.setdefault(user, {})
         history = record.setdefault("test_history", [])
-        history.insert(0, saved_attempt)
-        del history[50:]
-        return True
+        if "tests_taken" not in record:
+            record["tests_taken"] = len(history)
 
-    modify_user_data(_add_attempt)
+        # Retaking the same exam updates its existing entry instead of
+        # cluttering history with duplicates (e.g. after adding questions).
+        existing_id = next((e.get("id") for e in history if e.get("filename") == filename), None)
+
+        saved_attempt = {
+            "id": existing_id or secrets.token_urlsafe(12),
+            "completed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "filename": filename,
+            "title": str(attempt["title"]),
+            "quiz": attempt["quiz"],
+            "answers": attempt.get("answers", {}),
+            "results": attempt["results"],
+            "total": int(attempt["total"]),
+            "correct": int(attempt["correct"]),
+            "score": attempt["score"],
+            "duration_seconds": max(0, int(attempt.get("duration_seconds", 0))),
+        }
+
+        history[:] = [e for e in history if e.get("filename") != filename]
+        history.insert(0, saved_attempt)
+        del history[HISTORY_MAX_ENTRIES:]
+        record["tests_taken"] += 1
+        return saved_attempt
+
+    saved_attempt = modify_user_data(_add_attempt)
     return jsonify({"ok": True, "attempt": saved_attempt})
 
 

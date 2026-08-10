@@ -276,8 +276,11 @@ body {
         max-width: 200px;
     }
 
-    .tab-nav {
+    .tab-nav-row {
         margin: 16px auto;
+    }
+
+    .tab-nav {
         padding: 6px;
     }
 
@@ -1130,7 +1133,7 @@ body {
     gap: 6px;
     padding: 8px;
     box-shadow: 0 8px 24px rgba(var(--shadow-sm-base), 0.12);
-    margin: 22px auto;
+    margin: 0;
     position: static;
     z-index: 50;
     backdrop-filter: blur(12px);
@@ -1169,6 +1172,10 @@ body {
     color: var(--text-on-bg);
     font-weight: 700;
     box-shadow: 0 6px 16px rgba(var(--primary-fill-base), 0.35);
+}
+
+#tab-all-apps-header.all-apps-pill-header {
+    display: none;
 }
 
 @media (max-width: 700px) {
@@ -1213,24 +1220,44 @@ body {
         padding: 18px;
     }
 
-    .tab-nav {
+    .tab-nav-row {
         order: 3;
         position: static;
         flex: 0 0 auto;
         width: calc(100% - 24px);
         margin: 0 12px calc(constant(safe-area-inset-bottom) + 48px);
         margin: 0 12px calc(env(safe-area-inset-bottom) + 48px);
+        z-index: 200;
+    }
+
+    .tab-nav {
+        width: 100%;
         border-radius: 999px;
         border: 1px solid rgba(var(--glass-base), 0.15);
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 4px;
         padding: 4px 0;
-        z-index: 200;
         background: linear-gradient(145deg, rgba(var(--glass-base), 0.18) 0%, rgba(var(--glass-base), 0.08) 100%);
         box-shadow: 0 -6px 24px rgba(var(--shadow-sm-base), 0.12), 0 4px 16px rgba(var(--shadow-sm-base), 0.08);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
+    }
+
+    #tab-all-apps {
+        display: none;
+    }
+
+    #tab-all-apps-header.all-apps-pill-header {
+        display: inline-flex;
+        padding: 8px 10px;
+        font-size: 0;
+        gap: 0;
+    }
+
+    .all-apps-pill-header svg {
+        width: 20px;
+        height: 20px;
     }
 
     .tab-btn {
@@ -1268,7 +1295,7 @@ body {
 }
 
 @media (max-width: 700px) and (display-mode: standalone) {
-    .tab-nav {
+    .tab-nav-row {
         margin-bottom: calc(constant(safe-area-inset-bottom) + 16px);
         margin-bottom: calc(env(safe-area-inset-bottom) + 16px);
     }
@@ -2053,12 +2080,9 @@ body {
 
 .exam-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: minmax(64px, auto);
-    gap: 10px;
-    max-height: 236px;
-    overflow-y: auto;
-    padding-right: 4px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(56px, auto);
+    gap: 8px;
     padding-top: 6px;
 }
 
@@ -2068,8 +2092,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 2px;
-    padding: 10px 8px;
-    min-height: 64px;
+    padding: 8px 6px;
+    min-height: 56px;
     background: rgba(var(--surface-base), 0.9);
     border: 2px solid rgba(var(--glass-base), 0.45);
     border-radius: 12px;
@@ -2092,7 +2116,7 @@ body {
 
 .btn-exam .exam-name {
     font-weight: 800;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     line-height: 1.25;
 }
 
@@ -2614,7 +2638,6 @@ body {
     .exam-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
-        max-height: 220px;
     }
 
     .exam-category-tab {
@@ -2623,8 +2646,8 @@ body {
     }
 
     .btn-exam {
-        padding: 10px 6px;
-        min-height: 60px;
+        padding: 8px 6px;
+        min-height: 56px;
         border-radius: 10px;
     }
 
@@ -4460,17 +4483,60 @@ body {
     }
 }
 
-/* ── All Apps hub button (bottom nav) ────────────────────────────────────── */
-.tab-btn-hub {
-    position: relative;
+/* ── All Apps pill (standalone, next to the main tab nav) ────────────────── */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.tab-btn-hub:not(.active) {
+.all-apps-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(var(--glass-base), 0.08);
+    border: 1px solid rgba(var(--glass-base), 0.18);
     color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 9px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
-.tab-btn-hub:not(.active) svg {
-    stroke: var(--accent);
+.all-apps-pill svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    stroke: currentColor;
+}
+
+.all-apps-pill:hover {
+    background: rgba(var(--glass-base), 0.14);
+    color: var(--text-on-bg);
+    transform: translateY(-1px);
+}
+
+.all-apps-pill.active {
+    background: linear-gradient(135deg, var(--primary-fill) 0%, var(--primary-fill-dark) 100%);
+    color: var(--text-on-bg);
+    box-shadow: 0 6px 16px rgba(var(--primary-fill-base), 0.35);
+}
+
+.tab-nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 22px auto;
+}
+
+.tab-nav-row .tab-nav {
+    margin: 0;
 }
 
 /* ── App Gallery ──────────────────────────────────────────────────────────── */

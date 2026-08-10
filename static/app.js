@@ -167,6 +167,7 @@ const els = {
     tabHistory: document.getElementById("tab-history"),
     tabCommunity: document.getElementById("tab-community"),
     tabAllApps: document.getElementById("tab-all-apps"),
+    tabAllAppsHeader: document.getElementById("tab-all-apps-header"),
     historyLoading: document.getElementById("history-loading"),
     historyLoginPrompt: document.getElementById("history-login-prompt"),
     historyLoginBtn: document.getElementById("history-login-btn"),
@@ -1590,11 +1591,12 @@ function switchTab(tabName) {
     if (els.tabHistory) els.tabHistory.classList.toggle("active", tabName === "history");
     if (els.tabCommunity) els.tabCommunity.classList.toggle("active", tabName === "community");
     if (els.tabAllApps) els.tabAllApps.classList.toggle("active", galleryApps.includes(tabName));
+    if (els.tabAllAppsHeader) els.tabAllAppsHeader.classList.toggle("active", galleryApps.includes(tabName));
     if (els.tabNav) {
         els.tabNav.classList.remove("hidden");
         els.tabNav.classList.add("bottom-nav");
     }
-    [els.tabPractice, els.tabFlashcards, els.tabHistory, els.tabCommunity, els.tabAllApps].forEach((btn) => {
+    [els.tabPractice, els.tabFlashcards, els.tabHistory, els.tabCommunity, els.tabAllApps, els.tabAllAppsHeader].forEach((btn) => {
         if (btn) btn.setAttribute("aria-selected", btn.classList.contains("active") ? "true" : "false");
     });
     stopChatPolling();
@@ -1693,8 +1695,10 @@ async function loadHistory() {
         const res = await fetch(API.history, { credentials: "same-origin", cache: "no-store" });
         const data = await res.json();
         state.historyAttempts = res.ok && data.ok ? data.attempts || [] : [];
+        state.historyTestsTaken = res.ok && data.ok ? data.tests_taken ?? state.historyAttempts.length : 0;
     } catch (err) {
         state.historyAttempts = [];
+        state.historyTestsTaken = 0;
     }
     renderHistory();
 }
@@ -1713,7 +1717,7 @@ function renderHistory() {
     if (!loggedIn) return;
 
     const attempts = state.historyAttempts;
-    els.historyTestsTaken.textContent = attempts.length;
+    els.historyTestsTaken.textContent = state.historyTestsTaken ?? attempts.length;
     if (!attempts.length) {
         els.historyAverageScore.textContent = "—";
         els.historyRecentScore.textContent = "—";
@@ -1730,11 +1734,10 @@ function renderHistory() {
         item.className = "card history-item";
         const completed = new Date(attempt.completed_at);
         const dateText = Number.isNaN(completed.getTime()) ? "Completed test" : completed.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
-        const timerText = attempt.timer_minutes ? `${attempt.timer_minutes} min limit` : "No time limit";
         item.innerHTML = `
             <div class="history-item-main">
                 <h3>${escapeHtml(attempt.title)}</h3>
-                <p>${dateText} · ${attempt.total} questions · ${timerText}</p>
+                <p>${dateText} · ${attempt.total} questions</p>
             </div>
             <div class="history-item-score"><strong>${attempt.score}%</strong><span>${attempt.correct} / ${attempt.total} correct · ${formatTime(attempt.duration_seconds || 0)}</span></div>
             <div class="history-item-actions">
@@ -1754,14 +1757,12 @@ function reviewHistoryAttempt(attempt) {
     state.testQuestions = attempt.quiz || [];
     state.answers = attempt.answers || {};
     state.secondsElapsed = attempt.duration_seconds || 0;
-    if (els.timerDuration) els.timerDuration.value = String(attempt.timer_minutes || 0);
     showResults({ ...attempt, duration_seconds: attempt.duration_seconds || 0 });
 }
 
 async function saveHistoryAttempt(data, answers) {
     if (!state.user || state.mode !== "practice") return;
     try {
-        const timerMinutes = els.timerDuration ? parseInt(els.timerDuration.value, 10) || 0 : 0;
         const res = await fetch(API.history, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1776,7 +1777,6 @@ async function saveHistoryAttempt(data, answers) {
                 correct: data.correct,
                 score: data.score,
                 duration_seconds: state.secondsElapsed,
-                timer_minutes: timerMinutes,
             }),
         });
         if (res.ok && state.currentTab === "history") loadHistory();
@@ -3081,6 +3081,7 @@ els.tabFlashcards.addEventListener("click", () => switchTab("flashcards"));
 els.tabHistory.addEventListener("click", () => switchTab("history"));
 els.tabCommunity.addEventListener("click", () => switchTab("community"));
 els.tabAllApps.addEventListener("click", () => switchTab("gallery"));
+if (els.tabAllAppsHeader) els.tabAllAppsHeader.addEventListener("click", () => switchTab("gallery"));
 
 document.querySelectorAll(".app-tile[data-gallery-app]").forEach((tile) => {
     tile.addEventListener("click", () => switchTab(tile.dataset.galleryApp));
