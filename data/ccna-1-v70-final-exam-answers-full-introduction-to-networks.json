@@ -583,6 +583,391 @@
       "correct_answer": "places information in the Ethernet frame that identifies which network layer protocol is being encapsulated by the frame | adds Ethernet control information to network protocol data"
     },
     {
+      "id": 150,
+      "question": "Match the description to the IPv6 addressing component. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "This network portion of the address is assigned by the provider.",
+        "This part of the address is used by an organization to identify subnets.",
+        "This part of the address is the equivalent to the host portion of an IPv4 address."
+      ],
+      "definitions": [
+        "global routing prefix",
+        "subnet mask",
+        "subnet ID",
+        "interface ID"
+      ],
+      "correct_pairs": {
+        "This network portion of the address is assigned by the provider.": "global routing prefix",
+        "This part of the address is used by an organization to identify subnets.": "subnet ID",
+        "This part of the address is the equivalent to the host portion of an IPv4 address.": "interface ID"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 151,
+      "question": "Match the characteristic to the forwarding method. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "always stores the entire frame",
+        "checks the CRC before forwarding",
+        "checks the frame length before forwarding",
+        "does not forward broadcasts",
+        "has low latency",
+        "may forward runt frames",
+        "begins forwarding when the destination address is received"
+      ],
+      "definitions": [
+        "cut-through",
+        "store-and-forward"
+      ],
+      "correct_pairs": {
+        "always stores the entire frame": "store-and-forward",
+        "checks the CRC before forwarding": "store-and-forward",
+        "checks the frame length before forwarding": "store-and-forward",
+        "has low latency": "cut-through",
+        "may forward runt frames": "cut-through",
+        "begins forwarding when the destination address is received": "cut-through"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 152,
+      "question": "Match the application protocols to the correct transport protocols.",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "DHCP",
+        "FTP",
+        "HTTP",
+        "SMTP",
+        "TFTP"
+      ],
+      "definitions": [
+        "TCP",
+        "UDP"
+      ],
+      "correct_pairs": {
+        "FTP": "TCP",
+        "HTTP": "TCP",
+        "SMTP": "TCP",
+        "DHCP": "UDP",
+        "TFTP": "UDP"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 153,
+      "question": "Match the type of threat with the cause. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "electrical threats",
+        "hardware threats",
+        "environmental threats",
+        "maintenance threats"
+      ],
+      "definitions": [
+        "voltage spikes, insufficient supply voltage (brownouts), unconditioned power (noise), and total power loss",
+        "physical damage to servers, routers, switches, cabling plant, and workstations",
+        "temperature extremes (too hot or too cold) or humidity extremes (too wet or too dry)",
+        "poor handling of key electrical components (electrostatic discharge), lack of critical spare parts, poor cabling, and poor labeling"
+      ],
+      "correct_pairs": {
+        "electrical threats": "voltage spikes, insufficient supply voltage (brownouts), unconditioned power (noise), and total power loss",
+        "hardware threats": "physical damage to servers, routers, switches, cabling plant, and workstations",
+        "environmental threats": "temperature extremes (too hot or too cold) or humidity extremes (too wet or too dry)",
+        "maintenance threats": "poor handling of key electrical components (electrostatic discharge), lack of critical spare parts, poor cabling, and poor labeling"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 154,
+      "question": "Match a statement to the related network model. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "requires a specific user interface",
+        "no dedicated server is required",
+        "a background service is required",
+        "client and server roles are set on a per request basis",
+        "devices can only function in one role at a time"
+      ],
+      "definitions": [
+        "peer-to-peer network",
+        "peer-to-peer application"
+      ],
+      "correct_pairs": {
+        "no dedicated server is required": "peer-to-peer network",
+        "client and server roles are set on a per request basis": "peer-to-peer network",
+        "requires a specific user interface": "peer-to-peer application",
+        "a background service is required": "peer-to-peer application"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 155,
+      "question": "Match each type of frame field to its function. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "addressing",
+        "error detection",
+        "type",
+        "frame start"
+      ],
+      "definitions": [
+        "This field checks if the frame has been damaged during the transfer.",
+        "This field identifies special flow control services.",
+        "This field helps to direct the frame toward its destination.",
+        "This field identifies the beginning of a frame.",
+        "This field is used by the LLC to identify the Layer 3 protocol."
+      ],
+      "correct_pairs": {
+        "addressing": "This field helps to direct the frame toward its destination.",
+        "error detection": "This field checks if the frame has been damaged during the transfer.",
+        "type": "This field is used by the LLC to identify the Layer 3 protocol.",
+        "frame start": "This field identifies the beginning of a frame."
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 156,
+      "question": "Match the firewall function to the type of threat protection it provides to the network. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "prevents access by port number",
+        "prevents access based on IP or MAC address",
+        "prevents unsolicited incoming sessions",
+        "prevents access to websites"
+      ],
+      "definitions": [
+        "packet filtering",
+        "URL filtering",
+        "network address translator",
+        "stateful packet inspection",
+        "application filtering"
+      ],
+      "correct_pairs": {
+        "prevents access based on IP or MAC address": "packet filtering",
+        "prevents access to websites": "URL filtering",
+        "prevents unsolicited incoming sessions": "stateful packet inspection",
+        "prevents access by port number": "application filtering"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 157,
+      "question": "Match the characteristic to the category. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "contained in the Layer 3 header",
+        "contained in the Layer 2 header",
+        "separated into OUI and a unique identifier",
+        "separated into a network portion and a unique identifier",
+        "32 or 128 bits",
+        "48 bits",
+        "64 bits"
+      ],
+      "definitions": [
+        "IP address",
+        "MAC address"
+      ],
+      "correct_pairs": {
+        "contained in the Layer 3 header": "IP address",
+        "separated into a network portion and a unique identifier": "IP address",
+        "32 or 128 bits": "IP address",
+        "contained in the Layer 2 header": "MAC address",
+        "separated into OUI and a unique identifier": "MAC address",
+        "48 bits": "MAC address"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 158,
+      "question": "Match the header field with the appropriate layer of the OSI model. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Source IP Address",
+        "Destination Port Number",
+        "Destination Options",
+        "FCS (Frame Check Sequence)",
+        "802.2 header",
+        "TTL",
+        "Acknowledgment Number",
+        "Destination MAC Address"
+      ],
+      "definitions": [
+        "Layer 2",
+        "Layer 3",
+        "Layer 4"
+      ],
+      "correct_pairs": {
+        "802.2 header": "Layer 2",
+        "FCS (Frame Check Sequence)": "Layer 2",
+        "Destination MAC Address": "Layer 2",
+        "TTL": "Layer 3",
+        "Source IP Address": "Layer 3",
+        "Acknowledgment Number": "Layer 4",
+        "Destination Port Number": "Layer 4"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 159,
+      "question": "Match each description to its corresponding term. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "message encapsulation",
+        "message sizing",
+        "message encoding"
+      ],
+      "definitions": [
+        "the process of placing one message format inside another message format",
+        "the process of breaking up a long message into individual pieces before being sent over the network",
+        "the process of converting information from one format into another acceptable for transmission"
+      ],
+      "correct_pairs": {
+        "message encapsulation": "the process of placing one message format inside another message format",
+        "message sizing": "the process of breaking up a long message into individual pieces before being sent over the network",
+        "message encoding": "the process of converting information from one format into another acceptable for transmission"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 160,
+      "question": "Match each description with the corresponding TCP mechanism. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "number of bytes a destination device can accept and process at one time",
+        "used to identify missing segments of data",
+        "method of managing segments of data loss",
+        "received by a sender before transmitting more segments in a session"
+      ],
+      "definitions": [
+        "acknowledgment",
+        "retransmission",
+        "FCS",
+        "sequence numbers",
+        "window size"
+      ],
+      "correct_pairs": {
+        "received by a sender before transmitting more segments in a session": "acknowledgment",
+        "method of managing segments of data loss": "retransmission",
+        "used to identify missing segments of data": "sequence numbers",
+        "number of bytes a destination device can accept and process at one time": "window size"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 161,
+      "question": "Match each item to the type of topology diagram on which it is typically identified. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "IP address of a server",
+        "location of a desktop PC in a classroom",
+        "USB port on a desktop PC in a classroom",
+        "path of cables that connect rooms to wiring closets"
+      ],
+      "definitions": [
+        "physical topology diagram",
+        "logical topology diagram"
+      ],
+      "correct_pairs": {
+        "location of a desktop PC in a classroom": "physical topology diagram",
+        "path of cables that connect rooms to wiring closets": "physical topology diagram",
+        "IP address of a server": "logical topology diagram"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 162,
+      "question": "Match each description with an appropriate IP address. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "an experimental address",
+        "a link-local address",
+        "a public address",
+        "a loopback address"
+      ],
+      "definitions": [
+        "198.133.219.2",
+        "127.0.0.1",
+        "169.254.1.5",
+        "240.2.6.255"
+      ],
+      "correct_pairs": {
+        "an experimental address": "240.2.6.255",
+        "a link-local address": "169.254.1.5",
+        "a public address": "198.133.219.2",
+        "a loopback address": "127.0.0.1"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 163,
+      "question": "Refer to the exhibit. Match the network with the correct IP address and prefix that will satisfy the usable host addressing requirements for each network.",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Network A",
+        "Network B",
+        "Network C",
+        "Network D"
+      ],
+      "definitions": [
+        "192.168.0.96 /27",
+        "192.168.0.128 /25",
+        "192.168.0.80 /30",
+        "192.168.0.0 /26"
+      ],
+      "correct_pairs": {
+        "Network A": "192.168.0.128 /25",
+        "Network B": "192.168.0.0 /26",
+        "Network C": "192.168.0.96 /27",
+        "Network D": "192.168.0.80 /30"
+      },
+      "correct_answer": "",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/01/i304956v6n1_207918.png"
+    },
+    {
+      "id": 164,
+      "question": "Refer to the exhibit. Match the network with the correct IP address and prefix that will satisfy the usable host addressing requirements for each network. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Network A",
+        "Network B",
+        "Network C",
+        "Network D"
+      ],
+      "definitions": [
+        "192.168.0.0 /24",
+        "192.168.0.192 /27",
+        "192.168.0.228 /32",
+        "192.168.0.0 /25",
+        "192.168.0.224 /30",
+        "192.168.0.128 /26"
+      ],
+      "correct_pairs": {
+        "Network A": "192.168.0.0 /25",
+        "Network B": "192.168.0.128 /26",
+        "Network C": "192.168.0.192 /27",
+        "Network D": "192.168.0.224 /30"
+      },
+      "correct_answer": "",
+      "image": "https://itexamanswers.net/wp-content/uploads/2016/03/i207918v1n1_207918-1-1.jpg"
+    },
+    {
       "id": 51,
       "question": "Which two functions are performed at the LLC sublayer of the OSI Data Link Layer to facilitate Ethernet communication? (Choose two.) [Other case]",
       "options": [

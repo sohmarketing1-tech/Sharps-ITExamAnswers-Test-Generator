@@ -705,6 +705,106 @@
         "UDP only passes data to the network when the destination is ready to receive the data."
       ],
       "correct_answer": "UDP reassembles the received datagrams in the order they were received."
+    },
+    {
+      "id": 64,
+      "question": "Match each weakness with an example.",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "security policy weakness",
+        "configuration weakness",
+        "technological weakness"
+      ],
+      "definitions": [
+        "The network administrator did not fully consider the implications of unauthorized users accessing the network.",
+        "When implementing an access list on a router, a network engineer did not filter a type of malicious traffic.",
+        "A network engineer is examining the operating system of a network device for vulnerabilities."
+      ],
+      "correct_pairs": {
+        "security policy weakness": "The network administrator did not fully consider the implications of unauthorized users accessing the network.",
+        "configuration weakness": "When implementing an access list on a router, a network engineer did not filter a type of malicious traffic.",
+        "technological weakness": "A network engineer is examining the operating system of a network device for vulnerabilities."
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 65,
+      "question": "Match the type of information security threat to the scenario.",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "information theft",
+        "identity theft",
+        "data loss",
+        "disruption of service"
+      ],
+      "definitions": [
+        "obtaining trade secret documents illegally",
+        "pretending to be someone else by using stolen personal information to apply for a credit card",
+        "installing virus code to destroy surveillance recordings for certain days",
+        "preventing users from accessing a website by sending a large number of link requests in a short period",
+        "cracking the password of an administrator account on a server"
+      ],
+      "correct_pairs": {
+        "information theft": "obtaining trade secret documents illegally",
+        "identity theft": "pretending to be someone else by using stolen personal information to apply for a credit card",
+        "data loss": "installing virus code to destroy surveillance recordings for certain days",
+        "disruption of service": "preventing users from accessing a website by sending a large number of link requests in a short period"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 66,
+      "question": "Match the description to the type of firewall filtering. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "packet filtering",
+        "URL filtering",
+        "stateful packet inspection",
+        "application filtering"
+      ],
+      "definitions": [
+        "prevents or allows access based on the IP or MAC addresses of the source and destination",
+        "prevents or allows access based on web addresses or keywords",
+        "prevents or allows access based on whether the traffic is in response to requests from internal hosts",
+        "prevents or allows access based on the port numbers used in the request",
+        "prevents or allows access based on the operating system of the source or destination device"
+      ],
+      "correct_pairs": {
+        "packet filtering": "prevents or allows access based on the IP or MAC addresses of the source and destination",
+        "URL filtering": "prevents or allows access based on web addresses or keywords",
+        "stateful packet inspection": "prevents or allows access based on whether the traffic is in response to requests from internal hosts",
+        "application filtering": "prevents or allows access based on the port numbers used in the request"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 67,
+      "question": "Identify the steps needed to configure a switch for SSH. The answer order does not matter. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Create a local user.",
+        "Generate RSA keys.",
+        "Use the login command.",
+        "Configure a domain name.",
+        "Use the login local command.",
+        "Use the password cisco command.",
+        "Use the transport input ssh command."
+      ],
+      "definitions": [
+        "Required steps to configure SSH:"
+      ],
+      "correct_pairs": {
+        "Create a local user.": "Required steps to configure SSH:",
+        "Generate RSA keys.": "Required steps to configure SSH:",
+        "Configure a domain name.": "Required steps to configure SSH:",
+        "Use the login local command.": "Required steps to configure SSH:",
+        "Use the transport input ssh command.": "Required steps to configure SSH:"
+      },
+      "correct_answer": ""
     }
   ]
 }
