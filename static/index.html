@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=73" />
+    <link rel="stylesheet" href="/style.css?v=80" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -286,25 +286,10 @@
                             <div class="form-group" id="count-group">
                                 <label for="question-count">Number of questions</label>
                                 <div class="count-row">
-                                    <input type="number" id="question-count" min="1" value="20" />
+                                    <input type="number" id="question-count" class="no-spinner" min="1" value="20" placeholder="Type any number" />
                                     <span id="total-questions" class="available-count">0 available</span>
                                 </div>
-                            </div>
-
-                            <div class="form-group" id="timer-group">
-                                <label for="timer-duration">Time limit</label>
-                                <div class="count-row">
-                                    <select id="timer-duration">
-                                        <option value="0">No limit</option>
-                                        <option value="5">5 minutes</option>
-                                        <option value="10">10 minutes</option>
-                                        <option value="15">15 minutes</option>
-                                        <option value="20">20 minutes</option>
-                                        <option value="30">30 minutes</option>
-                                        <option value="45">45 minutes</option>
-                                        <option value="60">60 minutes</option>
-                                    </select>
-                                </div>
+                                <p id="question-count-hint" class="input-hint">✎ Type any number you'd like</p>
                             </div>
                         </div>
 
@@ -316,7 +301,7 @@
                                 <p id="mastery-text" class="mastery-text">Log in to track mastery progress.</p>
                             </div>
                             <p class="mastery-hint">
-                                Mastery marks a question immediately if you get it right the first time. If you miss it first, you need 3 correct answers total to master it.
+                                Get it right on your first attempt and it's instantly mastered. Get it wrong, and you'll need 3 correct answers in a row before it's considered mastered.
                             </p>
                             <div class="button-row compact">
                                 <button id="mastery-start-btn" class="btn btn-success" disabled>Start Mastery Session</button>
@@ -417,10 +402,11 @@
                         <div class="add-questions-card">
                             <div class="add-questions-title">Add more questions</div>
                             <div class="add-questions-controls">
-                                <input type="number" id="add-questions-count" min="1" value="5" class="add-questions-input" />
+                                <input type="number" id="add-questions-count" min="1" value="5" class="add-questions-input no-spinner" />
                                 <button id="add-questions-btn" class="btn btn-secondary add-questions-btn">Add 5 questions</button>
                             </div>
                             <div id="add-questions-available" class="add-questions-available">0 new questions available · current test: 0</div>
+                            <p id="add-questions-hint" class="input-hint hidden"></p>
                         </div>
                     </div>
                 </div>
@@ -1749,6 +1735,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=57" defer></script>
+    <script src="/app.js?v=61" defer></script>
 </body>
 </html>

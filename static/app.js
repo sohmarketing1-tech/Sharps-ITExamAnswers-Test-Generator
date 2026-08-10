@@ -156,6 +156,7 @@ const els = {
     examButtons: document.getElementById("exam-buttons"),
     totalQuestions: document.getElementById("total-questions"),
     questionCount: document.getElementById("question-count"),
+    questionCountHint: document.getElementById("question-count-hint"),
     startBtn: document.getElementById("start-btn"),
     setupMessage: document.getElementById("setup-message"),
     accountPrompt: document.getElementById("account-prompt"),
@@ -180,7 +181,6 @@ const els = {
     progressBar: document.getElementById("progress-bar"),
     progress: document.getElementById("progress"),
     timer: document.getElementById("timer"),
-    timerDuration: document.getElementById("timer-duration"),
     homeBtn: document.getElementById("home-btn"),
     homeLogo: document.getElementById("home-logo"),
     homeStartBtn: document.getElementById("home-start-btn"),
@@ -199,6 +199,7 @@ const els = {
     addQuestionsCount: document.getElementById("add-questions-count"),
     addQuestionsRow: document.getElementById("add-questions-row"),
     addQuestionsAvailable: document.getElementById("add-questions-available"),
+    addQuestionsHint: document.getElementById("add-questions-hint"),
     reviewPanel: document.getElementById("review-panel"),
     reviewList: document.getElementById("review-list"),
     modalUsername: document.getElementById("modal-username"),
@@ -464,12 +465,8 @@ const DEFAULT_PROFILE = { theme: "ocean", avatar_image: "" };
 const THEMES = [
     { key: "ocean", label: "Ocean" },
     { key: "midnight", label: "Midnight" },
-    { key: "sunset", label: "Sunset" },
     { key: "forest", label: "Forest" },
-    { key: "berry", label: "Berry" },
-    { key: "bubblegum", label: "Jenelle" },
-    { key: "slate", label: "Slate" },
-    { key: "coffee", label: "Coffee" },
+    { key: "sunset", label: "Sunset" },
 ];
 
 let profileDraft = { ...DEFAULT_PROFILE };
@@ -953,6 +950,23 @@ function setAvailableCount(count) {
     els.totalQuestions.dataset.count = String(count);
     els.questionCount.max = Math.max(count, 1);
     els.startBtn.disabled = count === 0;
+    validateQuestionCount();
+}
+
+function validateQuestionCount() {
+    if (!els.questionCount || !els.questionCountHint) return true;
+    const max = parseInt(els.totalQuestions.dataset.count || "0", 10) || 0;
+    const requested = parseInt(els.questionCount.value, 10);
+    if (max > 0 && requested > max) {
+        els.questionCount.classList.add("input-error");
+        els.questionCountHint.classList.add("error");
+        els.questionCountHint.textContent = `That number is too big — this exam only has ${max} question${max === 1 ? "" : "s"}.`;
+        return false;
+    }
+    els.questionCount.classList.remove("input-error");
+    els.questionCountHint.classList.remove("error");
+    els.questionCountHint.textContent = "✎ Type any number you'd like";
+    return true;
 }
 
 function renderSkeletonExams(container) {
@@ -1143,7 +1157,6 @@ function setMode(mode) {
         els.modeMastery.classList.add("btn-secondary");
         els.modeDescription.textContent = "Random questions each test. Great for quick review.";
         els.countGroup.classList.remove("hidden");
-        document.getElementById("timer-group").classList.remove("hidden");
         els.startRow.classList.remove("hidden");
         els.masteryPanel.classList.add("hidden");
         els.startBtn.textContent = "Start Test";
@@ -1154,7 +1167,6 @@ function setMode(mode) {
         els.modePractice.classList.add("btn-secondary");
         els.modeDescription.textContent = "Keep seeing questions until you've mastered every single one.";
         els.countGroup.classList.add("hidden");
-        document.getElementById("timer-group").classList.add("hidden");
         els.startRow.classList.add("hidden");
         els.masteryPanel.classList.remove("hidden");
         renderMasteryPanel();
@@ -1398,6 +1410,7 @@ function generateLocalQuiz(n) {
 }
 
 async function startTest() {
+    if (!validateQuestionCount()) return;
     const total = parseInt(els.totalQuestions.dataset.count || "0") || state.allQuestions.length || 0;
     const requested = parseInt(els.questionCount.value, 10) || 10;
     const n = Math.max(1, Math.min(requested, total || 1));
@@ -2315,7 +2328,7 @@ function setupAddQuestionsUI() {
     const currentCount = state.lastTestQuestions ? state.lastTestQuestions.length : 0;
     const maxAdd = Math.max(0, remaining.length);
     if (els.addQuestionsCount) {
-        els.addQuestionsCount.max = String(maxAdd || 1);
+        els.addQuestionsCount.dataset.max = String(maxAdd);
         els.addQuestionsCount.value = String(Math.min(parseInt(els.addQuestionsCount.value, 10) || 5, maxAdd || 1));
     }
     if (els.addQuestionsAvailable) {
@@ -2325,6 +2338,7 @@ function setupAddQuestionsUI() {
         els.addQuestionsBtn.disabled = maxAdd === 0;
     }
     updateAddQuestionsButtonText();
+    validateAddQuestionsCount();
 }
 
 function updateAddQuestionsButtonText() {
@@ -2333,68 +2347,101 @@ function updateAddQuestionsButtonText() {
     els.addQuestionsBtn.textContent = `Add ${n} question${n === 1 ? "" : "s"}`;
 }
 
+function validateAddQuestionsCount() {
+    if (!els.addQuestionsCount || !els.addQuestionsHint) return true;
+    const max = parseInt(els.addQuestionsCount.dataset.max || "0", 10) || 0;
+    const requested = parseInt(els.addQuestionsCount.value, 10);
+    if (max > 0 && requested > max) {
+        els.addQuestionsCount.classList.add("input-error");
+        els.addQuestionsHint.classList.add("error");
+        els.addQuestionsHint.textContent = `That number is too big — only ${max} more question${max === 1 ? "" : "s"} left on this exam.`;
+        els.addQuestionsHint.classList.remove("hidden");
+        if (els.addQuestionsBtn) els.addQuestionsBtn.disabled = true;
+        return false;
+    }
+    els.addQuestionsCount.classList.remove("input-error");
+    els.addQuestionsHint.classList.remove("error");
+    els.addQuestionsHint.classList.add("hidden");
+    els.addQuestionsHint.textContent = "";
+    if (els.addQuestionsBtn) els.addQuestionsBtn.disabled = max === 0;
+    return true;
+}
+
+let addQuestionsInFlight = false;
+
 async function addQuestionsToTest() {
+    if (addQuestionsInFlight) return;
     if (!state.currentFilename) {
         showToast("No exam selected.", "error");
         return;
     }
-    let remaining = getRemainingQuestions();
+    if (!validateAddQuestionsCount()) return;
 
-    // If we don't have the full question pool loaded, fetch it for the current exam.
-    if (!remaining.length && !state.allQuestions.length) {
-        try {
-            const res = await fetch(API.examQuestions, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ filename: state.currentFilename }),
-                credentials: "same-origin",
-                cache: "no-store",
-            });
-            const data = await res.json();
-            if (!res.ok || !data.ok) throw new Error(data.error || "Could not load exam questions");
-            state.allQuestions = data.questions || [];
-            remaining = getRemainingQuestions();
-        } catch (err) {
-            showToast(err.message, "error");
+    addQuestionsInFlight = true;
+    if (els.addQuestionsBtn) els.addQuestionsBtn.disabled = true;
+
+    try {
+        let remaining = getRemainingQuestions();
+
+        // If we don't have the full question pool loaded, fetch it for the current exam.
+        if (!remaining.length && !state.allQuestions.length) {
+            try {
+                const res = await fetch(API.examQuestions, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ filename: state.currentFilename }),
+                    credentials: "same-origin",
+                    cache: "no-store",
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) throw new Error(data.error || "Could not load exam questions");
+                state.allQuestions = data.questions || [];
+                remaining = getRemainingQuestions();
+            } catch (err) {
+                showToast(err.message, "error");
+                return;
+            }
+        }
+
+        const requested = parseInt(els.addQuestionsCount.value, 10) || 5;
+        const n = Math.max(1, Math.min(requested, remaining.length));
+        if (!n) {
+            showToast("No new questions left to add from this exam.", "error");
             return;
         }
+
+        const shuffled = [...remaining].sort(() => 0.5 - Math.random());
+        const added = shuffled.slice(0, n).map((q) => ({
+            id: q.id,
+            question: q.question,
+            options: q.options,
+            _correct_answer: q.correct_answer || q._correct_answer,
+            type: q.type,
+            terms: q.terms,
+            definitions: q.definitions,
+            correct_pairs: q.correct_pairs,
+            image: q.image,
+        }));
+
+        state.testQuestions = shuffleArray([...state.lastTestQuestions, ...added]);
+        state.lastTestQuestions = [...state.testQuestions];
+        state.answers = {};
+        state.testQuestions.forEach((q) => {
+            state.answers[q.id] = q.type === "matching" ? {} : [];
+        });
+        state.currentIndex = 0;
+        state.secondsElapsed = 0;
+        state.multiSelect = false;
+        els.reviewPanel.classList.add("hidden");
+        showScreen("quiz");
+        els.timer.style.display = "";
+        startTimer();
+        renderQuestion();
+        showToast(`Added ${added.length} question${added.length === 1 ? "" : "s"}. Now ${state.testQuestions.length} total.`, "success");
+    } finally {
+        addQuestionsInFlight = false;
+        if (els.addQuestionsBtn) els.addQuestionsBtn.disabled = false;
     }
-
-    const requested = parseInt(els.addQuestionsCount.value, 10) || 5;
-    const n = Math.max(1, Math.min(requested, remaining.length));
-    if (!n) {
-        showToast("No new questions left to add from this exam.", "error");
-        return;
-    }
-
-    const shuffled = [...remaining].sort(() => 0.5 - Math.random());
-    const added = shuffled.slice(0, n).map((q) => ({
-        id: q.id,
-        question: q.question,
-        options: q.options,
-        _correct_answer: q.correct_answer || q._correct_answer,
-        type: q.type,
-        terms: q.terms,
-        definitions: q.definitions,
-        correct_pairs: q.correct_pairs,
-        image: q.image,
-    }));
-
-    state.testQuestions = shuffleArray([...state.lastTestQuestions, ...added]);
-    state.lastTestQuestions = [...state.testQuestions];
-    state.answers = {};
-    state.testQuestions.forEach((q) => {
-        state.answers[q.id] = q.type === "matching" ? {} : [];
-    });
-    state.currentIndex = 0;
-    state.secondsElapsed = 0;
-    state.multiSelect = false;
-    els.reviewPanel.classList.add("hidden");
-    showScreen("quiz");
-    els.timer.style.display = "";
-    startTimer();
-    renderQuestion();
-    showToast(`Added ${added.length} question${added.length === 1 ? "" : "s"}. Now ${state.testQuestions.length} total.`, "success");
 }
 
 function formatTime(totalSeconds) {
@@ -2872,7 +2919,11 @@ els.startBtn.addEventListener("click", startTest);
 els.homeBtn.addEventListener("click", goBackToApp);
 els.homeLogo.addEventListener("click", goBackToApp);
 els.prevBtn.addEventListener("click", () => navigate(-1));
+let navInFlight = false;
 els.nextBtn.addEventListener("click", () => {
+    if (navInFlight) return;
+    navInFlight = true;
+    setTimeout(() => { navInFlight = false; }, 400);
     if (state.currentIndex === state.testQuestions.length - 1) {
         if (state.mode === "mastery") {
             submitMastery();
@@ -2887,7 +2938,11 @@ els.restartBtn.addEventListener("click", goBackToApp);
 els.retakeBtn.addEventListener("click", retakeSameTest);
 els.continueMasteryBtn.addEventListener("click", startMasterySession);
 if (els.addQuestionsBtn) els.addQuestionsBtn.addEventListener("click", addQuestionsToTest);
-if (els.addQuestionsCount) els.addQuestionsCount.addEventListener("input", updateAddQuestionsButtonText);
+if (els.addQuestionsCount) els.addQuestionsCount.addEventListener("input", () => {
+    updateAddQuestionsButtonText();
+    validateAddQuestionsCount();
+});
+if (els.questionCount) els.questionCount.addEventListener("input", validateQuestionCount);
 
 els.loginTrigger.addEventListener("click", () => openAuthModal("login"));
 els.registerTrigger.addEventListener("click", () => openAuthModal("register"));
