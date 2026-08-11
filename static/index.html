@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=102" />
+    <link rel="stylesheet" href="/style.css?v=105" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -386,6 +386,9 @@
                             <button id="card-prev-arrow" class="card-arrow-btn card-arrow-prev" disabled aria-label="Previous question">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                             </button>
+                            <p id="quiz-keyboard-hint" class="keyboard-hint hidden">
+                                ← / → navigate &nbsp;•&nbsp; 1-5 choose answer &nbsp;•&nbsp; ↑ / ↓ move
+                            </p>
                             <button id="card-next-arrow" class="card-arrow-btn card-arrow-next" aria-label="Next question">
                                 <svg class="card-arrow-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                                 <span class="card-arrow-finish-label">Finish</span>
@@ -1810,6 +1813,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=82" defer></script>
+    <script src="/app.js?v=85" defer></script>
 </body>
 </html>

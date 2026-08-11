@@ -53,6 +53,7 @@ const state = {
     timerLimitSeconds: 0,
     fiveMinWarned: false,
     multiSelect: false,
+    keyboardFocusIndex: -1,
     swipeOnboardingPending: false,
     flashcardSwipeOnboardingPending: false,
     mode: "practice", // "practice" or "mastery"
@@ -206,6 +207,8 @@ const els = {
     homeBtn: document.getElementById("home-btn"),
     homeLogo: document.getElementById("home-logo"),
     homeStartBtn: document.getElementById("home-start-btn"),
+    quizFeedback: document.getElementById("quiz-feedback"),
+    quizKeyboardHint: document.getElementById("quiz-keyboard-hint"),
     questionBadge: document.getElementById("question-badge"),
     questionText: document.getElementById("question-text"),
     optionsContainer: document.getElementById("options-container"),
@@ -2787,7 +2790,7 @@ function renderQuestion() {
     }
 
     els.optionsContainer.innerHTML = "";
-    q.options.forEach((opt) => {
+    q.options.forEach((opt, idx) => {
         const optionEl = document.createElement("label");
         optionEl.className = "option" + (selected.includes(opt) ? " selected" : "");
 
@@ -2808,7 +2811,29 @@ function renderQuestion() {
         input.addEventListener("change", () => {
             updateAnswer(q.id, input.checked, opt);
         });
+        input.addEventListener("focus", () => {
+            state.keyboardFocusIndex = idx;
+            updateKeyboardFocus();
+        });
     });
+
+    // Initialize keyboard focus on the first selected option, or the first option.
+    const firstChecked = q.options.findIndex((opt) => selected.includes(opt));
+    state.keyboardFocusIndex = firstChecked >= 0 ? firstChecked : 0;
+    updateKeyboardFocus();
+
+    if (els.quizKeyboardHint) {
+        if (isTouchDevice) {
+            els.quizKeyboardHint.classList.add("hidden");
+        } else {
+            els.quizKeyboardHint.classList.remove("hidden");
+            if (isMulti) {
+                els.quizKeyboardHint.textContent = "← / → navigate • 1-5 toggle • ↑ / ↓ move focus • Enter/Space toggle";
+            } else {
+                els.quizKeyboardHint.textContent = "← / → navigate • 1-5 choose • ↑ / ↓ move";
+            }
+        }
+    }
 
     if (
         state.mode === "mastery" &&
@@ -2821,6 +2846,13 @@ function renderQuestion() {
             showMasteryFeedback(q.id, lockedSelected);
         }
     }
+}
+
+function updateKeyboardFocus() {
+    const labels = els.optionsContainer.querySelectorAll(".option");
+    labels.forEach((label, idx) => {
+        label.classList.toggle("keyboard-focus", idx === state.keyboardFocusIndex);
+    });
 }
 
 function updateAnswer(qid, checked, value) {
@@ -3616,21 +3648,101 @@ els.flashcardDiscardBtn.addEventListener("click", clearFlashcardSession);
 window.addEventListener("pagehide", saveFlashcardSession);
 window.addEventListener("beforeunload", saveFlashcardSession);
 
+function isKeyboardShortcutContext() {
+    if (isTouchDevice) return false;
+    const active = document.activeElement;
+    if (!active) return true;
+    if (active.isContentEditable) return false;
+    const tag = active.tagName;
+    if (tag === "TEXTAREA") return false;
+    if (tag === "INPUT") {
+        // Allow shortcuts while an answer radio/checkbox is focused; block
+        // typing in text/password fields and in modals.
+        const type = active.type;
+        return type === "radio" || type === "checkbox";
+    }
+    return true;
+}
+
 document.addEventListener("keydown", (e) => {
     if (!screens.flashcards.classList.contains("active")) return;
+    if (!isKeyboardShortcutContext()) return;
     if (!els.flashcardStudyArea.classList.contains("hidden")) {
+        const key = e.key || e.code;
         if (e.key === " " || e.code === "Space") {
             e.preventDefault();
             flipFlashcard();
-        } else if (e.key === "ArrowRight") {
+        } else if (key === "ArrowRight" || key === "Right") {
+            e.preventDefault();
             nextFlashcard();
-        } else if (e.key === "ArrowLeft") {
+        } else if (key === "ArrowLeft" || key === "Left") {
+            e.preventDefault();
             prevFlashcard();
         } else if (e.key.toLowerCase() === "s") {
             shuffleFlashcards();
         } else if (e.key.toLowerCase() === "r") {
             toggleFlashcardReview();
         }
+    }
+});
+
+// Desktop-only keyboard shortcuts for the quiz: left/right navigate, numbers
+// 1-5 choose/toggle, up/down move focus, Enter/Space toggle multi-select.
+document.addEventListener("keydown", (e) => {
+    if (!screens.quiz.classList.contains("active")) return;
+    if (!isKeyboardShortcutContext()) return;
+
+    const q = state.testQuestions[state.currentIndex];
+    if (!q) return;
+
+    const key = e.key || e.code;
+    const isLeft = key === "ArrowLeft" || key === "Left" || key === "Home";
+    const isRight = key === "ArrowRight" || key === "Right" || key === "End";
+    const isUp = key === "ArrowUp" || key === "Up";
+    const isDown = key === "ArrowDown" || key === "Down";
+    const isConfirm = key === "Enter" || key === " " || key === "Space";
+
+    if (isLeft) {
+        e.preventDefault();
+        handlePrevAction();
+        return;
+    }
+    if (isRight) {
+        e.preventDefault();
+        handleNextAction();
+        return;
+    }
+
+    if (q.type === "matching" || !els.optionsContainer.querySelector(".option")) return;
+
+    const inputs = Array.from(els.optionsContainer.querySelectorAll('input[name="answer"]'));
+    if (!inputs.length) return;
+
+    if (isUp || isDown) {
+        e.preventDefault();
+        const step = isDown ? 1 : -1;
+        state.keyboardFocusIndex = Math.max(0, Math.min(state.keyboardFocusIndex + step, inputs.length - 1));
+        updateKeyboardFocus();
+        if (!state.multiSelect) {
+            inputs[state.keyboardFocusIndex].click();
+        }
+        return;
+    }
+
+    const num = parseInt(e.key, 10);
+    if (!Number.isNaN(num) && num >= 1 && num <= inputs.length) {
+        e.preventDefault();
+        state.keyboardFocusIndex = num - 1;
+        updateKeyboardFocus();
+        inputs[num - 1].click();
+        return;
+    }
+
+    if (isConfirm && state.multiSelect) {
+        e.preventDefault();
+        const input = inputs[state.keyboardFocusIndex];
+        if (input) input.click();
+        return;
     }
 });
 

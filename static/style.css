@@ -1934,19 +1934,18 @@ body {
     background: var(--surface);
 }
 
-/* Compact in-card nav arrows (touch devices only) */
+/* In-card nav arrows — shown on every device; the quiz-nav and flashcard
+   bottom prev/next buttons are hidden on desktop since arrows are easier to
+   click and pair with keyboard navigation. */
 .card-nav-arrows {
-    display: none;
+    display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 22px;
     padding-top: 4px;
 }
 
-.touch-nav .card-nav-arrows {
-    display: flex;
-}
-
+/* Touch devices keep the in-card arrows and already hide the bottom row. */
 .touch-nav .quiz-nav {
     display: none;
 }
@@ -1954,6 +1953,15 @@ body {
 .touch-nav #flashcard-prev-btn,
 .touch-nav #flashcard-next-btn {
     display: none;
+}
+
+/* Desktop: hide the red/green Previous/Next button row and flashcard bottom nav. */
+@media (hover: hover) and (pointer: fine) {
+    .quiz-nav,
+    #flashcard-prev-btn,
+    #flashcard-next-btn {
+        display: none !important;
+    }
 }
 
 .card-arrow-btn {
@@ -1970,8 +1978,14 @@ body {
     transition: background 0.15s, transform 0.1s ease, opacity 0.15s, width 0.15s ease, border-radius 0.15s ease, padding 0.15s ease;
 }
 
+.card-arrow-btn:hover:not(:disabled) {
+    background: rgba(var(--primary-fill-base), 0.18);
+    border-color: var(--primary-fill);
+    transform: translateY(-2px);
+}
+
 .card-arrow-btn:active:not(:disabled) {
-    transform: scale(0.9);
+    transform: scale(0.95);
 }
 
 .card-arrow-btn:disabled {
@@ -1979,8 +1993,29 @@ body {
     cursor: not-allowed;
 }
 
+@media (hover: hover) and (pointer: fine) {
+    .card-arrow-btn {
+        width: 52px;
+        height: 52px;
+    }
+
+    .card-arrow-btn svg {
+        width: 26px;
+        height: 26px;
+    }
+}
+
 .card-arrow-finish-label {
     display: none;
+}
+
+.keyboard-hint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    flex: 1;
+    padding: 0 12px;
 }
 
 .card-arrow-next.is-finish {
@@ -2144,6 +2179,11 @@ body {
     border-color: var(--primary-fill);
     background: rgba(var(--primary-fill-base), 0.12);
     box-shadow: 0 0 0 2px var(--primary-fill);
+}
+
+.option.keyboard-focus {
+    border-color: var(--primary-fill);
+    box-shadow: 0 0 0 3px rgba(var(--primary-fill-base), 0.35);
 }
 
 .option input {
@@ -2859,6 +2899,12 @@ body {
     font-size: 0.85rem;
     margin: 0;
     text-align: center;
+}
+
+/* Keyboard shortcuts are desktop-only, so hide the hint on touch. */
+.touch-nav .flashcard-hint,
+.keyboard-hint.hidden {
+    display: none;
 }
 
 /* Flashcard setup preview */
