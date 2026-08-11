@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=101" />
+    <link rel="stylesheet" href="/style.css?v=102" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -308,31 +308,19 @@
                                 </div>
                                 <p id="mastery-text" class="mastery-text">Log in to track mastery progress.</p>
                             </div>
-                            <div id="mastery-session-size" class="mastery-session-size">
-                                <label class="mastery-session-size-label">Questions per set</label>
-                                <div class="mastery-size-row">
-                                    <button type="button" class="mastery-size-btn" data-size="5">5</button>
-                                    <button type="button" class="mastery-size-btn active" data-size="10">10</button>
-                                    <button type="button" class="mastery-size-btn" data-size="20">20</button>
-                                </div>
-                                <p id="mastery-size-hint" class="mastery-size-hint"></p>
-                            </div>
-                            <div id="mastery-streak-row" class="mastery-round-banner hidden">
-                                <span id="mastery-streak-label">Round progress</span>
-                                <span id="mastery-streak-dots" class="mastery-streak-dots"></span>
-                            </div>
+                            <label class="mastery-toggle">
+                                <input id="mastery-immediate-feedback" type="checkbox" />
+                                <span class="mastery-toggle-slider"></span>
+                                <span class="mastery-toggle-label">Show immediate right/wrong feedback</span>
+                            </label>
                             <p class="mastery-hint">
-                                Each set must be answered 100% correct <strong>3 times in a row</strong> before you move on to a new set of questions. Any miss resets that streak back to zero, so real mastery is required. Once every set is mastered, a final review of every question confirms total recall.
+                                Get it right on your first attempt and it's instantly mastered. Get it wrong, and you'll need 3 correct answers before it's considered mastered.
                             </p>
                             <div class="button-row compact">
                                 <button id="mastery-start-btn" class="btn btn-success" disabled>Start Mastery Session</button>
                                 <button id="mastery-reset-btn" class="btn btn-secondary" disabled>Reset Mastery</button>
                             </div>
                             <p id="mastery-message" class="message"></p>
-                            <div id="mastery-toughest" class="mastery-toughest hidden">
-                                <p class="mastery-toughest-title">Your toughest questions (missed most often)</p>
-                                <div id="mastery-toughest-list" class="mastery-toughest-list"></div>
-                            </div>
                         </div>
 
                         <div class="button-row" id="start-row">
@@ -383,11 +371,6 @@
                         <span id="progress">Question 1 of 20</span>
                         <span id="timer" class="timer">00:00</span>
                     </div>
-                </div>
-
-                <div id="quiz-round-banner" class="mastery-round-banner hidden">
-                    <span id="quiz-round-label">Set</span>
-                    <span id="quiz-round-dots" class="mastery-streak-dots"></span>
                 </div>
 
                 <div class="question-card-stack">
@@ -1827,6 +1810,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=81" defer></script>
+    <script src="/app.js?v=82" defer></script>
 </body>
 </html>

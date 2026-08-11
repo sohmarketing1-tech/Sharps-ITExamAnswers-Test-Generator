@@ -484,100 +484,115 @@ def get_chat_messages(limit: int = 100) -> list:
     return messages[-limit:]
 
 
-MASTERY_SESSION_SIZES = (5, 10, 20)
-DEFAULT_MASTERY_SESSION_SIZE = 10
-MASTERY_STREAK_REQUIRED = 3
-
-
 def _get_mastery_for_user(user_data: dict, username: str, filename: str) -> dict:
-    """Return the per-exam mastery container, migrating from older formats if needed.
+    """Return the per-exam mastery container, migrating from newer and older
+    formats if needed.
 
-    Mastery works in fixed-size sets: a batch of questions must be answered
-    100% correct three sessions in a row before it's considered mastered and
-    the learner advances to a new set. Once every question has been mastered
-    this way, a cumulative final review (all questions at once) confirms
-    total recall; anything missed there loops back into a small remediation
-    set using the same 3-in-a-row rule before the final review can be retaken.
+    Per-question mastery:
+    - First correct answer masters the question immediately.
+    - If the first attempt is wrong, the user must answer the question
+      correctly 3 times total before it is mastered.
     """
     mastery = user_data.setdefault(username, {}).setdefault("mastery", {})
     exam = mastery.setdefault(filename, {})
 
-    if "mastered_qids" not in exam:
-        # Legacy format tracked mastery per-question; carry over anything
-        # already mastered so returning users don't lose prior progress.
-        legacy_questions = exam.get("questions", {})
-        carried_over = [
-            str(qid) for qid, entry in legacy_questions.items()
-            if isinstance(entry, dict) and entry.get("mastered")
-        ]
+    # Migrate from the set-based redesign back to per-question tracking.
+    if "mastered_qids" in exam:
+        mastered_qids = set(str(q) for q in exam.get("mastered_qids", []))
+        all_questions = get_questions_for_test(filename)
+        all_qids = [str(q["id"]) for q in all_questions] if all_questions else []
+        questions = {}
+        for qid in all_qids:
+            if qid in mastered_qids:
+                questions[qid] = {
+                    "mastered": True,
+                    "streak": 0,
+                    "correct_count": 1,
+                    "attempts": 1,
+                    "first_correct": True,
+                }
+            else:
+                questions[qid] = {}
         exam.clear()
-        exam["mastered_qids"] = carried_over
-        exam["current_set"] = []
-        exam["current_set_streak"] = 0
-        exam["session_size"] = DEFAULT_MASTERY_SESSION_SIZE
-        exam["trouble_qids"] = {}
-        exam["final_review"] = {
-            "unlocked": False,
-            "completed": False,
-            "remediation_qids": [],
-            "remediation_streak": 0,
-        }
+        exam["questions"] = questions
+        exam["working_set"] = []
         return exam
 
-    exam["mastered_qids"] = [str(q) for q in exam.get("mastered_qids", [])]
-    exam["current_set"] = [str(q) for q in exam.get("current_set", [])]
-    exam.setdefault("current_set_streak", 0)
-    if exam.get("session_size") not in MASTERY_SESSION_SIZES:
-        exam["session_size"] = DEFAULT_MASTERY_SESSION_SIZE
-    exam["trouble_qids"] = {str(k): int(v) for k, v in exam.get("trouble_qids", {}).items()}
-    fr = exam.setdefault("final_review", {})
-    fr.setdefault("unlocked", False)
-    fr.setdefault("completed", False)
-    fr["remediation_qids"] = [str(q) for q in fr.get("remediation_qids", [])]
-    fr.setdefault("remediation_streak", 0)
+    # Older per-question format stored dicts directly under the filename key.
+    if "questions" not in exam:
+        questions = {str(k): v for k, v in exam.items() if isinstance(v, dict)}
+        migrated = {"questions": questions, "working_set": []}
+        mastery[filename] = migrated
+        return migrated
+
+    # Normalize any existing keys to strings and drop stale non-dict entries.
+    questions = {str(k): v for k, v in exam.get("questions", {}).items() if isinstance(v, dict)}
+    exam["questions"] = questions
+    working_set = exam.setdefault("working_set", [])
+    exam["working_set"] = [str(qid) for qid in working_set]
     return exam
+
+
+def _get_question_entry(exam_mastery: dict, qid: str) -> dict:
+    return exam_mastery.setdefault("questions", {}).setdefault(str(qid), {})
+
+
+def _mastery_threshold(entry: dict) -> int:
+    """Return the number of correct answers required to master a question.
+
+    Rule: if the first attempt is correct, the question is mastered immediately.
+    If the first attempt is wrong, the user must answer correctly 3 times total.
+    """
+    return 1 if entry.get("first_correct") is True else 3
+
+
+def _update_mastery_entry(entry: dict, is_correct: bool) -> bool:
+    """Update a mastery entry with a new attempt. Return True if newly mastered."""
+    entry.setdefault("streak", 0)
+    entry.setdefault("attempts", 0)
+    entry.setdefault("correct_count", 0)
+
+    if entry.get("first_correct") is None:
+        entry["first_correct"] = is_correct
+        if is_correct:
+            entry["streak"] = 1
+            entry["correct_count"] = 1
+            entry["attempts"] = 1
+            entry["mastered"] = True
+            return True
+
+    entry["attempts"] += 1
+    if is_correct:
+        entry["streak"] += 1
+        entry["correct_count"] += 1
+    else:
+        entry["streak"] = 0
+
+    if entry.get("mastered"):
+        return False
+    threshold = _mastery_threshold(entry)
+    if entry["correct_count"] >= threshold:
+        entry["mastered"] = True
+        return True
+    return False
 
 
 def get_mastery_summary(username: str, filename: str, questions: list) -> dict:
     """Return mastery stats for a user and exam."""
     user_data = load_user_data()
     exam = _get_mastery_for_user(user_data, username, filename)
-    all_qids = [str(q["id"]) for q in questions]
-    total = len(all_qids)
-    mastered_qids = set(exam.get("mastered_qids", [])) & set(all_qids)
-    mastered = len(mastered_qids)
-    all_mastered = total > 0 and mastered == total
-    fr = exam.get("final_review", {})
-    trouble_qids = exam.get("trouble_qids", {})
-    toughest = sorted(
-        ((qid, count) for qid, count in trouble_qids.items() if qid in all_qids and count > 0),
-        key=lambda item: item[1],
-        reverse=True,
-    )[:5]
-    id_to_question = {str(q["id"]): q for q in questions}
+    question_store = exam.get("questions", {})
+    total = len(questions)
+    mastered = 0
+    for q in questions:
+        qid = str(q["id"])
+        if question_store.get(qid, {}).get("mastered"):
+            mastered += 1
     return {
         "total": total,
         "mastered": mastered,
         "remaining": total - mastered,
         "progress": round((mastered / total) * 100, 2) if total else 0,
-        "session_size": exam.get("session_size", DEFAULT_MASTERY_SESSION_SIZE),
-        "session_sizes": list(MASTERY_SESSION_SIZES),
-        "current_set_size": len(exam.get("current_set", [])),
-        "current_set_streak": exam.get("current_set_streak", 0),
-        "streak_required": MASTERY_STREAK_REQUIRED,
-        "all_mastered": all_mastered,
-        "final_review_unlocked": all_mastered or fr.get("unlocked", False),
-        "final_review_completed": fr.get("completed", False),
-        "remediation_count": len(fr.get("remediation_qids", [])),
-        "remediation_streak": fr.get("remediation_streak", 0),
-        "toughest_questions": [
-            {
-                "id": int(qid),
-                "misses": count,
-                "question": id_to_question.get(qid, {}).get("question", ""),
-            }
-            for qid, count in toughest
-        ],
     }
 
 
@@ -1231,66 +1246,44 @@ def mastery_batch():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to track mastery progress."}), 401
+    try:
+        n = int(request.args.get("n", 20))
+    except ValueError:
+        n = 20
     filename = request.args.get("filename", "").strip()
     questions = get_questions_for_test(filename)
     if not questions:
         return jsonify({"ok": False, "error": "No questions found."}), 503
 
-    try:
-        requested_size = int(request.args.get("session_size", ""))
-    except ValueError:
-        requested_size = None
+    working_set = []
 
-    all_qids = [str(q["id"]) for q in questions]
-    picked = {}
-
-    def _pick_batch(user_data: dict):
+    def _build_working_set(user_data: dict):
+        nonlocal working_set
         exam = _get_mastery_for_user(user_data, user, filename)
-        if requested_size in MASTERY_SESSION_SIZES:
-            exam["session_size"] = requested_size
-        session_size = exam.get("session_size", DEFAULT_MASTERY_SESSION_SIZE)
+        question_store = exam.setdefault("questions", {})
+        working_set = exam.setdefault("working_set", [])
 
-        mastered_qids = set(exam.get("mastered_qids", [])) & set(all_qids)
-        all_mastered = len(all_qids) > 0 and len(mastered_qids) == len(all_qids)
-        fr = exam.setdefault("final_review", {})
-        if all_mastered:
-            fr["unlocked"] = True
+        mastered_qids = {qid for qid, entry in question_store.items() if entry.get("mastered")}
+        # Drop mastered questions from the working set.
+        working_set[:] = [qid for qid in working_set if qid not in mastered_qids]
 
-        if all_mastered and fr.get("completed"):
-            picked["batch_type"] = "complete"
-            picked["qids"] = []
-            return True
-
-        if all_mastered:
-            if fr.get("remediation_qids"):
-                picked["batch_type"] = "remediation"
-                picked["qids"] = [q for q in fr["remediation_qids"] if q in all_qids]
-            else:
-                picked["batch_type"] = "final_review"
-                picked["qids"] = list(all_qids)
-            return True
-
-        # Normal set-based flow: keep working the same set until it's mastered.
-        current_set = [q for q in exam.get("current_set", []) if q in all_qids and q not in mastered_qids]
-        if not current_set:
-            trouble = exam.get("trouble_qids", {})
-            candidates = [qid for qid in all_qids if qid not in mastered_qids]
+        # Refill the working set with non-mastered questions not already in it.
+        current_set = set(working_set)
+        candidates = [q for q in questions if str(q["id"]) not in mastered_qids and str(q["id"]) not in current_set]
+        # Prefer questions with the lowest streak so new questions appear before partially learned ones.
+        # When starting fresh (empty working set), shuffle first so each new session has a different order.
+        fresh_start = len(working_set) == 0
+        if fresh_start:
             random.shuffle(candidates)
-            # Resurface previously-troublesome questions sooner within the new set.
-            candidates.sort(key=lambda qid: -trouble.get(qid, 0))
-            current_set = candidates[:session_size]
-            exam["current_set"] = current_set
-            exam["current_set_streak"] = 0
-        picked["batch_type"] = "set"
-        picked["qids"] = current_set
+        else:
+            candidates.sort(key=lambda q: question_store.get(str(q["id"]), {}).get("streak", 0))
+        while len(working_set) < n and candidates:
+            working_set.append(str(candidates.pop(0)["id"]))
         return True
 
-    modify_user_data(_pick_batch)
+    modify_user_data(_build_working_set)
 
-    qmap = {str(q["id"]): q for q in questions}
-    selected = [qmap[qid] for qid in picked.get("qids", []) if qid in qmap]
-    if picked.get("batch_type") != "complete":
-        random.shuffle(selected)  # fresh order every round to avoid positional memorization
+    selected = [q for q in questions if str(q["id"]) in working_set[:n]]
 
     quiz = []
     for q in selected:
@@ -1313,119 +1306,49 @@ def mastery_batch():
         quiz.append(item)
 
     summary = get_mastery_summary(user, filename, questions)
-    return jsonify({
-        "ok": True,
-        "quiz": quiz,
-        "summary": summary,
-        "filename": filename,
-        "batch_type": picked.get("batch_type", "set"),
-    })
+    return jsonify({"ok": True, "quiz": quiz, "summary": summary, "filename": filename})
 
 
 @app.route("/api/mastery/submit", methods=["POST"])
 def mastery_submit():
-    """Score a completed mastery round (a full set, remediation set, or final
-    review) and advance the learner's progress.
-
-    Every question in the round must be correct for it to count as "perfect".
-    A perfect round advances the 3-in-a-row streak for whatever is being
-    worked on (a normal set, the remediation set, or the final review); any
-    miss resets that streak back to zero so real 3-in-a-row mastery is
-    required, not just 3 correct answers spread across attempts.
-    """
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to track mastery progress."}), 401
     data = request.get_json(silent=True) or {}
     filename = data.get("filename", "").strip()
     answers = data.get("answers", {})
-    quiz = data.get("quiz", [])
-    batch_type = data.get("batch_type", "set")
-    if not filename or not quiz:
+    provided_quiz = data.get("quiz", [])
+    if not filename or not provided_quiz:
         return jsonify({"ok": False, "error": "Filename and quiz are required."}), 400
 
-    id_map = {q["id"]: q for q in quiz}
-    quiz_qids = [str(q["id"]) for q in quiz]
-    round_result = {}
+    questions = provided_quiz
+    id_map = {q["id"]: q for q in questions}
+    newly_mastered = 0
 
-    def _submit_round(user_data: dict):
+    def _submit_mastery(user_data: dict):
+        nonlocal newly_mastered
         exam = _get_mastery_for_user(user_data, user, filename)
-        round_correct = 0
-        missed_qids = []
-        for qid_str in quiz_qids:
-            q = id_map.get(int(qid_str)) or id_map.get(qid_str)
-            selected = answers.get(qid_str)
-            is_correct = _is_answer_correct(q, selected) if q else False
-            if is_correct:
-                round_correct += 1
-            else:
-                missed_qids.append(qid_str)
-                trouble = exam.setdefault("trouble_qids", {})
-                trouble[qid_str] = trouble.get(qid_str, 0) + 1
-        round_total = len(quiz_qids)
-        perfect = round_total > 0 and round_correct == round_total
-        fr = exam.setdefault("final_review", {})
+        question_store = exam.setdefault("questions", {})
+        working_set = exam.setdefault("working_set", [])
+        newly_mastered = 0
 
-        if batch_type == "final_review":
-            if perfect:
-                fr["completed"] = True
-                fr["remediation_qids"] = []
-                fr["remediation_streak"] = 0
-            else:
-                fr["completed"] = False
-                fr["remediation_qids"] = missed_qids
-                fr["remediation_streak"] = 0
-            round_result.update({
-                "type": "final_review",
-                "perfect": perfect,
-                "completed": fr["completed"],
-            })
-        elif batch_type == "remediation":
-            if perfect:
-                fr["remediation_streak"] = fr.get("remediation_streak", 0) + 1
-                if fr["remediation_streak"] >= MASTERY_STREAK_REQUIRED:
-                    fr["remediation_qids"] = []
-                    fr["remediation_streak"] = 0
-                    round_result["remediation_mastered"] = True
-                else:
-                    round_result["remediation_mastered"] = False
-            else:
-                fr["remediation_streak"] = 0
-                round_result["remediation_mastered"] = False
-            round_result.update({
-                "type": "remediation",
-                "perfect": perfect,
-                "streak": fr.get("remediation_streak", 0),
-            })
-        else:
-            if perfect:
-                exam["current_set_streak"] = exam.get("current_set_streak", 0) + 1
-                if exam["current_set_streak"] >= MASTERY_STREAK_REQUIRED:
-                    mastered = set(exam.get("mastered_qids", []))
-                    mastered.update(quiz_qids)
-                    exam["mastered_qids"] = list(mastered)
-                    exam["current_set"] = []
-                    exam["current_set_streak"] = 0
-                    round_result["set_mastered"] = True
-                else:
-                    round_result["set_mastered"] = False
-            else:
-                exam["current_set_streak"] = 0
-                round_result["set_mastered"] = False
-            round_result.update({
-                "type": "set",
-                "perfect": perfect,
-                "streak": exam.get("current_set_streak", 0),
-            })
-
-        round_result["correct"] = round_correct
-        round_result["total"] = round_total
+        for qid_str, selected in answers.items():
+            qid = int(qid_str)
+            q = id_map.get(qid)
+            if not q:
+                continue
+            is_correct = _is_answer_correct(q, selected)
+            entry = _get_question_entry(exam, str(qid))
+            if _update_mastery_entry(entry, is_correct):
+                newly_mastered += 1
+                if str(qid) in working_set:
+                    working_set.remove(str(qid))
         return True
 
-    modify_user_data(_submit_round)
+    modify_user_data(_submit_mastery)
     all_questions = get_questions_for_test(filename)
     summary = get_mastery_summary(user, filename, all_questions)
-    return jsonify({"ok": True, "summary": summary, "round": round_result})
+    return jsonify({"ok": True, "summary": summary, "newly_mastered": newly_mastered})
 
 
 @app.route("/api/mastery/debug", methods=["GET"])
@@ -1443,8 +1366,21 @@ def mastery_debug():
 
     user_data = load_user_data()
     exam = _get_mastery_for_user(user_data, user, filename)
+    working_set = exam.get("working_set", [])
+
+    entries = []
+    for q in questions:
+        qid = str(q["id"])
+        entry = exam.get("questions", {}).get(qid, {})
+        if entry or qid in working_set:
+            entries.append({
+                "id": q["id"],
+                "in_working_set": qid in working_set,
+                "entry": entry,
+            })
+
     summary = get_mastery_summary(user, filename, questions)
-    return jsonify({"ok": True, "summary": summary, "mastery": exam})
+    return jsonify({"ok": True, "summary": summary, "working_set": working_set, "entries": entries})
 
 
 @app.route("/api/mastery/reset", methods=["POST"])

@@ -1,5 +1,4 @@
-const DEFAULT_MASTERY_SIZE = 10;
-const MASTERY_STREAK_REQUIRED_FALLBACK = 3;
+const DEFAULT_MASTERY_SIZE = 20;
 
 // Feature-detect touch capability instead of relying on screen width so
 // tablets (iPads etc.) reporting desktop-sized viewports still get swipe
@@ -59,10 +58,8 @@ const state = {
     mode: "practice", // "practice" or "mastery"
     user: null,
     masterySummary: null,
-    masteryBatchType: null, // "set" | "remediation" | "final_review" | "complete"
-    masterySessionSize: 10,
-    masteryLockedQids: new Set(), // qids that already revealed immediate feedback this round
-    masteryLastRound: null,
+    masteryImmediateFeedback: false,
+    masteryLockedQids: new Set(),
     currentTab: "home",
     authChecked: false,
     flashcardFilename: null,
@@ -284,24 +281,14 @@ const els = {
     masteryPanel: document.getElementById("mastery-panel"),
     masteryBar: document.getElementById("mastery-bar"),
     masteryText: document.getElementById("mastery-text"),
-    masterySizeBtns: document.querySelectorAll(".mastery-size-btn"),
-    masterySizeHint: document.getElementById("mastery-size-hint"),
-    masteryStreakRow: document.getElementById("mastery-streak-row"),
-    masteryStreakLabel: document.getElementById("mastery-streak-label"),
-    masteryStreakDots: document.getElementById("mastery-streak-dots"),
     masteryStartBtn: document.getElementById("mastery-start-btn"),
     masteryResetBtn: document.getElementById("mastery-reset-btn"),
     masteryMessage: document.getElementById("mastery-message"),
-    masteryToughest: document.getElementById("mastery-toughest"),
-    masteryToughestList: document.getElementById("mastery-toughest-list"),
-    quizRoundBanner: document.getElementById("quiz-round-banner"),
-    quizRoundLabel: document.getElementById("quiz-round-label"),
-    quizRoundDots: document.getElementById("quiz-round-dots"),
+    masteryImmediateFeedbackToggle: document.getElementById("mastery-immediate-feedback"),
     quizFeedback: document.getElementById("quiz-feedback"),
     resultsMasteryProgress: document.getElementById("results-mastery-progress"),
     resultsMasteryBar: document.getElementById("results-mastery-bar"),
     resultsMasteryText: document.getElementById("results-mastery-text"),
-    resultsMasteryHint: document.getElementById("results-mastery-hint"),
     flashcardExamButtons: document.getElementById("flashcard-exam-buttons"),
     flashcardModeQuestion: document.getElementById("flashcard-mode-question"),
     flashcardModeChoices: document.getElementById("flashcard-mode-choices"),
@@ -1220,49 +1207,12 @@ function setMode(mode) {
         els.modeMastery.classList.remove("btn-secondary");
         els.modePractice.classList.remove("active", "btn-primary");
         els.modePractice.classList.add("btn-secondary");
-        els.modeDescription.textContent = "Master a small set at a time — 100% correct 3 times in a row unlocks the next set.";
+        els.modeDescription.textContent = "Keep seeing questions until you've mastered every single one.";
         els.countGroup.classList.add("hidden");
         els.startRow.classList.add("hidden");
         els.masteryPanel.classList.remove("hidden");
         renderMasteryPanel();
     }
-}
-
-function renderStreakDots(container, streak, required) {
-    container.innerHTML = "";
-    for (let i = 0; i < required; i++) {
-        const dot = document.createElement("span");
-        dot.className = "mastery-streak-dot" + (i < streak ? " filled" : "");
-        container.appendChild(dot);
-    }
-}
-
-function setMasterySessionSize(size) {
-    state.masterySessionSize = size;
-    els.masterySizeBtns.forEach((btn) => {
-        btn.classList.toggle("active", parseInt(btn.dataset.size, 10) === size);
-    });
-}
-
-function renderMasteryToughestList(summary) {
-    const toughest = summary && summary.toughest_questions ? summary.toughest_questions : [];
-    if (!toughest.length) {
-        els.masteryToughest.classList.add("hidden");
-        return;
-    }
-    els.masteryToughest.classList.remove("hidden");
-    els.masteryToughestList.innerHTML = "";
-    toughest.forEach((item) => {
-        const row = document.createElement("div");
-        row.className = "mastery-toughest-item";
-        const text = document.createElement("span");
-        text.textContent = item.question || `Question #${item.id}`;
-        const misses = document.createElement("strong");
-        misses.textContent = `${item.misses}×`;
-        row.appendChild(text);
-        row.appendChild(misses);
-        els.masteryToughestList.appendChild(row);
-    });
 }
 
 function renderMasteryPanel() {
@@ -1272,9 +1222,6 @@ function renderMasteryPanel() {
         els.masteryBar.style.width = "0%";
         els.masteryStartBtn.disabled = true;
         els.masteryResetBtn.disabled = true;
-        els.masteryStreakRow.classList.add("hidden");
-        els.masteryToughest.classList.add("hidden");
-        els.masterySizeBtns.forEach((btn) => { btn.disabled = true; });
         return;
     }
     if (!summary) {
@@ -1282,67 +1229,24 @@ function renderMasteryPanel() {
         els.masteryBar.style.width = "0%";
         els.masteryStartBtn.disabled = true;
         els.masteryResetBtn.disabled = true;
-        els.masteryStreakRow.classList.add("hidden");
-        els.masteryToughest.classList.add("hidden");
-        els.masterySizeBtns.forEach((btn) => { btn.disabled = true; });
         return;
     }
-
-    const { mastered, total, remaining, current_set_size, current_set_streak, streak_required } = summary;
+    const { mastered, total, remaining } = summary;
     els.masteryText.textContent = `Mastered ${mastered} of ${total} questions (${remaining} remaining).`;
     els.masteryBar.style.width = `${summary.progress}%`;
+    els.masteryStartBtn.disabled = total === 0;
     els.masteryResetBtn.disabled = total === 0;
-    renderMasteryToughestList(summary);
-
-    // The set size can only be changed when there isn't a set already in
-    // progress — the batch is fixed once picked so switching sizes mid-set
-    // wouldn't make sense.
-    const midSet = current_set_size > 0;
-    setMasterySessionSize(summary.session_size || DEFAULT_MASTERY_SIZE);
-    els.masterySizeBtns.forEach((btn) => { btn.disabled = midSet; });
-    els.masterySizeHint.textContent = midSet
-        ? "Finish your current set before changing the set size."
-        : "";
-
-    if (summary.all_mastered && summary.final_review_completed) {
-        els.masteryStreakRow.classList.add("hidden");
-        els.masteryStartBtn.textContent = "Exam Fully Mastered! 🎉";
+    if (mastered === total && total > 0) {
+        els.masteryStartBtn.textContent = "Exam Mastered!";
         els.masteryStartBtn.disabled = true;
-    } else if (summary.all_mastered && summary.remediation_count > 0) {
-        els.masteryStreakRow.classList.remove("hidden");
-        els.masteryStreakRow.classList.add("remediation");
-        els.masteryStreakRow.classList.remove("final-review");
-        els.masteryStreakLabel.textContent = "Remediation progress";
-        renderStreakDots(els.masteryStreakDots, summary.remediation_streak, streak_required);
-        els.masteryStartBtn.textContent = `Retry ${summary.remediation_count} Missed Question${summary.remediation_count === 1 ? "" : "s"}`;
-        els.masteryStartBtn.disabled = false;
-    } else if (summary.all_mastered) {
-        els.masteryStreakRow.classList.add("hidden");
-        els.masteryStartBtn.textContent = "Start Final Review";
-        els.masteryStartBtn.disabled = false;
-    } else if (midSet) {
-        els.masteryStreakRow.classList.remove("hidden");
-        els.masteryStreakRow.classList.remove("remediation", "final-review");
-        els.masteryStreakLabel.textContent = "Round progress";
-        renderStreakDots(els.masteryStreakDots, current_set_streak, streak_required);
-        els.masteryStartBtn.textContent = "Continue This Set";
-        els.masteryStartBtn.disabled = false;
     } else {
-        els.masteryStreakRow.classList.add("hidden");
         els.masteryStartBtn.textContent = "Start Mastery Session";
-        els.masteryStartBtn.disabled = total === 0;
+        els.masteryStartBtn.disabled = false;
     }
-}
-
-function masteryRoundLabel(batchType) {
-    if (batchType === "remediation") return "Remediation Round";
-    if (batchType === "final_review") return "Final Review — All Questions";
-    return "Mastery Set";
 }
 
 function renderResultsMasteryPanel() {
     const summary = state.masterySummary;
-    const round = state.masteryLastRound;
     if (state.mode !== "mastery" || !summary) {
         els.resultsMasteryProgress.classList.add("hidden");
         els.continueMasteryBtn.classList.add("hidden");
@@ -1352,62 +1256,13 @@ function renderResultsMasteryPanel() {
     const { mastered, total, remaining } = summary;
     els.resultsMasteryText.textContent = `Overall mastery: ${mastered}/${total} (${remaining} remaining).`;
     els.resultsMasteryBar.style.width = `${summary.progress}%`;
-
-    if (summary.all_mastered && summary.final_review_completed) {
+    if (mastered === total && total > 0) {
         els.scoreValue.textContent = "100%";
-        els.resultsTitle.textContent = "Exam Fully Mastered! 🎉";
-        els.scoreDetail.textContent = `You nailed every one of the ${total} questions on the final review. Total recall achieved!`;
-        els.resultsMasteryHint.textContent = "Come back in a few days for a quick final-review refresh to lock in long-term memory.";
+        els.resultsTitle.textContent = "Exam Mastered!";
+        els.scoreDetail.textContent = `You have mastered all ${total} questions. Congrats!`;
         els.continueMasteryBtn.classList.add("hidden");
-        return;
-    }
-
-    els.continueMasteryBtn.classList.remove("hidden");
-    if (!round) {
-        els.resultsMasteryHint.textContent = "";
-        return;
-    }
-
-    if (round.type === "final_review") {
-        if (round.perfect) {
-            els.resultsTitle.textContent = "Final Review Passed!";
-            els.scoreDetail.textContent = "Every question correct! Wrapping up your mastery...";
-        } else {
-            els.resultsTitle.textContent = "Final Review — Almost There";
-            els.scoreDetail.textContent = `You missed ${round.total - round.correct} question(s). They're now a short remediation set — master those to unlock the final review again.`;
-        }
-        els.continueMasteryBtn.textContent = round.perfect ? "Continue" : "Start Remediation";
-        els.resultsMasteryHint.textContent = "";
-    } else if (round.type === "remediation") {
-        if (round.remediation_mastered) {
-            els.resultsTitle.textContent = "Remediation Mastered!";
-            els.scoreDetail.textContent = "Great work — the final review is unlocked again.";
-            els.continueMasteryBtn.textContent = "Take Final Review";
-        } else if (round.perfect) {
-            els.resultsTitle.textContent = "Perfect Round!";
-            els.scoreDetail.textContent = `${round.streak} of ${summary.streak_required} perfect rounds in a row. Keep going!`;
-            els.continueMasteryBtn.textContent = "Continue Remediation";
-        } else {
-            els.resultsTitle.textContent = "Streak Reset";
-            els.scoreDetail.textContent = "Any miss resets the streak — you'll need 3 perfect rounds in a row on this set.";
-            els.continueMasteryBtn.textContent = "Retry Remediation";
-        }
-        els.resultsMasteryHint.textContent = "";
     } else {
-        if (round.set_mastered) {
-            els.resultsTitle.textContent = "Set Mastered! 🎉";
-            els.scoreDetail.textContent = "3 perfect rounds in a row — this set is locked in for good. Time for a new set.";
-            els.continueMasteryBtn.textContent = "Start Next Set";
-        } else if (round.perfect) {
-            els.resultsTitle.textContent = "Perfect Round!";
-            els.scoreDetail.textContent = `${round.streak} of ${summary.streak_required} perfect rounds in a row on this set. Keep it up!`;
-            els.continueMasteryBtn.textContent = "Continue This Set";
-        } else {
-            els.resultsTitle.textContent = "Streak Reset";
-            els.scoreDetail.textContent = `You got ${round.correct}/${round.total} correct. Any miss resets the streak, so you'll need 3 perfect rounds in a row on this same set.`;
-            els.continueMasteryBtn.textContent = "Retry This Set";
-        }
-        els.resultsMasteryHint.textContent = "";
+        els.continueMasteryBtn.classList.remove("hidden");
     }
 }
 
@@ -1432,49 +1287,23 @@ async function refreshMastery() {
     }
 }
 
-function updateQuizRoundBanner() {
-    if (state.mode !== "mastery" || !state.masteryBatchType || state.masteryBatchType === "complete") {
-        els.quizRoundBanner.classList.add("hidden");
-        return;
-    }
-    const summary = state.masterySummary;
-    const streakRequired = summary ? summary.streak_required : MASTERY_STREAK_REQUIRED_FALLBACK;
-    els.quizRoundBanner.classList.remove("hidden", "remediation", "final-review");
-    els.quizRoundLabel.textContent = masteryRoundLabel(state.masteryBatchType);
-    if (state.masteryBatchType === "remediation") {
-        els.quizRoundBanner.classList.add("remediation");
-        els.quizRoundDots.classList.remove("hidden");
-        renderStreakDots(els.quizRoundDots, summary ? summary.remediation_streak : 0, streakRequired);
-    } else if (state.masteryBatchType === "final_review") {
-        els.quizRoundBanner.classList.add("final-review");
-        els.quizRoundDots.classList.add("hidden");
-        els.quizRoundDots.innerHTML = "";
-    } else {
-        els.quizRoundDots.classList.remove("hidden");
-        renderStreakDots(els.quizRoundDots, summary ? summary.current_set_streak : 0, streakRequired);
-    }
-}
-
 async function startMasterySession() {
     if (!state.user || !state.currentFilename) return;
     els.masteryStartBtn.disabled = true;
     setMasteryMessage("Loading mastery batch…");
     try {
         const res = await fetch(
-            `${API.masteryBatch}?filename=${encodeURIComponent(state.currentFilename)}&session_size=${state.masterySessionSize}`,
+            `${API.masteryBatch}?n=${DEFAULT_MASTERY_SIZE}&filename=${encodeURIComponent(state.currentFilename)}`,
             { credentials: "same-origin", cache: "no-store" }
         );
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Could not load mastery batch");
-        state.masterySummary = data.summary;
-        state.masteryBatchType = data.batch_type;
-        renderMasteryPanel();
-
-        if (data.batch_type === "complete" || !data.quiz.length) {
-            setMasteryMessage("You've fully mastered this exam! 🎉", "success");
+        if (data.summary.mastered === data.summary.total && data.summary.total > 0) {
+            state.masterySummary = data.summary;
+            renderMasteryPanel();
+            setMasteryMessage("All questions mastered! Great job.", "success");
             return;
         }
-
         state.testQuestions = withShuffledOptions(data.quiz);
         state.lastTestQuestions = [...data.quiz];
         state.answers = {};
@@ -1485,11 +1314,11 @@ async function startMasterySession() {
         state.currentIndex = 0;
         state.secondsElapsed = 0;
         state.multiSelect = false;
+        state.masteryBatchType = null;
         markQuizRunStart();
         showScreen("quiz");
         els.timer.style.display = "none";
         stopTimer();
-        updateQuizRoundBanner();
         renderQuestion();
     } catch (err) {
         setMasteryMessage(err.message, "error");
@@ -1515,20 +1344,19 @@ async function submitMastery() {
                 filename: state.currentFilename,
                 answers,
                 quiz,
-                batch_type: state.masteryBatchType,
             }),
         });
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Could not save mastery results");
         state.masterySummary = data.summary;
-        state.masteryLastRound = data.round;
 
         const results = computeResults(quiz, state.answers);
+        const correct = results.filter((r) => r.is_correct).length;
         showResults({
             title: state.title,
-            total: data.round.total,
-            correct: data.round.correct,
-            score: data.round.total ? Math.round((data.round.correct / data.round.total) * 100) : 0,
+            total: results.length,
+            correct,
+            score: results.length ? Math.round((correct / results.length) * 100) : 0,
             results,
         });
         renderResultsMasteryPanel();
@@ -2982,7 +2810,11 @@ function renderQuestion() {
         });
     });
 
-    if (state.mode === "mastery" && state.masteryLockedQids.has(q.id)) {
+    if (
+        state.mode === "mastery" &&
+        state.masteryImmediateFeedback &&
+        state.masteryLockedQids.has(q.id)
+    ) {
         const lockedSelected = (state.answers[q.id] || [])[0];
         state.masteryLockedQids.delete(q.id);
         if (lockedSelected !== undefined) {
@@ -3008,11 +2840,10 @@ function updateAnswer(qid, checked, value) {
         label.classList.toggle("selected", input.checked);
     });
 
-    // Immediate feedback (mastery mode, single-select only): revealing the
-    // right/wrong answer the instant you pick it reinforces recall far more
-    // than waiting until the end of the round. The question locks after the
-    // first pick so the original instinct is what actually gets scored.
-    if (state.mode === "mastery" && !state.multiSelect && checked) {
+    // Optional immediate feedback in mastery mode (single-select only):
+    // when enabled, reveal the right/wrong answer the instant the user picks
+    // one and lock the question so the first instinct is what gets scored.
+    if (state.mode === "mastery" && state.masteryImmediateFeedback && !state.multiSelect && checked) {
         showMasteryFeedback(qid, value);
     }
 }
@@ -3723,12 +3554,16 @@ els.modePractice.addEventListener("click", () => setMode("practice"));
 els.modeMastery.addEventListener("click", () => setMode("mastery"));
 els.masteryStartBtn.addEventListener("click", startMasterySession);
 els.masteryResetBtn.addEventListener("click", resetMastery);
-els.masterySizeBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-        if (btn.disabled) return;
-        setMasterySessionSize(parseInt(btn.dataset.size, 10));
+if (els.masteryImmediateFeedbackToggle) {
+    els.masteryImmediateFeedbackToggle.addEventListener("change", () => {
+        state.masteryImmediateFeedback = els.masteryImmediateFeedbackToggle.checked;
+        try {
+            localStorage.setItem("mastery_immediate_feedback", state.masteryImmediateFeedback ? "1" : "0");
+        } catch (e) {
+            // ignore
+        }
     });
-});
+}
 
 els.tabPractice.addEventListener("click", () => switchTab("practice"));
 els.tabFlashcards.addEventListener("click", () => switchTab("flashcards"));
@@ -5593,6 +5428,10 @@ els.cloudModelsNextBtn.addEventListener("click", generateCloudModelsQuestion);
 state._restoringPrefs = true;
 setFlashcardMode("question");
 setFlashcardFilter("all");
+state.masteryImmediateFeedback = localStorage.getItem("mastery_immediate_feedback") === "1";
+if (els.masteryImmediateFeedbackToggle) {
+    els.masteryImmediateFeedbackToggle.checked = state.masteryImmediateFeedback;
+}
 state._restoringPrefs = false;
 loadExams();
 checkAuth();
