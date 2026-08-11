@@ -85,7 +85,7 @@ def build_exam_links_html() -> str:
 
 
 def render_index_html(page_title: str, page_description: str, canonical_url: str,
-                      h1_text: str, seo_intro: str, exam_filename: str = "") -> str:
+                      h1_text: str, seo_intro: str, exam_filename: str = "") -> Response:
     index_path = BASE_DIR / "static" / "index.html"
     html = index_path.read_text(encoding="utf-8")
     replacements = {
@@ -101,7 +101,13 @@ def render_index_html(page_title: str, page_description: str, canonical_url: str
     }
     for token, value in replacements.items():
         html = html.replace(token, value)
-    return html
+    # Prevent caching of index.html so the latest cache-busted static files are
+    # always loaded after a deploy.
+    response = Response(html, mimetype="text/html")
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 def load_exam_from_file(filepath: Path) -> bool:
