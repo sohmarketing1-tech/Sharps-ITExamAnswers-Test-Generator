@@ -3370,7 +3370,15 @@ function formatAnswerForReview(answer) {
 function formatMatchingAnswerForReview(answer, terms, correctPairs, isSelected) {
     if (!terms || !terms.length) return "(no answer)";
 
-    const rows = terms.map((term) => {
+    // Sort by the correct definition so matching results are grouped logically
+    // (e.g. all "Layer 2" rows together, then "Layer 3", etc.).
+    const sortedTerms = [...terms].sort((a, b) => {
+        const defA = correctPairs[a] || "";
+        const defB = correctPairs[b] || "";
+        return defA.localeCompare(defB);
+    });
+
+    const rows = sortedTerms.map((term) => {
         const matchedDef = isSelected
             ? (answer && typeof answer === "object" ? answer[term] : undefined)
             : correctPairs[term];
