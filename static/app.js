@@ -3368,14 +3368,23 @@ function formatAnswerForReview(answer) {
 
 function formatMatchingAnswerForReview(answer, terms, correctPairs, isSelected) {
     if (!terms || !terms.length) return "(no answer)";
-    return terms
-        .map((term) => {
-            const def = isSelected
-                ? (answer && typeof answer === "object" ? answer[term] : undefined)
-                : correctPairs[term];
-            return `${term}: ${def || "(not matched)"}`;
-        })
-        .join("; ");
+
+    const rows = terms.map((term) => {
+        const matchedDef = isSelected
+            ? (answer && typeof answer === "object" ? answer[term] : undefined)
+            : correctPairs[term];
+        const correctDef = correctPairs[term];
+        const isCorrect = matchedDef && matchedDef === correctDef;
+        const rowClass = isSelected
+            ? (isCorrect ? "match-correct" : "match-wrong")
+            : "match-correct";
+        const statusIcon = isSelected
+            ? (isCorrect ? "✓" : "✗")
+            : "✓";
+        return `<tr class="${rowClass}"><td class="match-term">${term}</td><td class="match-def">${matchedDef || "(not matched)"}</td><td class="match-status">${statusIcon}</td></tr>`;
+    });
+
+    return `<table class="matching-review-table"><thead><tr><th>Term</th><th>${isSelected ? "Your match" : "Correct match"}</th><th></th></tr></thead><tbody>${rows.join("")}</tbody></table>`;
 }
 
 function showResults(data) {
@@ -3422,9 +3431,11 @@ function showResults(data) {
         selectedLabel.textContent = "Your answer";
         const selectedText = document.createElement("div");
         selectedText.className = `answer-text ${r.is_correct ? "correct-answer" : "wrong-answer"}`;
-        selectedText.textContent = r.type === "matching"
-            ? formatMatchingAnswerForReview(r.selected, r.terms, r.correct_pairs, true)
-            : formatAnswerForReview(r.selected);
+        if (r.type === "matching") {
+            selectedText.innerHTML = formatMatchingAnswerForReview(r.selected, r.terms, r.correct_pairs, true);
+        } else {
+            selectedText.textContent = formatAnswerForReview(r.selected);
+        }
         selectedRow.appendChild(selectedLabel);
         selectedRow.appendChild(selectedText);
         item.appendChild(selectedRow);
@@ -3436,9 +3447,11 @@ function showResults(data) {
         correctLabel.textContent = "Correct answer";
         const correctText = document.createElement("div");
         correctText.className = "answer-text correct-answer";
-        correctText.textContent = r.type === "matching"
-            ? formatMatchingAnswerForReview(r.correct_answer, r.terms, r.correct_pairs, false)
-            : formatAnswerForReview(r.correct_answer);
+        if (r.type === "matching") {
+            correctText.innerHTML = formatMatchingAnswerForReview(r.correct_answer, r.terms, r.correct_pairs, false);
+        } else {
+            correctText.textContent = formatAnswerForReview(r.correct_answer);
+        }
         correctRow.appendChild(correctLabel);
         correctRow.appendChild(correctText);
         item.appendChild(correctRow);

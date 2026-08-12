@@ -2369,6 +2369,47 @@ body {
     color: var(--danger);
 }
 
+.matching-review-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.matching-review-table th,
+.matching-review-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(var(--glass-base), 0.2);
+}
+
+.matching-review-table th {
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    background: rgba(var(--glass-base), 0.08);
+}
+
+.matching-review-table td.match-status {
+    width: 30px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.matching-review-table .match-correct td.match-status {
+    color: var(--success);
+}
+
+.matching-review-table .match-wrong td.match-status {
+    color: var(--danger);
+}
+
+.matching-review-table .match-wrong .match-def {
+    color: var(--danger);
+}
+
 .welcome-tip {
     background: var(--primary-light);
     border: 1px solid rgba(var(--bg-base), 0.08);
