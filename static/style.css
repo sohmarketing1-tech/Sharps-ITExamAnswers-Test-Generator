@@ -131,6 +131,38 @@ html[data-theme="forest"] {
     --orb-3-base: 251, 191, 36;
 }
 
+html[data-theme="jenelle"] {
+    --body-bg-1: #fff0f5;
+    --body-bg-2: #fce7f3;
+    --body-bg-3: #fbcfe8;
+    --bg: #fce7f3;
+    --surface: #fff5f7;
+    --surface-base: 255, 245, 247;
+    --primary: #be185d;
+    --primary-dark: #831843;
+    --primary-base: 190, 24, 93;
+    --primary-light-base: 251, 207, 232;
+    --primary-light: rgba(var(--primary-light-base), 0.85);
+    --primary-fill: #db2777;
+    --primary-fill-dark: #be185d;
+    --primary-fill-base: 219, 39, 119;
+    --accent: #ec4899;
+    --accent-dark: #db2777;
+    --accent-base: 236, 72, 153;
+    --accent-light-base: 251, 207, 232;
+    --text: #831843;
+    --text-muted: #be185d;
+    --text-on-bg: #831843;
+    --border: rgba(190, 24, 93, 0.2);
+    --glass-base: 255, 245, 247;
+    --shadow-base: 131, 24, 67;
+    --shadow-sm-base: 88, 24, 60;
+    --bg-base: 190, 24, 93;
+    --orb-1-base: 236, 72, 153;
+    --orb-2-base: 244, 114, 182;
+    --orb-3-base: 251, 146, 60;
+}
+
 *,
 *::before,
 *::after {

@@ -512,6 +512,7 @@ const THEMES = [
     { key: "midnight", label: "Midnight" },
     { key: "forest", label: "Forest" },
     { key: "sunset", label: "Sunset" },
+    { key: "jenelle", label: "Jenelle" },
 ];
 
 let profileDraft = { ...DEFAULT_PROFILE };
