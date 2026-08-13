@@ -138,6 +138,7 @@ const state = {
     wirelessMatch: { current: null, solved: 0, correct: 0, answered: false },
     logicGates: { current: null, solved: 0, correct: 0, answered: false },
     cloudModels: { current: null, solved: 0, correct: 0, answered: false },
+    myFc: { cards: [], index: 0, flipped: false, studying: false },
 };
 
 // DOM refs
@@ -171,6 +172,7 @@ const screens = {
     wirelessMatch: document.getElementById("wireless-match-screen"),
     logicGates: document.getElementById("logic-gates-screen"),
     cloudModels: document.getElementById("cloud-models-screen"),
+    myFlashcards: document.getElementById("my-flashcards-screen"),
 };
 
 const els = {
@@ -504,6 +506,23 @@ const els = {
     cloudModelsStatSolved: document.getElementById("cloud-models-stat-solved"),
     cloudModelsStatCorrect: document.getElementById("cloud-models-stat-correct"),
     cloudModelsStatAccuracy: document.getElementById("cloud-models-stat-accuracy"),
+    myFcFront: document.getElementById("my-fc-front"),
+    myFcBack: document.getElementById("my-fc-back"),
+    myFcAddBtn: document.getElementById("my-fc-add-btn"),
+    myFcMessage: document.getElementById("my-fc-message"),
+    myFcCount: document.getElementById("my-fc-count"),
+    myFcStudyBtn: document.getElementById("my-fc-study-btn"),
+    myFcList: document.getElementById("my-fc-list"),
+    myFcStudyArea: document.getElementById("my-fc-study-area"),
+    myFcCounter: document.getElementById("my-fc-counter"),
+    myFcShuffleBtn: document.getElementById("my-fc-shuffle-btn"),
+    myFcCard: document.getElementById("my-fc-card"),
+    myFcFrontText: document.getElementById("my-fc-front-text"),
+    myFcBackText: document.getElementById("my-fc-back-text"),
+    myFcPrevBtn: document.getElementById("my-fc-prev-btn"),
+    myFcFlipBtn: document.getElementById("my-fc-flip-btn"),
+    myFcNextBtn: document.getElementById("my-fc-next-btn"),
+    myFcExitBtn: document.getElementById("my-fc-exit-btn"),
 };
 
 const DEFAULT_PROFILE = { theme: "ocean", avatar_image: "" };
@@ -1630,7 +1649,7 @@ function switchTab(tabName) {
         stopTimer();
     }
     state.currentTab = tabName;
-    const galleryApps = ["gallery", "binary", "subnetDrills", "portMatch", "cliMatch", "osiSorter", "acronymDrill", "processSorter", "raidMatch", "ipv4Classify", "osCmdMatch", "cableId", "topologyId", "secplusFlash", "natoPhonetic", "precedenceMatch", "rfSpectrum", "serverRoles", "ohmsLaw", "wirelessMatch", "logicGates", "cloudModels"];
+    const galleryApps = ["gallery", "myFlashcards", "binary", "subnetDrills", "portMatch", "cliMatch", "osiSorter", "acronymDrill", "processSorter", "raidMatch", "ipv4Classify", "osCmdMatch", "cableId", "topologyId", "secplusFlash", "natoPhonetic", "precedenceMatch", "rfSpectrum", "serverRoles", "ohmsLaw", "wirelessMatch", "logicGates", "cloudModels"];
     if (els.tabPractice) els.tabPractice.classList.toggle("active", tabName === "practice");
     if (els.tabFlashcards) els.tabFlashcards.classList.toggle("active", tabName === "flashcards");
     if (els.tabHistory) els.tabHistory.classList.toggle("active", tabName === "history");
@@ -1723,6 +1742,9 @@ function switchTab(tabName) {
     } else if (tabName === "cloudModels") {
         showScreen("cloudModels");
         if (!state.cloudModels.current) generateCloudModelsQuestion();
+    } else if (tabName === "myFlashcards") {
+        showScreen("myFlashcards");
+        loadMyFlashcards();
     }
 }
 
@@ -5557,6 +5579,205 @@ function updateCloudModelsStats() {
 }
 
 els.cloudModelsNextBtn.addEventListener("click", generateCloudModelsQuestion);
+
+// ---------------------------------------------------------------------------
+// My Flashcards — create your own study cards
+// ---------------------------------------------------------------------------
+
+const MY_FC_LOCAL_KEY = "answrit_my_flashcards";
+
+async function loadMyFlashcards() {
+    if (state.user) {
+        try {
+            const res = await fetch("/api/my-flashcards", { credentials: "same-origin" });
+            const data = await res.json();
+            if (data.ok) {
+                state.myFc.cards = data.cards || [];
+                saveMyFcLocal();
+            }
+        } catch (e) {
+            const local = loadMyFcLocal();
+            if (local) state.myFc.cards = local;
+        }
+    } else {
+        const local = loadMyFcLocal();
+        if (local) state.myFc.cards = local;
+    }
+    renderMyFcList();
+}
+
+function saveMyFcLocal() {
+    try { localStorage.setItem(MY_FC_LOCAL_KEY, JSON.stringify(state.myFc.cards)); } catch (e) {}
+}
+
+function loadMyFcLocal() {
+    try {
+        const raw = localStorage.getItem(MY_FC_LOCAL_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+}
+
+function renderMyFcList() {
+    const cards = state.myFc.cards;
+    els.myFcCount.textContent = `(${cards.length})`;
+    els.myFcStudyBtn.disabled = cards.length === 0;
+
+    if (!cards.length) {
+        els.myFcList.innerHTML = '<p class="my-fc-empty">No cards yet. Add some above!</p>';
+        return;
+    }
+
+    els.myFcList.innerHTML = "";
+    cards.forEach((card) => {
+        const row = document.createElement("div");
+        row.className = "my-fc-card-row";
+        row.innerHTML = `
+            <div class="my-fc-card-preview">
+                <span class="my-fc-card-front">${escapeHtml(card.front)}</span>
+                <span class="my-fc-card-sep">→</span>
+                <span class="my-fc-card-back">${escapeHtml(card.back)}</span>
+            </div>
+            <button class="btn btn-danger btn-small my-fc-delete-btn" data-id="${card.id}" title="Delete card">✕</button>
+        `;
+        els.myFcList.appendChild(row);
+    });
+
+    els.myFcList.querySelectorAll(".my-fc-delete-btn").forEach((btn) => {
+        btn.addEventListener("click", () => deleteMyFc(btn.dataset.id));
+    });
+}
+
+function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+async function addMyFlashcard() {
+    const front = els.myFcFront.value.trim();
+    const back = els.myFcBack.value.trim();
+    if (!front || !back) {
+        els.myFcMessage.textContent = "Fill in both front and back.";
+        els.myFcMessage.className = "message error";
+        return;
+    }
+
+    if (state.user) {
+        try {
+            const res = await fetch("/api/my-flashcards", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "same-origin",
+                body: JSON.stringify({ front, back }),
+            });
+            const data = await res.json();
+            if (!data.ok) {
+                els.myFcMessage.textContent = data.error || "Could not add card.";
+                els.myFcMessage.className = "message error";
+                return;
+            }
+            state.myFc.cards.push(data.card);
+        } catch (e) {
+            els.myFcMessage.textContent = "Network error. Card saved locally.";
+            els.myFcMessage.className = "message";
+            state.myFc.cards.push({ id: String(Date.now()), front, back });
+        }
+    } else {
+        state.myFc.cards.push({ id: String(Date.now()), front, back });
+    }
+
+    saveMyFcLocal();
+    els.myFcFront.value = "";
+    els.myFcBack.value = "";
+    els.myFcMessage.textContent = "Card added!";
+    els.myFcMessage.className = "message success";
+    setTimeout(() => { els.myFcMessage.textContent = ""; }, 2000);
+    renderMyFcList();
+}
+
+async function deleteMyFc(cardId) {
+    if (state.user) {
+        try {
+            await fetch(`/api/my-flashcards/${cardId}`, {
+                method: "DELETE",
+                credentials: "same-origin",
+            });
+        } catch (e) {}
+    }
+    state.myFc.cards = state.myFc.cards.filter((c) => c.id !== cardId);
+    saveMyFcLocal();
+    renderMyFcList();
+}
+
+function startMyFcStudy() {
+    if (!state.myFc.cards.length) return;
+    state.myFc.index = 0;
+    state.myFc.flipped = false;
+    state.myFc.studying = true;
+    document.querySelector("#my-flashcards-screen .my-flashcards-create").classList.add("hidden");
+    document.querySelector("#my-flashcards-screen .my-flashcards-deck-section").classList.add("hidden");
+    els.myFcStudyArea.classList.remove("hidden");
+    renderMyFcStudyCard();
+}
+
+function exitMyFcStudy() {
+    state.myFc.studying = false;
+    document.querySelector("#my-flashcards-screen .my-flashcards-create").classList.remove("hidden");
+    document.querySelector("#my-flashcards-screen .my-flashcards-deck-section").classList.remove("hidden");
+    els.myFcStudyArea.classList.add("hidden");
+    renderMyFcList();
+}
+
+function renderMyFcStudyCard() {
+    const card = state.myFc.cards[state.myFc.index];
+    if (!card) return;
+    els.myFcCard.classList.toggle("flipped", state.myFc.flipped);
+    els.myFcFrontText.textContent = card.front;
+    els.myFcBackText.textContent = card.back;
+    els.myFcCounter.textContent = `Card ${state.myFc.index + 1} of ${state.myFc.cards.length}`;
+    els.myFcPrevBtn.disabled = state.myFc.index === 0;
+    els.myFcNextBtn.disabled = state.myFc.index === state.myFc.cards.length - 1;
+}
+
+function flipMyFc() {
+    state.myFc.flipped = !state.myFc.flipped;
+    els.myFcCard.classList.toggle("flipped", state.myFc.flipped);
+}
+
+function nextMyFc() {
+    if (state.myFc.index < state.myFc.cards.length - 1) {
+        state.myFc.index += 1;
+        state.myFc.flipped = false;
+        renderMyFcStudyCard();
+    }
+}
+
+function prevMyFc() {
+    if (state.myFc.index > 0) {
+        state.myFc.index -= 1;
+        state.myFc.flipped = false;
+        renderMyFcStudyCard();
+    }
+}
+
+function shuffleMyFc() {
+    for (let i = state.myFc.cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [state.myFc.cards[i], state.myFc.cards[j]] = [state.myFc.cards[j], state.myFc.cards[i]];
+    }
+    state.myFc.index = 0;
+    state.myFc.flipped = false;
+    renderMyFcStudyCard();
+}
+
+els.myFcAddBtn.addEventListener("click", addMyFlashcard);
+els.myFcStudyBtn.addEventListener("click", startMyFcStudy);
+els.myFcExitBtn.addEventListener("click", exitMyFcStudy);
+els.myFcCard.addEventListener("click", flipMyFc);
+els.myFcFlipBtn.addEventListener("click", flipMyFc);
+els.myFcNextBtn.addEventListener("click", nextMyFc);
+els.myFcPrevBtn.addEventListener("click", prevMyFc);
+els.myFcShuffleBtn.addEventListener("click", shuffleMyFc);
 
 // Initialize — wrap defaults in _restoringPrefs so savePrefs is not called
 state._restoringPrefs = true;

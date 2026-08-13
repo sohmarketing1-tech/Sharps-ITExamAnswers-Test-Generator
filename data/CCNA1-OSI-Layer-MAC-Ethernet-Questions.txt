@@ -1,0 +1,203 @@
+================================================================================
+     CCNA 1 FINAL EXAM STUDY GUIDE
+     OSI Layers, Sublayers, MAC & Ethernet
+================================================================================
+
+################################################################################
+#  KEY CONCEPTS TO MEMORIZE FIRST                                              #
+################################################################################
+
+  LLC SUBLAYER (Logical Link Control) = "The Software Side"
+  -------------------------------------------------------------------------
+  Think: LLC = "Links Layers to Communicate"
+    - Talks to upper layers (software <-> hardware bridge)
+    - Identifies which Layer 3 protocol is in the frame (IPv4 or IPv6)
+    - Adds control information to network data
+
+  MAC SUBLAYER (Media Access Control) = "The Hardware Side"
+  -------------------------------------------------------------------------
+  Think: MAC = "Makes the Actual frame & Controls media access"
+    - Builds the frame structure (delimiting, FCS trailer)
+    - Handles physical addressing (source/dest MAC)
+    - Controls when to transmit (CSMA/CD, CSMA/CA)
+    - Integrates different Ethernet speeds (10G fiber <-> 1G copper)
+
+  QUICK RULE:
+    If the answer mentions "upper layer software" or "identifies protocol" = LLC
+    If the answer mentions "frame structure," "FCS," "delimiting," "CSMA" = MAC
+
+
+################################################################################
+#  SECTION 1: OSI MODEL LAYERS                                                 #
+################################################################################
+
+  Q: Which 3 OSI layers map to the TCP/IP Application layer?
+  >>> APPLICATION, SESSION, PRESENTATION <<<
+      Memory trick: "A-S-P" = "All Sessions Present"
+
+  Q: What does the data link layer do?
+  >>> Exchanges frames over common local media <<<
+  >>> Shields upper layers from knowing which physical medium is used <<<
+      Memory trick: Data Link = "Delivers Locally"
+
+  Q: What does a router do with an Ethernet frame header when forwarding?
+  >>> REMOVES it and creates a NEW Layer 2 header <<<
+      Memory trick: Routers STRIP and REBUILD Layer 2 at every hop
+
+
+################################################################################
+#  SECTION 2: LLC SUBLAYER FUNCTIONS                                           #
+#  (These rotate through many answer combos - memorize ALL LLC answers)        #
+################################################################################
+
+  ALL CORRECT LLC ANSWERS (pick any 2 from these when you see them):
+  +---------------------------------------------------------------------------+
+  |  * Enables IPv4 and IPv6 to utilize the same physical medium              |
+  |  * Places info in frame identifying which Layer 3 protocol is encapsulated|
+  |  * Handles communication between upper layer software and Ethernet NIC HW |
+  |  * Adds Ethernet control information to network protocol data             |
+  +---------------------------------------------------------------------------+
+
+  WRONG ANSWERS (these are MAC, not LLC):
+  +---------------------------------------------------------------------------+
+  |  x Implements CSMA/CD over legacy half-duplex media              --> MAC  |
+  |  x Integrates Layer 2 flows between 10G fiber and 1G copper     --> MAC  |
+  |  x Implements a process to delimit fields within Ethernet frame  --> MAC  |
+  |  x Responsible for internal structure of Ethernet frame          --> MAC  |
+  |  x Applies source and destination MAC addresses to frame         --> MAC  |
+  |  x Implements trailer with FCS for error detection               --> MAC  |
+  +---------------------------------------------------------------------------+
+
+
+################################################################################
+#  SECTION 3: MAC SUBLAYER FUNCTIONS                                           #
+#  (Also rotates - memorize ALL MAC answers)                                   #
+################################################################################
+
+  ALL CORRECT MAC ANSWERS (pick any 2 from these when you see them):
+  +---------------------------------------------------------------------------+
+  |  * Implements trailer with frame check sequence for error detection       |
+  |  * Implements a process to delimit fields within an Ethernet 2 frame      |
+  |  * Responsible for internal structure of Ethernet frame                   |
+  |  * Integrates Layer 2 flows between 10G fiber and 1G copper              |
+  |  * Implements CSMA/CD over legacy shared half-duplex media               |
+  |  * Applies delimiting of fields to synchronize communication             |
+  |  * Applies source and destination MAC addresses to Ethernet frame        |
+  +---------------------------------------------------------------------------+
+
+  MAC SUBLAYER PRIMARY RESPONSIBILITIES:
+  >>> Accessing the media + Data encapsulation <<<
+
+
+################################################################################
+#  SECTION 4: ETHERNET & FRAME CONCEPTS                                        #
+################################################################################
+
+  Q: Which frame field ensures data wasn't altered during transmission?
+  >>> Frame Check Sequence (FCS) field <<<
+
+  Q: Contention-based access on WIRELESS?
+  >>> CSMA/CA <<< (CA = Collision Avoidance, for wireless)
+
+  Q: Contention-based access on WIRED Ethernet?
+  >>> CSMA/CD <<< (CD = Collision Detection, for wired)
+
+  Q: Three characteristics of CSMA/CD:
+  +---------------------------------------------------------------------------+
+  |  1. Device LISTENS and WAITS until media is not busy                      |
+  |  2. After collision, hosts wait a RANDOM TIME before retransmitting       |
+  |  3. ALL devices on segment SEE all data on the medium                     |
+  +---------------------------------------------------------------------------+
+      Memory trick: "Listen, Wait Random, Everyone Sees"
+
+
+################################################################################
+#  SECTION 5: MAC ADDRESS BEHAVIOR                                             #
+################################################################################
+
+  Q: What places a NIC at the data link layer?
+  >>> Its MAC address <<<
+
+  Q: MAC vs IP addresses during transmission (no NAT):
+  +---------------------------------------------------------------------------+
+  |  IP ADDRESS  = stays CONSTANT end-to-end (never changes hop to hop)       |
+  |  MAC ADDRESS = CHANGES at every hop (local significance only)             |
+  +---------------------------------------------------------------------------+
+      Memory trick: "IP = Identity (permanent), MAC = Map (local directions)"
+
+  Q: Frame destination when sending to remote network?
+  >>> MAC address of the DEFAULT GATEWAY <<<
+      (NOT the destination host's MAC - you don't know it across networks!)
+
+  Q: Why does a Layer 2 switch need an IP address?
+  >>> To be managed remotely <<<
+
+
+################################################################################
+#  SECTION 6: MATCHING - FRAME FIELDS                                          #
+################################################################################
+
+  FRAME FIELD          |  FUNCTION
+  ---------------------|----------------------------------------------------
+  Addressing           |  Directs the frame toward its destination
+  Error Detection      |  Checks if frame was damaged (FCS)
+  Type                 |  Used by LLC to identify Layer 3 protocol
+  Frame Start          |  Identifies the beginning of a frame
+
+
+################################################################################
+#  SECTION 7: MATCHING - IP vs MAC ADDRESS CHARACTERISTICS                     #
+################################################################################
+
+  IP ADDRESS                              |  MAC ADDRESS
+  ----------------------------------------|-----------------------------------
+  Contained in Layer 3 header             |  Contained in Layer 2 header
+  Network portion + unique identifier     |  OUI + unique identifier
+  32 bits (IPv4) or 128 bits (IPv6)       |  48 bits
+
+
+################################################################################
+#  SECTION 8: MATCHING - OSI LAYER HEADER FIELDS                               #
+################################################################################
+
+  LAYER 2 (Data Link)     |  LAYER 3 (Network)      |  LAYER 4 (Transport)
+  -------------------------|-------------------------|------------------------
+  802.2 header             |  TTL                    |  Acknowledgment Number
+  FCS (Frame Check Seq)    |  Source IP Address      |  Destination Port Number
+  Destination MAC Address  |  Destination Options    |
+
+      Memory trick:
+        Layer 2 = "Frames" (MAC, FCS, 802.2)
+        Layer 3 = "Packets" (IP, TTL)
+        Layer 4 = "Segments" (Ports, ACK numbers)
+
+
+################################################################################
+#  CHEAT SHEET - RAPID FIRE ANSWERS                                            #
+################################################################################
+
+  LLC or MAC?
+    "upper layer software / NIC hardware"     --> LLC
+    "identifies Layer 3 protocol"             --> LLC
+    "IPv4 and IPv6 same medium"               --> LLC
+    "control information to protocol data"    --> LLC
+    "FCS / error detection trailer"           --> MAC
+    "delimiting / frame structure"            --> MAC
+    "CSMA/CD"                                 --> MAC
+    "source/dest MAC addresses"               --> MAC
+    "integrates 10G and 1G"                   --> MAC
+
+  Wireless vs Wired?
+    Wireless = CSMA/CA
+    Wired    = CSMA/CD
+
+  Remote network frame destination?
+    = Default gateway's MAC address
+
+  Data link layer main job?
+    = Shields upper layers from physical medium details
+    = Exchanges frames over local media
+
+================================================================================
+                         END OF STUDY GUIDE
+================================================================================

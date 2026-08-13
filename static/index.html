@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=109" />
+    <link rel="stylesheet" href="/style.css?v=110" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -701,6 +701,14 @@
                 </div>
 
                 <div class="app-gallery-grid">
+                    <button class="app-tile app-tile-featured" data-gallery-app="myFlashcards">
+                        <span class="app-tile-icon app-tile-icon-myflash" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+                        </span>
+                        <span class="app-tile-name">My Flashcards</span>
+                        <span class="app-tile-subtitle">Create your own study cards</span>
+                    </button>
+
                     <button class="app-tile" data-gallery-app="binary">
                         <span class="app-tile-icon app-tile-icon-binary" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
@@ -868,6 +876,86 @@
                         <span class="app-tile-name">Cloud Service Models</span>
                         <span class="app-tile-subtitle">IaaS, PaaS, SaaS &amp; DaaS</span>
                     </button>
+                </div>
+            </section>
+
+            <!-- My Flashcards Screen -->
+            <section id="my-flashcards-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">My Flashcards</h2>
+                            <p class="screen-header-subtitle">Create your own study cards and review them anytime.</p>
+                            <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card my-flashcards-create">
+                    <h3 class="my-flashcards-section-title">Create a Card</h3>
+                    <div class="form-group">
+                        <label for="my-fc-front">Front (question or term)</label>
+                        <textarea id="my-fc-front" class="my-fc-input" rows="2" placeholder="e.g. What port does HTTPS use?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="my-fc-back">Back (answer or definition)</label>
+                        <textarea id="my-fc-back" class="my-fc-input" rows="2" placeholder="e.g. Port 443"></textarea>
+                    </div>
+                    <div class="button-row">
+                        <button id="my-fc-add-btn" class="btn btn-success">Add Card</button>
+                    </div>
+                    <p id="my-fc-message" class="message"></p>
+                </div>
+
+                <div class="card my-flashcards-deck-section">
+                    <div class="my-flashcards-deck-header">
+                        <h3 class="my-flashcards-section-title">My Cards <span id="my-fc-count" class="my-fc-count">(0)</span></h3>
+                        <button id="my-fc-study-btn" class="btn btn-primary btn-small" disabled>Study My Cards</button>
+                    </div>
+                    <div id="my-fc-list" class="my-fc-list">
+                        <p class="my-fc-empty">No cards yet. Add some above!</p>
+                    </div>
+                </div>
+
+                <div id="my-fc-study-area" class="flashcard-study-area hidden">
+                    <div class="flashcard-progress">
+                        <span id="my-fc-counter">Card 1 of 0</span>
+                        <button id="my-fc-shuffle-btn" class="btn btn-secondary btn-small">Shuffle</button>
+                    </div>
+
+                    <div class="flashcard-stack">
+                        <div id="my-fc-card" class="flashcard" title="Click or press Space to flip">
+                            <div class="flashcard-inner">
+                                <div class="flashcard-front">
+                                    <span class="flashcard-label">Front</span>
+                                    <h3 id="my-fc-front-text"></h3>
+                                </div>
+                                <div class="flashcard-back">
+                                    <div class="flashcard-back-main">
+                                        <span class="flashcard-label">Back</span>
+                                        <p id="my-fc-back-text"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flashcard-controls">
+                        <button id="my-fc-prev-btn" class="btn btn-secondary">Previous</button>
+                        <button id="my-fc-flip-btn" class="btn btn-primary btn-large">Flip</button>
+                        <button id="my-fc-next-btn" class="btn btn-secondary">Next</button>
+                    </div>
+
+                    <p class="flashcard-hint">
+                        Space = flip &nbsp;&bull;&nbsp; &larr; / &rarr; = previous / next
+                    </p>
+
+                    <div class="button-row">
+                        <button id="my-fc-exit-btn" class="btn btn-secondary btn-small">Back to My Cards</button>
+                    </div>
                 </div>
             </section>
 
@@ -1813,6 +1901,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=89" defer></script>
+    <script src="/app.js?v=90" defer></script>
 </body>
 </html>

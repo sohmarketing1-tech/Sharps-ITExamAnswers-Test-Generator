@@ -4,6 +4,7 @@ import json
 import os
 import random
 import secrets
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -1225,6 +1226,68 @@ def delete_flashcard_session():
         return True
 
     modify_user_data(_delete_session)
+    return jsonify({"ok": True})
+
+
+# ---------------------------------------------------------------------------
+# Custom flashcards ("My Flashcards") endpoints
+# ---------------------------------------------------------------------------
+
+@app.route("/api/my-flashcards", methods=["GET"])
+def get_my_flashcards():
+    """Return the logged-in user's custom flashcard deck."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to use My Flashcards."}), 401
+    user_data = load_user_data()
+    record = user_data.get(user, {})
+    cards = record.get("my_flashcards", [])
+    return jsonify({"ok": True, "cards": cards})
+
+
+@app.route("/api/my-flashcards", methods=["POST"])
+def add_my_flashcard():
+    """Add a new custom flashcard for the logged-in user."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to create flashcards."}), 401
+    data = request.get_json(silent=True) or {}
+    front = data.get("front", "").strip()
+    back = data.get("back", "").strip()
+    if not front or not back:
+        return jsonify({"ok": False, "error": "Both front and back are required."}), 400
+
+    card_id = str(int(time.time() * 1000))
+
+    def _add_card(user_data: dict):
+        record = user_data.setdefault(user, {})
+        cards = record.setdefault("my_flashcards", [])
+        cards.append({"id": card_id, "front": front, "back": back})
+        return True
+
+    modify_user_data(_add_card)
+    return jsonify({"ok": True, "card": {"id": card_id, "front": front, "back": back}})
+
+
+@app.route("/api/my-flashcards/<card_id>", methods=["DELETE"])
+def delete_my_flashcard(card_id):
+    """Delete a custom flashcard by ID."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to manage flashcards."}), 401
+
+    def _delete_card(user_data: dict):
+        record = user_data.get(user)
+        if not record:
+            return False
+        cards = record.get("my_flashcards", [])
+        original_len = len(cards)
+        record["my_flashcards"] = [c for c in cards if c.get("id") != card_id]
+        return len(record["my_flashcards"]) < original_len
+
+    deleted = modify_user_data(_delete_card)
+    if deleted is False:
+        return jsonify({"ok": False, "error": "Card not found."}), 404
     return jsonify({"ok": True})
 
 

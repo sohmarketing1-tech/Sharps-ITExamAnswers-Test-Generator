@@ -5572,3 +5572,110 @@ body {
         font-size: 2rem;
     }
 }
+
+/* ── My Flashcards ────────────────────────────────────────────────────────── */
+.my-flashcards-create,
+.my-flashcards-deck-section {
+    margin-bottom: 16px;
+}
+
+.my-flashcards-section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--text);
+}
+
+.my-fc-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+.my-fc-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.my-fc-count {
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.my-flashcards-deck-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.my-fc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.my-fc-empty {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 16px 0;
+}
+
+.my-fc-card-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(var(--glass-base), 0.06);
+    border: 1px solid var(--border);
+}
+
+.my-fc-card-preview {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.my-fc-card-front {
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45%;
+    font-size: 0.9rem;
+}
+
+.my-fc-card-sep {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.my-fc-card-back {
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45%;
+    font-size: 0.9rem;
+}
+
+.my-fc-delete-btn {
+    flex-shrink: 0;
+    padding: 4px 8px !important;
+    font-size: 0.8rem;
+}
