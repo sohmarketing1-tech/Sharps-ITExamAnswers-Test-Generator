@@ -38,7 +38,7 @@
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="/style.css?v=110" />
+    <link rel="stylesheet" href="/style.css?v=132" />
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">
@@ -182,15 +182,13 @@
 
     <div class="tab-nav-row">
         <div class="tab-nav" role="tablist" aria-label="Main navigation">
-            <button id="tab-practice" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="tab-label">Practice</span></button>
-            <button id="tab-flashcards" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span class="tab-label">Flashcards</span></button>
+            <button id="tab-home" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10"/></svg><span class="tab-label">Home</span></button>
+            <button id="tab-practice" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="tab-label">Study</span></button>
+            <button id="tab-all-apps" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="tab-label">Apps</span></button>
             <button id="tab-history" class="tab-btn" role="tab" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="tab-label">History</span></button>
+            <button id="tab-flashcards" class="tab-btn hidden" role="tab" aria-selected="false" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span class="tab-label">Flashcards</span></button>
             <button id="tab-community" class="tab-btn hidden" role="tab" aria-selected="false" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5a8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span class="tab-label">Chat</span></button>
         </div>
-        <button id="tab-all-apps" class="all-apps-pill" role="tab" aria-selected="false" aria-label="All Apps">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-            <span>All Apps</span>
-        </button>
     </div>
 
     <div id="welcome-banner" class="welcome-banner hidden">
@@ -207,53 +205,210 @@
         <main id="app">
             <!-- Home Screen -->
             <section id="home-screen" class="screen active">
-                <div class="home-hero home-hero-compact">
-                    <div class="home-hero-badge">Study smarter · Pass faster</div>
-                    <h1>$H1_TEXT$</h1>
-                    <p>$SEO_INTRO$</p>
-                    <div class="home-quick-actions">
-                        <button class="btn btn-primary btn-large" data-tab="practice">Start a practice test</button>
-                        <button class="btn btn-secondary btn-large" data-tab="flashcards">Open flashcards</button>
-                    </div>
-                    <p class="home-hero-hint">Free to use · Sign up to save your progress</p>
+                <!-- Hero -->
+                <div class="home-hero-col">
+                    <h1 class="home-welcome-title">Welcome back</h1>
+                    <p class="home-welcome-sub">What would you like to do?</p>
                 </div>
-                <div class="home-features">
-                    <div class="feature">
-                        <span class="feature-icon" aria-hidden="true">
+
+                <!-- Primary Actions -->
+                <div class="home-actions">
+                    <button class="home-action" data-tab="practice">
+                        <div class="home-action-icon home-action-icon-blue">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                        </span>
-                        <h3>Practice Tests</h3>
-                        <p>Timed quizzes and mastery mode for every exam.</p>
-                    </div>
-                    <div class="feature">
-                        <span class="feature-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-                        </span>
-                        <h3>Flashcards</h3>
-                        <p>Flip through questions and mark cards to review later.</p>
-                    </div>
-                    <div class="feature">
-                        <span class="feature-icon" aria-hidden="true">
+                        </div>
+                        <div class="home-action-text">
+                            <span class="home-action-title">Exam Study</span>
+                            <span class="home-action-desc">Practice tests, flashcards &amp; mastery mode</span>
+                        </div>
+                    </button>
+                    <button class="home-action" data-tab="gallery">
+                        <div class="home-action-icon home-action-icon-amber">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                        </div>
+                        <div class="home-action-text">
+                            <span class="home-action-title">Mini-Games</span>
+                            <span class="home-action-desc">22 interactive drills to reinforce learning</span>
+                        </div>
+                    </button>
+                    <button class="home-action" data-tab="history">
+                        <div class="home-action-icon home-action-icon-purple">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        </span>
-                        <h3>Progress Tracking</h3>
-                        <p>Save history and see what you still need to master.</p>
+                        </div>
+                        <div class="home-action-text">
+                            <span class="home-action-title">My Progress</span>
+                            <span class="home-action-desc">Scores, streaks &amp; study history</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Recent Activity Strip -->
+                <button class="home-recent-strip" id="home-recent-activity">
+                    <div class="home-recent-icon" id="home-recent-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="home-recent-info">
+                        <span class="home-recent-label" id="home-recent-label">Recent Activity</span>
+                        <span class="home-recent-detail" id="home-recent-detail">Find something to study &mdash; it will show here</span>
+                    </div>
+                    <span class="home-recent-cta" id="home-recent-cta">Get started &rarr;</span>
+                </button>
+
+                <!-- Login prompt -->
+                <div class="home-login-prompt" id="home-login-prompt">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span class="home-login-text">Log in to save scores, track mastery &amp; sync across devices</span>
+                    <button class="home-login-btn" id="home-login-btn">Log in</button>
+                </div>
+
+                <!-- Discover More -->
+                <div class="home-discover">
+                    <span class="home-discover-label">Discover more</span>
+                    <div class="home-discover-cards">
+                        <button class="home-discover-card home-discover-green home-discover-disabled" disabled aria-disabled="true">
+                            <div class="home-discover-card-text">
+                                <span class="home-discover-badge home-discover-badge-soon">Coming Soon</span>
+                                <span class="home-discover-title">CLI Practice</span>
+                                <span class="home-discover-desc">Practice IOS commands in a terminal simulator</span>
+                            </div>
+                            <div class="home-discover-graphic">
+                                <div class="discover-terminal">
+                                    <div class="discover-term-bar"><span class="discover-term-dot"></span><span class="discover-term-dot"></span><span class="discover-term-dot"></span></div>
+                                    <div class="discover-term-body">
+                                        <div><span class="discover-t-prompt">Router&gt;</span> enable</div>
+                                        <div><span class="discover-t-prompt">Router#</span> conf t</div>
+                                        <div class="discover-t-dim">Enter configuration commands...</div>
+                                        <div><span class="discover-t-prompt">R1(config)#</span> <span class="discover-t-blink">|</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                        <button class="home-discover-card home-discover-violet home-discover-disabled" disabled aria-disabled="true">
+                            <div class="home-discover-card-text">
+                                <span class="home-discover-badge home-discover-badge-soon">Coming Soon</span>
+                                <span class="home-discover-title">Build Flashcards</span>
+                                <span class="home-discover-desc">Create custom decks for any subject</span>
+                            </div>
+                            <div class="home-discover-graphic">
+                                <div class="discover-cards-art">
+                                    <div class="discover-fc discover-fc-1"><span>Q: What layer does TCP operate at?</span></div>
+                                    <div class="discover-fc discover-fc-2"><span>A: Transport Layer (Layer 4)</span></div>
+                                </div>
+                            </div>
+                        </button>
                     </div>
                 </div>
-                <div class="seo-content">
-                    <h2>Study help for ITE, CCNA, and Navy IT A School</h2>
-                    <p>AnswrIT is a free study tool for Netacad students and Navy IT rate A school trainees. Practice with real ITE answers, CCNA answers, and IT Essentials exam questions until you pass.</p>
-                    <h3>Available exams</h3>
-                    $EXAM_LINKS$
-                    <h3>Frequently asked questions</h3>
-                    <dl>
-                        <dt>What is ITE?</dt>
-                        <dd>IT Essentials (ITE) is the Cisco Netacad course that covers PC hardware, software, networking basics, and troubleshooting.</dd>
-                        <dt>Is AnswrIT free?</dt>
-                        <dd>Yes. Practice tests and flashcards are free. Signing up lets you save your history and mastery progress.</dd>
-                        <dt>Can I use this for Navy IT A school?</dt>
-                        <dd>Yes. The ITE and CCNA question banks cover the material used in the Navy IT rate A school curriculum.</dd>
-                    </dl>
+            </section>
+
+            <!-- Packet Tracer Section Screen -->
+            <section id="packet-tracer-screen" class="screen">
+                <div class="screen-header">
+                    <div class="screen-header-main">
+                        <span class="screen-header-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8l3 3-3 3M13 14h4"/></svg>
+                        </span>
+                        <div>
+                            <h2 class="screen-header-title">CCNA 1 Packet Tracer Final</h2>
+                            <p class="screen-header-subtitle">Practice subnetting, CLI commands, and lab tasks required for the PT Final Exam.</p>
+                            <button id="pt-back-home" class="app-back-btn">&larr; Home</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-activities">
+                    <div class="pt-activity-grid">
+                        <button class="pt-activity-card" data-pt-activity="ptSubnet">
+                            <div class="pt-activity-icon pt-activity-icon-subnet">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h6M7 16h4"/></svg>
+                            </div>
+                            <div class="pt-activity-text">
+                                <span class="pt-activity-title">Subnetting Practice</span>
+                                <span class="pt-activity-desc">Calculate subnets, hosts, and addressing schemes for the PT final topology.</span>
+                            </div>
+                        </button>
+
+                        <button class="pt-activity-card" data-pt-activity="ptCli">
+                            <div class="pt-activity-icon pt-activity-icon-cli">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 9l3 3-3 3M13 15h5"/></svg>
+                            </div>
+                            <div class="pt-activity-text">
+                                <span class="pt-activity-title">CLI Simulator</span>
+                                <span class="pt-activity-desc">Practice router &amp; switch commands in an interactive terminal.</span>
+                            </div>
+                        </button>
+
+                        <div class="pt-activity-card pt-activity-card-coming">
+                            <div class="pt-activity-icon pt-activity-icon-topo">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v5M7 17l4-5M17 17l-4-5"/></svg>
+                            </div>
+                            <div class="pt-activity-text">
+                                <span class="pt-activity-title">Topology Builder</span>
+                                <span class="pt-activity-desc">Map out network topologies. Coming soon.</span>
+                            </div>
+                            <span class="hub-card-badge">Soon</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PT Subnetting Activity -->
+                <div id="pt-subnet-area" class="pt-sub-area hidden">
+                    <div class="card">
+                        <div class="pt-sub-header">
+                            <button id="pt-subnet-back" class="btn btn-secondary btn-small">&larr; Back</button>
+                            <h3>Packet Tracer Subnetting</h3>
+                        </div>
+                        <p class="pt-sub-desc">Given a network and required subnets/hosts, calculate the correct addressing scheme.</p>
+                        <div id="pt-subnet-problem" class="pt-subnet-problem">
+                            <p id="pt-subnet-prompt" class="pt-subnet-prompt"></p>
+                        </div>
+                        <div class="pt-subnet-inputs">
+                            <div class="form-group">
+                                <label for="pt-subnet-mask">Subnet Mask</label>
+                                <input id="pt-subnet-mask" type="text" class="my-fc-input" placeholder="e.g. 255.255.255.192" />
+                            </div>
+                            <div class="form-group">
+                                <label for="pt-subnet-hosts">Usable Hosts per Subnet</label>
+                                <input id="pt-subnet-hosts" type="text" class="my-fc-input" placeholder="e.g. 62" />
+                            </div>
+                            <div class="form-group">
+                                <label for="pt-subnet-subnets">Number of Subnets</label>
+                                <input id="pt-subnet-subnets" type="text" class="my-fc-input" placeholder="e.g. 4" />
+                            </div>
+                        </div>
+                        <div class="button-row">
+                            <button id="pt-subnet-check" class="btn btn-primary">Check Answer</button>
+                            <button id="pt-subnet-next" class="btn btn-secondary">Next Problem</button>
+                        </div>
+                        <p id="pt-subnet-message" class="message"></p>
+                        <div id="pt-subnet-breakdown" class="pt-subnet-breakdown hidden"></div>
+                    </div>
+                </div>
+
+                <!-- PT CLI Simulator Activity -->
+                <div id="pt-cli-area" class="pt-sub-area hidden">
+                    <div class="card">
+                        <div class="pt-sub-header">
+                            <button id="pt-cli-back" class="btn btn-secondary btn-small">&larr; Back</button>
+                            <h3>CLI Simulator</h3>
+                        </div>
+                        <p class="pt-sub-desc">Type Cisco IOS commands to complete the task. The terminal will validate your input.</p>
+                        <div id="pt-cli-task" class="pt-cli-task">
+                            <p id="pt-cli-task-text" class="pt-cli-task-text"></p>
+                        </div>
+                        <div id="pt-cli-terminal" class="pt-cli-terminal">
+                            <div id="pt-cli-output" class="pt-cli-output"></div>
+                            <div class="pt-cli-input-row">
+                                <span id="pt-cli-prompt-text" class="pt-cli-prompt-label">Router&gt;</span>
+                                <input id="pt-cli-input" type="text" class="pt-cli-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type command here..." />
+                            </div>
+                        </div>
+                        <div class="pt-cli-hints">
+                            <button id="pt-cli-hint-btn" class="btn btn-secondary btn-small">Show Hint</button>
+                            <button id="pt-cli-reset-btn" class="btn btn-secondary btn-small">Reset Task</button>
+                            <button id="pt-cli-next-btn" class="btn btn-primary btn-small" disabled>Next Task</button>
+                        </div>
+                        <p id="pt-cli-message" class="message"></p>
+                    </div>
                 </div>
             </section>
 
@@ -265,8 +420,8 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                         </span>
                         <div>
-                            <h2 class="screen-header-title">Practice Test</h2>
-                            <p class="screen-header-subtitle">Select an exam, choose your settings, and start a timed test.</p>
+                            <h2 class="screen-header-title">Exam Study</h2>
+                            <p class="screen-header-subtitle">Practice tests, flashcards &amp; mastery — pick a mode below.</p>
                         </div>
                     </div>
                 </div>
@@ -287,6 +442,7 @@
                                 <div class="mode-toggle">
                                     <button id="mode-practice" class="btn btn-primary mode-btn active">Practice Test</button>
                                     <button id="mode-mastery" class="btn btn-secondary mode-btn">Mastery Mode</button>
+                                    <button id="mode-flashcards" class="btn btn-secondary mode-btn">Flashcards</button>
                                 </div>
                                 <p id="mode-description" class="mode-description">New random questions every time. Good for quick review.</p>
                             </div>
@@ -321,6 +477,28 @@
                                 <button id="mastery-reset-btn" class="btn btn-secondary" disabled>Reset Mastery</button>
                             </div>
                             <p id="mastery-message" class="message"></p>
+                        </div>
+
+                        <div id="flashcard-panel" class="flashcard-panel hidden">
+                            <div class="form-group">
+                                <label>Card style</label>
+                                <div class="mode-toggle">
+                                    <button id="fc-panel-mode-question" class="btn btn-primary mode-btn active">Question only</button>
+                                    <button id="fc-panel-mode-choices" class="btn btn-secondary mode-btn">Show choices</button>
+                                </div>
+                                <p id="fc-panel-mode-desc" class="mode-description">Front shows just the question. Flip to see the answer.</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Cards to show</label>
+                                <div class="mode-toggle">
+                                    <button id="fc-panel-filter-all" class="btn btn-primary mode-btn active">All cards</button>
+                                    <button id="fc-panel-filter-review" class="btn btn-secondary mode-btn">Review only</button>
+                                </div>
+                                <p id="fc-panel-review-count" class="mode-description">Log in to keep a saved review list.</p>
+                            </div>
+                            <div class="button-row compact">
+                                <button id="fc-panel-start-btn" class="btn btn-success" disabled>Start Flashcards</button>
+                            </div>
                         </div>
 
                         <div class="button-row" id="start-row">
@@ -701,12 +879,20 @@
                 </div>
 
                 <div class="app-gallery-grid">
-                    <button class="app-tile app-tile-featured" data-gallery-app="myFlashcards">
+                    <a href="/comms-test-1.html" class="app-tile">
+                        <span class="app-tile-icon app-tile-icon-comms" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 16 0M8 12a4 4 0 0 1 8 0M10 12a2 2 0 0 1 4 0"/><circle cx="12" cy="12" r="1"/><path d="M2 22l4-4M22 22l-4-4"/></svg>
+                        </span>
+                        <span class="app-tile-name">Comms Test 1</span>
+                        <span class="app-tile-subtitle">Naval Messaging flashcards</span>
+                    </a>
+
+                    <button class="app-tile app-tile-featured app-tile-disabled" disabled aria-disabled="true">
                         <span class="app-tile-icon app-tile-icon-myflash" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
                         </span>
                         <span class="app-tile-name">My Flashcards</span>
-                        <span class="app-tile-subtitle">Create your own study cards</span>
+                        <span class="app-tile-subtitle">Coming soon</span>
                     </button>
 
                     <button class="app-tile" data-gallery-app="binary">
@@ -876,6 +1062,7 @@
                         <span class="app-tile-name">Cloud Service Models</span>
                         <span class="app-tile-subtitle">IaaS, PaaS, SaaS &amp; DaaS</span>
                     </button>
+
                 </div>
             </section>
 
@@ -888,38 +1075,74 @@
                         </span>
                         <div>
                             <h2 class="screen-header-title">My Flashcards</h2>
-                            <p class="screen-header-subtitle">Create your own study cards and review them anytime.</p>
+                            <p class="screen-header-subtitle">Create your own study decks and review them anytime.</p>
                             <button class="app-back-btn" data-back-to-gallery>&larr; All Apps</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="card my-flashcards-create">
-                    <h3 class="my-flashcards-section-title">Create a Card</h3>
-                    <div class="form-group">
-                        <label for="my-fc-front">Front (question or term)</label>
-                        <textarea id="my-fc-front" class="my-fc-input" rows="2" placeholder="e.g. What port does HTTPS use?"></textarea>
+                <!-- Deck list view -->
+                <div id="my-fc-decks-view">
+                    <div class="card my-fc-new-deck-card">
+                        <h3 class="my-flashcards-section-title">Create a New Deck</h3>
+                        <div class="form-group">
+                            <label for="my-fc-deck-name">Deck Name</label>
+                            <input id="my-fc-deck-name" type="text" class="my-fc-input" placeholder="e.g. Subnetting, Ports, OSI Model" />
+                        </div>
+                        <div class="button-row">
+                            <button id="my-fc-create-deck-btn" class="btn btn-success">Create Deck</button>
+                        </div>
+                        <p id="my-fc-deck-message" class="message"></p>
                     </div>
-                    <div class="form-group">
-                        <label for="my-fc-back">Back (answer or definition)</label>
-                        <textarea id="my-fc-back" class="my-fc-input" rows="2" placeholder="e.g. Port 443"></textarea>
-                    </div>
-                    <div class="button-row">
-                        <button id="my-fc-add-btn" class="btn btn-success">Add Card</button>
-                    </div>
-                    <p id="my-fc-message" class="message"></p>
-                </div>
 
-                <div class="card my-flashcards-deck-section">
-                    <div class="my-flashcards-deck-header">
-                        <h3 class="my-flashcards-section-title">My Cards <span id="my-fc-count" class="my-fc-count">(0)</span></h3>
-                        <button id="my-fc-study-btn" class="btn btn-primary btn-small" disabled>Study My Cards</button>
-                    </div>
-                    <div id="my-fc-list" class="my-fc-list">
-                        <p class="my-fc-empty">No cards yet. Add some above!</p>
+                    <div class="card my-flashcards-deck-section">
+                        <h3 class="my-flashcards-section-title">My Decks <span id="my-fc-deck-count" class="my-fc-count">(0)</span></h3>
+                        <div id="my-fc-deck-list" class="my-fc-deck-list">
+                            <p class="my-fc-empty">No decks yet. Create one above!</p>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Deck detail view (cards in a deck) -->
+                <div id="my-fc-deck-detail" class="hidden">
+                    <div class="card my-fc-deck-detail-header-card">
+                        <div class="my-fc-deck-detail-header">
+                            <div>
+                                <button id="my-fc-back-to-decks" class="btn btn-secondary btn-small">&larr; All Decks</button>
+                                <h3 id="my-fc-deck-title" class="my-flashcards-section-title" style="margin-top:8px"></h3>
+                            </div>
+                            <div class="my-fc-deck-actions">
+                                <button id="my-fc-study-btn" class="btn btn-primary btn-small" disabled>Study</button>
+                                <button id="my-fc-delete-deck-btn" class="btn btn-danger btn-small">Delete Deck</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card my-flashcards-create">
+                        <h3 class="my-flashcards-section-title">Add a Card</h3>
+                        <div class="form-group">
+                            <label for="my-fc-front">Front (question or term)</label>
+                            <textarea id="my-fc-front" class="my-fc-input" rows="2" placeholder="e.g. What port does HTTPS use?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="my-fc-back">Back (answer or definition)</label>
+                            <textarea id="my-fc-back" class="my-fc-input" rows="2" placeholder="e.g. Port 443"></textarea>
+                        </div>
+                        <div class="button-row">
+                            <button id="my-fc-add-btn" class="btn btn-success">Add Card</button>
+                        </div>
+                        <p id="my-fc-message" class="message"></p>
+                    </div>
+
+                    <div class="card my-flashcards-deck-section">
+                        <h3 class="my-flashcards-section-title">Cards <span id="my-fc-count" class="my-fc-count">(0)</span></h3>
+                        <div id="my-fc-list" class="my-fc-list">
+                            <p class="my-fc-empty">No cards yet. Add some above!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study area -->
                 <div id="my-fc-study-area" class="flashcard-study-area hidden">
                     <div class="flashcard-progress">
                         <span id="my-fc-counter">Card 1 of 0</span>
@@ -954,7 +1177,7 @@
                     </p>
 
                     <div class="button-row">
-                        <button id="my-fc-exit-btn" class="btn btn-secondary btn-small">Back to My Cards</button>
+                        <button id="my-fc-exit-btn" class="btn btn-secondary btn-small">Back to Deck</button>
                     </div>
                 </div>
             </section>
@@ -1901,6 +2124,6 @@
 
     <div id="toast" class="toast hidden"></div>
     <script>window.EXAM_FILENAME = "$EXAM_FILENAME$";</script>
-    <script src="/app.js?v=90" defer></script>
+    <script src="/app.js?v=99" defer></script>
 </body>
 </html>

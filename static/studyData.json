@@ -1,0 +1,487 @@
+{
+  "networks": [
+    {
+      "id": "dcs",
+      "term": "DCS",
+      "fullTerm": "Defense Communications System",
+      "definition": "The network infrastructure that supports the military departments (Navy, Army, Air Force) and other DoD activities.",
+      "hint": "Think 'Defense-wide backbone' for military communications."
+    },
+    {
+      "id": "disa",
+      "term": "DISA",
+      "fullTerm": "Defense Information Systems Agency",
+      "definition": "Provides operational direction and oversight to the DCS.",
+      "hint": "DISA directs how the DCS is run."
+    },
+    {
+      "id": "niprnet",
+      "term": "NIPRNET",
+      "fullTerm": "Non-classified Internet Protocol Router Network",
+      "definition": "The day-to-day unclassified, long-haul IP-based network that supports unclassified IP data communications.",
+      "hint": "Unclassified everyday DoD internet."
+    },
+    {
+      "id": "siprnet",
+      "term": "SIPRNET",
+      "fullTerm": "Secret Internet Protocol Router Network",
+      "definition": "A DoD interoperable command-and-control data network used for SECRET traffic and global command and control systems.",
+      "hint": "Secret-level DoD network."
+    },
+    {
+      "id": "jwics",
+      "term": "JWICS",
+      "fullTerm": "Joint Worldwide Intelligence Communications System",
+      "definition": "Supports Sensitive Compartmented Information (SCI) with advanced networking for point-to-point or multipoint exchange of voice, text, graphics, data, video, and teleconferencing.",
+      "hint": "Top-tier SCI intelligence network."
+    }
+  ],
+  "organizations": [
+    {
+      "id": "navfor",
+      "term": "NAVFOR / U.S. Fleet Forces",
+      "fullTerm": "Naval / U.S. Fleet Forces Command",
+      "definition": "Trains, certifies, and provides combat-ready Navy forces capable of prompt, sustained naval, joint, and combined operations.",
+      "hint": "Fleet readiness and force provider."
+    },
+    {
+      "id": "ncdoc",
+      "term": "NCDOC",
+      "fullTerm": "Navy Cyber Defense Operations Command",
+      "definition": "Responsible for cyber-defense functions such as reporting and defending against viruses, phishing, and similar threats.",
+      "hint": "Navy's cyber defense watch floor."
+    },
+    {
+      "id": "ncms",
+      "term": "NCMS",
+      "fullTerm": "Naval Communications Material System",
+      "definition": "Associated with communications equipment and circuits — the physical communications material used to support naval communications.",
+      "hint": "Physical gear and circuits."
+    },
+    {
+      "id": "nctams",
+      "term": "NCTAMS",
+      "fullTerm": "Naval Computer and Telecommunications Area Master Station",
+      "definition": "Operates and maintains responsive information-transfer systems that provide real-time C4I information support to the fleet.",
+      "hint": "Area master station for fleet communications."
+    },
+    {
+      "id": "ncts",
+      "term": "NCTS",
+      "fullTerm": "Naval Computer and Telecommunications Station",
+      "definition": "Provides Naval IT infrastructure and support services for rapid and reliable voice and data communications within an assigned Area of Responsibility (AOR).",
+      "hint": "Regional IT/communications support."
+    },
+    {
+      "id": "nioc",
+      "term": "NIOC",
+      "fullTerm": "Navy Information Operations Command",
+      "definition": "Supports Navy information operations and SIGINT missions.",
+      "hint": "Information operations and signals intelligence."
+    },
+    {
+      "id": "jftoc",
+      "term": "JFTOC",
+      "fullTerm": "Joint Fleet Telecommunications Operations Center",
+      "definition": "Watch officer coordinates telecommunications functions ashore and maintains real-time operational status of circuits providing telecommunications.",
+      "hint": "Coordinates fleet telecom watch functions."
+    },
+    {
+      "id": "fltnoc",
+      "term": "FLTNOC",
+      "fullTerm": "Fleet Network Operations Center",
+      "definition": "Helps with network issues; includes regional NOCs such as European, Indian Ocean, Pacific, and unified Atlantic.",
+      "hint": "Fleet-level network operations."
+    },
+    {
+      "id": "nctams-master-stations",
+      "term": "NCTAMS Master Stations",
+      "definition": "LANT: Norfolk, Virginia. PAC: Wahiawa, Hawaii.",
+      "hint": "LANT = Norfolk; PAC = Wahiawa."
+    },
+    {
+      "id": "ncts-locations",
+      "term": "NCTS Locations",
+      "definition": "Jacksonville, FL; San Diego, CA; Bahrain; Guam; Naples, Italy; Far East / Yokosuka, Japan; Sicily.",
+      "hint": "Seven NCTS sites across the globe."
+    }
+  ],
+  "chainOfCommand": [
+    {
+      "id": "co",
+      "term": "CO",
+      "fullTerm": "Commanding Officer",
+      "definition": "Has overall authority and overall responsibility for the command's communications.",
+      "hint": "Top of the comms chain."
+    },
+    {
+      "id": "commo",
+      "term": "COMMO",
+      "fullTerm": "Communications Officer",
+      "definition": "Officer overseeing the command's communications organization.",
+      "hint": "The officer in charge of comms."
+    },
+    {
+      "id": "ro",
+      "term": "RO",
+      "fullTerm": "Radio Officer - Large Deck",
+      "definition": "Large-deck radio officer. On smaller ships the COMMO and RO may be the same person.",
+      "hint": "Big-deck radio officer; may merge with COMMO on small ships."
+    },
+    {
+      "id": "cwo",
+      "term": "CWO",
+      "fullTerm": "Communications Watch Officer",
+      "definition": "Highest qualified enlisted person in Radio, typically E4-E6. Ensures communications capabilities are accomplished per the command's mission and handles incoming/outgoing traffic, devices, and manual procedures.",
+      "hint": "Senior enlisted watchstander in Radio."
+    },
+    {
+      "id": "tech-control",
+      "term": "Technical Control Supervisor",
+      "definition": "Works for and supports the CWO; establishes and maintains required circuits and initiates action to restore or bypass failed equipment.",
+      "hint": "Circuit technician who fixes/restores circuits."
+    },
+    {
+      "id": "ro-duties",
+      "term": "Radio Officer Duties",
+      "definition": "Prepare the command's communications plan; monitor equipment allocation; prepare and maintain the communications watch quarter and station bill; conduct communications training; prepare SOPs for the communications center.",
+      "hint": "Plan, allocate, bill, train, SOP."
+    },
+    {
+      "id": "common-tasks",
+      "term": "Common Shipboard Radio Tasks",
+      "definition": "Qualifications, operating procedures, logs, communications/network maintenance, deck watches, and damage-control responsibilities.",
+      "hint": "Covers PQS, logs, maintenance, watches, and DC."
+    }
+  ],
+  "messageTypes": [
+    {
+      "id": "gensertype",
+      "term": "GENSER",
+      "fullTerm": "General Service / general messages",
+      "definition": "General military messages from UNCLASSIFIED through TOP SECRET — normal/general official message traffic.",
+      "hint": "Regular message traffic."
+    },
+    {
+      "id": "dsscs",
+      "term": "DSSCS",
+      "fullTerm": "Defense Special Security Communications System",
+      "definition": "Associated with SI / Sensitive Compartmented Information (SCI) communications.",
+      "hint": "Special intelligence message system."
+    },
+    {
+      "id": "critic",
+      "term": "CRITIC",
+      "fullTerm": "Critical intelligence communications/reporting",
+      "definition": "Rapid, short, fast reporting of critical events/situations to senior government decision-makers.",
+      "hint": "Fast-breaking critical intel."
+    }
+  ],
+  "draftingRoles": [
+    {
+      "id": "originator",
+      "term": "Originator",
+      "definition": "The command originating the message, e.g., ship/base/command. Identified by the name of the ship/base/command.",
+      "hint": "Who needs/sponsors the message."
+    },
+    {
+      "id": "drafter",
+      "term": "Drafter",
+      "definition": "The person who drafts/writes the message.",
+      "hint": "Who writes it."
+    },
+    {
+      "id": "releaser",
+      "term": "Releaser",
+      "definition": "The person authorized to release the message. Not everyone has release authority.",
+      "hint": "Who approves it for release."
+    },
+    {
+      "id": "role-sequence",
+      "term": "Drafting Sequence",
+      "definition": "Originator needs/sponsors the message -> Drafter writes it -> Releaser authorizes it. The same person can sometimes perform all three roles.",
+      "hint": "Originator -> Drafter -> Releaser."
+    }
+  ],
+  "specialHandling": [
+    {
+      "id": "rd",
+      "term": "RD",
+      "fullTerm": "Restricted Data",
+      "definition": "Handling marking associated with nuclear information.",
+      "hint": "Nuclear data."
+    },
+    {
+      "id": "frd",
+      "term": "FRD",
+      "fullTerm": "Formerly Restricted Data",
+      "definition": "No longer RD but still requires safeguarding.",
+      "hint": "Used to be RD, still protect it."
+    },
+    {
+      "id": "fouo",
+      "term": "FOUO",
+      "fullTerm": "For Official Use Only",
+      "definition": "Legacy unclassified handling marking.",
+      "hint": "Legacy unclassified control marking."
+    },
+    {
+      "id": "efto",
+      "term": "EFTO",
+      "fullTerm": "Encrypt / Encrypted For Transmission Only",
+      "definition": "Unclassified material requiring encryption for transmission; information with potential intelligence value that does not meet classification criteria.",
+      "hint": "Encrypt even though it is unclassified."
+    },
+    {
+      "id": "specat",
+      "term": "SPECAT",
+      "fullTerm": "Special Category",
+      "definition": "Classified messages identified with a special project/subject. Examples include Limited Distribution, NATO Restricted, Personal For, and Allied Restricted.",
+      "hint": "Special project/subject marking."
+    },
+    {
+      "id": "commshift",
+      "term": "COMMSHIFT",
+      "fullTerm": "Communications Guard Shift",
+      "definition": "A message used when shifting communications guard from one station/NCTAMS to another.",
+      "hint": "Changing guard station."
+    },
+    {
+      "id": "commspot",
+      "term": "COMMSPOT",
+      "definition": "Used to advise of a situation that might cause significant disruption of tactical communications; associated with communications status reports.",
+      "hint": "Potential tactical comms disruption warning."
+    }
+  ],
+  "addressing": [
+    {
+      "id": "navmacs",
+      "term": "NAVMACS",
+      "fullTerm": "Naval Modular Automated Communications System",
+      "definition": "Provides accurate, secure, expedient communications for various classes of ships and flagships.",
+      "hint": "Shipboard automated comms system."
+    },
+    {
+      "id": "pla",
+      "term": "PLA",
+      "fullTerm": "Plain Language Address",
+      "definition": "Name of a single command / one command.",
+      "hint": "One command address."
+    },
+    {
+      "id": "aig",
+      "term": "AIG",
+      "fullTerm": "Address Indicator Group",
+      "definition": "Group addressing involving 16 or more commands / PLAs.",
+      "hint": "16 or more PLAs."
+    },
+    {
+      "id": "cad",
+      "term": "CAD",
+      "fullTerm": "Collective Address Designator",
+      "definition": "4 or more PLAs within the group sharing a chain of command.",
+      "hint": "4+ PLAs in the same chain."
+    }
+  ],
+  "genserFormatLines": [
+    {
+      "id": "line-1",
+      "term": "Line 1",
+      "element": "Transmission Identification",
+      "definition": "Transmission-identification information.",
+      "hint": "Who is sending the transmission."
+    },
+    {
+      "id": "line-2",
+      "term": "Line 2",
+      "element": "Message Header",
+      "definition": "Coded message header with defined character positions: first 2 letters are header characters (often TT), 4th character is classification (U/C/S/T), positions 5-8 are the Content Indicator Code (CIC), positions 9 and 21 are blank spaces, 10-15 are OSRI, 17-20 are SSN, 22-24 are Julian Date, 25-28 are Time Filed, 29-33 are classification repeated, 34 is Routing Indicator, and the final character is a period.",
+      "details": {
+        "classification": "U = Unclassified, C = Confidential, S = Secret, T = Top Secret.",
+        "colors": "U = green, C = blue, S = red, T = orange."
+      },
+      "hint": "The structured header line."
+    },
+    {
+      "id": "line-4",
+      "term": "Line 4",
+      "element": "Security Warning",
+      "definition": "First three letters identify security handling. ZNR = unclassified; ZNY = classified.",
+      "hint": "ZNR vs ZNY."
+    },
+    {
+      "id": "line-5",
+      "term": "Line 5",
+      "element": "Date-Time Group (DTG)",
+      "definition": "Day / hour / minute / time zone / month / year. Format example: DDHHMMZ MON YY, where Z indicates Zulu time.",
+      "hint": "DDHHMMZ MON YY."
+    },
+    {
+      "id": "line-6",
+      "term": "Line 6",
+      "element": "FM / FROM",
+      "definition": "Originator — the command sending the message.",
+      "hint": "Who it is from."
+    },
+    {
+      "id": "line-7",
+      "term": "Line 7",
+      "element": "TO",
+      "definition": "Action addressee — who the message is directed to and who must act.",
+      "hint": "Action addressee."
+    },
+    {
+      "id": "line-8",
+      "term": "Line 8",
+      "element": "INFO",
+      "definition": "Information addressee — receives the message for awareness; similar to a CC.",
+      "hint": "FYI / CC addressee."
+    },
+    {
+      "id": "line-11",
+      "term": "Line 11",
+      "element": "BT / BREAK",
+      "definition": "Break separating heading/address information from the message body.",
+      "hint": "Heading ends, body begins."
+    },
+    {
+      "id": "line-12",
+      "term": "Line 12",
+      "element": "Text / Body",
+      "definition": "Actual message body. Common components are SUBJ (Subject), REF (Reference), AMPN (Amplification - used when there is only one reference), NARR (Narrative), and RMKS (Remarks).",
+      "hint": "SUBJ, REF, AMPN, NARR, RMKS."
+    },
+    {
+      "id": "line-13",
+      "term": "Line 13",
+      "element": "BT / BREAK",
+      "definition": "Break after the message body.",
+      "hint": "Body ends."
+    },
+    {
+      "id": "line-14",
+      "term": "Line 14",
+      "element": "SSN",
+      "definition": "Sequence/serial number; number of the message per month.",
+      "hint": "Monthly serial number."
+    },
+    {
+      "id": "line-16",
+      "term": "Line 16",
+      "element": "NNNN",
+      "definition": "End of message.",
+      "hint": "Four Ns = done."
+    }
+  ],
+  "operatingSignals": [
+    {
+      "id": "int-qsl",
+      "term": "INT QSL",
+      "definition": "Interrogative form asking for acknowledgment / whether a transmission was received.",
+      "hint": "Did you get it?"
+    },
+    {
+      "id": "qsl",
+      "term": "QSL",
+      "definition": "I acknowledge / I received your transmission.",
+      "hint": "Acknowledgment."
+    },
+    {
+      "id": "int-qbz",
+      "term": "INT QBZ",
+      "definition": "Interrogative signal used as the start of a procedural exchange.",
+      "hint": "Start of a procedural question."
+    },
+    {
+      "id": "55555",
+      "term": "55555",
+      "definition": "Response shown in the notes to the INT QBZ example.",
+      "hint": "Procedural response."
+    },
+    {
+      "id": "zug",
+      "term": "ZUG",
+      "definition": "No.",
+      "hint": "Negative."
+    },
+    {
+      "id": "zue",
+      "term": "ZUE",
+      "definition": "Yes.",
+      "hint": "Affirmative."
+    },
+    {
+      "id": "zuj",
+      "term": "ZUJ",
+      "definition": "Stand by.",
+      "hint": "Wait / standby."
+    },
+    {
+      "id": "zuj-1",
+      "term": "ZUJ 1",
+      "definition": "Wait one.",
+      "hint": "Wait one minute/moment."
+    },
+    {
+      "id": "zbz",
+      "term": "ZBZ",
+      "definition": "Question concerning printing/acceptability of signals.",
+      "hint": "Signal quality/printing question."
+    }
+  ],
+  "operationalNotes": [
+    {
+      "id": "comsec",
+      "term": "COMSEC",
+      "fullTerm": "Communications Security",
+      "definition": "Protection of communications and associated information/material.",
+      "hint": "Protecting communications."
+    },
+    {
+      "id": "cms-custodian",
+      "term": "CMS Custodian",
+      "fullTerm": "Communications Security Material System Custodian",
+      "definition": "Advises the CO on physical security and handling of crypto/CMS publications and materials; manages the CMS account; controls storage; performs required reporting.",
+      "hint": "Crypto/key custodian."
+    },
+    {
+      "id": "inventory-turnover",
+      "term": "Inventory / Watch Turnover",
+      "definition": "Before assuming the watch, complete inventory with two people: the person assuming the watch and a witness.",
+      "hint": "Two-person inventory."
+    },
+    {
+      "id": "msl",
+      "term": "MSL",
+      "fullTerm": "Master Station Log",
+      "definition": "No erasures allowed. Records new radio day, watch turnover, messages received, circuit status, inventories, and significant events.",
+      "hint": "No erasures — big events log."
+    },
+    {
+      "id": "central-message-log",
+      "term": "Central Message Log",
+      "definition": "Used specifically for messages.",
+      "hint": "Message-only log."
+    },
+    {
+      "id": "minimize",
+      "term": "MINIMIZE",
+      "definition": "Condition used when communications capacity must be conserved; limit messages to roughly 100-200 words, emphasizing FLASH and IMMEDIATE traffic.",
+      "hint": "Conserve bandwidth; short and urgent only."
+    },
+    {
+      "id": "sop",
+      "term": "SOP",
+      "fullTerm": "Standard Operating Procedure",
+      "definition": "Tells you step-by-step how to perform a procedure.",
+      "hint": "Step-by-step instructions."
+    },
+    {
+      "id": "pqs",
+      "term": "PQS",
+      "fullTerm": "Personnel Qualification Standards",
+      "definition": "Associated with communications/network maintenance, deck watches, and damage control qualifications.",
+      "hint": "Qualification standard."
+    }
+  ]
+}

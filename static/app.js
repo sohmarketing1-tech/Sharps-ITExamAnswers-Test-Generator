@@ -35,6 +35,7 @@ const API = {
     flashcardReviews: "/api/flashcard/reviews",
     flashcardReviewToggle: "/api/flashcard/review",
     history: "/api/history",
+    recentActivity: "/api/recent-activity",
     profile: "/api/profile",
 };
 
@@ -138,7 +139,7 @@ const state = {
     wirelessMatch: { current: null, solved: 0, correct: 0, answered: false },
     logicGates: { current: null, solved: 0, correct: 0, answered: false },
     cloudModels: { current: null, solved: 0, correct: 0, answered: false },
-    myFc: { cards: [], index: 0, flipped: false, studying: false },
+    myFc: { decks: [], currentDeck: null, index: 0, flipped: false, studying: false },
 };
 
 // DOM refs
@@ -173,6 +174,7 @@ const screens = {
     logicGates: document.getElementById("logic-gates-screen"),
     cloudModels: document.getElementById("cloud-models-screen"),
     myFlashcards: document.getElementById("my-flashcards-screen"),
+    packetTracer: document.getElementById("packet-tracer-screen"),
 };
 
 const els = {
@@ -184,12 +186,34 @@ const els = {
     setupMessage: document.getElementById("setup-message"),
     accountPrompt: document.getElementById("account-prompt"),
     tabNav: document.querySelector(".tab-nav"),
+    tabHome: document.getElementById("tab-home"),
     tabPractice: document.getElementById("tab-practice"),
     tabFlashcards: document.getElementById("tab-flashcards"),
     tabHistory: document.getElementById("tab-history"),
     tabCommunity: document.getElementById("tab-community"),
     tabAllApps: document.getElementById("tab-all-apps"),
     tabAllAppsHeader: document.getElementById("tab-all-apps-header"),
+    ptBackHome: document.getElementById("pt-back-home"),
+    ptSubnetArea: document.getElementById("pt-subnet-area"),
+    ptCliArea: document.getElementById("pt-cli-area"),
+    ptSubnetBack: document.getElementById("pt-subnet-back"),
+    ptCliBack: document.getElementById("pt-cli-back"),
+    ptSubnetPrompt: document.getElementById("pt-subnet-prompt"),
+    ptSubnetMask: document.getElementById("pt-subnet-mask"),
+    ptSubnetHosts: document.getElementById("pt-subnet-hosts"),
+    ptSubnetSubnets: document.getElementById("pt-subnet-subnets"),
+    ptSubnetCheck: document.getElementById("pt-subnet-check"),
+    ptSubnetNext: document.getElementById("pt-subnet-next"),
+    ptSubnetMessage: document.getElementById("pt-subnet-message"),
+    ptSubnetBreakdown: document.getElementById("pt-subnet-breakdown"),
+    ptCliTaskText: document.getElementById("pt-cli-task-text"),
+    ptCliOutput: document.getElementById("pt-cli-output"),
+    ptCliPromptText: document.getElementById("pt-cli-prompt-text"),
+    ptCliInput: document.getElementById("pt-cli-input"),
+    ptCliHintBtn: document.getElementById("pt-cli-hint-btn"),
+    ptCliResetBtn: document.getElementById("pt-cli-reset-btn"),
+    ptCliNextBtn: document.getElementById("pt-cli-next-btn"),
+    ptCliMessage: document.getElementById("pt-cli-message"),
     historyLoading: document.getElementById("history-loading"),
     historyLoginPrompt: document.getElementById("history-login-prompt"),
     historyLoginBtn: document.getElementById("history-login-btn"),
@@ -280,10 +304,19 @@ const els = {
     profileMessage: document.getElementById("profile-message"),
     modePractice: document.getElementById("mode-practice"),
     modeMastery: document.getElementById("mode-mastery"),
+    modeFlashcards: document.getElementById("mode-flashcards"),
     modeDescription: document.getElementById("mode-description"),
     countGroup: document.getElementById("count-group"),
     startRow: document.getElementById("start-row"),
     masteryPanel: document.getElementById("mastery-panel"),
+    flashcardPanel: document.getElementById("flashcard-panel"),
+    fcPanelModeQuestion: document.getElementById("fc-panel-mode-question"),
+    fcPanelModeChoices: document.getElementById("fc-panel-mode-choices"),
+    fcPanelModeDesc: document.getElementById("fc-panel-mode-desc"),
+    fcPanelFilterAll: document.getElementById("fc-panel-filter-all"),
+    fcPanelFilterReview: document.getElementById("fc-panel-filter-review"),
+    fcPanelReviewCount: document.getElementById("fc-panel-review-count"),
+    fcPanelStartBtn: document.getElementById("fc-panel-start-btn"),
     masteryBar: document.getElementById("mastery-bar"),
     masteryText: document.getElementById("mastery-text"),
     masteryStartBtn: document.getElementById("mastery-start-btn"),
@@ -506,6 +539,16 @@ const els = {
     cloudModelsStatSolved: document.getElementById("cloud-models-stat-solved"),
     cloudModelsStatCorrect: document.getElementById("cloud-models-stat-correct"),
     cloudModelsStatAccuracy: document.getElementById("cloud-models-stat-accuracy"),
+    myFcDecksView: document.getElementById("my-fc-decks-view"),
+    myFcDeckName: document.getElementById("my-fc-deck-name"),
+    myFcCreateDeckBtn: document.getElementById("my-fc-create-deck-btn"),
+    myFcDeckMessage: document.getElementById("my-fc-deck-message"),
+    myFcDeckCount: document.getElementById("my-fc-deck-count"),
+    myFcDeckList: document.getElementById("my-fc-deck-list"),
+    myFcDeckDetail: document.getElementById("my-fc-deck-detail"),
+    myFcBackToDecks: document.getElementById("my-fc-back-to-decks"),
+    myFcDeckTitle: document.getElementById("my-fc-deck-title"),
+    myFcDeleteDeckBtn: document.getElementById("my-fc-delete-deck-btn"),
     myFcFront: document.getElementById("my-fc-front"),
     myFcBack: document.getElementById("my-fc-back"),
     myFcAddBtn: document.getElementById("my-fc-add-btn"),
@@ -648,6 +691,7 @@ async function checkAuth() {
     applyProfileTheme(getProfile());
     renderAuthState();
     renderAccountPrompt();
+    renderHomeRecentActivity();
     if (state.currentTab === "history") loadHistory();
 }
 
@@ -676,6 +720,7 @@ async function login() {
         setAuthMessage("Logged in.", "success");
         closeAuthModal();
         await refreshMastery();
+        renderHomeRecentActivity();
         if (state.currentTab === "history") loadHistory();
     } catch (err) {
         setAuthMessage(err.message, "error");
@@ -1003,6 +1048,70 @@ function renderAccountPrompt() {
     if (els.accountPrompt) {
         els.accountPrompt.classList.toggle("hidden", !!state.user);
     }
+    const homeLoginPrompt = document.getElementById("home-login-prompt");
+    if (homeLoginPrompt) {
+        homeLoginPrompt.classList.toggle("hidden", !!state.user);
+    }
+}
+
+const ACTIVITY_ICONS = {
+    mastery: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    practice: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+    flashcards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+    game: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+    cli: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>',
+};
+
+async function renderHomeRecentActivity() {
+    const strip = document.getElementById("home-recent-activity");
+    const iconEl = document.getElementById("home-recent-icon");
+    const labelEl = document.getElementById("home-recent-label");
+    const detailEl = document.getElementById("home-recent-detail");
+    const ctaEl = document.getElementById("home-recent-cta");
+    if (!strip || !iconEl || !labelEl || !detailEl || !ctaEl) return;
+
+    if (!state.user) {
+        labelEl.textContent = "Recent Activity";
+        detailEl.textContent = "Log in to see your recent activity";
+        ctaEl.textContent = "";
+        strip.removeAttribute("data-tab");
+        strip.removeAttribute("data-hub-section");
+        return;
+    }
+
+    try {
+        const res = await fetch(API.recentActivity, { credentials: "same-origin", cache: "no-store" });
+        const data = await res.json();
+        if (data.ok && data.activity) {
+            const a = data.activity;
+            labelEl.textContent = "Continue where you left off";
+            detailEl.textContent = a.label + (a.detail ? ` · ${a.detail}` : "");
+            ctaEl.textContent = "Resume \u2192";
+            iconEl.innerHTML = ACTIVITY_ICONS[a.type] || ACTIVITY_ICONS.practice;
+            strip.dataset.tab = a.tab;
+        } else {
+            labelEl.textContent = "Recent Activity";
+            detailEl.textContent = "Start studying \u2014 your last activity will show here";
+            ctaEl.textContent = "Get started \u2192";
+            strip.dataset.tab = "practice";
+        }
+    } catch (e) {
+        // ignore
+    }
+}
+
+async function saveRecentActivity(type, label, tab, detail = "") {
+    if (!state.user) return;
+    try {
+        await fetch(API.recentActivity, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ type, label, tab, detail }),
+        });
+    } catch (e) {
+        // ignore
+    }
 }
 
 function setMessage(text, type = "") {
@@ -1204,6 +1313,10 @@ async function loadExam(filename, updateSelection = true) {
         const requested = parseInt(els.questionCount.value, 10) || 20;
         els.questionCount.value = Math.min(requested, data.count);
         setMessage("Ready to start.");
+        if (state.mode === "flashcards") {
+            state.flashcardFilename = filename;
+            if (typeof updateFcPanelStartBtn === "function") updateFcPanelStartBtn();
+        }
         savePrefs();
         updatePracticeSteps();
         await refreshMastery();
@@ -1215,26 +1328,40 @@ async function loadExam(filename, updateSelection = true) {
 
 function setMode(mode) {
     state.mode = mode;
+    // Reset all mode buttons
+    [els.modePractice, els.modeMastery, els.modeFlashcards].forEach((btn) => {
+        if (btn) {
+            btn.classList.remove("active", "btn-primary");
+            btn.classList.add("btn-secondary");
+        }
+    });
     if (mode === "practice") {
         els.modePractice.classList.add("active", "btn-primary");
         els.modePractice.classList.remove("btn-secondary");
-        els.modeMastery.classList.remove("active", "btn-primary");
-        els.modeMastery.classList.add("btn-secondary");
         els.modeDescription.textContent = "Random questions each test. Great for quick review.";
         els.countGroup.classList.remove("hidden");
         els.startRow.classList.remove("hidden");
         els.masteryPanel.classList.add("hidden");
+        if (els.flashcardPanel) els.flashcardPanel.classList.add("hidden");
         els.startBtn.textContent = "Start Test";
-    } else {
+    } else if (mode === "mastery") {
         els.modeMastery.classList.add("active", "btn-primary");
         els.modeMastery.classList.remove("btn-secondary");
-        els.modePractice.classList.remove("active", "btn-primary");
-        els.modePractice.classList.add("btn-secondary");
         els.modeDescription.textContent = "Keep seeing questions until you've mastered every single one.";
         els.countGroup.classList.add("hidden");
         els.startRow.classList.add("hidden");
         els.masteryPanel.classList.remove("hidden");
+        if (els.flashcardPanel) els.flashcardPanel.classList.add("hidden");
         renderMasteryPanel();
+    } else if (mode === "flashcards") {
+        els.modeFlashcards.classList.add("active", "btn-primary");
+        els.modeFlashcards.classList.remove("btn-secondary");
+        els.modeDescription.textContent = "Flip through cards at your own pace to memorize answers.";
+        els.countGroup.classList.add("hidden");
+        els.startRow.classList.add("hidden");
+        els.masteryPanel.classList.add("hidden");
+        if (els.flashcardPanel) els.flashcardPanel.classList.remove("hidden");
+        updateFcPanelStartBtn();
     }
 }
 
@@ -1372,6 +1499,8 @@ async function submitMastery() {
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || "Could not save mastery results");
         state.masterySummary = data.summary;
+        const pct = data.summary && data.summary.total > 0 ? Math.round((data.summary.mastered / data.summary.total) * 100) : 0;
+        saveRecentActivity("mastery", "Mastery Mode", "practice", `${state.title} · ${pct}% mastered`);
 
         const results = computeResults(quiz, state.answers);
         const correct = results.filter((r) => r.is_correct).length;
@@ -1650,7 +1779,16 @@ function switchTab(tabName) {
     }
     state.currentTab = tabName;
     const galleryApps = ["gallery", "myFlashcards", "binary", "subnetDrills", "portMatch", "cliMatch", "osiSorter", "acronymDrill", "processSorter", "raidMatch", "ipv4Classify", "osCmdMatch", "cableId", "topologyId", "secplusFlash", "natoPhonetic", "precedenceMatch", "rfSpectrum", "serverRoles", "ohmsLaw", "wirelessMatch", "logicGates", "cloudModels"];
-    if (els.tabPractice) els.tabPractice.classList.toggle("active", tabName === "practice");
+    const GAME_NAMES = { binary: "Binary Converter", subnetDrills: "Subnet Drills", portMatch: "Port Match", cliMatch: "CLI Match", osiSorter: "OSI Sorter", acronymDrill: "Acronym Drill", processSorter: "Process Sorter", raidMatch: "RAID Match", ipv4Classify: "IPv4 Classify", osCmdMatch: "OS Cmd Match", cableId: "Cable ID", topologyId: "Topology ID", secplusFlash: "Sec+ Flash", natoPhonetic: "NATO Phonetic", precedenceMatch: "Precedence Match", rfSpectrum: "RF Spectrum", serverRoles: "Server Roles", ohmsLaw: "Ohm's Law", wirelessMatch: "Wireless Match", logicGates: "Logic Gates", cloudModels: "Cloud Models" };
+    if (GAME_NAMES[tabName]) {
+        saveRecentActivity("game", GAME_NAMES[tabName], tabName);
+    } else if (tabName === "packetTracer") {
+        saveRecentActivity("cli", "CLI Practice", "packetTracer");
+    }
+    const homeScreens = ["home", "packetTracer"];
+    const studyTabs = ["practice", "flashcards"];
+    if (els.tabHome) els.tabHome.classList.toggle("active", homeScreens.includes(tabName));
+    if (els.tabPractice) els.tabPractice.classList.toggle("active", studyTabs.includes(tabName));
     if (els.tabFlashcards) els.tabFlashcards.classList.toggle("active", tabName === "flashcards");
     if (els.tabHistory) els.tabHistory.classList.toggle("active", tabName === "history");
     if (els.tabCommunity) els.tabCommunity.classList.toggle("active", tabName === "community");
@@ -1660,11 +1798,21 @@ function switchTab(tabName) {
         els.tabNav.classList.remove("hidden");
         els.tabNav.classList.add("bottom-nav");
     }
-    [els.tabPractice, els.tabFlashcards, els.tabHistory, els.tabCommunity, els.tabAllApps, els.tabAllAppsHeader].forEach((btn) => {
+    [els.tabHome, els.tabPractice, els.tabFlashcards, els.tabHistory, els.tabCommunity, els.tabAllApps, els.tabAllAppsHeader].forEach((btn) => {
         if (btn) btn.setAttribute("aria-selected", btn.classList.contains("active") ? "true" : "false");
     });
     stopChatPolling();
-    if (tabName === "practice") {
+    // Update URL
+    const TAB_ROUTES = { home: "/", practice: "/study", flashcards: "/study", packetTracer: "/packet-tracer", gallery: "/apps", history: "/history" };
+    const route = TAB_ROUTES[tabName];
+    if (route && window.location.pathname !== route) {
+        history.pushState({ tab: tabName }, "", route);
+    }
+    if (tabName === "home") {
+        showScreen("home");
+    } else if (tabName === "packetTracer") {
+        showScreen("packetTracer");
+    } else if (tabName === "practice") {
         showScreen("setup");
     } else if (tabName === "history") {
         showScreen("history");
@@ -1847,6 +1995,7 @@ async function saveHistoryAttempt(data, answers) {
             }),
         });
         if (res.ok && state.currentTab === "history") loadHistory();
+        saveRecentActivity("practice", "Practice Test", "practice", `${data.title || state.title} · ${data.score}%`);
     } catch (err) {}
 }
 
@@ -2084,6 +2233,8 @@ async function startFlashcards() {
         showFlashcardStudyArea();
         renderFlashcard();
         saveFlashcardSession();
+        const fcExam = state.exams.find((e) => e.filename === state.flashcardFilename);
+        saveRecentActivity("flashcards", "Flashcards", "flashcards", fcExam ? (fcExam.display_name || fcExam.title) : "");
     } catch (err) {
         els.flashcardSetupMessage.textContent = "Failed to load flashcards.";
     }
@@ -3493,7 +3644,7 @@ function showResults(data) {
 
 els.startBtn.addEventListener("click", startTest);
 els.homeBtn.addEventListener("click", goBackToApp);
-els.homeLogo.addEventListener("click", goBackToApp);
+els.homeLogo.addEventListener("click", () => switchTab("home"));
 
 function handlePrevAction() {
     if (els.prevBtn.disabled) return;
@@ -3628,6 +3779,50 @@ if (homeHero) {
 });
 els.modePractice.addEventListener("click", () => setMode("practice"));
 els.modeMastery.addEventListener("click", () => setMode("mastery"));
+if (els.modeFlashcards) els.modeFlashcards.addEventListener("click", () => setMode("flashcards"));
+
+// Flashcard panel (inline on setup screen)
+function updateFcPanelStartBtn() {
+    if (els.fcPanelStartBtn) {
+        els.fcPanelStartBtn.disabled = !state.flashcardFilename;
+    }
+}
+function fcPanelSetMode(mode) {
+    setFlashcardMode(mode);
+    if (els.fcPanelModeQuestion && els.fcPanelModeChoices) {
+        els.fcPanelModeQuestion.classList.toggle("active", mode === "question");
+        els.fcPanelModeQuestion.classList.toggle("btn-primary", mode === "question");
+        els.fcPanelModeQuestion.classList.toggle("btn-secondary", mode !== "question");
+        els.fcPanelModeChoices.classList.toggle("active", mode === "choices");
+        els.fcPanelModeChoices.classList.toggle("btn-primary", mode === "choices");
+        els.fcPanelModeChoices.classList.toggle("btn-secondary", mode !== "choices");
+    }
+    if (els.fcPanelModeDesc) {
+        els.fcPanelModeDesc.textContent = mode === "question"
+            ? "Front shows just the question. Flip to see the answer."
+            : "Front shows question and answer choices. Flip to reveal the correct one.";
+    }
+}
+function fcPanelSetFilter(filter) {
+    setFlashcardFilter(filter);
+    if (els.fcPanelFilterAll && els.fcPanelFilterReview) {
+        els.fcPanelFilterAll.classList.toggle("active", filter === "all");
+        els.fcPanelFilterAll.classList.toggle("btn-primary", filter === "all");
+        els.fcPanelFilterAll.classList.toggle("btn-secondary", filter !== "all");
+        els.fcPanelFilterReview.classList.toggle("active", filter === "review");
+        els.fcPanelFilterReview.classList.toggle("btn-primary", filter === "review");
+        els.fcPanelFilterReview.classList.toggle("btn-secondary", filter !== "review");
+    }
+    if (els.fcPanelReviewCount) {
+        els.fcPanelReviewCount.textContent = els.flashcardReviewCount ? els.flashcardReviewCount.textContent : "";
+    }
+}
+if (els.fcPanelModeQuestion) els.fcPanelModeQuestion.addEventListener("click", () => fcPanelSetMode("question"));
+if (els.fcPanelModeChoices) els.fcPanelModeChoices.addEventListener("click", () => fcPanelSetMode("choices"));
+if (els.fcPanelFilterAll) els.fcPanelFilterAll.addEventListener("click", () => fcPanelSetFilter("all"));
+if (els.fcPanelFilterReview) els.fcPanelFilterReview.addEventListener("click", () => fcPanelSetFilter("review"));
+if (els.fcPanelStartBtn) els.fcPanelStartBtn.addEventListener("click", startFlashcards);
+
 els.masteryStartBtn.addEventListener("click", startMasterySession);
 els.masteryResetBtn.addEventListener("click", resetMastery);
 if (els.masteryImmediateFeedbackToggle) {
@@ -3641,6 +3836,7 @@ if (els.masteryImmediateFeedbackToggle) {
     });
 }
 
+if (els.tabHome) els.tabHome.addEventListener("click", () => switchTab("home"));
 els.tabPractice.addEventListener("click", () => switchTab("practice"));
 els.tabFlashcards.addEventListener("click", () => switchTab("flashcards"));
 els.tabHistory.addEventListener("click", () => switchTab("history"));
@@ -3655,6 +3851,12 @@ document.querySelectorAll("[data-back-to-gallery]").forEach((btn) => {
     btn.addEventListener("click", () => switchTab("gallery"));
 });
 
+// Hub section cards
+document.querySelectorAll("[data-hub-section]").forEach((card) => {
+    card.addEventListener("click", () => switchTab(card.dataset.hubSection));
+});
+if (els.ptBackHome) els.ptBackHome.addEventListener("click", () => switchTab("home"));
+
 if (els.tabNav) {
     els.tabNav.querySelectorAll(".tab-btn").forEach((btn) => {
         btn.setAttribute("aria-selected", "false");
@@ -3665,6 +3867,15 @@ document.querySelectorAll("button[data-tab]").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
 });
 els.historyLoginBtn.addEventListener("click", () => openAuthModal("login"));
+const homeLoginBtn = document.getElementById("home-login-btn");
+if (homeLoginBtn) homeLoginBtn.addEventListener("click", () => openAuthModal("login"));
+const homeRecentStrip = document.getElementById("home-recent-activity");
+if (homeRecentStrip) homeRecentStrip.addEventListener("click", () => {
+    const tab = homeRecentStrip.dataset.tab;
+    if (tab) switchTab(tab);
+    else if (!state.user) openAuthModal("login");
+    else switchTab("practice");
+});
 els.chatSendBtn.addEventListener("click", sendChatMessage);
 els.chatInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendChatMessage();
@@ -5581,7 +5792,7 @@ function updateCloudModelsStats() {
 els.cloudModelsNextBtn.addEventListener("click", generateCloudModelsQuestion);
 
 // ---------------------------------------------------------------------------
-// My Flashcards — create your own study cards
+// My Flashcards — create your own study decks
 // ---------------------------------------------------------------------------
 
 const MY_FC_LOCAL_KEY = "answrit_my_flashcards";
@@ -5592,22 +5803,22 @@ async function loadMyFlashcards() {
             const res = await fetch("/api/my-flashcards", { credentials: "same-origin" });
             const data = await res.json();
             if (data.ok) {
-                state.myFc.cards = data.cards || [];
+                state.myFc.decks = data.decks || [];
                 saveMyFcLocal();
             }
         } catch (e) {
             const local = loadMyFcLocal();
-            if (local) state.myFc.cards = local;
+            if (local) state.myFc.decks = local;
         }
     } else {
         const local = loadMyFcLocal();
-        if (local) state.myFc.cards = local;
+        if (local) state.myFc.decks = local;
     }
-    renderMyFcList();
+    showMyFcDecksView();
 }
 
 function saveMyFcLocal() {
-    try { localStorage.setItem(MY_FC_LOCAL_KEY, JSON.stringify(state.myFc.cards)); } catch (e) {}
+    try { localStorage.setItem(MY_FC_LOCAL_KEY, JSON.stringify(state.myFc.decks)); } catch (e) {}
 }
 
 function loadMyFcLocal() {
@@ -5617,8 +5828,90 @@ function loadMyFcLocal() {
     } catch (e) { return null; }
 }
 
-function renderMyFcList() {
-    const cards = state.myFc.cards;
+async function saveMyFcToServer() {
+    if (!state.user) return;
+    try {
+        await fetch("/api/my-flashcards", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin",
+            body: JSON.stringify({ decks: state.myFc.decks }),
+        });
+    } catch (e) {}
+}
+
+// --- Deck list view ---
+
+function showMyFcDecksView() {
+    state.myFc.currentDeck = null;
+    state.myFc.studying = false;
+    els.myFcDecksView.classList.remove("hidden");
+    els.myFcDeckDetail.classList.add("hidden");
+    els.myFcStudyArea.classList.add("hidden");
+    renderMyFcDeckList();
+}
+
+function renderMyFcDeckList() {
+    const decks = state.myFc.decks;
+    els.myFcDeckCount.textContent = `(${decks.length})`;
+
+    if (!decks.length) {
+        els.myFcDeckList.innerHTML = '<p class="my-fc-empty">No decks yet. Create one above!</p>';
+        return;
+    }
+
+    els.myFcDeckList.innerHTML = "";
+    decks.forEach((deck, idx) => {
+        const row = document.createElement("button");
+        row.className = "my-fc-deck-row";
+        row.innerHTML = `
+            <span class="my-fc-deck-row-name">${escapeHtml(deck.name)}</span>
+            <span class="my-fc-deck-row-count">${deck.cards.length} card${deck.cards.length !== 1 ? "s" : ""}</span>
+        `;
+        row.addEventListener("click", () => openMyFcDeck(idx));
+        els.myFcDeckList.appendChild(row);
+    });
+}
+
+function createMyFcDeck() {
+    const name = els.myFcDeckName.value.trim();
+    if (!name) {
+        els.myFcDeckMessage.textContent = "Enter a deck name.";
+        els.myFcDeckMessage.className = "message error";
+        return;
+    }
+    if (state.myFc.decks.some((d) => d.name.toLowerCase() === name.toLowerCase())) {
+        els.myFcDeckMessage.textContent = "A deck with that name already exists.";
+        els.myFcDeckMessage.className = "message error";
+        return;
+    }
+    state.myFc.decks.push({ name, cards: [] });
+    saveMyFcLocal();
+    saveMyFcToServer();
+    els.myFcDeckName.value = "";
+    els.myFcDeckMessage.textContent = "Deck created!";
+    els.myFcDeckMessage.className = "message success";
+    setTimeout(() => { els.myFcDeckMessage.textContent = ""; }, 2000);
+    renderMyFcDeckList();
+}
+
+// --- Deck detail view ---
+
+function openMyFcDeck(idx) {
+    state.myFc.currentDeck = idx;
+    state.myFc.studying = false;
+    els.myFcDecksView.classList.add("hidden");
+    els.myFcDeckDetail.classList.remove("hidden");
+    els.myFcStudyArea.classList.add("hidden");
+    const deck = state.myFc.decks[idx];
+    els.myFcDeckTitle.textContent = deck.name;
+    renderMyFcCardList();
+}
+
+function renderMyFcCardList() {
+    const deck = state.myFc.decks[state.myFc.currentDeck];
+    if (!deck) return;
+    const cards = deck.cards;
     els.myFcCount.textContent = `(${cards.length})`;
     els.myFcStudyBtn.disabled = cards.length === 0;
 
@@ -5643,17 +5936,11 @@ function renderMyFcList() {
     });
 
     els.myFcList.querySelectorAll(".my-fc-delete-btn").forEach((btn) => {
-        btn.addEventListener("click", () => deleteMyFc(btn.dataset.id));
+        btn.addEventListener("click", () => deleteMyFcCard(btn.dataset.id));
     });
 }
 
-function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
-}
-
-async function addMyFlashcard() {
+function addMyFlashcard() {
     const front = els.myFcFront.value.trim();
     const back = els.myFcBack.value.trim();
     if (!front || !back) {
@@ -5661,82 +5948,71 @@ async function addMyFlashcard() {
         els.myFcMessage.className = "message error";
         return;
     }
+    const deck = state.myFc.decks[state.myFc.currentDeck];
+    if (!deck) return;
 
-    if (state.user) {
-        try {
-            const res = await fetch("/api/my-flashcards", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "same-origin",
-                body: JSON.stringify({ front, back }),
-            });
-            const data = await res.json();
-            if (!data.ok) {
-                els.myFcMessage.textContent = data.error || "Could not add card.";
-                els.myFcMessage.className = "message error";
-                return;
-            }
-            state.myFc.cards.push(data.card);
-        } catch (e) {
-            els.myFcMessage.textContent = "Network error. Card saved locally.";
-            els.myFcMessage.className = "message";
-            state.myFc.cards.push({ id: String(Date.now()), front, back });
-        }
-    } else {
-        state.myFc.cards.push({ id: String(Date.now()), front, back });
-    }
-
+    deck.cards.push({ id: String(Date.now()), front, back });
     saveMyFcLocal();
+    saveMyFcToServer();
+
     els.myFcFront.value = "";
     els.myFcBack.value = "";
     els.myFcMessage.textContent = "Card added!";
     els.myFcMessage.className = "message success";
     setTimeout(() => { els.myFcMessage.textContent = ""; }, 2000);
-    renderMyFcList();
+    renderMyFcCardList();
 }
 
-async function deleteMyFc(cardId) {
-    if (state.user) {
-        try {
-            await fetch(`/api/my-flashcards/${cardId}`, {
-                method: "DELETE",
-                credentials: "same-origin",
-            });
-        } catch (e) {}
-    }
-    state.myFc.cards = state.myFc.cards.filter((c) => c.id !== cardId);
+function deleteMyFcCard(cardId) {
+    const deck = state.myFc.decks[state.myFc.currentDeck];
+    if (!deck) return;
+    deck.cards = deck.cards.filter((c) => c.id !== cardId);
     saveMyFcLocal();
-    renderMyFcList();
+    saveMyFcToServer();
+    renderMyFcCardList();
 }
+
+function deleteMyFcDeck() {
+    if (state.myFc.currentDeck === null) return;
+    const deck = state.myFc.decks[state.myFc.currentDeck];
+    if (!confirm(`Delete deck "${deck.name}" and all its cards?`)) return;
+    state.myFc.decks.splice(state.myFc.currentDeck, 1);
+    saveMyFcLocal();
+    saveMyFcToServer();
+    showMyFcDecksView();
+}
+
+// --- Study mode ---
 
 function startMyFcStudy() {
-    if (!state.myFc.cards.length) return;
+    const deck = state.myFc.decks[state.myFc.currentDeck];
+    if (!deck || !deck.cards.length) return;
     state.myFc.index = 0;
     state.myFc.flipped = false;
     state.myFc.studying = true;
-    document.querySelector("#my-flashcards-screen .my-flashcards-create").classList.add("hidden");
-    document.querySelector("#my-flashcards-screen .my-flashcards-deck-section").classList.add("hidden");
+    els.myFcDeckDetail.classList.add("hidden");
     els.myFcStudyArea.classList.remove("hidden");
     renderMyFcStudyCard();
 }
 
 function exitMyFcStudy() {
     state.myFc.studying = false;
-    document.querySelector("#my-flashcards-screen .my-flashcards-create").classList.remove("hidden");
-    document.querySelector("#my-flashcards-screen .my-flashcards-deck-section").classList.remove("hidden");
     els.myFcStudyArea.classList.add("hidden");
-    renderMyFcList();
+    els.myFcDeckDetail.classList.remove("hidden");
+    renderMyFcCardList();
 }
 
 function renderMyFcStudyCard() {
-    const card = state.myFc.cards[state.myFc.index];
+    const deck = state.myFc.decks[state.myFc.currentDeck];
+    if (!deck) return;
+    const card = deck.cards[state.myFc.index];
     if (!card) return;
     els.myFcCard.classList.toggle("flipped", state.myFc.flipped);
     els.myFcFrontText.textContent = card.front;
     els.myFcBackText.textContent = card.back;
-    els.myFcCounter.textContent = `Card ${state.myFc.index + 1} of ${state.myFc.cards.length}`;
+    els.myFcCounter.textContent = `Card ${state.myFc.index + 1} of ${deck.cards.length}`;
     els.myFcPrevBtn.disabled = state.myFc.index === 0;
-    els.myFcNextBtn.disabled = state.myFc.index === state.myFc.cards.length - 1;
+    els.myFcNextBtn.disabled = state.myFc.index === deck.cards.length - 1;
 }
 
 function flipMyFc() {
@@ -5745,7 +6021,9 @@ function flipMyFc() {
 }
 
 function nextMyFc() {
-    if (state.myFc.index < state.myFc.cards.length - 1) {
+    const deck = state.myFc.decks[state.myFc.currentDeck];
+    if (!deck) return;
+    if (state.myFc.index < deck.cards.length - 1) {
         state.myFc.index += 1;
         state.myFc.flipped = false;
         renderMyFcStudyCard();
@@ -5761,15 +6039,21 @@ function prevMyFc() {
 }
 
 function shuffleMyFc() {
-    for (let i = state.myFc.cards.length - 1; i > 0; i--) {
+    const deck = state.myFc.decks[state.myFc.currentDeck];
+    if (!deck) return;
+    for (let i = deck.cards.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [state.myFc.cards[i], state.myFc.cards[j]] = [state.myFc.cards[j], state.myFc.cards[i]];
+        [deck.cards[i], deck.cards[j]] = [deck.cards[j], deck.cards[i]];
     }
     state.myFc.index = 0;
     state.myFc.flipped = false;
     renderMyFcStudyCard();
 }
 
+els.myFcCreateDeckBtn.addEventListener("click", createMyFcDeck);
+els.myFcDeckName.addEventListener("keydown", (e) => { if (e.key === "Enter") createMyFcDeck(); });
+els.myFcBackToDecks.addEventListener("click", showMyFcDecksView);
+els.myFcDeleteDeckBtn.addEventListener("click", deleteMyFcDeck);
 els.myFcAddBtn.addEventListener("click", addMyFlashcard);
 els.myFcStudyBtn.addEventListener("click", startMyFcStudy);
 els.myFcExitBtn.addEventListener("click", exitMyFcStudy);
@@ -5778,6 +6062,269 @@ els.myFcFlipBtn.addEventListener("click", flipMyFc);
 els.myFcNextBtn.addEventListener("click", nextMyFc);
 els.myFcPrevBtn.addEventListener("click", prevMyFc);
 els.myFcShuffleBtn.addEventListener("click", shuffleMyFc);
+
+// ---------------------------------------------------------------------------
+// Packet Tracer Section — Subnetting & CLI Simulator
+// ---------------------------------------------------------------------------
+
+const ptState = {
+    subnet: { problem: null },
+    cli: { tasks: [], taskIndex: 0, history: [], currentMode: "user", hostname: "Router" },
+};
+
+// --- PT Subnetting ---
+
+const PT_SUBNET_PROBLEMS = [
+    { network: "192.168.1.0/24", requiredSubnets: 4, description: "You need to divide 192.168.1.0/24 into 4 equal subnets." },
+    { network: "172.16.0.0/16", requiredSubnets: 256, description: "Divide 172.16.0.0/16 into 256 subnets for a large campus network." },
+    { network: "10.0.0.0/8", requiredSubnets: 512, description: "Divide 10.0.0.0/8 into at least 512 subnets." },
+    { network: "192.168.10.0/24", requiredSubnets: 2, description: "Split 192.168.10.0/24 into 2 subnets for two departments." },
+    { network: "172.20.0.0/16", requiredSubnets: 64, description: "Divide 172.20.0.0/16 into 64 subnets for branch offices." },
+    { network: "10.10.0.0/16", requiredSubnets: 16, description: "Divide 10.10.0.0/16 into 16 subnets for VLANs." },
+    { network: "192.168.50.0/24", requiredSubnets: 8, description: "Divide 192.168.50.0/24 into 8 subnets for a small business." },
+    { network: "172.30.0.0/16", requiredSubnets: 128, description: "Divide 172.30.0.0/16 into 128 subnets for a multi-floor building." },
+];
+
+function generatePtSubnetProblem() {
+    const prob = PT_SUBNET_PROBLEMS[Math.floor(Math.random() * PT_SUBNET_PROBLEMS.length)];
+    const prefix = parseInt(prob.network.split("/")[1]);
+    const bitsNeeded = Math.ceil(Math.log2(prob.requiredSubnets));
+    const newPrefix = prefix + bitsNeeded;
+    const hostBits = 32 - newPrefix;
+    const usableHosts = Math.pow(2, hostBits) - 2;
+    const actualSubnets = Math.pow(2, bitsNeeded);
+    const maskOctets = [];
+    for (let i = 0; i < 4; i++) {
+        const bits = Math.min(8, Math.max(0, newPrefix - i * 8));
+        maskOctets.push(256 - Math.pow(2, 8 - bits));
+    }
+    const mask = maskOctets.join(".");
+
+    ptState.subnet.problem = {
+        ...prob,
+        answer: { mask, usableHosts, subnets: actualSubnets, prefix: newPrefix },
+    };
+
+    els.ptSubnetPrompt.textContent = prob.description;
+    els.ptSubnetMask.value = "";
+    els.ptSubnetHosts.value = "";
+    els.ptSubnetSubnets.value = "";
+    els.ptSubnetMessage.textContent = "";
+    els.ptSubnetMessage.className = "message";
+    els.ptSubnetBreakdown.classList.add("hidden");
+    els.ptSubnetBreakdown.innerHTML = "";
+}
+
+function checkPtSubnet() {
+    const prob = ptState.subnet.problem;
+    if (!prob) return;
+    const userMask = els.ptSubnetMask.value.trim();
+    const userHosts = els.ptSubnetHosts.value.trim();
+    const userSubnets = els.ptSubnetSubnets.value.trim();
+
+    const correct = prob.answer;
+    const maskOk = userMask === correct.mask;
+    const hostsOk = parseInt(userHosts) === correct.usableHosts;
+    const subnetsOk = parseInt(userSubnets) === correct.subnets;
+
+    if (maskOk && hostsOk && subnetsOk) {
+        els.ptSubnetMessage.textContent = "Correct! All values match.";
+        els.ptSubnetMessage.className = "message success";
+    } else {
+        els.ptSubnetMessage.textContent = "Not quite. Check the breakdown below.";
+        els.ptSubnetMessage.className = "message error";
+    }
+
+    els.ptSubnetBreakdown.classList.remove("hidden");
+    els.ptSubnetBreakdown.innerHTML = `
+        <table class="pt-subnet-table">
+            <tr><th></th><th>Your Answer</th><th>Correct</th><th></th></tr>
+            <tr class="${maskOk ? "row-correct" : "row-wrong"}"><td>Subnet Mask</td><td>${escapeHtml(userMask) || "—"}</td><td>${correct.mask}</td><td>${maskOk ? "✓" : "✗"}</td></tr>
+            <tr class="${hostsOk ? "row-correct" : "row-wrong"}"><td>Usable Hosts</td><td>${escapeHtml(userHosts) || "—"}</td><td>${correct.usableHosts}</td><td>${hostsOk ? "✓" : "✗"}</td></tr>
+            <tr class="${subnetsOk ? "row-correct" : "row-wrong"}"><td># Subnets</td><td>${escapeHtml(userSubnets) || "—"}</td><td>${correct.subnets}</td><td>${subnetsOk ? "✓" : "✗"}</td></tr>
+        </table>
+        <p class="pt-subnet-explain">New prefix: /${correct.prefix} — Host bits: ${32 - correct.prefix} — 2^${32 - correct.prefix} - 2 = ${correct.usableHosts} hosts</p>
+    `;
+}
+
+function openPtActivity(activity) {
+    document.querySelector(".pt-activities").classList.add("hidden");
+    if (activity === "ptSubnet") {
+        els.ptSubnetArea.classList.remove("hidden");
+        els.ptCliArea.classList.add("hidden");
+        generatePtSubnetProblem();
+    } else if (activity === "ptCli") {
+        els.ptCliArea.classList.remove("hidden");
+        els.ptSubnetArea.classList.add("hidden");
+        initPtCli();
+    }
+}
+
+function closePtActivity() {
+    document.querySelector(".pt-activities").classList.remove("hidden");
+    els.ptSubnetArea.classList.add("hidden");
+    els.ptCliArea.classList.add("hidden");
+}
+
+els.ptSubnetCheck.addEventListener("click", checkPtSubnet);
+els.ptSubnetNext.addEventListener("click", generatePtSubnetProblem);
+els.ptSubnetBack.addEventListener("click", closePtActivity);
+
+document.querySelectorAll("[data-pt-activity]").forEach((card) => {
+    card.addEventListener("click", () => openPtActivity(card.dataset.ptActivity));
+});
+
+// --- PT CLI Simulator ---
+
+const PT_CLI_TASKS = [
+    {
+        title: "Enter privileged EXEC mode",
+        hint: "Use the 'enable' command",
+        steps: [
+            { prompt: "Router>", expect: "enable", response: "", nextPrompt: "Router#", nextMode: "priv" }
+        ]
+    },
+    {
+        title: "Enter global configuration mode",
+        hint: "From privileged EXEC, use 'configure terminal'",
+        steps: [
+            { prompt: "Router>", expect: "enable", response: "", nextPrompt: "Router#", nextMode: "priv" },
+            { prompt: "Router#", expect: "configure terminal", response: "Enter configuration commands, one per line.  End with CNTL/Z.", nextPrompt: "Router(config)#", nextMode: "config" }
+        ]
+    },
+    {
+        title: "Set the hostname to 'CoreRouter'",
+        hint: "In global config mode, use 'hostname CoreRouter'",
+        steps: [
+            { prompt: "Router>", expect: "enable", response: "", nextPrompt: "Router#", nextMode: "priv" },
+            { prompt: "Router#", expect: "configure terminal", response: "Enter configuration commands, one per line.  End with CNTL/Z.", nextPrompt: "Router(config)#", nextMode: "config" },
+            { prompt: "Router(config)#", expect: "hostname CoreRouter", response: "", nextPrompt: "CoreRouter(config)#", nextMode: "config" }
+        ]
+    },
+    {
+        title: "Configure interface GigabitEthernet0/0 with IP 192.168.1.1/24 and bring it up",
+        hint: "Enter interface config, assign IP, then 'no shutdown'",
+        steps: [
+            { prompt: "Router>", expect: "enable", response: "", nextPrompt: "Router#", nextMode: "priv" },
+            { prompt: "Router#", expect: "configure terminal", response: "Enter configuration commands, one per line.  End with CNTL/Z.", nextPrompt: "Router(config)#", nextMode: "config" },
+            { prompt: "Router(config)#", expect: "interface gigabitethernet0/0", response: "", nextPrompt: "Router(config-if)#", nextMode: "config-if" },
+            { prompt: "Router(config-if)#", expect: "ip address 192.168.1.1 255.255.255.0", response: "", nextPrompt: "Router(config-if)#", nextMode: "config-if" },
+            { prompt: "Router(config-if)#", expect: "no shutdown", response: "%LINK-5-CHANGED: Interface GigabitEthernet0/0, changed state to up", nextPrompt: "Router(config-if)#", nextMode: "config-if" }
+        ]
+    },
+    {
+        title: "Set the enable secret password to 'class'",
+        hint: "In global config, use 'enable secret class'",
+        steps: [
+            { prompt: "Router>", expect: "enable", response: "", nextPrompt: "Router#", nextMode: "priv" },
+            { prompt: "Router#", expect: "configure terminal", response: "Enter configuration commands, one per line.  End with CNTL/Z.", nextPrompt: "Router(config)#", nextMode: "config" },
+            { prompt: "Router(config)#", expect: "enable secret class", response: "", nextPrompt: "Router(config)#", nextMode: "config" }
+        ]
+    },
+    {
+        title: "Configure console line with password 'cisco' and enable login",
+        hint: "Use 'line console 0', then 'password cisco', then 'login'",
+        steps: [
+            { prompt: "Router>", expect: "enable", response: "", nextPrompt: "Router#", nextMode: "priv" },
+            { prompt: "Router#", expect: "configure terminal", response: "Enter configuration commands, one per line.  End with CNTL/Z.", nextPrompt: "Router(config)#", nextMode: "config" },
+            { prompt: "Router(config)#", expect: "line console 0", response: "", nextPrompt: "Router(config-line)#", nextMode: "config-line" },
+            { prompt: "Router(config-line)#", expect: "password cisco", response: "", nextPrompt: "Router(config-line)#", nextMode: "config-line" },
+            { prompt: "Router(config-line)#", expect: "login", response: "", nextPrompt: "Router(config-line)#", nextMode: "config-line" }
+        ]
+    },
+];
+
+function initPtCli() {
+    ptState.cli.taskIndex = 0;
+    loadPtCliTask();
+}
+
+function loadPtCliTask() {
+    const task = PT_CLI_TASKS[ptState.cli.taskIndex];
+    if (!task) return;
+    ptState.cli.history = [];
+    ptState.cli.stepIndex = 0;
+    els.ptCliTaskText.textContent = task.title;
+    els.ptCliOutput.innerHTML = "";
+    els.ptCliPromptText.textContent = task.steps[0].prompt;
+    els.ptCliInput.value = "";
+    els.ptCliMessage.textContent = "";
+    els.ptCliMessage.className = "message";
+    els.ptCliNextBtn.disabled = true;
+    els.ptCliInput.focus();
+}
+
+function handlePtCliCommand() {
+    const task = PT_CLI_TASKS[ptState.cli.taskIndex];
+    if (!task) return;
+    const input = els.ptCliInput.value.trim();
+    if (!input) return;
+
+    const step = task.steps[ptState.cli.stepIndex];
+    const prompt = step.prompt;
+
+    // Add input to output
+    const line = document.createElement("div");
+    line.className = "pt-cli-line";
+    line.innerHTML = `<span class="pt-cli-prompt-label">${escapeHtml(prompt)}</span> ${escapeHtml(input)}`;
+    els.ptCliOutput.appendChild(line);
+
+    // Check if correct
+    if (input.toLowerCase() === step.expect.toLowerCase()) {
+        if (step.response) {
+            const resp = document.createElement("div");
+            resp.className = "pt-cli-response";
+            resp.textContent = step.response;
+            els.ptCliOutput.appendChild(resp);
+        }
+        ptState.cli.stepIndex++;
+        if (ptState.cli.stepIndex >= task.steps.length) {
+            // Task complete
+            els.ptCliMessage.textContent = "Task complete!";
+            els.ptCliMessage.className = "message success";
+            els.ptCliNextBtn.disabled = ptState.cli.taskIndex >= PT_CLI_TASKS.length - 1;
+            els.ptCliPromptText.textContent = step.nextPrompt;
+            els.ptCliInput.value = "";
+        } else {
+            els.ptCliPromptText.textContent = step.nextPrompt;
+            els.ptCliInput.value = "";
+        }
+    } else {
+        const errLine = document.createElement("div");
+        errLine.className = "pt-cli-error";
+        errLine.textContent = `% Invalid input detected at '^' marker.`;
+        els.ptCliOutput.appendChild(errLine);
+        els.ptCliInput.value = "";
+    }
+
+    els.ptCliOutput.scrollTop = els.ptCliOutput.scrollHeight;
+}
+
+function showPtCliHint() {
+    const task = PT_CLI_TASKS[ptState.cli.taskIndex];
+    if (!task) return;
+    els.ptCliMessage.textContent = "Hint: " + task.hint;
+    els.ptCliMessage.className = "message";
+}
+
+function resetPtCliTask() {
+    loadPtCliTask();
+}
+
+function nextPtCliTask() {
+    if (ptState.cli.taskIndex < PT_CLI_TASKS.length - 1) {
+        ptState.cli.taskIndex++;
+        loadPtCliTask();
+    }
+}
+
+els.ptCliInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") handlePtCliCommand();
+});
+els.ptCliHintBtn.addEventListener("click", showPtCliHint);
+els.ptCliResetBtn.addEventListener("click", resetPtCliTask);
+els.ptCliNextBtn.addEventListener("click", nextPtCliTask);
+els.ptCliBack.addEventListener("click", closePtActivity);
 
 // Initialize — wrap defaults in _restoringPrefs so savePrefs is not called
 state._restoringPrefs = true;
@@ -5792,13 +6339,21 @@ loadExams();
 checkAuth();
 
 (function restoreTab() {
-    const saved = localStorage.getItem(TAB_KEY);
-    if (saved) {
-        switchTab(saved);
+    const ROUTE_TO_TAB = { "/": "home", "/study": "practice", "/flashcards": "flashcards", "/apps": "gallery", "/history": "history", "/packet-tracer": "packetTracer" };
+    const pathTab = ROUTE_TO_TAB[window.location.pathname.replace(/\/$/, "") || "/"];
+    if (pathTab) {
+        switchTab(pathTab);
     } else {
-        switchTab("practice");
+        const saved = localStorage.getItem(TAB_KEY);
+        switchTab(saved || "home");
     }
 })();
+
+window.addEventListener("popstate", (e) => {
+    const ROUTE_TO_TAB = { "/": "home", "/study": "practice", "/flashcards": "flashcards", "/apps": "gallery", "/history": "history", "/packet-tracer": "packetTracer" };
+    const pathTab = ROUTE_TO_TAB[window.location.pathname.replace(/\/$/, "") || "/"];
+    if (pathTab) switchTab(pathTab);
+});
 
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {

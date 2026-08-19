@@ -4,7 +4,6 @@ import json
 import os
 import random
 import secrets
-import time
 from pathlib import Path
 from typing import Optional
 
@@ -614,6 +613,26 @@ def index():
     )
 
 
+@app.route("/study")
+@app.route("/study/")
+@app.route("/flashcards")
+@app.route("/flashcards/")
+@app.route("/apps")
+@app.route("/apps/")
+@app.route("/history")
+@app.route("/history/")
+@app.route("/packet-tracer")
+@app.route("/packet-tracer/")
+def spa_pages():
+    return render_index_html(
+        page_title=DEFAULT_PAGE_TITLE,
+        page_description=DEFAULT_PAGE_DESCRIPTION,
+        canonical_url=f"{SITE_URL}/",
+        h1_text="AnswrIT",
+        seo_intro="",
+    )
+
+
 @app.route("/exams/<slug>/")
 def exam_page(slug: str):
     exam = exam_by_slug(slug)
@@ -922,6 +941,50 @@ def score_test():
         "score": score,
         "results": results,
     })
+
+
+# ---------------------------------------------------------------------------
+# Recent activity (any type)
+# ---------------------------------------------------------------------------
+
+
+@app.route("/api/recent-activity", methods=["GET"])
+def get_recent_activity():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Not logged in."}), 401
+    user_data = load_user_data()
+    record = user_data.get(user, {})
+    activity = record.get("recent_activity")
+    return jsonify({"ok": True, "activity": activity})
+
+
+@app.route("/api/recent-activity", methods=["POST"])
+def save_recent_activity():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Not logged in."}), 401
+    body = request.get_json(silent=True) or {}
+    activity_type = body.get("type", "")
+    label = body.get("label", "")
+    tab = body.get("tab", "")
+    if not activity_type or not label or not tab:
+        return jsonify({"ok": False, "error": "Missing fields."}), 400
+
+    activity = {
+        "type": activity_type,
+        "label": label,
+        "tab": tab,
+        "detail": body.get("detail", ""),
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    }
+
+    def _save(user_data: dict):
+        record = user_data.setdefault(user, {})
+        record["recent_activity"] = activity
+
+    modify_user_data(_save)
+    return jsonify({"ok": True, "activity": activity})
 
 
 # ---------------------------------------------------------------------------
@@ -1235,59 +1298,33 @@ def delete_flashcard_session():
 
 @app.route("/api/my-flashcards", methods=["GET"])
 def get_my_flashcards():
-    """Return the logged-in user's custom flashcard deck."""
+    """Return the logged-in user's custom flashcard decks."""
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to use My Flashcards."}), 401
     user_data = load_user_data()
     record = user_data.get(user, {})
-    cards = record.get("my_flashcards", [])
-    return jsonify({"ok": True, "cards": cards})
+    decks = record.get("my_flashcards", [])
+    return jsonify({"ok": True, "decks": decks})
 
 
 @app.route("/api/my-flashcards", methods=["POST"])
-def add_my_flashcard():
-    """Add a new custom flashcard for the logged-in user."""
+def save_my_flashcards():
+    """Save the logged-in user's entire flashcard decks array."""
     user = current_user()
     if not user:
-        return jsonify({"ok": False, "error": "Log in to create flashcards."}), 401
+        return jsonify({"ok": False, "error": "Log in to save flashcards."}), 401
     data = request.get_json(silent=True) or {}
-    front = data.get("front", "").strip()
-    back = data.get("back", "").strip()
-    if not front or not back:
-        return jsonify({"ok": False, "error": "Both front and back are required."}), 400
+    decks = data.get("decks")
+    if decks is None or not isinstance(decks, list):
+        return jsonify({"ok": False, "error": "Invalid decks data."}), 400
 
-    card_id = str(int(time.time() * 1000))
-
-    def _add_card(user_data: dict):
+    def _save_decks(user_data: dict):
         record = user_data.setdefault(user, {})
-        cards = record.setdefault("my_flashcards", [])
-        cards.append({"id": card_id, "front": front, "back": back})
+        record["my_flashcards"] = decks
         return True
 
-    modify_user_data(_add_card)
-    return jsonify({"ok": True, "card": {"id": card_id, "front": front, "back": back}})
-
-
-@app.route("/api/my-flashcards/<card_id>", methods=["DELETE"])
-def delete_my_flashcard(card_id):
-    """Delete a custom flashcard by ID."""
-    user = current_user()
-    if not user:
-        return jsonify({"ok": False, "error": "Log in to manage flashcards."}), 401
-
-    def _delete_card(user_data: dict):
-        record = user_data.get(user)
-        if not record:
-            return False
-        cards = record.get("my_flashcards", [])
-        original_len = len(cards)
-        record["my_flashcards"] = [c for c in cards if c.get("id") != card_id]
-        return len(record["my_flashcards"]) < original_len
-
-    deleted = modify_user_data(_delete_card)
-    if deleted is False:
-        return jsonify({"ok": False, "error": "Card not found."}), 404
+    modify_user_data(_save_decks)
     return jsonify({"ok": True})
 
 

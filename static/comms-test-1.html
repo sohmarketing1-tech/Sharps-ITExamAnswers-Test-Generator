@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comms Test 1 — Naval Messaging | AnswrIT</title>
+    <link rel="icon" href="/images/answrit-logo.png" />
+    <style>
+        :root {
+            --body-bg-1: #1a2f4d;
+            --body-bg-2: #243b5a;
+            --body-bg-3: #2c4a70;
+            --bg: #243b5a;
+            --surface: #ffffff;
+            --surface-base: 255, 255, 255;
+            --panel: rgba(var(--surface-base), 0.12);
+            --panel-solid: rgba(255, 255, 255, 0.1);
+            --card: rgba(var(--surface-base), 0.15);
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.7);
+            --accent: #0ea5e9;
+            --accent-hover: #0284c7;
+            --accent-base: 14, 165, 233;
+            --primary: #1e3a5f;
+            --primary-dark: #172b45;
+            --primary-fill: #1e3a5f;
+            --primary-fill-dark: #172b45;
+            --success: #16a34a;
+            --success-bg: rgba(22, 163, 74, 0.22);
+            --danger: #dc2626;
+            --danger-bg: rgba(220, 38, 38, 0.22);
+            --border: rgba(255, 255, 255, 0.15);
+            --radius: 18px;
+            --shadow: 0 18px 32px -8px rgba(15, 28, 46, 0.2), 0 8px 16px -5px rgba(15, 28, 46, 0.12);
+            --shadow-lg: 0 24px 48px -12px rgba(15, 28, 46, 0.28);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(180deg, var(--body-bg-1) 0%, var(--body-bg-2) 50%, var(--body-bg-3) 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            isolation: isolate;
+        }
+        @media (hover: none) and (pointer: coarse) {
+            body { background-attachment: scroll; }
+        }
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.45;
+            animation: floatOrb 22s ease-in-out infinite alternate;
+        }
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(var(--accent-base), 0.8) 0%, transparent 70%);
+            top: -10%;
+            left: -10%;
+            animation-delay: -4s;
+        }
+        .orb-2 {
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.75) 0%, transparent 70%);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -12s;
+        }
+        .orb-3 {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.7) 0%, transparent 70%);
+            top: 40%;
+            left: 55%;
+            animation-delay: -20s;
+        }
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -40px) scale(1.12); }
+        }
+        .noise-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.035;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            animation: grainShift 0.5s steps(5) infinite;
+        }
+        @keyframes grainShift {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-1%, 1%); }
+            40% { transform: translate(1%, -1%); }
+            60% { transform: translate(-1%, -1%); }
+            80% { transform: translate(1%, 1%); }
+        }
+        header {
+            background: linear-gradient(145deg, rgba(var(--surface-base), 0.12) 0%, rgba(var(--surface-base), 0.04) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: relative;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 14px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .header-logo {
+            height: 48px;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+            display: block;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 16px;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .view {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+        }
+        .view.active { display: flex; }
+
+        /* Menu */
+        .menu-title {
+            font-size: 1.4rem;
+            color: var(--text);
+            margin: 0 0 8px;
+            text-align: center;
+        }
+        .menu-subtitle {
+            color: var(--muted);
+            font-size: 0.95rem;
+            text-align: center;
+            margin: 0 0 24px;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            width: 100%;
+        }
+        .menu-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(var(--surface-base), 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text);
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.18s, background 0.2s, border-color 0.25s, box-shadow 0.25s;
+        }
+        .menu-card:hover {
+            transform: translateY(-2px);
+            background: rgba(var(--surface-base), 0.18);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        .menu-card:active { transform: translateY(0); }
+        .menu-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+        .menu-card:nth-child(6n+2) .menu-icon { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .menu-card:nth-child(6n+3) .menu-icon { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+        .menu-card:nth-child(6n+4) .menu-icon { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .menu-card:nth-child(6n+5) .menu-icon { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
+        .menu-card:nth-child(6n+6) .menu-icon { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
+        .menu-icon svg { width: 22px; height: 22px; }
+        .menu-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .menu-name { display: block; font-size: 0.92rem; font-weight: 700; color: #fff; }
+        .menu-desc { display: block; font-size: 0.74rem; color: rgba(255, 255, 255, 0.5); line-height: 1.3; }
+
+        .back-btn {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid #475569;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            min-height: 44px;
+            text-decoration: none;
+        }
+        .back-btn:hover { background: var(--panel); color: var(--text); }
+
+        /* Flashcards */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        select, button {
+            background: var(--panel);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            min-height: 44px;
+        }
+        select { min-width: 180px; }
+        button {
+            background: linear-gradient(135deg, var(--primary-fill) 0%, var(--primary-fill-dark) 100%);
+            color: #ffffff;
+            border: none;
+            font-weight: 700;
+            transition: transform 0.05s, box-shadow 0.15s, filter 0.15s;
+            box-shadow: 0 6px 16px rgba(30, 58, 95, 0.35);
+        }
+        button:hover { filter: brightness(1.15); }
+        button:active { transform: scale(0.97); }
+        button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+        button.secondary:hover { background: rgba(255, 255, 255, 0.18); filter: none; }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding: 8px 4px;
+        }
+        .card-header-category {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.95rem;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-header-progress {
+            color: var(--muted);
+            font-size: 0.9rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .card-header-nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .card-header-nav button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            min-height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+        .card-wrap {
+            perspective: 1000px;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+            min-height: 260px;
+        }
+        .card {
+            flex: 1;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 28px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .card:hover { box-shadow: 0 14px 36px rgba(0,0,0,0.45); }
+        .card-front h2 {
+            margin: 0 0 8px;
+            font-size: 1.6rem;
+            color: var(--accent);
+        }
+        .card-front .full {
+            font-size: 0.95rem;
+            color: var(--muted);
+            font-style: italic;
+        }
+        .card-back {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+        .card-back h3 {
+            margin: 0 0 12px;
+            color: var(--accent);
+            font-size: 1.3rem;
+            text-align: center;
+        }
+        .card-back p {
+            margin: 0 0 12px;
+            line-height: 1.5;
+            text-align: center;
+        }
+        .card-back .hint {
+            color: #fcd34d;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .card-back .details {
+            background: rgba(0,0,0,0.18);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 8px;
+            text-align: left;
+        }
+        .card-back .details ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .card-back .details li { margin-bottom: 6px; }
+        .card.flipped .card-front { display: none; }
+        .card.flipped .card-back { display: block; }
+        .rating {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .rating button { min-width: 130px; }
+        .rating button.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        .rating-status {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            min-height: 1.2em;
+        }
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+        .actions button { min-width: 100px; }
+        .status {
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-align: center;
+            min-height: 1.2em;
+        }
+
+        /* Onboarding */
+        .onboarding-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 20px;
+            text-align: center;
+        }
+        .onboarding-overlay.hidden { display: none; }
+        .onboarding-card {
+            width: 260px;
+            height: 160px;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-weight: 700;
+            color: var(--text);
+            animation: swipeDemo 1.5s ease-in-out infinite;
+        }
+        .onboarding-hint {
+            color: var(--accent);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .onboarding-sub {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        .onboarding-skip {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid #475569;
+            font-weight: 500;
+        }
+        @keyframes swipeDemo {
+            0%, 100% { transform: translateX(0) rotate(0); }
+            25% { transform: translateX(-80px) rotate(-6deg); }
+            50% { transform: translateX(0) rotate(0); }
+            75% { transform: translateX(80px) rotate(6deg); }
+        }
+
+        /* Game */
+        .game-stats {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            width: 100%;
+        }
+        .stat {
+            background: var(--panel);
+            border: 1px solid #475569;
+            border-radius: var(--radius);
+            padding: 10px 18px;
+            min-width: 110px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .game-instructions {
+            color: var(--muted);
+            font-size: 0.9rem;
+            text-align: center;
+            margin: 0;
+            line-height: 1.4;
+        }
+        .sequence-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sequence-item {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: grab;
+            user-select: none;
+            border: 1px solid transparent;
+            transition: background 0.15s, border-color 0.15s, transform 0.1s;
+            touch-action: pan-y;
+        }
+        .sequence-item:active { cursor: grabbing; transform: scale(1.01); }
+        .sequence-item.dragging { opacity: 0.5; }
+        .sequence-item.correct {
+            background: var(--success-bg);
+            border-color: var(--success);
+        }
+        .sequence-item.incorrect {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+        }
+        .sequence-item.verified { cursor: default; }
+        .sequence-number {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #082f49;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        .sequence-label {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.35;
+        }
+        .sequence-element {
+            display: block;
+        }
+        .sequence-term {
+            display: none;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .sequence-item.correct .sequence-term {
+            display: block;
+        }
+        .sequence-controls {
+            display: flex;
+            gap: 6px;
+        }
+        .sequence-controls button {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            padding: 0;
+            border-radius: 10px;
+            background: var(--panel);
+            color: var(--text);
+            border: 1px solid #475569;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sequence-controls button:hover { background: #334155; }
+        .game-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+        .result-message {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-height: 1.5em;
+        }
+        .result-message.success { color: var(--success); }
+        .result-message.error { color: var(--danger); }
+
+        .sorter-card-wrap {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            min-height: 120px;
+            padding: 10px 0;
+        }
+        .sorter-card {
+            width: 200px;
+            height: 120px;
+            background: var(--card);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            transition: transform 0.1s, box-shadow 0.15s;
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+        .sorter-card:active { cursor: grabbing; transform: scale(1.02); }
+        .sorter-card.dragging { opacity: 0.85; z-index: 1000; }
+        .sorter-card.mismatch { animation: shake 0.5s ease-in-out; border-color: var(--danger); color: var(--danger); }
+        .sorter-buckets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            width: 100%;
+        }
+        .sorter-bucket {
+            background: var(--panel);
+            border: 2px dashed #475569;
+            border-radius: var(--radius);
+            padding: 18px 12px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: background 0.15s, border-color 0.15s, transform 0.15s;
+        }
+        .sorter-bucket.drag-over { background: rgba(34, 211, 238, 0.1); border-color: var(--accent); transform: scale(1.02); }
+        .sorter-bucket.correct { background: var(--success-bg); border-color: var(--success); border-style: solid; }
+        .sorter-bucket.incorrect { background: var(--danger-bg); border-color: var(--danger); border-style: solid; animation: shake 0.5s ease-in-out; }
+        .bucket-title { font-weight: 700; font-size: 0.95rem; }
+
+        .header-string {
+            width: 100%;
+            background: var(--panel);
+            border: 1px solid #475569;
+            border-radius: var(--radius);
+            padding: 16px 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            text-align: center;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        .header-string .pos {
+            display: inline-block;
+            min-width: 1ch;
+            text-align: center;
+        }
+        .header-string .pos.hl {
+            background: rgba(34, 211, 238, 0.22);
+            color: var(--accent);
+            font-weight: 700;
+            border-radius: 4px;
+        }
+        .header-question {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-align: center;
+            margin: 0;
+        }
+        .header-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+        .header-option {
+            background: var(--panel);
+            border: 1px solid #475569;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s, transform 0.05s;
+        }
+        .header-option:hover { background: #334155; }
+        .header-option:active { transform: scale(0.98); }
+        .header-option.correct {
+            background: var(--success-bg);
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .header-option.wrong {
+            animation: shake 0.4s ease-in-out;
+            background: var(--danger-bg);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .header-option.disabled { pointer-events: none; opacity: 0.7; }
+
+        .signal-prompt {
+            width: 100%;
+            min-height: 130px;
+            background: var(--card);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            box-shadow: var(--shadow);
+        }
+        .signal-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+        .signal-option {
+            background: var(--panel);
+            border: 1px solid #475569;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s, transform 0.05s;
+            line-height: 1.4;
+        }
+        .signal-option:hover { background: #334155; }
+        .signal-option:active { transform: scale(0.98); }
+        .signal-option.correct {
+            background: var(--success-bg);
+            border-color: var(--success);
+            color: var(--success);
+        }
+        .signal-option.wrong {
+            animation: shake 0.4s ease-in-out;
+            background: var(--danger-bg);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .signal-option.disabled { pointer-events: none; opacity: 0.7; }
+
+        .dtg-prompt {
+            width: 100%;
+            min-height: 100px;
+            background: var(--card);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            box-shadow: var(--shadow);
+        }
+        .dtg-target {
+            width: 100%;
+            min-height: 70px;
+            background: var(--panel);
+            border: 1px dashed #475569;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+        }
+        .dtg-pieces {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+        .dtg-piece {
+            background: var(--panel);
+            border: 1px solid #475569;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.05s;
+            min-height: 48px;
+        }
+        .dtg-piece:hover { background: #334155; }
+        .dtg-piece:active { transform: scale(0.96); }
+        .dtg-piece.used { opacity: 0.4; pointer-events: none; }
+        .dtg-target.success { background: var(--success-bg); border-color: var(--success); color: var(--success); }
+        .dtg-target.error { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 1rem; }
+            main { padding: 14px; }
+            .card-front h2 { font-size: 1.35rem; }
+            .card-header { flex-wrap: wrap; gap: 10px; }
+            .card-header-category { order: -1; width: 100%; }
+            .card-header-progress { flex: 1; text-align: left; }
+            .card-header-nav { margin-left: auto; }
+            .rating button { min-width: 100%; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .sequence-item { padding: 10px 12px; }
+            .sequence-label { font-size: 0.9rem; }
+            .game-stats { flex-wrap: wrap; }
+            .sorter-buckets { grid-template-columns: 1fr; }
+            .sorter-card { width: 160px; height: 100px; font-size: 1.1rem; }
+            .signal-prompt { min-height: 110px; font-size: 1.5rem; }
+            .signal-option { padding: 12px 14px; font-size: 0.9rem; }
+            .header-options { grid-template-columns: 1fr; }
+            .header-string { font-size: 0.85rem; }
+            .dtg-prompt { font-size: 1rem; }
+            .dtg-target { font-size: 1.2rem; }
+            .dtg-pieces { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-bg" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="noise-overlay" aria-hidden="true"></div>
+
+    <header>
+        <div class="header-inner">
+            <a href="/" class="header-logo-link" aria-label="AnswrIT home">
+                <img src="/images/answrit-logo.png" alt="AnswrIT" class="header-logo" />
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Menu -->
+        <div id="menu-view" class="view active">
+            <a href="/" class="back-btn">&larr; Back to AnswrIT</a>
+            <h2 class="menu-title">Choose a study mode</h2>
+            <p class="menu-subtitle">Pick a mode to start studying Naval Messaging.</p>
+            <div class="menu-grid">
+                <button class="menu-card" data-mode="flashcards">
+                    <span class="menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+                    </span>
+                    <span class="menu-text">
+                        <span class="menu-name">Flashcards</span>
+                        <span class="menu-desc">Tap and flip through the Naval Messaging deck</span>
+                    </span>
+                </button>
+                <button class="menu-card" data-mode="signal">
+                    <span class="menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    </span>
+                    <span class="menu-text">
+                        <span class="menu-name">Signal Match</span>
+                        <span class="menu-desc">Pick the meaning for each operating signal</span>
+                    </span>
+                </button>
+
+                <button class="menu-card" data-mode="sorter">
+                    <span class="menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                    </span>
+                    <span class="menu-text">
+                        <span class="menu-name">Category Sorter</span>
+                        <span class="menu-desc">Drag markings and networks into the right bucket</span>
+                    </span>
+                </button>
+
+                <button class="menu-card" data-mode="game">
+                    <span class="menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                    </span>
+                    <span class="menu-text">
+                        <span class="menu-name">GENSER Sequence</span>
+                        <span class="menu-desc">Put the message format lines in order</span>
+                    </span>
+                </button>
+
+                <button class="menu-card" data-mode="header">
+                    <span class="menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                    </span>
+                    <span class="menu-text">
+                        <span class="menu-name">Header Decoder</span>
+                        <span class="menu-desc">Identify format line 2 character positions</span>
+                    </span>
+                </button>
+
+                <button class="menu-card" data-mode="dtg">
+                    <span class="menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </span>
+                    <span class="menu-text">
+                        <span class="menu-name">DTG Builder</span>
+                        <span class="menu-desc">Build Date-Time Groups from plain text</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Flashcards -->
+        <div id="flashcard-view" class="view">
+            <button class="back-btn" data-back>← Back to menu</button>
+
+            <div class="controls">
+                <select id="category-select" aria-label="Category">
+                    <option value="__all__">All categories</option>
+                </select>
+                <button id="shuffle-btn">Shuffle</button>
+                <button id="hint-btn" class="secondary">Show hint</button>
+            </div>
+
+            <div class="card-header" id="card-header">
+                <span class="card-header-category" id="card-header-category">All categories</span>
+                <span class="card-header-progress" id="card-header-progress">Question 0 of 0</span>
+                <div class="card-header-nav">
+                    <button id="header-prev" class="secondary" aria-label="Previous">&#8249;</button>
+                    <button id="header-next" aria-label="Next">&#8250;</button>
+                </div>
+            </div>
+
+            <div class="card-wrap" id="card-wrap">
+                <div class="card" id="card" role="button" tabindex="0" aria-label="Flashcard. Press Space to flip, left/right arrows to navigate.">
+                    <div class="card-front" id="card-front">
+                        <h2 id="front-term">Loading…</h2>
+                        <div class="full" id="front-full"></div>
+                    </div>
+                    <div class="card-back" id="card-back">
+                        <h3 id="back-term"></h3>
+                        <p id="back-def"></p>
+                        <div class="details" id="back-details"></div>
+                        <p class="hint" id="back-hint"></p>
+                        <div class="rating" id="rating">
+                            <button class="secondary" data-rating="practice">Need Practice</button>
+                            <button data-rating="right">Got It Right</button>
+                        </div>
+                        <div class="rating-status" id="rating-status"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="prev-btn" class="secondary">Previous</button>
+                <button id="flip-btn">Flip</button>
+                <button id="next-btn">Next</button>
+            </div>
+
+            <div class="status" id="status">← Previous, →/Enter Next, Space Flip. On mobile, swipe left/right.</div>
+        </div>
+
+        <!-- Game -->
+        <div id="game-view" class="view">
+            <button class="back-btn" data-back>← Back to menu</button>
+
+            <div class="game-stats">
+                <div class="stat">
+                    <div class="stat-label">Time</div>
+                    <div class="stat-value" id="timer">00:00</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value" id="score">0</div>
+                </div>
+            </div>
+
+            <p class="game-instructions">Drag and drop the lines, or use the ↑/↓ arrows, to put the GENSER format lines in order. Then tap Verify.</p>
+            <ul class="sequence-list" id="sequence-list"></ul>
+
+            <div class="game-actions">
+                <button id="verify-btn">Verify Order</button>
+                <button id="reset-btn" class="secondary">Reset</button>
+            </div>
+
+            <div class="result-message" id="result-message"></div>
+        </div>
+
+        <!-- Signal Match -->
+        <div id="signal-view" class="view">
+            <button class="back-btn" data-back>← Back to menu</button>
+
+            <div class="game-stats">
+                <div class="stat">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value" id="signal-score">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">High</div>
+                    <div class="stat-value" id="signal-high">0</div>
+                </div>
+            </div>
+
+            <p class="game-instructions">Pick the meaning that matches the signal code.</p>
+
+            <div class="signal-prompt" id="signal-prompt">Loading…</div>
+            <div class="signal-options" id="signal-options"></div>
+
+            <div class="game-actions">
+                <button id="signal-restart-btn" class="secondary">Restart</button>
+            </div>
+
+            <div class="result-message" id="signal-result"></div>
+        </div>
+
+        <!-- Category Sorter -->
+        <div id="sorter-view" class="view">
+            <button class="back-btn" data-back>← Back to menu</button>
+
+            <div class="game-stats">
+                <div class="stat">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value" id="sorter-score">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Remaining</div>
+                    <div class="stat-value" id="sorter-remaining">0</div>
+                </div>
+            </div>
+
+            <p class="game-instructions">Drag or swipe the card into the correct bucket. Green = correct, red = try again.</p>
+
+            <div class="sorter-card-wrap">
+                <div class="sorter-card" id="sorter-card" draggable="true">Loading…</div>
+            </div>
+
+            <div class="sorter-buckets" id="sorter-buckets">
+                <div class="sorter-bucket" data-bucket="Unclassified / Legacy Handling">
+                    <div class="bucket-title">Unclassified / Legacy Handling</div>
+                </div>
+                <div class="sorter-bucket" data-bucket="Classified / Secret Traffic">
+                    <div class="bucket-title">Classified / Secret Traffic</div>
+                </div>
+                <div class="sorter-bucket" data-bucket="Specialized / SCI / Intelligence">
+                    <div class="bucket-title">Specialized / SCI / Intelligence</div>
+                </div>
+            </div>
+
+            <div class="game-actions">
+                <button id="sorter-start-btn">Start Sorting</button>
+                <button id="sorter-restart-btn" class="secondary">Restart</button>
+            </div>
+
+            <div class="result-message" id="sorter-result"></div>
+        </div>
+
+        <!-- Header Decoder -->
+        <div id="header-view" class="view">
+            <button class="back-btn" data-back>← Back to menu</button>
+
+            <div class="game-stats">
+                <div class="stat">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value" id="header-score">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Question</div>
+                    <div class="stat-value" id="header-progress">0/0</div>
+                </div>
+            </div>
+
+            <p class="game-instructions">What do the highlighted positions in this format line 2 header represent?</p>
+
+            <div class="header-string" id="header-string"></div>
+            <div class="header-question" id="header-question">Positions 4</div>
+
+            <div class="header-options" id="header-options"></div>
+
+            <div class="game-actions">
+                <button id="header-start-btn">Start Quiz</button>
+                <button id="header-restart-btn" class="secondary">Restart</button>
+            </div>
+
+            <div class="result-message" id="header-result"></div>
+        </div>
+
+        <!-- DTG Builder -->
+        <div id="dtg-view" class="view">
+            <button class="back-btn" data-back>← Back to menu</button>
+
+            <div class="game-stats">
+                <div class="stat">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value" id="dtg-score">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value" id="dtg-streak">0</div>
+                </div>
+            </div>
+
+            <p class="game-instructions">Tap the date/time pieces in the right order to build the DTG (DDHHMMZ MON YY).</p>
+
+            <div class="dtg-prompt" id="dtg-prompt"></div>
+            <div class="dtg-target" id="dtg-target">_ _ _ _ _ _ Z _ _ _ _</div>
+
+            <div class="dtg-pieces" id="dtg-pieces"></div>
+
+            <div class="game-actions">
+                <button id="dtg-clear-btn" class="secondary">Clear</button>
+                <button id="dtg-verify-btn">Verify DTG</button>
+                <button id="dtg-next-btn" class="secondary">Next</button>
+            </div>
+
+            <div class="result-message" id="dtg-result"></div>
+        </div>
+    </main>
+
+    <div id="onboarding-overlay" class="onboarding-overlay hidden" aria-hidden="true">
+        <div class="onboarding-card" aria-hidden="true">
+            <div>
+                <div>← Swipe left = Next</div>
+                <div>Swipe right = Previous →</div>
+            </div>
+        </div>
+        <p class="onboarding-hint">Swipe the card to move between cards</p>
+        <p class="onboarding-sub">Tap anywhere or press Skip to continue</p>
+        <button class="onboarding-skip" id="onboarding-skip">Skip</button>
+    </div>
+
+    <script type="module">
+        import { getCategories, getByCategory, getRandom, shuffle } from "/dataLoader.js";
+        import { isTouchDevice } from "/deviceDetect.js";
+
+        const TUTORIAL_KEY = "comms1_swipeTutorialVisits";
+        const CONFIDENCE_KEY = "comms1_confidence";
+        const SIGNAL_HIGH_KEY = "comms1_signalHighScore";
+        const SWIPE_THRESHOLD = 50;
+
+        const state = {
+            activeMode: "menu",
+            fc: {
+                deck: [],
+                index: 0,
+                flipped: false,
+                showingHint: false,
+                category: "__all__",
+            },
+            game: {
+                lines: [],
+                expected: [],
+                verified: false,
+                startTime: 0,
+                elapsed: 0,
+                timerId: null,
+            },
+            signal: {
+                items: [],
+                index: 0,
+                score: 0,
+                active: false,
+                allSignals: [],
+                answered: false,
+            },
+            sorter: {
+                items: [],
+                index: 0,
+                score: 0,
+                active: false,
+                touch: { ghost: null, offsetX: 0, offsetY: 0 },
+            },
+            header: {
+                items: [],
+                index: 0,
+                score: 0,
+                active: false,
+            },
+            dtg: {
+                score: 0,
+                streak: 0,
+                current: null,
+                built: [],
+                active: false,
+            },
+        };
+
+        let touchStartX = null;
+        let touchStartY = null;
+        let swipeHandled = false;
+        let onboardingTimer = null;
+
+        const els = {
+            menuView: document.getElementById("menu-view"),
+            flashcardView: document.getElementById("flashcard-view"),
+            gameView: document.getElementById("game-view"),
+            signalView: document.getElementById("signal-view"),
+            sorterView: document.getElementById("sorter-view"),
+            headerView: document.getElementById("header-view"),
+            dtgView: document.getElementById("dtg-view"),
+            menuCards: document.querySelectorAll(".menu-card[data-mode]"),
+            backBtns: document.querySelectorAll("[data-back]"),
+
+            select: document.getElementById("category-select"),
+            shuffleBtn: document.getElementById("shuffle-btn"),
+            hintBtn: document.getElementById("hint-btn"),
+            cardHeaderCategory: document.getElementById("card-header-category"),
+            cardHeaderProgress: document.getElementById("card-header-progress"),
+            headerPrev: document.getElementById("header-prev"),
+            headerNext: document.getElementById("header-next"),
+            card: document.getElementById("card"),
+            frontTerm: document.getElementById("front-term"),
+            frontFull: document.getElementById("front-full"),
+            backTerm: document.getElementById("back-term"),
+            backDef: document.getElementById("back-def"),
+            backDetails: document.getElementById("back-details"),
+            backHint: document.getElementById("back-hint"),
+            rating: document.getElementById("rating"),
+            ratingStatus: document.getElementById("rating-status"),
+            prevBtn: document.getElementById("prev-btn"),
+            flipBtn: document.getElementById("flip-btn"),
+            nextBtn: document.getElementById("next-btn"),
+            status: document.getElementById("status"),
+            onboardingOverlay: document.getElementById("onboarding-overlay"),
+            onboardingSkip: document.getElementById("onboarding-skip"),
+
+            gameList: document.getElementById("sequence-list"),
+            gameTimer: document.getElementById("timer"),
+            gameScore: document.getElementById("score"),
+            verifyBtn: document.getElementById("verify-btn"),
+            resetBtn: document.getElementById("reset-btn"),
+            gameResult: document.getElementById("result-message"),
+
+            signalPrompt: document.getElementById("signal-prompt"),
+            signalOptions: document.getElementById("signal-options"),
+            signalScore: document.getElementById("signal-score"),
+            signalHigh: document.getElementById("signal-high"),
+            signalRestartBtn: document.getElementById("signal-restart-btn"),
+            signalResult: document.getElementById("signal-result"),
+
+            sorterCard: document.getElementById("sorter-card"),
+            sorterBuckets: document.getElementById("sorter-buckets"),
+            sorterScore: document.getElementById("sorter-score"),
+            sorterRemaining: document.getElementById("sorter-remaining"),
+            sorterStartBtn: document.getElementById("sorter-start-btn"),
+            sorterRestartBtn: document.getElementById("sorter-restart-btn"),
+            sorterResult: document.getElementById("sorter-result"),
+
+            headerString: document.getElementById("header-string"),
+            headerQuestion: document.getElementById("header-question"),
+            headerOptions: document.getElementById("header-options"),
+            headerScore: document.getElementById("header-score"),
+            headerProgress: document.getElementById("header-progress"),
+            headerStartBtn: document.getElementById("header-start-btn"),
+            headerRestartBtn: document.getElementById("header-restart-btn"),
+            headerResult: document.getElementById("header-result"),
+
+            dtgPrompt: document.getElementById("dtg-prompt"),
+            dtgTarget: document.getElementById("dtg-target"),
+            dtgPieces: document.getElementById("dtg-pieces"),
+            dtgScore: document.getElementById("dtg-score"),
+            dtgStreak: document.getElementById("dtg-streak"),
+            dtgClearBtn: document.getElementById("dtg-clear-btn"),
+            dtgVerifyBtn: document.getElementById("dtg-verify-btn"),
+            dtgNextBtn: document.getElementById("dtg-next-btn"),
+            dtgResult: document.getElementById("dtg-result"),
+        };
+
+        // ── Mode switching ───────────────────────────────────────────────────────────
+
+        function showMode(mode) {
+            state.activeMode = mode;
+            els.menuView.classList.toggle("active", mode === "menu");
+            els.flashcardView.classList.toggle("active", mode === "flashcards");
+            els.gameView.classList.toggle("active", mode === "game");
+            els.signalView.classList.toggle("active", mode === "signal");
+            els.sorterView.classList.toggle("active", mode === "sorter");
+            els.headerView.classList.toggle("active", mode === "header");
+            els.dtgView.classList.toggle("active", mode === "dtg");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            if (mode === "flashcards") {
+                if (!state.fc.deck.length) initFlashcards();
+                showOnboarding();
+            } else {
+                hideOnboarding();
+            }
+
+            if (mode === "game") {
+                if (!state.game.expected.length) initGame();
+                resetGame();
+            } else {
+                stopGameTimer();
+            }
+
+            if (mode === "signal") {
+                initSignal();
+            }
+
+            if (mode === "sorter") {
+                startSorter();
+            }
+
+            if (mode === "header") {
+                startHeaderQuiz();
+            }
+
+            if (mode === "dtg") {
+                startDtgGame();
+            }
+        }
+
+        // ── Flashcards ─────────────────────────────────────────────────────────────
+
+        function formatCategoryName(value) {
+            if (value === "__all__") return "All categories";
+            return value.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
+        }
+
+        function formatDetails(details) {
+            if (!details) return "";
+            if (typeof details === "string") return `<p>${escapeHtml(details)}</p>`;
+            let html = "";
+            for (const [key, value] of Object.entries(details)) {
+                const label = key[0].toUpperCase() + key.slice(1);
+                html += `<li><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</li>`;
+            }
+            return `<ul>${html}</ul>`;
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function renderCard() {
+            const item = state.fc.deck[state.fc.index];
+            if (!item) {
+                els.frontTerm.textContent = "No cards";
+                els.frontFull.textContent = "";
+                els.cardHeaderCategory.textContent = formatCategoryName(state.fc.category);
+                els.cardHeaderProgress.textContent = "Question 0 of 0";
+                els.ratingStatus.textContent = "";
+                return;
+            }
+
+            state.fc.flipped = false;
+            els.card.classList.remove("flipped");
+            state.fc.showingHint = false;
+            els.backHint.style.display = "none";
+            els.hintBtn.textContent = "Show hint";
+
+            els.frontTerm.textContent = item.term || "Untitled";
+            els.frontFull.textContent = item.fullTerm || "";
+
+            els.backTerm.textContent = item.term || "Untitled";
+            els.backDef.textContent = item.definition || "No definition.";
+
+            const detailsHtml = formatDetails(item.details);
+            if (detailsHtml) {
+                els.backDetails.style.display = "block";
+                els.backDetails.innerHTML = detailsHtml;
+            } else {
+                els.backDetails.style.display = "none";
+                els.backDetails.innerHTML = "";
+            }
+
+            els.backHint.textContent = item.hint ? `Hint: ${item.hint}` : "";
+            els.cardHeaderCategory.textContent = formatCategoryName(state.fc.category);
+            els.cardHeaderProgress.textContent = `Question ${state.fc.index + 1} of ${state.fc.deck.length}`;
+            renderRating();
+        }
+
+        function flip() {
+            if (swipeHandled) {
+                swipeHandled = false;
+                return;
+            }
+            state.fc.flipped = !state.fc.flipped;
+            els.card.classList.toggle("flipped", state.fc.flipped);
+        }
+
+        function nextCard() {
+            if (!state.fc.deck.length) return;
+            state.fc.index = (state.fc.index + 1) % state.fc.deck.length;
+            renderCard();
+        }
+
+        function prevCard() {
+            if (!state.fc.deck.length) return;
+            state.fc.index = (state.fc.index - 1 + state.fc.deck.length) % state.fc.deck.length;
+            renderCard();
+        }
+
+        function toggleHint() {
+            state.fc.showingHint = !state.fc.showingHint;
+            els.backHint.style.display = state.fc.showingHint ? "block" : "none";
+            els.hintBtn.textContent = state.fc.showingHint ? "Hide hint" : "Show hint";
+        }
+
+        function attachSwipeGestures() {
+            if (!isTouchDevice()) return;
+            els.card.addEventListener("touchstart", (e) => {
+                if (e.touches.length !== 1) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                swipeHandled = false;
+            }, { passive: true });
+
+            els.card.addEventListener("touchend", (e) => {
+                if (touchStartX === null || touchStartY === null) return;
+                const dx = e.changedTouches[0].clientX - touchStartX;
+                const dy = e.changedTouches[0].clientY - touchStartY;
+                touchStartX = null;
+                touchStartY = null;
+                if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                    e.preventDefault();
+                    swipeHandled = true;
+                    if (dx < 0) nextCard(); else prevCard();
+                }
+            }, { passive: false });
+        }
+
+        function getConfidenceMap() {
+            try {
+                return JSON.parse(localStorage.getItem(CONFIDENCE_KEY) || "{}");
+            } catch {
+                return {};
+            }
+        }
+
+        function saveConfidenceMap(map) {
+            localStorage.setItem(CONFIDENCE_KEY, JSON.stringify(map));
+        }
+
+        function setConfidence(status) {
+            const item = state.fc.deck[state.fc.index];
+            if (!item) return;
+            const map = getConfidenceMap();
+            map[item.id] = status;
+            saveConfidenceMap(map);
+            renderRating();
+        }
+
+        function renderRating() {
+            const item = state.fc.deck[state.fc.index];
+            if (!item) return;
+            const current = getConfidenceMap()[item.id] || null;
+            els.rating.querySelectorAll("button").forEach((btn) => {
+                btn.classList.toggle("active", btn.dataset.rating === current);
+            });
+            if (current === "right") {
+                els.ratingStatus.textContent = "Marked: Got it right";
+            } else if (current === "practice") {
+                els.ratingStatus.textContent = "Marked: Need practice";
+            } else {
+                els.ratingStatus.textContent = "Rate your confidence";
+            }
+        }
+
+        async function loadCategory(value) {
+            try {
+                state.fc.category = value;
+                const cards = value === "__all__" ? await getRandom(null) : await getByCategory(value);
+                state.fc.deck = shuffle(cards);
+                state.fc.index = 0;
+                renderCard();
+            } catch (err) {
+                els.status.textContent = "Error loading cards: " + err.message;
+                console.error(err);
+            }
+        }
+
+        async function initFlashcards() {
+            const categories = await getCategories();
+            categories.forEach((cat) => {
+                const option = document.createElement("option");
+                option.value = cat;
+                option.textContent = formatCategoryName(cat);
+                els.select.appendChild(option);
+            });
+            await loadCategory("__all__");
+        }
+
+        // ── Onboarding ───────────────────────────────────────────────────────────────
+
+        function getTutorialCount() {
+            const raw = localStorage.getItem(TUTORIAL_KEY);
+            const count = parseInt(raw, 10);
+            return Number.isNaN(count) ? 0 : count;
+        }
+
+        function shouldShowOnboarding() {
+            return isTouchDevice() && getTutorialCount() < 5;
+        }
+
+        function hideOnboarding() {
+            clearTimeout(onboardingTimer);
+            els.onboardingOverlay.classList.add("hidden");
+            els.onboardingOverlay.setAttribute("aria-hidden", "true");
+        }
+
+        function finishOnboarding() {
+            hideOnboarding();
+            localStorage.setItem(TUTORIAL_KEY, String(getTutorialCount() + 1));
+        }
+
+        function showOnboarding() {
+            if (!shouldShowOnboarding()) return;
+            els.onboardingOverlay.classList.remove("hidden");
+            els.onboardingOverlay.setAttribute("aria-hidden", "false");
+            onboardingTimer = setTimeout(finishOnboarding, 1500);
+            els.onboardingOverlay.addEventListener("click", finishOnboarding, { once: true });
+            els.onboardingSkip.addEventListener("click", (e) => {
+                e.stopPropagation();
+                finishOnboarding();
+            }, { once: true });
+        }
+
+        // ── GENSER Sequence Game ─────────────────────────────────────────────────────
+
+        function gameLineNumber(item) {
+            const match = item.term.match(/\d+/);
+            return match ? parseInt(match[0], 10) : 0;
+        }
+
+        function shuffleArray(array) {
+            const items = array.slice();
+            for (let i = items.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [items[i], items[j]] = [items[j], items[i]];
+            }
+            return items;
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+            const s = (seconds % 60).toString().padStart(2, "0");
+            return `${m}:${s}`;
+        }
+
+        function startGameTimer() {
+            stopGameTimer();
+            state.game.startTime = Date.now();
+            state.game.elapsed = 0;
+            state.game.timerId = setInterval(() => {
+                state.game.elapsed = Math.floor((Date.now() - state.game.startTime) / 1000);
+                els.gameTimer.textContent = formatTime(state.game.elapsed);
+            }, 1000);
+        }
+
+        function stopGameTimer() {
+            if (state.game.timerId) {
+                clearInterval(state.game.timerId);
+                state.game.timerId = null;
+            }
+        }
+
+        function moveGameItem(index, direction) {
+            if (state.game.verified) return;
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= state.game.lines.length) return;
+            const temp = state.game.lines[index];
+            state.game.lines[index] = state.game.lines[newIndex];
+            state.game.lines[newIndex] = temp;
+            renderGameList();
+        }
+
+        function renderGameList() {
+            els.gameList.innerHTML = "";
+            state.game.lines.forEach((item, index) => {
+                const li = document.createElement("li");
+                li.className = "sequence-item";
+                li.draggable = !state.game.verified;
+                li.dataset.index = index;
+                li.dataset.id = item.id;
+
+                const number = document.createElement("span");
+                number.className = "sequence-number";
+                const slotItem = state.game.expected[index];
+                number.textContent = slotItem ? gameLineNumber(slotItem) : index + 1;
+                li.appendChild(number);
+
+                const label = document.createElement("div");
+                label.className = "sequence-label";
+                const element = document.createElement("strong");
+                element.className = "sequence-element";
+                element.textContent = item.element || item.definition || "Unknown line";
+                label.appendChild(element);
+                const term = document.createElement("span");
+                term.className = "sequence-term";
+                term.textContent = item.term;
+                label.appendChild(term);
+                li.appendChild(label);
+
+                const controls = document.createElement("div");
+                controls.className = "sequence-controls";
+                const upBtn = document.createElement("button");
+                upBtn.textContent = "↑";
+                upBtn.setAttribute("aria-label", "Move up");
+                upBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    moveGameItem(index, -1);
+                });
+                const downBtn = document.createElement("button");
+                downBtn.textContent = "↓";
+                downBtn.setAttribute("aria-label", "Move down");
+                downBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    moveGameItem(index, 1);
+                });
+                controls.appendChild(upBtn);
+                controls.appendChild(downBtn);
+                li.appendChild(controls);
+
+                attachGameDragEvents(li);
+                els.gameList.appendChild(li);
+            });
+        }
+
+        function attachGameDragEvents(li) {
+            if (state.game.verified) return;
+            li.addEventListener("dragstart", (e) => {
+                li.classList.add("dragging");
+                e.dataTransfer.setData("text/plain", li.dataset.index);
+                e.dataTransfer.effectAllowed = "move";
+            });
+            li.addEventListener("dragend", () => {
+                li.classList.remove("dragging");
+            });
+            li.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+            });
+            li.addEventListener("drop", (e) => {
+                e.preventDefault();
+                if (state.game.verified) return;
+                const fromIndex = parseInt(e.dataTransfer.getData("text/plain"), 10);
+                const toIndex = parseInt(li.dataset.index, 10);
+                if (Number.isNaN(fromIndex) || Number.isNaN(toIndex) || fromIndex === toIndex) return;
+                const moved = state.game.lines.splice(fromIndex, 1)[0];
+                state.game.lines.splice(toIndex, 0, moved);
+                renderGameList();
+            });
+        }
+
+        function verifyGameOrder() {
+            if (state.game.verified) return;
+            stopGameTimer();
+            state.game.verified = true;
+
+            let correct = 0;
+            const items = els.gameList.querySelectorAll(".sequence-item");
+            state.game.lines.forEach((item, index) => {
+                const isCorrect = item.id === state.game.expected[index].id;
+                items[index].classList.add(isCorrect ? "correct" : "incorrect");
+                items[index].classList.add("verified");
+                items[index].draggable = false;
+                if (isCorrect) correct += 1;
+            });
+
+            const wrong = state.game.lines.length - correct;
+            const accuracyBonus = correct * 100;
+            const speedBonus = Math.max(0, 60 - state.game.elapsed) * 10;
+            const penalty = wrong * 25;
+            const score = Math.max(0, accuracyBonus + speedBonus - penalty);
+            els.gameScore.textContent = score;
+
+            if (correct === state.game.lines.length) {
+                els.gameResult.textContent = `Perfect! ${correct}/${state.game.lines.length} correct — score ${score}`;
+                els.gameResult.className = "result-message success";
+            } else {
+                els.gameResult.textContent = `${correct}/${state.game.lines.length} correct — score ${score}. Tap Reset to try again.`;
+                els.gameResult.className = "result-message error";
+            }
+            els.verifyBtn.disabled = true;
+        }
+
+        async function resetGame() {
+            stopGameTimer();
+            state.game.verified = false;
+            els.gameResult.textContent = "";
+            els.gameResult.className = "result-message";
+            els.verifyBtn.disabled = false;
+            els.gameScore.textContent = "0";
+            els.gameTimer.textContent = "00:00";
+
+            if (!state.game.expected.length) {
+                const all = await getByCategory("genserFormatLines");
+                state.game.expected = all.slice().sort((a, b) => gameLineNumber(a) - gameLineNumber(b));
+            }
+            state.game.lines = shuffleArray(state.game.expected);
+            renderGameList();
+            startGameTimer();
+        }
+
+        async function initGame() {
+            const all = await getByCategory("genserFormatLines");
+            state.game.expected = all.slice().sort((a, b) => gameLineNumber(a) - gameLineNumber(b));
+        }
+
+        // ── Signal Match Game ────────────────────────────────────────────────────────
+
+        function getSignalHighScore() {
+            const raw = localStorage.getItem(SIGNAL_HIGH_KEY);
+            const score = parseInt(raw, 10);
+            return Number.isNaN(score) ? 0 : score;
+        }
+
+        function setSignalHighScore(score) {
+            localStorage.setItem(SIGNAL_HIGH_KEY, String(score));
+        }
+
+        function updateSignalHighDisplay() {
+            els.signalHigh.textContent = getSignalHighScore();
+        }
+
+        async function initSignal() {
+            if (!state.signal.allSignals.length) {
+                const all = await getByCategory("operatingSignals");
+                state.signal.allSignals = all.filter((item) => /^[A-Z]/.test(item.term));
+            }
+            updateSignalHighDisplay();
+            startSignalGame();
+        }
+
+        function getSignalOptions(correctItem) {
+            const others = state.signal.allSignals.filter((item) => item.id !== correctItem.id);
+            const decoys = shuffleArray(others).slice(0, 3);
+            return shuffleArray([correctItem, ...decoys]);
+        }
+
+        function renderSignalQuestion() {
+            if (!state.signal.active || state.signal.index >= state.signal.items.length) {
+                els.signalPrompt.textContent = "Done!";
+                els.signalOptions.innerHTML = "";
+                return;
+            }
+            const current = state.signal.items[state.signal.index];
+            els.signalPrompt.textContent = current.term;
+            const options = getSignalOptions(current);
+            els.signalOptions.innerHTML = "";
+            state.signal.answered = false;
+            options.forEach((item) => {
+                const btn = document.createElement("button");
+                btn.className = "signal-option";
+                btn.textContent = item.definition;
+                btn.addEventListener("click", () => handleSignalOption(item, btn));
+                els.signalOptions.appendChild(btn);
+            });
+        }
+
+        function startSignalGame() {
+            state.signal.items = shuffleArray(state.signal.allSignals.slice());
+            state.signal.index = 0;
+            state.signal.score = 0;
+            state.signal.active = true;
+            state.signal.answered = false;
+            els.signalScore.textContent = "0";
+            els.signalResult.textContent = "";
+            els.signalResult.className = "result-message";
+            renderSignalQuestion();
+        }
+
+        function endSignalGame() {
+            state.signal.active = false;
+            els.signalOptions.innerHTML = "";
+
+            const high = getSignalHighScore();
+            if (state.signal.score > high) {
+                setSignalHighScore(state.signal.score);
+                updateSignalHighDisplay();
+            }
+
+            els.signalResult.textContent = `All answered! Final score: ${state.signal.score}`;
+            els.signalResult.className = "result-message success";
+        }
+
+        function handleSignalOption(item, btn) {
+            if (!state.signal.active || state.signal.answered) return;
+            const current = state.signal.items[state.signal.index];
+            const correct = item.id === current.id;
+            state.signal.answered = true;
+
+            const optionButtons = els.signalOptions.querySelectorAll(".signal-option");
+            optionButtons.forEach((b) => b.classList.add("disabled"));
+
+            if (correct) {
+                btn.classList.add("correct");
+                state.signal.score += 100;
+                els.signalScore.textContent = state.signal.score;
+                setTimeout(() => {
+                    state.signal.index += 1;
+                    if (state.signal.index >= state.signal.items.length) {
+                        endSignalGame();
+                    } else {
+                        renderSignalQuestion();
+                    }
+                }, 700);
+            } else {
+                btn.classList.add("wrong");
+                optionButtons.forEach((b) => {
+                    if (b.textContent === current.definition) {
+                        b.classList.add("correct");
+                    }
+                });
+                state.signal.score = Math.max(0, state.signal.score - 10);
+                els.signalScore.textContent = state.signal.score;
+                setTimeout(() => {
+                    state.signal.index += 1;
+                    if (state.signal.index >= state.signal.items.length) {
+                        endSignalGame();
+                    } else {
+                        renderSignalQuestion();
+                    }
+                }, 1200);
+            }
+        }
+
+        // ── Category Sorter ─────────────────────────────────────────────────────────
+
+        const SORTER_ITEMS = [
+            { term: "NIPRNET", bucket: "Unclassified / Legacy Handling" },
+            { term: "FOUO", bucket: "Unclassified / Legacy Handling" },
+            { term: "EFTO", bucket: "Unclassified / Legacy Handling" },
+            { term: "SIPRNET", bucket: "Classified / Secret Traffic" },
+            { term: "SPECAT", bucket: "Classified / Secret Traffic" },
+            { term: "FRD", bucket: "Classified / Secret Traffic" },
+            { term: "JWICS", bucket: "Specialized / SCI / Intelligence" },
+            { term: "DSSCS", bucket: "Specialized / SCI / Intelligence" },
+            { term: "CRITIC", bucket: "Specialized / SCI / Intelligence" },
+            { term: "RD", bucket: "Specialized / SCI / Intelligence" },
+        ];
+
+        function startSorter() {
+            state.sorter.items = shuffleArray(SORTER_ITEMS.slice());
+            state.sorter.index = 0;
+            state.sorter.score = 0;
+            state.sorter.active = true;
+            els.sorterScore.textContent = "0";
+            els.sorterRemaining.textContent = state.sorter.items.length;
+            els.sorterResult.textContent = "";
+            els.sorterResult.className = "result-message";
+            els.sorterStartBtn.textContent = "Playing…";
+            els.sorterStartBtn.disabled = true;
+            renderSorter();
+        }
+
+        function renderSorter() {
+            if (!state.sorter.active || state.sorter.index >= state.sorter.items.length) {
+                els.sorterCard.textContent = "Done!";
+                els.sorterCard.classList.add("inactive");
+                return;
+            }
+            els.sorterCard.textContent = state.sorter.items[state.sorter.index].term;
+            els.sorterCard.classList.remove("inactive", "mismatch");
+            els.sorterRemaining.textContent = state.sorter.items.length - state.sorter.index;
+        }
+
+        function finishSorter() {
+            state.sorter.active = false;
+            els.sorterStartBtn.textContent = "Start Sorting";
+            els.sorterStartBtn.disabled = false;
+            els.sorterResult.textContent = `Finished! Score: ${state.sorter.score}/${state.sorter.items.length}`;
+            els.sorterResult.className = "result-message success";
+        }
+
+        function handleSorterDrop(bucketName) {
+            if (!state.sorter.active || state.sorter.index >= state.sorter.items.length) return;
+            const current = state.sorter.items[state.sorter.index];
+            const bucketEl = els.sorterBuckets.querySelector(`[data-bucket="${CSS.escape(bucketName)}"]`);
+
+            if (bucketName === current.bucket) {
+                state.sorter.score += 1;
+                els.sorterScore.textContent = state.sorter.score;
+                if (bucketEl) {
+                    bucketEl.classList.add("correct");
+                    setTimeout(() => bucketEl.classList.remove("correct"), 500);
+                }
+                if (navigator.vibrate) navigator.vibrate(50);
+                state.sorter.index += 1;
+                renderSorter();
+                if (state.sorter.index >= state.sorter.items.length) {
+                    finishSorter();
+                }
+            } else {
+                if (bucketEl) {
+                    bucketEl.classList.add("incorrect");
+                    setTimeout(() => bucketEl.classList.remove("incorrect"), 500);
+                }
+                els.sorterCard.classList.add("mismatch");
+                setTimeout(() => els.sorterCard.classList.remove("mismatch"), 500);
+            }
+        }
+
+        function attachSorterDragEvents() {
+            const card = els.sorterCard;
+
+            card.addEventListener("dragstart", (e) => {
+                if (!state.sorter.active) {
+                    e.preventDefault();
+                    return;
+                }
+                card.classList.add("dragging");
+                e.dataTransfer.setData("text/plain", "sorter-card");
+                e.dataTransfer.effectAllowed = "move";
+            });
+
+            card.addEventListener("dragend", () => {
+                card.classList.remove("dragging");
+            });
+
+            els.sorterBuckets.querySelectorAll(".sorter-bucket").forEach((bucket) => {
+                bucket.addEventListener("dragenter", (e) => {
+                    e.preventDefault();
+                    bucket.classList.add("drag-over");
+                });
+                bucket.addEventListener("dragover", (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                });
+                bucket.addEventListener("dragleave", () => {
+                    bucket.classList.remove("drag-over");
+                });
+                bucket.addEventListener("drop", (e) => {
+                    e.preventDefault();
+                    bucket.classList.remove("drag-over");
+                    handleSorterDrop(bucket.dataset.bucket);
+                });
+            });
+
+            card.addEventListener("touchstart", (e) => {
+                if (!state.sorter.active || e.touches.length !== 1) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = card.getBoundingClientRect();
+                state.sorter.touch.offsetX = touch.clientX - rect.left;
+                state.sorter.touch.offsetY = touch.clientY - rect.top;
+
+                const ghost = card.cloneNode(true);
+                ghost.id = "sorter-ghost";
+                ghost.style.position = "fixed";
+                ghost.style.width = rect.width + "px";
+                ghost.style.height = rect.height + "px";
+                ghost.style.pointerEvents = "none";
+                ghost.style.zIndex = "10000";
+                ghost.style.opacity = "0.9";
+                document.body.appendChild(ghost);
+                state.sorter.touch.ghost = ghost;
+                updateSorterGhost(touch.clientX, touch.clientY);
+                card.classList.add("dragging");
+            }, { passive: false });
+
+            card.addEventListener("touchmove", (e) => {
+                if (!state.sorter.touch.ghost || e.touches.length !== 1) return;
+                e.preventDefault();
+                updateSorterGhost(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: false });
+
+            card.addEventListener("touchend", (e) => {
+                if (!state.sorter.touch.ghost) return;
+                const touch = e.changedTouches[0];
+                const ghost = state.sorter.touch.ghost;
+                ghost.remove();
+                state.sorter.touch.ghost = null;
+                card.classList.remove("dragging");
+
+                const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                const bucket = target ? target.closest(".sorter-bucket") : null;
+                if (bucket) {
+                    handleSorterDrop(bucket.dataset.bucket);
+                }
+            }, { passive: false });
+        }
+
+        function updateSorterGhost(x, y) {
+            const ghost = state.sorter.touch.ghost;
+            if (!ghost) return;
+            ghost.style.left = (x - state.sorter.touch.offsetX) + "px";
+            ghost.style.top = (y - state.sorter.touch.offsetY) + "px";
+        }
+
+        // ── Header Decoder ───────────────────────────────────────────────────────────
+
+        const HEADER_FIELDS = [
+            { name: "Classification", start: 4, end: 4, examples: "RPOIF" },
+            { name: "CIC", start: 5, end: 8, examples: "0123456789" },
+            { name: "OSRI", start: 10, end: 15, examples: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" },
+            { name: "SSN", start: 17, end: 20, examples: "0123456789" },
+            { name: "Julian Date", start: 22, end: 24, examples: "0123456789" },
+            { name: "Time Filed", start: 25, end: 28, examples: "0123456789" },
+        ];
+
+        function generateHeaderString() {
+            const chars = Array(28).fill(" ");
+            HEADER_FIELDS.forEach((field) => {
+                for (let i = field.start - 1; i <= field.end - 1; i++) {
+                    chars[i] = field.examples[Math.floor(Math.random() * field.examples.length)];
+                }
+            });
+            return chars.join("");
+        }
+
+        function startHeaderQuiz() {
+            state.header.items = [];
+            for (let i = 0; i < 10; i++) {
+                const field = HEADER_FIELDS[Math.floor(Math.random() * HEADER_FIELDS.length)];
+                const decoys = shuffleArray(HEADER_FIELDS.filter((f) => f.name !== field.name).map((f) => f.name)).slice(0, 3);
+                state.header.items.push({
+                    field,
+                    header: generateHeaderString(),
+                    options: shuffleArray([field.name, ...decoys]),
+                });
+            }
+            state.header.index = 0;
+            state.header.score = 0;
+            state.header.active = true;
+            els.headerScore.textContent = "0";
+            els.headerResult.textContent = "";
+            els.headerResult.className = "result-message";
+            els.headerStartBtn.textContent = "Playing…";
+            els.headerStartBtn.disabled = true;
+            renderHeaderQuestion();
+        }
+
+        function renderHeaderQuestion() {
+            if (!state.header.active || state.header.index >= state.header.items.length) {
+                els.headerString.innerHTML = "";
+                els.headerQuestion.textContent = "Done!";
+                els.headerOptions.innerHTML = "";
+                els.headerProgress.textContent = `${state.header.index}/${state.header.items.length}`;
+                return;
+            }
+            const q = state.header.items[state.header.index];
+            const { start, end, name } = q.field;
+
+            els.headerString.innerHTML = "";
+            const chars = q.header.split("");
+            chars.forEach((ch, i) => {
+                const pos = i + 1;
+                const span = document.createElement("span");
+                span.className = "pos" + (pos >= start && pos <= end ? " hl" : "");
+                span.textContent = ch;
+                els.headerString.appendChild(span);
+            });
+
+            const rangeLabel = start === end ? `Position ${start}` : `Positions ${start}-${end}`;
+            els.headerQuestion.textContent = `What does ${rangeLabel} represent?`;
+            els.headerProgress.textContent = `${state.header.index + 1}/${state.header.items.length}`;
+
+            els.headerOptions.innerHTML = "";
+            q.options.forEach((opt) => {
+                const btn = document.createElement("button");
+                btn.className = "header-option";
+                btn.textContent = opt;
+                btn.addEventListener("click", () => handleHeaderOption(opt, btn));
+                els.headerOptions.appendChild(btn);
+            });
+        }
+
+        function handleHeaderOption(selected, btn) {
+            if (!state.header.active) return;
+            const current = state.header.items[state.header.index];
+            const correct = selected === current.field.name;
+            const buttons = els.headerOptions.querySelectorAll(".header-option");
+            buttons.forEach((b) => b.classList.add("disabled"));
+
+            if (correct) {
+                btn.classList.add("correct");
+                state.header.score += 1;
+                els.headerScore.textContent = state.header.score;
+            } else {
+                btn.classList.add("wrong");
+                buttons.forEach((b) => {
+                    if (b.textContent === current.field.name) b.classList.add("correct");
+                });
+            }
+
+            setTimeout(() => {
+                state.header.index += 1;
+                renderHeaderQuestion();
+                if (state.header.index >= state.header.items.length) {
+                    finishHeaderQuiz();
+                }
+            }, correct ? 700 : 1200);
+        }
+
+        function finishHeaderQuiz() {
+            state.header.active = false;
+            els.headerStartBtn.textContent = "Start Quiz";
+            els.headerStartBtn.disabled = false;
+            els.headerResult.textContent = `Finished! Score: ${state.header.score}/${state.header.items.length}`;
+            els.headerResult.className = "result-message success";
+        }
+
+        // ── DTG Builder ───────────────────────────────────────────────────────────────
+
+        const DTG_MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+        function pad2(n) {
+            return n.toString().padStart(2, "0");
+        }
+
+        function generateDtg() {
+            const day = Math.floor(Math.random() * 28) + 1;
+            const hour = Math.floor(Math.random() * 24);
+            const minute = Math.floor(Math.random() * 60);
+            const month = DTG_MONTHS[Math.floor(Math.random() * DTG_MONTHS.length)];
+            const year = 2020 + Math.floor(Math.random() * 10);
+            const shortYear = (year % 100).toString().padStart(2, "0");
+            const daySuffix = (day === 11 || day === 12 || day === 13) ? "th" : (day % 10 === 1 ? "st" : day % 10 === 2 ? "nd" : day % 10 === 3 ? "rd" : "th");
+            const sentence = `${day}${daySuffix} day, ${pad2(hour)}:${pad2(minute)} Zulu, ${month} ${year}`;
+            const tokens = [pad2(day), pad2(hour), pad2(minute), "Z", month, shortYear];
+            const dtg = `${tokens[0]}${tokens[1]}${tokens[2]}${tokens[3]} ${tokens[4]} ${tokens[5]}`;
+            return { sentence, dtg, tokens };
+        }
+
+        function startDtgGame() {
+            state.dtg.score = 0;
+            state.dtg.streak = 0;
+            state.dtg.active = true;
+            els.dtgScore.textContent = "0";
+            els.dtgStreak.textContent = "0";
+            els.dtgResult.textContent = "";
+            els.dtgResult.className = "result-message";
+            nextDtgRound();
+        }
+
+        function nextDtgRound() {
+            state.dtg.current = generateDtg();
+            state.dtg.built = [];
+            els.dtgResult.textContent = "";
+            els.dtgResult.className = "result-message";
+            renderDtgRound();
+        }
+
+        function formatDtgBuilt(tokens) {
+            if (tokens.length === 0) return "_ _ _ _ _ _ Z _ _ _ _";
+            if (tokens.length < 4) return tokens.join("");
+            return tokens.slice(0, 3).join("") + tokens[3] + (tokens.length > 4 ? " " + tokens.slice(4).join(" ") : "");
+        }
+
+        function renderDtgRound() {
+            const current = state.dtg.current;
+            els.dtgPrompt.textContent = current.sentence;
+            els.dtgTarget.textContent = formatDtgBuilt(state.dtg.built);
+            els.dtgTarget.classList.remove("success", "error");
+
+            const pieces = shuffleArray(current.tokens.slice());
+            els.dtgPieces.innerHTML = "";
+            pieces.forEach((piece) => {
+                const btn = document.createElement("button");
+                btn.className = "dtg-piece";
+                btn.textContent = piece;
+                btn.addEventListener("click", () => handleDtgPiece(piece, btn));
+                els.dtgPieces.appendChild(btn);
+            });
+        }
+
+        function handleDtgPiece(piece, btn) {
+            if (!state.dtg.active || state.dtg.built.length >= 6) return;
+            state.dtg.built.push(piece);
+            btn.classList.add("used");
+            els.dtgTarget.textContent = formatDtgBuilt(state.dtg.built);
+        }
+
+        function clearDtg() {
+            if (!state.dtg.active) return;
+            state.dtg.built = [];
+            renderDtgRound();
+            els.dtgResult.textContent = "";
+            els.dtgResult.className = "result-message";
+        }
+
+        function verifyDtg() {
+            if (!state.dtg.active || state.dtg.built.length < 6) {
+                els.dtgResult.textContent = "Tap all 6 pieces first.";
+                els.dtgResult.className = "result-message error";
+                return;
+            }
+            const built = formatDtgBuilt(state.dtg.built);
+            const correct = state.dtg.current.dtg;
+            if (built === correct) {
+                state.dtg.score += 100 + state.dtg.streak * 10;
+                state.dtg.streak += 1;
+                els.dtgScore.textContent = state.dtg.score;
+                els.dtgStreak.textContent = state.dtg.streak;
+                els.dtgTarget.classList.add("success");
+                els.dtgResult.textContent = "Correct!";
+                els.dtgResult.className = "result-message success";
+                setTimeout(nextDtgRound, 900);
+            } else {
+                state.dtg.score = Math.max(0, state.dtg.score - 10);
+                state.dtg.streak = 0;
+                els.dtgScore.textContent = state.dtg.score;
+                els.dtgStreak.textContent = state.dtg.streak;
+                els.dtgTarget.classList.add("error");
+                els.dtgResult.textContent = `Correct: ${correct}`;
+                els.dtgResult.className = "result-message error";
+                setTimeout(nextDtgRound, 1500);
+            }
+        }
+
+        // ── Init ─────────────────────────────────────────────────────────────────────
+
+        function init() {
+            els.menuCards.forEach((card) => {
+                card.addEventListener("click", () => showMode(card.dataset.mode));
+            });
+            els.backBtns.forEach((btn) => {
+                btn.addEventListener("click", () => showMode("menu"));
+            });
+
+            els.select.addEventListener("change", () => loadCategory(els.select.value));
+            els.shuffleBtn.addEventListener("click", () => {
+                state.fc.deck = shuffle(state.fc.deck);
+                state.fc.index = 0;
+                renderCard();
+            });
+            els.flipBtn.addEventListener("click", flip);
+            els.card.addEventListener("click", flip);
+            els.nextBtn.addEventListener("click", nextCard);
+            els.prevBtn.addEventListener("click", prevCard);
+            els.headerNext.addEventListener("click", nextCard);
+            els.headerPrev.addEventListener("click", prevCard);
+            els.hintBtn.addEventListener("click", toggleHint);
+
+            els.rating.querySelectorAll("button").forEach((btn) => {
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    setConfidence(btn.dataset.rating);
+                });
+            });
+
+            els.verifyBtn.addEventListener("click", verifyGameOrder);
+            els.resetBtn.addEventListener("click", resetGame);
+
+            els.signalRestartBtn.addEventListener("click", startSignalGame);
+
+            els.sorterStartBtn.addEventListener("click", startSorter);
+            els.sorterRestartBtn.addEventListener("click", startSorter);
+            attachSorterDragEvents();
+
+            els.headerStartBtn.addEventListener("click", startHeaderQuiz);
+            els.headerRestartBtn.addEventListener("click", startHeaderQuiz);
+
+            els.dtgClearBtn.addEventListener("click", clearDtg);
+            els.dtgVerifyBtn.addEventListener("click", verifyDtg);
+            els.dtgNextBtn.addEventListener("click", nextDtgRound);
+
+            document.addEventListener("keydown", (e) => {
+                if (state.activeMode !== "flashcards") return;
+                if (e.target.tagName === "BUTTON" || e.target.tagName === "SELECT") return;
+                if (e.key === "ArrowRight" || e.key === "Enter") { e.preventDefault(); nextCard(); }
+                else if (e.key === "ArrowLeft") { e.preventDefault(); prevCard(); }
+                else if (e.key === " ") { e.preventDefault(); flip(); }
+                else if (e.key.toLowerCase() === "h") { toggleHint(); }
+            });
+
+            attachSwipeGestures();
+        }
+
+        init();
+    </script>
+</body>
+</html>
