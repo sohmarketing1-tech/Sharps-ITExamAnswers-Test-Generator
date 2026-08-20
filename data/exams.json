@@ -66,6 +66,13 @@
       "filename": "ccna-1-v70-final-exam-answers-full-introduction-to-networks.json",
       "count": 164,
       "display_name": "CCNA 1 v7 Final Exam"
+    },
+    {
+      "title": "Naval Messaging",
+      "url": "",
+      "filename": "naval-messaging.json",
+      "count": 88,
+      "display_name": "Naval Messaging"
     }
   ]
 }
