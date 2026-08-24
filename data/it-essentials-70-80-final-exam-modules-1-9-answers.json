@@ -1447,6 +1447,89 @@
         "email services"
       ],
       "correct_answer": "file sharing"
+    },
+    {
+      "id": 128,
+      "question": "Place the six stages of the troubleshooting process in the correct order.",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Test the theory to determine the cause.",
+        "Verify full system functionality and if applicable, implement preventive measures.",
+        "Identify the problem.",
+        "Document findings, actions, and outcomes.",
+        "Establish a theory of probable cause.",
+        "Establish a plan of action to resolve the problem and implement the solution."
+      ],
+      "definitions": [
+        "Step 1",
+        "Step 2",
+        "Step 3",
+        "Step 4",
+        "Step 5",
+        "Step 6"
+      ],
+      "correct_pairs": {
+        "Identify the problem.": "Step 1",
+        "Establish a theory of probable cause.": "Step 2",
+        "Test the theory to determine the cause.": "Step 3",
+        "Establish a plan of action to resolve the problem and implement the solution.": "Step 4",
+        "Verify full system functionality and if applicable, implement preventive measures.": "Step 5",
+        "Document findings, actions, and outcomes.": "Step 6"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 129,
+      "question": "Match the memory type to the feature. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "DDR SDRAM",
+        "DDR3 SDRAM",
+        "GDDR SDRAM",
+        "DDR2 SDRAM",
+        "DDR4 SDRAM"
+      ],
+      "definitions": [
+        "It's connector has 288 pins and has advanced error correction features available.",
+        "It's connector has 184 pins and is able to support two writes and two reads per CPU clock cycle.",
+        "It's connector has 240 pins and consumes 1.5 Volts of power.",
+        "It's connector has 240 pins and consumes 1.8 Volts of power."
+      ],
+      "correct_pairs": {
+        "DDR4 SDRAM": "It's connector has 288 pins and has advanced error correction features available.",
+        "DDR SDRAM": "It's connector has 184 pins and is able to support two writes and two reads per CPU clock cycle.",
+        "DDR3 SDRAM": "It's connector has 240 pins and consumes 1.5 Volts of power.",
+        "DDR2 SDRAM": "It's connector has 240 pins and consumes 1.8 Volts of power."
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 130,
+      "question": "Match the problem to the possible solution. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "The PCI NIC adapter card has stopped working.",
+        "The computer does not display any video after installing a new PCIe video card.",
+        "The user can hear the fans spinning but the PC will not start and there are no beeps from the speaker.",
+        "The motherboard capacitors are distended, swollen, emitting residue, or bulging.",
+        "After upgrading the single core CPU to a dual core CPU only one CPU graph is seen in the task manager."
+      ],
+      "definitions": [
+        "Replace the motherboard.",
+        "Check fo faulting cable, damaged or mis-seated CPU or other motherbard component prior to replacing the motherboard if required.",
+        "Update the BIOS firmware.",
+        "Connect the auxillary power cable for the adapter card."
+      ],
+      "correct_pairs": {
+        "The motherboard capacitors are distended, swollen, emitting residue, or bulging.": "Replace the motherboard.",
+        "The user can hear the fans spinning but the PC will not start and there are no beeps from the speaker.": "Check fo faulting cable, damaged or mis-seated CPU or other motherbard component prior to replacing the motherboard if required.",
+        "After upgrading the single core CPU to a dual core CPU only one CPU graph is seen in the task manager.": "Update the BIOS firmware.",
+        "The computer does not display any video after installing a new PCIe video card.": "Connect the auxillary power cable for the adapter card."
+      },
+      "correct_answer": ""
     }
   ]
 }
