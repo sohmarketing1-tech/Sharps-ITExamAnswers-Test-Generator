@@ -51,6 +51,10 @@ app_state = {
     "questions": [],
 }
 
+# In-memory store for anonymous session activity used by the public
+# "active now" counter. Resets when the web worker restarts.
+_active_sessions = {}
+
 
 def load_exam_manifest() -> list:
     manifest_path = DATA_DIR / "exams.json"
@@ -1164,6 +1168,34 @@ def ping():
         track_user_activity(user)
     online = get_online_users(minutes=15)
     return jsonify({"ok": True, "online": online})
+
+
+@app.route("/api/active-now", methods=["GET"])
+def active_now():
+    """Track this browser session and return the approximate current visitor count.
+
+    Uses an in-memory dict of session IDs, pruned to the last 15 minutes.
+    Counts reset when the web worker restarts (acceptable for a casual badge).
+    """
+    from datetime import datetime, timezone, timedelta
+
+    if "device_id" not in session:
+        session["device_id"] = secrets.token_urlsafe(16)
+        session.modified = True
+
+    device_id = session["device_id"]
+    now = datetime.now(timezone.utc)
+    _active_sessions[device_id] = now.isoformat()
+
+    cutoff = now - timedelta(minutes=15)
+    stale = [
+        did for did, last_seen in _active_sessions.items()
+        if datetime.fromisoformat(last_seen) < cutoff
+    ]
+    for did in stale:
+        _active_sessions.pop(did, None)
+
+    return jsonify({"ok": True, "count": len(_active_sessions)})
 
 
 # ---------------------------------------------------------------------------
