@@ -368,6 +368,50 @@
         .hidden { display: none !important; }
         h2 { margin: 0 0 14px; font-size: 1.4rem; }
         .section-desc { color: var(--muted); margin: 0 0 18px; }
+
+        @media (max-width: 640px) {
+            main { padding: 16px 14px 40px; }
+            .header-inner { padding: 12px 0; }
+            .header-logo { height: 26px; }
+            .menu-title { font-size: 1.6rem; }
+            .menu-subtitle { font-size: 0.95rem; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .menu-card { padding: 18px; }
+            .menu-icon { width: 38px; height: 38px; }
+            .menu-icon svg { width: 20px; height: 20px; }
+            .menu-name { font-size: 1.05rem; }
+            .menu-desc { font-size: 0.88rem; }
+            .game-stats {
+                gap: 10px;
+                overflow-x: auto;
+                padding-bottom: 4px;
+                margin-bottom: 16px;
+            }
+            .stat { min-width: 78px; padding: 10px 12px; }
+            .stat-value { font-size: 1.25rem; }
+            .card { padding: 18px; border-radius: 16px; }
+            .scenario { font-size: 1rem; }
+            .btn-row { flex-direction: column; gap: 10px; margin-top: 16px; }
+            .btn-row button { width: 100%; padding: 14px 18px; font-size: 1rem; }
+            .sequence-item { padding: 12px 14px; font-size: 0.95rem; }
+            .built-sequence { padding: 12px; min-height: 48px; }
+            .built-step { font-size: 0.9rem; }
+            .match-item { padding: 12px 14px; font-size: 0.95rem; margin-bottom: 8px; }
+            .flashcard { min-height: 180px; }
+            .flashcard-face { padding: 20px; min-height: 180px; }
+            .flashcard-term { font-size: 1.4rem; }
+            .flashcard-meta, .flashcard-hint { font-size: 0.85rem; }
+            .fc-controls { flex-direction: row; gap: 10px; }
+            .fc-controls button { flex: 1; }
+            .matching-grid { grid-template-columns: 1fr; gap: 10px; }
+            .matching-col h4 { font-size: 0.85rem; }
+            .feedback { padding: 14px; }
+            .back-btn { font-size: 0.9rem; padding: 7px 12px; margin-bottom: 14px; }
+            h2 { font-size: 1.25rem; }
+            .section-desc { font-size: 0.9rem; margin-bottom: 14px; }
+            .batch-label { font-size: 0.85rem; }
+            .status { font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
