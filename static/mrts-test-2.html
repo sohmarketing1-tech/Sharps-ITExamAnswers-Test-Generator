@@ -293,13 +293,13 @@
             margin-bottom: 20px;
         }
         .flashcard {
-            position: relative;
-            min-height: 220px;
+            display: grid;
+            grid-template-areas: "stack";
             cursor: pointer;
+            border-radius: var(--radius);
         }
         .flashcard-face {
-            position: absolute;
-            inset: 0;
+            grid-area: stack;
             background: rgba(255, 255, 255, 0.18);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -312,30 +312,37 @@
             backdrop-filter: blur(12px);
             min-height: 220px;
             transition: opacity 0.35s ease;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
         .flashcard-front {
             opacity: 1;
-            z-index: 2;
+            pointer-events: auto;
+            z-index: 1;
         }
         .flashcard.flipped .flashcard-front {
             opacity: 0;
-            z-index: 1;
             pointer-events: none;
-        }
-        .flashcard-back {
-            opacity: 0;
-            z-index: 1;
-            pointer-events: none;
+            z-index: 0;
         }
         .flashcard.flipped .flashcard-back {
             opacity: 1;
-            z-index: 2;
             pointer-events: auto;
+            z-index: 1;
         }
         .flashcard-term {
             font-size: 1.7rem;
             font-weight: 700;
             margin: 0 0 8px;
+        }
+        .flashcard-back p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            max-width: 100%;
         }
         .flashcard-meta {
             color: var(--muted);
@@ -397,10 +404,10 @@
             .built-sequence { padding: 12px; min-height: 48px; }
             .built-step { font-size: 0.9rem; }
             .match-item { padding: 12px 14px; font-size: 0.95rem; margin-bottom: 8px; }
-            .flashcard { min-height: 180px; }
-            .flashcard-face { padding: 20px; min-height: 180px; }
-            .flashcard-term { font-size: 1.4rem; }
-            .flashcard-meta, .flashcard-hint { font-size: 0.85rem; }
+            .flashcard-face { padding: 18px; min-height: 160px; }
+            .flashcard-term { font-size: 1.3rem; }
+            .flashcard-back p { font-size: 0.9rem; }
+            .flashcard-meta, .flashcard-hint { font-size: 0.8rem; }
             .fc-controls { flex-direction: row; gap: 10px; }
             .fc-controls button { flex: 1; }
             .matching-grid { grid-template-columns: 1fr; gap: 10px; }
