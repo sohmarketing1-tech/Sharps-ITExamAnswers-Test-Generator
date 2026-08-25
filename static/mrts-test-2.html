@@ -290,38 +290,47 @@
             80% { transform: translateX(4px); }
         }
         .flashcard-wrap {
-            perspective: 1000px;
             margin-bottom: 20px;
         }
         .flashcard {
-            background: transparent;
-            border: none;
-            border-radius: var(--radius);
+            position: relative;
             min-height: 220px;
             cursor: pointer;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            transform-style: preserve-3d;
         }
-        .flashcard.flipped { transform: rotateY(180deg); }
         .flashcard-face {
             position: absolute;
             inset: 0;
-            background: var(--card);
+            background: rgba(255, 255, 255, 0.18);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 28px;
-            backface-visibility: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(12px);
             min-height: 220px;
+            transition: opacity 0.35s ease;
+        }
+        .flashcard-front {
+            opacity: 1;
+            z-index: 2;
+        }
+        .flashcard.flipped .flashcard-front {
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
         }
         .flashcard-back {
-            transform: rotateY(180deg);
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .flashcard.flipped .flashcard-back {
+            opacity: 1;
+            z-index: 2;
+            pointer-events: auto;
         }
         .flashcard-term {
             font-size: 1.7rem;
