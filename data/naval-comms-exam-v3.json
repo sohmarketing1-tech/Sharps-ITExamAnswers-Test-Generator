@@ -1,0 +1,1656 @@
+{
+  "title": "Naval Communications and Telecommunications Operations Certification Practice Exam",
+  "url": "",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which network enclave is used in the U.S. Navy to communicate specifically with friendly allies, permitting point-to-point or multipoint information transfer from unclassified up to Top Secret?",
+      "options": [
+        "NIPRNET",
+        "SIPRNET",
+        "JWICS",
+        "CENTRIXS"
+      ],
+      "correct_answer": "JWICS"
+    },
+    {
+      "id": 2,
+      "question": "Which of the following describes the function of NIPRNET in Navy network communications?",
+      "options": [
+        "A long-haul IP-based network built to support unclassified IP data communications for combat support applications",
+        "The Department of Defense's largest interoperable command and control data network supporting global command and control systems",
+        "A secure internal networking system designed strictly for tactical weapon system coordination",
+        "A satellite-based intelligence network used exclusively for sharing top secret surveillance data"
+      ],
+      "correct_answer": "A long-haul IP-based network built to support unclassified IP data communications for combat support applications"
+    },
+    {
+      "id": 3,
+      "question": "Which organization has the primary operational responsibility to train, certify, and provide combat-ready Navy forces to combat commands?",
+      "options": [
+        "NAVIFOR",
+        "NETWARCOM",
+        "U.S. Fleet Forces Command",
+        "NCDOC"
+      ],
+      "correct_answer": "U.S. Fleet Forces Command"
+    },
+    {
+      "id": 4,
+      "question": "Which agency is responsible for providing operational direction to the Defense Communication Systems (DCS) supporting the Navy, Army, and Air Force?",
+      "options": [
+        "Defense Information Systems Agency (DISA)",
+        "Navy Communication Security Material System (NCMS)",
+        "Navy Cyber Defense Operations Center (NCDOC)",
+        "Office of the Chief of Naval Operations (OPNAV)"
+      ],
+      "correct_answer": "Defense Information Systems Agency (DISA)"
+    },
+    {
+      "id": 5,
+      "question": "Which watchstander represents the highest qualified personnel at a NCTAMS, acting as the primary assistant for supervising and coordinating all telecommunication functions ashore?",
+      "options": [
+        "Communications Watch Officer (CWO)",
+        "Technical Control Supervisor (TCS)",
+        "Joint Fleet Telecommunications Operations Center (JFTOC) Watch Officer",
+        "Radio Officer (RO)"
+      ],
+      "correct_answer": "Joint Fleet Telecommunications Operations Center (JFTOC) Watch Officer"
+    },
+    {
+      "id": 6,
+      "question": "Which supporting telecommunication command acts as the 'ISP network for the fleet' and consists of four regional entities (ECRNOC, IRNOC, PRNOC, and UARNOC)?",
+      "options": [
+        "NCTAMS",
+        "NCTS",
+        "FLTNOC",
+        "NIOC"
+      ],
+      "correct_answer": "FLTNOC"
+    },
+    {
+      "id": 7,
+      "question": "What are the exact geographical locations of the Navy's two Computer and Telecommunications Area Master Stations (NCTAMS)?",
+      "options": [
+        "San Diego, CA and Jacksonville, FL",
+        "Norfolk, VA and Pearl Harbor, HI",
+        "Virginia and Hawaii",
+        "Naples, IT and Bahrain"
+      ],
+      "correct_answer": "Virginia and Hawaii"
+    },
+    {
+      "id": 8,
+      "question": "How many NCTS (Naval Computer and Telecommunication Systems) locations exist to provide support when NCTAMS is down, and which are they?",
+      "options": [
+        "5 locations: Jacksonville, San Diego, Yokosuka, Guam, and Bahrain",
+        "7 locations: Jacksonville, San Diego, Far East Yokosuka, Guam, Sicily, Bahrain, and Naples",
+        "4 locations: ECRNOC, IRNOC, PRNOC, and UARNOC",
+        "6 locations: Virginia, Hawaii, Guam, Rota, Naples, and Yokosuka"
+      ],
+      "correct_answer": "7 locations: Jacksonville, San Diego, Far East Yokosuka, Guam, Sicily, Bahrain, and Naples"
+    },
+    {
+      "id": 9,
+      "question": "Which command is specifically tasked with supporting Navy Information Operations (IO) and Signals Intelligence (SIGINT) operations?",
+      "options": [
+        "NCDOC",
+        "NIOC",
+        "NCMS",
+        "NAVIFOR"
+      ],
+      "correct_answer": "NIOC"
+    },
+    {
+      "id": 10,
+      "question": "Which of the following is the correct hierarchical chain of supporting telecommunication commands, in order from highest to lowest?",
+      "options": [
+        "US Fleet Forces Command -> NAVIFOR -> NETWARCOM -> NCDOC -> NCMS -> NCTAMS -> NCTS -> NIOC -> FLTNOC",
+        "NAVIFOR -> US Fleet Forces Command -> NETWARCOM -> NCMS -> NCDOC -> NCTS -> NCTAMS -> FLTNOC -> NIOC",
+        "US Fleet Forces Command -> NETWARCOM -> NAVIFOR -> NCMS -> NCDOC -> NCTAMS -> NCTS -> FLTNOC -> NIOC",
+        "NETWARCOM -> US Fleet Forces Command -> NAVIFOR -> NCDOC -> NCMS -> NCTS -> NCTAMS -> NIOC -> FLTNOC"
+      ],
+      "correct_answer": "US Fleet Forces Command -> NAVIFOR -> NETWARCOM -> NCDOC -> NCMS -> NCTAMS -> NCTS -> NIOC -> FLTNOC"
+    },
+    {
+      "id": 11,
+      "question": "Which shipboard officer is responsible for the organization, supervision, and coordination of the command's exterior communications, typically holding a rate of O-1 or above and reporting to the CO?",
+      "options": [
+        "Radio Officer (RO)",
+        "Communications Watch Officer (CWO)",
+        "Communications Officer (COMMO)",
+        "Technical Control Supervisor (TCS)"
+      ],
+      "correct_answer": "Communications Officer (COMMO)"
+    },
+    {
+      "id": 12,
+      "question": "What is the primary responsibility of the ship's Radio Officer (RO) regarding watchstanding and operations?",
+      "options": [
+        "Direct tactical employment of weapon systems in the Combat Information Center",
+        "Overall command and physical security of the entire naval station",
+        "In charge of the communication system, preparing the watch bill, maintaining the station bill, and preparing SOPs",
+        "Direct physical custody and auditing of all unclassified message traffic"
+      ],
+      "correct_answer": "In charge of the communication system, preparing the watch bill, maintaining the station bill, and preparing SOPs"
+    },
+    {
+      "id": 13,
+      "question": "Which watchstander is a highly qualified enlisted Sailor (typically E-4 to E-6) responsible for incoming and outgoing traffic, ensuring all messages are transmitted and received properly?",
+      "options": [
+        "Technical Control Supervisor (TCS)",
+        "Communications Watch Officer (CWO)",
+        "Radio Officer (RO)",
+        "CMS Custodian"
+      ],
+      "correct_answer": "Communications Watch Officer (CWO)"
+    },
+    {
+      "id": 14,
+      "question": "What is the primary role of the Technical Control Supervisor (TCS) on watch?",
+      "options": [
+        "Acts as the direct representative of the Commanding Officer for all shipboard maintenance",
+        "Responsible for the physical security and stowage of cryptographic publications",
+        "Establishment and maintenance of required circuits, and initiating action to restore or bypass failed equipment",
+        "Releasing naval messages in the name of the command"
+      ],
+      "correct_answer": "Establishment and maintenance of required circuits, and initiating action to restore or bypass failed equipment"
+    },
+    {
+      "id": 15,
+      "question": "What inventory procedure is strictly required prior to assuming a watch when dealing with Top Secret (TS) level cryptographic materials?",
+      "options": [
+        "Single-person visual confirmation logged electronically",
+        "Two Person Inventory (TPI) with a witness",
+        "Weekly audit by the Technical Control Supervisor",
+        "Direct verbal sign-off from the Commanding Officer"
+      ],
+      "correct_answer": "Two Person Inventory (TPI) with a witness"
+    },
+    {
+      "id": 16,
+      "question": "Which of the following is a strict rule regarding the maintenance of the Master Station Log (MSL)?",
+      "options": [
+        "Erase mistakes cleanly using corrected fluid or administrative tape",
+        "No erasing is allowed; mistakes must be corrected using a single-line strikeout",
+        "Logs must be shredded immediately after watch turnover to preserve secrecy",
+        "Only the Commanding Officer is authorized to make corrections to the log"
+      ],
+      "correct_answer": "No erasing is allowed; mistakes must be corrected using a single-line strikeout"
+    },
+    {
+      "id": 17,
+      "question": "Under what condition are naval messages restricted to 100-200 words, and what is the primary purpose of this restriction?",
+      "options": [
+        "Minimize Conditions; initiated to conserve bandwidth and avoid suspicion",
+        "EMCON Conditions; initiated to prevent radio frequency detection by the enemy",
+        "CRITIC Conditions; initiated to speed up transmission of highly sensitive information",
+        "DAMA Conditions; initiated to allow multiple units to share a single satellite channel"
+      ],
+      "correct_answer": "Minimize Conditions; initiated to conserve bandwidth and avoid suspicion"
+    },
+    {
+      "id": 18,
+      "question": "Which naval message type is the most widely used by the Department of Defense (DoD), capable of handling information from unclassified up to Top Secret?",
+      "options": [
+        "Defense Special Security Communication System (DSSCS)",
+        "General Service Messages (GENSER)",
+        "CRITIC Messages",
+        "COMMSPOT Reports"
+      ],
+      "correct_answer": "General Service Messages (GENSER)"
+    },
+    {
+      "id": 19,
+      "question": "What is a 'CRITIC' message, and what format does it utilize?",
+      "options": [
+        "A highly detailed engineering report that uses standard GENSER format",
+        "A short, concise, highest priority message using a modified SI format to report critical facts directly to senior government decision-makers",
+        "A message used to notify adjacent ships that personnel are working aloft",
+        "A unclassified administrative notification concerning change of command"
+      ],
+      "correct_answer": "A short, concise, highest priority message using a modified SI format to report critical facts directly to senior government decision-makers"
+    },
+    {
+      "id": 20,
+      "question": "In naval message drafting, who is authorized to release messages for transmission in the name of the command or activity?",
+      "options": [
+        "The Drafter",
+        "The Originator",
+        "The Releaser",
+        "The Technical Control Supervisor"
+      ],
+      "correct_answer": "The Releaser"
+    },
+    {
+      "id": 21,
+      "question": "Which special handling marking is applied to certain unclassified messages that have potential value but do not meet the strict requirements of a security classification?",
+      "options": [
+        "Restricted Data (RD)",
+        "Formerly Restricted Data (FRD)",
+        "For Official Use Only (FOUO)",
+        "Encrypted For Transmission Only (EFTO)"
+      ],
+      "correct_answer": "Encrypted For Transmission Only (EFTO)"
+    },
+    {
+      "id": 22,
+      "question": "What type of report must be sent to advise of any situation that might cause significant disruption in communications?",
+      "options": [
+        "COMMSHIFT",
+        "COMMSPOT",
+        "COMSPOT",
+        "NAVMACS"
+      ],
+      "correct_answer": "COMMSPOT"
+    },
+    {
+      "id": 23,
+      "question": "In naval messaging, what does an Address Indicator Group (AIG) represent?",
+      "options": [
+        "A single plain language address used for local routing within a ship",
+        "A collection of 16 or more plain language addresses that frequently occur as a group",
+        "A collection of 4 or more PLAs sharing an operational or administrative chain of command",
+        "The unique cryptographic key used to encrypt tactical messages"
+      ],
+      "correct_answer": "A collection of 16 or more plain language addresses that frequently occur as a group"
+    },
+    {
+      "id": 24,
+      "question": "What is a Collective Address Designator (CAD) in naval communication routing?",
+      "options": [
+        "A group of 16 or more PLAs used for global message distribution",
+        "The plain language address of the Officer in Tactical Command",
+        "A collection of 4 or more PLAs that share an operational or administrative chain of command",
+        "A routing signal used by maritime and allied services under ACP 131"
+      ],
+      "correct_answer": "A collection of 4 or more PLAs that share an operational or administrative chain of command"
+    },
+    {
+      "id": 25,
+      "question": "Under ACP 131, what are Q and Z signals used for?",
+      "options": [
+        "To encrypt classified data before transmission",
+        "To serve as operating signals used by maritime and allied military services",
+        "To indicate the priority of message routing",
+        "To identify the geographical boundaries of FLTNOC regions"
+      ],
+      "correct_answer": "To serve as operating signals used by maritime and allied military services"
+    },
+    {
+      "id": 26,
+      "question": "What is the direct biological cause of muscle spasms during an electrical shock?",
+      "options": [
+        "Voltage differential between the hands",
+        "Electric current passing through the body",
+        "Thermal energy generated by contact resistance",
+        "Magnetic fields surrounding high-voltage wires"
+      ],
+      "correct_answer": "Electric current passing through the body"
+    },
+    {
+      "id": 27,
+      "question": "What is the #1 cause of death from electrical shock?",
+      "options": [
+        "Severe external burns",
+        "Ventricular fibrillation (disorganized heart rhythm)",
+        "Suffocation from respiratory muscle paralysis",
+        "Rapid drop in blood pressure"
+      ],
+      "correct_answer": "Ventricular fibrillation (disorganized heart rhythm)"
+    },
+    {
+      "id": 28,
+      "question": "Which of the following is the correct sequence of actions to take if you suspect a fellow Sailor has suffered an electric shock?",
+      "options": [
+        "Immediately pull the victim away with your hands, administer CPR, then secure the power",
+        "Turn off the electrical power source, protect yourself with dry insulating material, do NOT touch the victim directly, and call for emergency medical assistance",
+        "Call the medical team first, check the victim's pulse, then use a wet cloth to cool their skin",
+        "Report the hazard to the safety officer, verify the tag-out logs, and wait for the power to automatically cycle"
+      ],
+      "correct_answer": "Turn off the electrical power source, protect yourself with dry insulating material, do NOT touch the victim directly, and call for emergency medical assistance"
+    },
+    {
+      "id": 29,
+      "question": "What is the mathematical formula used to determine the severity of an electrical shock?",
+      "options": [
+        "CURRENT + PATH + RESISTANCE + TIME",
+        "VOLTAGE x CURRENT x TIME",
+        "CURRENT x RESISTANCE / TIME",
+        "VOLTAGE + PATH + RESISTANCE + CURRENT"
+      ],
+      "correct_answer": "CURRENT + PATH + RESISTANCE + TIME"
+    },
+    {
+      "id": 30,
+      "question": "How does wet or damaged skin affect the severity of an electrical shock?",
+      "options": [
+        "It increases skin resistance, reducing current flow",
+        "It reduces skin resistance, allowing greater current flow and increasing the risk of severe shock",
+        "It has no measurable effect on electrical shock severity",
+        "It prevents ventricular fibrillation by dissipating the electrical charge"
+      ],
+      "correct_answer": "It reduces skin resistance, allowing greater current flow and increasing the risk of severe shock"
+    },
+    {
+      "id": 31,
+      "question": "Under RADHAZ guidelines, what does HERP stand for, and what are its primary biological concerns?",
+      "options": [
+        "Hazardous Electromagnetic Radiation to Personnel; concerns whole-body or localized temperature increases and RF burns",
+        "High Energy Radio Propagation; concerns long-distance signal attenuation",
+        "Hazardous Emission of Radar Particles; concerns respiratory damage from breathing ionized air",
+        "Hearing Emergency Response Protocol; concerns ear drum damage from loud transmitters"
+      ],
+      "correct_answer": "Hazardous Electromagnetic Radiation to Personnel; concerns whole-body or localized temperature increases and RF burns"
+    },
+    {
+      "id": 32,
+      "question": "What is the concern of Hazards of Electromagnetic Radiation to Ordnance (HERO)?",
+      "options": [
+        "The ignition of fuel-air mixtures during aircraft fueling operations",
+        "Electromagnetic radiation inducing currents large enough to prematurely fire or damage electrically initiated ordnance",
+        "Thermal damage to personnel handling metallic missile launchers",
+        "Interference with shipboard networks caused by high-power radar emissions"
+      ],
+      "correct_answer": "Electromagnetic radiation inducing currents large enough to prematurely fire or damage electrically initiated ordnance"
+    },
+    {
+      "id": 33,
+      "question": "What is the best practice to establish a safe environment for HERO during operations?",
+      "options": [
+        "Route all ordnance through unsecure passageways",
+        "De-energize equipment or set transmitters and transceivers to the 'Standby' position",
+        "Increase transmitter power to push signals past the ordnance",
+        "Use only manual tag-out systems on the launch computers"
+      ],
+      "correct_answer": "De-energize equipment or set transmitters and transceivers to the 'Standby' position"
+    },
+    {
+      "id": 34,
+      "question": "Under Hazards of Electromagnetic Radiation to Fuel (HERF), what is the minimum spark gap figure noted for the potential ignition of a fuel-air mixture?",
+      "options": [
+        "Approximately 0.1 mm (0.004 inches)",
+        "Approximately 0.5 mm (0.02 inches)",
+        "Approximately 1.0 mm (0.04 inches)",
+        "Approximately 2.0 mm (0.08 inches)"
+      ],
+      "correct_answer": "Approximately 0.5 mm (0.02 inches)"
+    },
+    {
+      "id": 35,
+      "question": "What is the function of a Type 1 RADHAZ warning sign?",
+      "options": [
+        "Excludes personnel from proceeding past a designated point without command authority",
+        "Advises personnel of an RF hazard at the boundary of the Permissible Exposure Limit (PEL)",
+        "Indicates a high-voltage area of 600V or greater",
+        "Identifies an area with noise levels exceeding 85 dB"
+      ],
+      "correct_answer": "Advises personnel of an RF hazard at the boundary of the Permissible Exposure Limit (PEL)"
+    },
+    {
+      "id": 36,
+      "question": "What is the function of a Type 2 RADHAZ warning sign?",
+      "options": [
+        "Advises personnel of an RF hazard at the boundary of the Permissible Exposure Limit (PEL)",
+        "Excludes personnel from proceeding past a designated point without checking with command authority",
+        "Warns of hazardous noise levels where portable music players are prohibited",
+        "Identifies the physical boundary of a Tag-Out isolation zone"
+      ],
+      "correct_answer": "Excludes personnel from proceeding past a designated point without checking with command authority"
+    },
+    {
+      "id": 37,
+      "question": "RF transmitters of what power rating and above can create severe RF-burn hazards due to complicated shipboard metallic structures?",
+      "options": [
+        "100 Watts and above",
+        "500 Watts and above",
+        "1 kilowatt (kW) and above",
+        "10 kilowatts (kW) and above"
+      ],
+      "correct_answer": "1 kilowatt (kW) and above"
+    },
+    {
+      "id": 38,
+      "question": "In the Tag-Out System, what does a red DANGER tag indicate?",
+      "options": [
+        "Prohibits operation of equipment that could jeopardize personnel safety or damage equipment",
+        "Provides temporary special operating instructions for a component",
+        "Indicates that an instrument is out of calibration",
+        "Marks a physical leak in a fluid boundary line"
+      ],
+      "correct_answer": "Prohibits operation of equipment that could jeopardize personnel safety or damage equipment"
+    },
+    {
+      "id": 39,
+      "question": "In the Tag-Out System, what is the purpose of a yellow CAUTION tag?",
+      "options": [
+        "To completely prohibit the operation of a system under maintenance",
+        "To provide temporary special operating instructions or indicate unusual actions required to operate equipment",
+        "To identify that a component is permanently out of commission",
+        "To serve as a substitute for a missing lock on an electrical breaker"
+      ],
+      "correct_answer": "To provide temporary special operating instructions or indicate unusual actions required to operate equipment"
+    },
+    {
+      "id": 40,
+      "question": "What is the standard format for a tag-out serial number?",
+      "options": [
+        "The ship's hull number followed by a sequential date",
+        "Department and division designators followed by a hyphen and a sequential number (e.g., ENG-DANGER-0001)",
+        "Technician initials followed by system name and time of day",
+        "The Work Authorization Form (WAF) number with a 'RED' or 'YELLOW' prefix"
+      ],
+      "correct_answer": "Department and division designators followed by a hyphen and a sequential number (e.g., ENG-DANGER-0001)"
+    },
+    {
+      "id": 41,
+      "question": "Under what shipboard weather or environmental conditions must personnel working aloft immediately stop work?",
+      "options": [
+        "Winds exceed 20 km/h or ship rolls more than 5 degrees",
+        "Winds exceed 30 km/h or ship rolls more than 10 degrees",
+        "Winds exceed 40 km/h or ship rolls more than 15 degrees",
+        "Winds exceed 50 km/h or ship rolls more than 20 degrees"
+      ],
+      "correct_answer": "Winds exceed 30 km/h or ship rolls more than 10 degrees"
+    },
+    {
+      "id": 42,
+      "question": "Prior to personnel working aloft and every 15 minutes after, what verbal warning must be passed over the ship's 1MC?",
+      "options": [
+        "\"Personnel are working aloft. Do not rotate antennas, energize or radiate any electrical or electronic equipment while personnel are working aloft.\"",
+        "\"Caution, secure all high-power transmitters due to mast maintenance in progress.\"",
+        "\"Do not rotate radars or antennas without direct written permission from the safety observer aloft.\"",
+        "\"Personnel aloft. Keep clear of the main deck and maintain silence on all radio circuits.\""
+      ],
+      "correct_answer": "\"Personnel are working aloft. Do not rotate antennas, energize or radiate any electrical or electronic equipment while personnel are working aloft.\""
+    },
+    {
+      "id": 43,
+      "question": "What is the maximum voltage rating for Navy-issued electrical safety shoes designed to protect personnel with non-conducting soles?",
+      "options": [
+        "250V",
+        "440V",
+        "600V",
+        "1000V"
+      ],
+      "correct_answer": "600V"
+    },
+    {
+      "id": 44,
+      "question": "Under the Navy Hearing Conservation Program (HCP), at what continuous noise level must personnel wear hearing protection, and what is prohibited in these zones?",
+      "options": [
+        "Exceeds 75 dB; wearing safety glasses is prohibited",
+        "Exceeds 80 dB; speaking over sound-powered phones is prohibited",
+        "Exceeds 85 dB; wearing portable music players with headphones or earbuds is prohibited",
+        "Exceeds 90 dB; wearing commercial earmuffs is prohibited"
+      ],
+      "correct_answer": "Exceeds 85 dB; wearing portable music players with headphones or earbuds is prohibited"
+    },
+    {
+      "id": 45,
+      "question": "When working with paints, solvents, and cleaning materials for electrical equipment in unventilated spaces, what type of PPE is required?",
+      "options": [
+        "An air-purifying respirator with adequate oxygen levels of 22% or more by volume",
+        "A standard cloth dust mask",
+        "A SCBA with less than 15% oxygen",
+        "Rubber insulating gloves of Class 3 only"
+      ],
+      "correct_answer": "An air-purifying respirator with adequate oxygen levels of 22% or more by volume"
+    },
+    {
+      "id": 46,
+      "question": "What physical constant describes the speed of electromagnetic waves in outer space?",
+      "options": [
+        "186,000 miles per second",
+        "300,000 miles per second",
+        "186,000 miles per minute",
+        "1,100 feet per second"
+      ],
+      "correct_answer": "186,000 miles per second"
+    },
+    {
+      "id": 47,
+      "question": "Which atmospheric layer extends from the Earth's surface to about 6 to 10 miles and contains all weather conditions, such as clouds, that can affect space wave propagation?",
+      "options": [
+        "Ionosphere",
+        "Stratosphere",
+        "Troposphere",
+        "Exosphere"
+      ],
+      "correct_answer": "Troposphere"
+    },
+    {
+      "id": 48,
+      "question": "Why does the stratosphere have relatively little effect on radio waves?",
+      "options": [
+        "It consists entirely of ionized gases that absorb RF energy",
+        "It is too close to the Earth's surface to interact with waves",
+        "It has a relatively constant temperature with stable characteristics",
+        "It is completely devoid of any air molecules"
+      ],
+      "correct_answer": "It has a relatively constant temperature with stable characteristics"
+    },
+    {
+      "id": 49,
+      "question": "Which atmospheric layer, located 30 to 250 miles above the Earth's surface, is the most crucial for long-distance point-to-point (PTP) RF communications?",
+      "options": [
+        "Troposphere",
+        "Stratosphere",
+        "Ionosphere",
+        "Thermosphere"
+      ],
+      "correct_answer": "Ionosphere"
+    },
+    {
+      "id": 50,
+      "question": "How does the sun affect RF communications through the ionosphere during daylight hours?",
+      "options": [
+        "It stops all ionization, requiring lower frequencies",
+        "It causes less radiation, meaning radio waves escape into space",
+        "It increases ionization, requiring higher frequency waves to be used",
+        "It merges all layers into a single D layer"
+      ],
+      "correct_answer": "It increases ionization, requiring higher frequency waves to be used"
+    },
+    {
+      "id": 51,
+      "question": "What occurs in the ionospheric F layer during daylight hours?",
+      "options": [
+        "It completely disappears due to extreme solar heat",
+        "It separates into two distinct sublayers, F1 and F2, due to ionization",
+        "It sinks to the level of the troposphere",
+        "It blocks all Extremely High Frequency (EHF) transmissions"
+      ],
+      "correct_answer": "It separates into two distinct sublayers, F1 and F2, due to ionization"
+    },
+    {
+      "id": 52,
+      "question": "Which radio propagation behavior describes waves bouncing off flat surfaces, potentially causing multi-path distortions?",
+      "options": [
+        "Reflection",
+        "Refraction",
+        "Diffraction",
+        "Attenuation"
+      ],
+      "correct_answer": "Reflection"
+    },
+    {
+      "id": 53,
+      "question": "Which propagation behavior involves the bending of radio waves as they move between different media with varying temperature, pressure, humidity, or density?",
+      "options": [
+        "Reflection",
+        "Refraction",
+        "Diffraction",
+        "Absorption"
+      ],
+      "correct_answer": "Refraction"
+    },
+    {
+      "id": 54,
+      "question": "What is diffraction in the context of radio wave propagation?",
+      "options": [
+        "The loss of wave energy due to heat absorption by the ground",
+        "The splitting of a carrier wave into an audio signal and a data signal",
+        "The bending of radio waves around solid or dense objects, allowing communication despite obstacles",
+        "The phase shift that occurs when combining two amplitude modulated signals"
+      ],
+      "correct_answer": "The bending of radio waves around solid or dense objects, allowing communication despite obstacles"
+    },
+    {
+      "id": 55,
+      "question": "What does the Frequency of Optimum Transmission (FOT) represent in RF planning?",
+      "options": [
+        "The lowest frequency that can be used for successful communication",
+        "The highest frequency that can be used before a signal escapes into space",
+        "The frequency that is most reliable for radio wave propagation, usable for 90% of the days of the month",
+        "The frequency reserved strictly for emergency distress calls"
+      ],
+      "correct_answer": "The frequency that is most reliable for radio wave propagation, usable for 90% of the days of the month"
+    },
+    {
+      "id": 56,
+      "question": "What is the term for the loss of energy in radio waves as they travel over the Earth's surface, causing a decrease in signal strength?",
+      "options": [
+        "Refraction",
+        "Diffraction",
+        "Attenuation",
+        "Modulation"
+      ],
+      "correct_answer": "Attenuation"
+    },
+    {
+      "id": 57,
+      "question": "Which wave path travels directly from the transmit antenna to the receive antenna and is highly affected by atmospheric/weather conditions?",
+      "options": [
+        "Surface Waves",
+        "Space Waves",
+        "Sky Waves",
+        "Indirect Waves"
+      ],
+      "correct_answer": "Space Waves"
+    },
+    {
+      "id": 58,
+      "question": "Which wave path involves waves that are transmitted into the atmosphere, refracted by the uppermost layer, and returned to the Earth's surface at greater distances?",
+      "options": [
+        "Surface Waves",
+        "Space Waves",
+        "Sky Waves",
+        "Direct Waves"
+      ],
+      "correct_answer": "Sky Waves"
+    },
+    {
+      "id": 59,
+      "question": "What is the frequency range and primary military use of Extremely Low Frequency (ELF) waves?",
+      "options": [
+        "30-300 kHz; medium-range surface ship communications",
+        "Up to 3 kHz; one-way communications with submarines at depths of hundreds of feet over distances of 5000+ miles",
+        "3-30 MHz; long-range tactical voice and data circuits",
+        "30-300 MHz; Line-of-Sight local communications"
+      ],
+      "correct_answer": "Up to 3 kHz; one-way communications with submarines at depths of hundreds of feet over distances of 5000+ miles"
+    },
+    {
+      "id": 60,
+      "question": "What are the common uses of Very Low Frequency (VLF) waves in the Navy?",
+      "options": [
+        "Short-range ship-to-ship tactical voice nets",
+        "One-way communications with submarines in shallow water and navigational systems over 5000+ miles",
+        "High-capacity commercial internet broadband services",
+        "Aegis BMD tracking and missile guidance data links"
+      ],
+      "correct_answer": "One-way communications with submarines in shallow water and navigational systems over 5000+ miles"
+    },
+    {
+      "id": 61,
+      "question": "What is the frequency range and distance coverage of Low Frequency (LF) waves?",
+      "options": [
+        "Up to 3 kHz; over 5000 miles",
+        "30-300 kHz; 1000 to 5000 miles",
+        "3-30 MHz; up to 2000 miles",
+        "300 MHz to 3 GHz; 25-35 miles"
+      ],
+      "correct_answer": "30-300 kHz; 1000 to 5000 miles"
+    },
+    {
+      "id": 62,
+      "question": "Which RF band operates in the 3-30 MHz range, covers distances up to 2,000 miles, and supports secure/unsecure voice and data circuits?",
+      "options": [
+        "Low Frequency (LF)",
+        "Medium Frequency (MF)",
+        "High Frequency (HF)",
+        "Very High Frequency (VHF)"
+      ],
+      "correct_answer": "High Frequency (HF)"
+    },
+    {
+      "id": 63,
+      "question": "What is the typical range of Line-of-Sight (LOS) communications, such as those in the VHF and UHF bands?",
+      "options": [
+        "5 to 10 nautical miles",
+        "25 to 35 nautical miles",
+        "100 to 120 nautical miles",
+        "150 to 300 nautical miles"
+      ],
+      "correct_answer": "25 to 35 nautical miles"
+    },
+    {
+      "id": 64,
+      "question": "On the RF spectrum, how do wavelength and energy levels change as you move from EHF to ELF?",
+      "options": [
+        "Wavelength decreases, energy increases",
+        "Wavelength increases, energy decreases",
+        "Wavelength increases, energy increases",
+        "Wavelength decreases, energy decreases"
+      ],
+      "correct_answer": "Wavelength increases, energy decreases"
+    },
+    {
+      "id": 65,
+      "question": "On the RF spectrum, how do wavelength and energy levels change as you move from ELF to EHF?",
+      "options": [
+        "Wavelength decreases, energy increases",
+        "Wavelength increases, energy decreases",
+        "Wavelength increases, energy increases",
+        "Wavelength decreases, energy decreases"
+      ],
+      "correct_answer": "Wavelength decreases, energy increases"
+    },
+    {
+      "id": 66,
+      "question": "What is one primary advantage of digital signals over analog signals?",
+      "options": [
+        "They require less bandwidth and do not use electrical impulses",
+        "They are easily audible to the human ear without a receiver",
+        "They do not degrade over time; if the numbers can be read, the same wave is generated, making them easy to clean up and encrypt",
+        "They are completely unaffected by weather conditions in the troposphere"
+      ],
+      "correct_answer": "They do not degrade over time; if the numbers can be read, the same wave is generated, making them easy to clean up and encrypt"
+    },
+    {
+      "id": 67,
+      "question": "Which digital data transmission timing is low-speed, does not use an associated clock, and relies on start and stop bits?",
+      "options": [
+        "Synchronous (SYNC)",
+        "Asynchronous (ASYNC)",
+        "Isochronous (ISOC)",
+        "Co-directional"
+      ],
+      "correct_answer": "Asynchronous (ASYNC)"
+    },
+    {
+      "id": 68,
+      "question": "What characterizes Isochronous (ISOC) data transmission?",
+      "options": [
+        "Data is transmitted at a rate determined by an atomic cesium clock",
+        "Data is transmitted without an associated clock and without associated start and stop bits",
+        "Data is combined using Time Division Multiple Access",
+        "Data is transmitted in continuous, varying waves using analog switchboards"
+      ],
+      "correct_answer": "Data is transmitted without an associated clock and without associated start and stop bits"
+    },
+    {
+      "id": 69,
+      "question": "What is the difference between Co-directional and Counter-directional clocks in digital communications?",
+      "options": [
+        "Co-directional clocks use GPS; Counter-directional clocks use rubidium standards",
+        "Co-directional clocks and data signals originate from the same source; Counter-directional clocks and data signals originate from opposite sources",
+        "Co-directional clocks are used for unclassified enclaves; Counter-directional are used for secret enclaves",
+        "Co-directional clocks flow over red patch panels; Counter-directional flow over black patch panels"
+      ],
+      "correct_answer": "Co-directional clocks and data signals originate from the same source; Counter-directional clocks and data signals originate from opposite sources"
+    },
+    {
+      "id": 70,
+      "question": "What is the correct sequence of signal conversion when a signal is received from a satellite?",
+      "options": [
+        "RF -> AF -> IF",
+        "RF -> IF -> AF",
+        "AF -> IF -> RF",
+        "IF -> RF -> AF"
+      ],
+      "correct_answer": "RF -> IF -> AF"
+    },
+    {
+      "id": 71,
+      "question": "What is the correct sequence of signal conversion for a received data circuit?",
+      "options": [
+        "RF -> IF -> DC",
+        "RF -> DC -> IF",
+        "DC -> IF -> RF",
+        "IF -> RF -> DC"
+      ],
+      "correct_answer": "RF -> IF -> DC"
+    },
+    {
+      "id": 72,
+      "question": "What is the range of human hearing, referred to as Audio Frequency (AF)?",
+      "options": [
+        "20 Hz to 20 kHz",
+        "3 kHz to 30 kHz",
+        "300 Hz to 3 GHz",
+        "100 kHz to 100 MHz"
+      ],
+      "correct_answer": "20 Hz to 20 kHz"
+    },
+    {
+      "id": 73,
+      "question": "What does a Data Terminal Equipment (DTE) device do, and what is an example?",
+      "options": [
+        "It accepts a signal for transmission; e.g., a modem",
+        "It generates an outgoing data signal; e.g., a computer terminal",
+        "It tunes antennas to specific frequencies; e.g., a coupler",
+        "It scrambles data for secure communications; e.g., cryptographic equipment"
+      ],
+      "correct_answer": "It generates an outgoing data signal; e.g., a computer terminal"
+    },
+    {
+      "id": 74,
+      "question": "What does a Data Communications Equipment (DCE) device do, and what is an example?",
+      "options": [
+        "It generates an outgoing data signal; e.g., a computer terminal",
+        "It accepts a signal for transmission; e.g., a modem",
+        "It splits the F layer into F1 and F2; e.g., the sun",
+        "It switches analog interfaces; e.g., SA-2112(V)"
+      ],
+      "correct_answer": "It accepts a signal for transmission; e.g., a modem"
+    },
+    {
+      "id": 75,
+      "question": "What modulation technique combines two amplitude modulated signals into a single channel, differing in phase by 90 degrees, to allow high bandwidth speeds?",
+      "options": [
+        "Frequency-Shift Keying (FSK)",
+        "Phase-Shift Keying (PSK)",
+        "Quadrature Amplitude Modulation (QAM)",
+        "Phase Modulation (PM)"
+      ],
+      "correct_answer": "Quadrature Amplitude Modulation (QAM)"
+    },
+    {
+      "id": 76,
+      "question": "What is the standard baud rate used by the Navy for Frequency-Shift Keying (FSK) with circuit data?",
+      "options": [
+        "75 bits per second (bps)",
+        "1200 bits per second (bps)",
+        "9600 bits per second (bps)",
+        "16 kilobits per second (kbps)"
+      ],
+      "correct_answer": "75 bits per second (bps)"
+    },
+    {
+      "id": 77,
+      "question": "What does the Eb/No value measure in digital communications systems, and what occurs if it is too low?",
+      "options": [
+        "Bandwidth utilization; when too low, the data rate drops slightly but connections remain stable",
+        "The Signal-to-Noise ratio (SNR); when too low, there is a tendency toward signal loss and increased fault indications",
+        "Atmospheric ionization; when too low, sky waves cannot refract",
+        "Cryptographic key synchronization; when too low, keys must be manually re-loaded"
+      ],
+      "correct_answer": "The Signal-to-Noise ratio (SNR); when too low, there is a tendency toward signal loss and increased fault indications"
+    },
+    {
+      "id": 78,
+      "question": "What is the most common patch panel used in Navy RF communications?",
+      "options": [
+        "SB-4124",
+        "SA-2112(V)",
+        "AN/USQ-155(V)",
+        "TD-1271"
+      ],
+      "correct_answer": "SB-4124"
+    },
+    {
+      "id": 79,
+      "question": "In RF patching, what does a RED patch panel indicate, and what does a BLACK patch panel indicate?",
+      "options": [
+        "RED is encrypted; BLACK is unsecure or decrypted",
+        "RED is unsecure/decrypted/unencrypted; BLACK is encrypted",
+        "RED is high-voltage; BLACK is low-voltage",
+        "RED is analog; BLACK is digital"
+      ],
+      "correct_answer": "RED is unsecure/decrypted/unencrypted; BLACK is encrypted"
+    },
+    {
+      "id": 80,
+      "question": "What is the SA-2112(V) Secure Audio Switch (SAS) housed in, and what is its specific limitation?",
+      "options": [
+        "Housed in a black cabinet; limited to switching digital data only",
+        "Housed in a bright red cabinet; limited to connecting crypto interface units in voice circuits only",
+        "Housed in a yellow cabinet; limited to switching UHF DAMA circuits only",
+        "Housed in a steel vault; limited to strategic command networks only"
+      ],
+      "correct_answer": "Housed in a bright red cabinet; limited to connecting crypto interface units in voice circuits only"
+    },
+    {
+      "id": 81,
+      "question": "What are the characteristics of Ultra-High Frequency (UHF) SATCOM?",
+      "options": [
+        "High capacity, low mobility, moderate anti-jam",
+        "High capacity, moderate mobility, high anti-jam",
+        "Low capacity, high mobility, low anti-jam, and vulnerable to nuclear radiation",
+        "Low capacity, low mobility, high anti-jam"
+      ],
+      "correct_answer": "Low capacity, high mobility, low anti-jam, and vulnerable to nuclear radiation"
+    },
+    {
+      "id": 82,
+      "question": "What is the maximum data transmission speed of Super High Frequency (SHF) SATCOM?",
+      "options": [
+        "Up to 2.048 Mbps",
+        "Up to 8.192 Mbps",
+        "Up to 21.6 Mbps",
+        "Up to 155 Megabits per second (Mbps)"
+      ],
+      "correct_answer": "Up to 155 Megabits per second (Mbps)"
+    },
+    {
+      "id": 83,
+      "question": "Which satellite orbit is found at approximately 22,500 miles and travels at the exact same rate as the Earth's rotation?",
+      "options": [
+        "Low Earth Orbit (LEO)",
+        "Medium Earth Orbit (MEO)",
+        "Highly Elliptical Orbit (HEO) / Molniya",
+        "Geosynchronous Orbit"
+      ],
+      "correct_answer": "Geosynchronous Orbit"
+    },
+    {
+      "id": 84,
+      "question": "Who generates the Operational Tasking Communications (OPTASK COMMS) message, how far in advance is it issued, and what is its scope?",
+      "options": [
+        "The ship's COMMO; 72 hours prior; affects only the ship",
+        "The Officer in Tactical Command (OTC); 7 to 10 days prior; directs and coordinates communications planning fleet-wide in an Area of Responsibility (AOR)",
+        "The CO; 30 to 60 days prior; affects the regional NCTAMS",
+        "NCTAMS; daily at 2301 ZULU; contains basic frequency status"
+      ],
+      "correct_answer": "The Officer in Tactical Command (OTC); 7 to 10 days prior; directs and coordinates communications planning fleet-wide in an Area of Responsibility (AOR)"
+    },
+    {
+      "id": 85,
+      "question": "By what deadline must the ship's Communications Officer (COMMO) complete the ship's COMMPLAN prior to an underway?",
+      "options": [
+        "24 hours",
+        "48 hours",
+        "72 hours",
+        "7 to 10 days"
+      ],
+      "correct_answer": "72 hours"
+    },
+    {
+      "id": 86,
+      "question": "How many columns are in the Frequency Plan (FREQPLAN) within the COMMPLAN, and what are they?",
+      "options": [
+        "5 columns: Line Number, Circuit Name, Frequency, Equipment, Keymat",
+        "7 columns: Line Number, Circuit Name, Frequency, Equipment Assigned, Emission, Guard, and Keymat",
+        "6 columns: Circuit Name, Frequency, Transmit Power, Keying Material, Guard, Remote",
+        "8 columns: Line Number, Circuit Name, Uplink, Downlink, Assigned Equipment, Emission, Guard, Keymat"
+      ],
+      "correct_answer": "7 columns: Line Number, Circuit Name, Frequency, Equipment Assigned, Emission, Guard, and Keymat"
+    },
+    {
+      "id": 87,
+      "question": "What is the submission deadline for a Satellite Access Request (SAR) for commercial or military satellite access, and what is the minimum allowed time?",
+      "options": [
+        "7 to 10 days; minimum 3 days",
+        "30 to 60 days prior to underway; minimum 21 days",
+        "72 hours; minimum 24 hours",
+        "10 days; minimum 5 days"
+      ],
+      "correct_answer": "30 to 60 days prior to underway; minimum 21 days"
+    },
+    {
+      "id": 88,
+      "question": "By what deadline must an After Action Report (AAR) be submitted following the completion of a mission, and what is the consequence of late submission?",
+      "options": [
+        "72 hours; loss of current watchstander certification",
+        "No later than 10 days after mission completion; may result in delay and denial of future access requests",
+        "30 days; immediate administrative review by the CO",
+        "21 days; requirement to write a COMMSPOT report"
+      ],
+      "correct_answer": "No later than 10 days after mission completion; may result in delay and denial of future access requests"
+    },
+    {
+      "id": 89,
+      "question": "On the COMM Status Board, what does communication condition 'Bravo' represent?",
+      "options": [
+        "Continuously keyed broadcast and/or other frequencies with a receivable signal on the air",
+        "Transmitters/frequencies are tuned and ready for keying, but no signal is on the air until keyed",
+        "Transmitters/frequencies can be activated within 10 minutes",
+        "Equipment is completely out of commission"
+      ],
+      "correct_answer": "Transmitters/frequencies are tuned and ready for keying, but no signal is on the air until keyed"
+    },
+    {
+      "id": 90,
+      "question": "In the radio emission designator '37K5 F1D', what do the 5th, 6th, and 7th characters represent?",
+      "options": [
+        "5th is Type of Modulation, 6th is Type of Signal, 7th is Type of Data Information",
+        "5th is Frequency Band, 6th is Assigned Equipment, 7th is Guard Status",
+        "5th is Bandwidth, 6th is Transmit Power, 7th is Restoration Priority",
+        "5th is Keymat Type, 6th is Line Number, 7th is Terminal Base Address"
+      ],
+      "correct_answer": "5th is Type of Modulation, 6th is Type of Signal, 7th is Type of Data Information"
+    },
+    {
+      "id": 91,
+      "question": "What is the primary purpose of Tactical Data Links (TDLs)?",
+      "options": [
+        "To send daily unclassified emails and administrative reports to shore commands",
+        "To facilitate sharing the common tactical picture between service systems, enhancing situational awareness for combatants",
+        "To tune shipboard antennas to specific HF frequencies using couplers",
+        "To route IP addresses across the ship's unclassified LAN"
+      ],
+      "correct_answer": "To facilitate sharing the common tactical picture between service systems, enhancing situational awareness for combatants"
+    },
+    {
+      "id": 92,
+      "question": "What is the typical range of Link 11 (or Link II) ship-to-air links, and how is data exchanged?",
+      "options": [
+        "Approximately 150 nautical miles; computer-to-computer exchange of tactical coordinates",
+        "25 to 35 nautical miles; manual voice coordination over unsecure lines",
+        "Beyond atmosphere; high-capacity IP and telephone services",
+        "Over 5,000 miles; one-way submarine broadcast"
+      ],
+      "correct_answer": "Approximately 150 nautical miles; computer-to-computer exchange of tactical coordinates"
+    },
+    {
+      "id": 93,
+      "question": "Which Tactical Data Link operates in the UHF range, uses a pseudo-random frequency hopping pattern for jam resistance, and allows joint services and NATO to share real-time tactical info?",
+      "options": [
+        "Link 11",
+        "Link 16",
+        "Hawklink",
+        "UTJ"
+      ],
+      "correct_answer": "Link 16"
+    },
+    {
+      "id": 94,
+      "question": "What is Hawklink used for in naval operations?",
+      "options": [
+        "To provide long-range, one-way strategic broadcast to submarines deep in the water",
+        "To transmit digital data from SH-60 helicopters to shipboard computers over VHF Line-of-Sight",
+        "To serve as a secure voice coordination circuit for Link 11",
+        "To connect the ship's ADNS router to commercial shore networks"
+      ],
+      "correct_answer": "To transmit digital data from SH-60 helicopters to shipboard computers over VHF Line-of-Sight"
+    },
+    {
+      "id": 95,
+      "question": "Which two tactical data link systems were initially created for Ballistic Missile Defense (BMD) missions, operating under the JREAP-C protocol?",
+      "options": [
+        "Link 11 and TADIL-S",
+        "Multicast Tactical Digital Information Link (MTJ) and Unicast Tactical Digital Information Link (UTJ)",
+        "Link 16 and Hawklink",
+        "STJ and Link 11"
+      ],
+      "correct_answer": "Multicast Tactical Digital Information Link (MTJ) and Unicast Tactical Digital Information Link (UTJ)"
+    },
+    {
+      "id": 96,
+      "question": "Which tactical data link protocol is used for Beyond Line of Sight (BLOS) information exchange operating in the SHF frequency range?",
+      "options": [
+        "Link 11",
+        "Link 16",
+        "JREAP-C",
+        "STJ"
+      ],
+      "correct_answer": "JREAP-C"
+    },
+    {
+      "id": 97,
+      "question": "What is the primary element of Ballistic Missile Defense (BMD) operated by the Navy, and what types of vessels are primarily involved?",
+      "options": [
+        "BMDS; Ticonderoga cruisers and Arleigh Burke destroyers",
+        "Aegis BMD; Ticonderoga class cruisers (CGs) and Arleigh Burke class destroyers (DDGs)",
+        "Sea Based X-Band Radar (SBX); amphibious assault ships",
+        "SM-3 Interceptors; aircraft carriers and attack submarines"
+      ],
+      "correct_answer": "Aegis BMD; Ticonderoga class cruisers (CGs) and Arleigh Burke class destroyers (DDGs)"
+    },
+    {
+      "id": 98,
+      "question": "Which multifunctional phased-array radar serves as the primary sensor for Aegis BMD, performing search, track, and missile guidance functions simultaneously?",
+      "options": [
+        "Sea Based X-Band Radar (SBX)",
+        "AN/SPY-1 radar",
+        "Comtech EF Data SLM-5650B",
+        "AN/USQ-155(V)"
+      ],
+      "correct_answer": "AN/SPY-1 radar"
+    },
+    {
+      "id": 99,
+      "question": "Which Aegis BMD personnel role is responsible for the tactical employment of the ship's weapon systems and leads the Combat Information Center (CIC) team?",
+      "options": [
+        "Ballistic Missile Defense Officer (BMDO)",
+        "Fire Controlman Aegis (FCA)",
+        "Tactical Action Officer (TAO)",
+        "Operational Specialist (OS)"
+      ],
+      "correct_answer": "Tactical Action Officer (TAO)"
+    },
+    {
+      "id": 100,
+      "question": "What is the function of the Link Response Team during BMD operations?",
+      "options": [
+        "To replace damaged extension cords on the weather deck during fueling",
+        "To quickly investigate the area of responsibility when a link circuit is down for a ship-specific amount of time",
+        "To load new cryptographic keys (KEYMAT) into the PYQ-10 Simple Key Loader",
+        "To route incoming voice conference calls through the SA-2112(V) switch"
+      ],
+      "correct_answer": "To quickly investigate the area of responsibility when a link circuit is down for a ship-specific amount of time"
+    },
+    {
+      "id": 101,
+      "question": "How does wet or damaged skin affect the severity of an electrical shock?",
+      "options": [
+        "It increases skin resistance, preventing current from passing through the chest and heart.",
+        "It reduces skin resistance, allowing greater current flow and increasing the risk of severe shock.",
+        "It has no measurable effect on current flow through the body.",
+        "It prevents ventricular fibrillation by dissipating the electric charge across the surface."
+      ],
+      "correct_answer": "It reduces skin resistance, allowing greater current flow and increasing the risk of severe shock."
+    },
+    {
+      "id": 102,
+      "question": "What are potential sources of harmful non-ionizing electromagnetic radiation aboard Navy ships?",
+      "options": [
+        "Transmitters aboard ships, on aircraft, and at shore stations.",
+        "Shipboard electrical generators and main diesel engines.",
+        "Exposed copper grounding cables on the weather deck.",
+        "Standard lead-acid battery banks in the auxiliary machinery room."
+      ],
+      "correct_answer": "Transmitters aboard ships, on aircraft, and at shore stations."
+    },
+    {
+      "id": 103,
+      "question": "What is the purpose of Out of Commission (OOC) or Out of Calibration (CAL) labels in the Tag-Out system?",
+      "options": [
+        "To mark leaks on fluid lines and identify plumbing components.",
+        "To indicate the status of instruments on a case-by-case basis.",
+        "To substitute for Red Danger tags when isolating high-voltage equipment.",
+        "To authorize temporary bypass of safety interlocks on transmitters."
+      ],
+      "correct_answer": "To indicate the status of instruments on a case-by-case basis."
+    },
+    {
+      "id": 104,
+      "question": "What is the maximum frequency range mentioned for RF-burn or contact-current hazards?",
+      "options": [
+        "3 kHz to 30 kHz",
+        "100 kHz to 100 MHz",
+        "300 MHz to 3 GHz",
+        "3 GHz to 30 GHz"
+      ],
+      "correct_answer": "100 kHz to 100 MHz"
+    },
+    {
+      "id": 105,
+      "question": "Which material is strictly prohibited from being used to clean or maintain electric and electronic circuitry?",
+      "options": [
+        "Isopropyl alcohol wipes",
+        "Dry lint-free cotton cloths",
+        "Steel wool or emery cloth",
+        "Specialized contact cleaning sprays"
+      ],
+      "correct_answer": "Steel wool or emery cloth"
+    },
+    {
+      "id": 106,
+      "question": "What physical safety precaution is noted regarding rotating antennas?",
+      "options": [
+        "Stopping a rotating antenna manually should never be attempted.",
+        "Always manually rotate the antenna clockwise before energizing.",
+        "Lubricate the gears while the antenna is actively rotating.",
+        "Never use the standby position; always de-energize completely before stopping rotation."
+      ],
+      "correct_answer": "Stopping a rotating antenna manually should never be attempted."
+    },
+    {
+      "id": 107,
+      "question": "According to the Navy Hearing Conservation Program (HCP), what is the absolute sound pressure limit that personnel should not be exposed to over eight continuous hours?",
+      "options": [
+        "85 dB",
+        "100 dB",
+        "120 dB",
+        "140 dB"
+      ],
+      "correct_answer": "140 dB"
+    },
+    {
+      "id": 108,
+      "question": "What type of respiratory protection should be used when working with paints, solvents, and cleaning materials for electrical equipment?",
+      "options": [
+        "A standard surgical mask",
+        "An air-purifying respirator with adequate oxygen levels (greater than or equal to 22% by volume)",
+        "A closed-circuit self-contained breathing apparatus (SCBA) regardless of oxygen level",
+        "A simple dust mask with no rating"
+      ],
+      "correct_answer": "An air-purifying respirator with adequate oxygen levels (greater than or equal to 22% by volume)"
+    },
+    {
+      "id": 109,
+      "question": "What weather conditions occur in the troposphere that can affect radio wave propagation?",
+      "options": [
+        "None; the troposphere is completely stable and dry.",
+        "All weather conditions, including clouds that affect radio wave propagation.",
+        "Only solar ultraviolet radiation storms.",
+        "Extreme pressure shifts that compress EHF waves into the stratosphere."
+      ],
+      "correct_answer": "All weather conditions, including clouds that affect radio wave propagation."
+    },
+    {
+      "id": 110,
+      "question": "What is the main characteristic of the stratosphere regarding radio wave propagation?",
+      "options": [
+        "It heavily refracts sky waves back to Earth.",
+        "It has relatively little effect on radio waves due to constant temperature.",
+        "It splits into two sublayers, D1 and D2, during daylight.",
+        "It causes severe multi-path distortion for all ELF transmissions."
+      ],
+      "correct_answer": "It has relatively little effect on radio waves due to constant temperature."
+    },
+    {
+      "id": 111,
+      "question": "What physical process causes ionization in the ionosphere?",
+      "options": [
+        "High wind currents in the upper atmosphere frictionally charge gas atoms.",
+        "Ultraviolet radiation from the sun splits gas atoms into electrically charged particles.",
+        "Lightning strikes from the troposphere discharge upwards.",
+        "Magnetic fields from the Earth's core polarize nitrogen molecules."
+      ],
+      "correct_answer": "Ultraviolet radiation from the sun splits gas atoms into electrically charged particles."
+    },
+    {
+      "id": 112,
+      "question": "What is the D layer's role in radio wave propagation?",
+      "options": [
+        "It refracts lower frequency radio waves at a lower height.",
+        "It absorbs all High Frequency (HF) signals during the night.",
+        "It reflects EHF waves beyond the atmosphere for SATCOM.",
+        "It acts as a waveguide for surface waves over salt water."
+      ],
+      "correct_answer": "It refracts lower frequency radio waves at a lower height."
+    },
+    {
+      "id": 113,
+      "question": "What geographical factors can affect radio wave propagation, particularly near the Earth's poles?",
+      "options": [
+        "Increased atmospheric density near the equator.",
+        "Increased magnetic interference near the North or South Pole.",
+        "Severe cloud formations in the stratosphere.",
+        "Rapid temperature drops in the ionosphere."
+      ],
+      "correct_answer": "Increased magnetic interference near the North or South Pole."
+    },
+    {
+      "id": 114,
+      "question": "What are space waves in radio communications?",
+      "options": [
+        "Waves that follow the curve of the Earth and experience ground attenuation.",
+        "Waves that travel directly from the transmit antenna to the receive antenna, affected by atmospheric conditions.",
+        "Waves transmitted into the atmosphere that are refracted and return to Earth at great distances.",
+        "Waves that propagate through water to reach submerged submarines."
+      ],
+      "correct_answer": "Waves that travel directly from the transmit antenna to the receive antenna, affected by atmospheric conditions."
+    },
+    {
+      "id": 115,
+      "question": "What are sky waves in radio communications?",
+      "options": [
+        "Waves that travel directly from the transmit antenna to the receive antenna, affected by weather.",
+        "Waves that follow the curve of the Earth and experience ground attenuation.",
+        "Waves transmitted into the atmosphere that are refracted by the ionosphere and return to the Earth's surface at greater distances.",
+        "Waves that are transmitted from a satellite to a ground station via CBSP."
+      ],
+      "correct_answer": "Waves transmitted into the atmosphere that are refracted by the ionosphere and return to the Earth's surface at greater distances."
+    },
+    {
+      "id": 116,
+      "question": "What is the significance of conductivity in radio wave propagation?",
+      "options": [
+        "Lower conductivity surfaces allow for better transmission of energy, reducing attenuation.",
+        "Higher conductivity surfaces allow for better transmission of energy, reducing attenuation.",
+        "Conductivity has no effect on surface wave attenuation.",
+        "Conductivity determines the height at which the F layer splits into F1 and F2."
+      ],
+      "correct_answer": "Higher conductivity surfaces allow for better transmission of energy, reducing attenuation."
+    },
+    {
+      "id": 117,
+      "question": "What are handshaking signals used for in digital data processes?",
+      "options": [
+        "To scramble digital messages for security using KEYMAT.",
+        "To coordinate data transfer, indicating ready/not ready, acknowledgment, or requests.",
+        "To derive a clock from an asynchronous data stream.",
+        "To switch between red and black patch panels automatically."
+      ],
+      "correct_answer": "To coordinate data transfer, indicating ready/not ready, acknowledgment, or requests."
+    },
+    {
+      "id": 118,
+      "question": "What is the purpose of timing information in data transmission?",
+      "options": [
+        "To specify when a satellite access request must be submitted.",
+        "To allow the equipment used in transmission to be synchronized with receiving equipment.",
+        "To count the number of cycles a wave completes in one second.",
+        "To set the automatic expiration of cryptographic keying material."
+      ],
+      "correct_answer": "To allow the equipment used in transmission to be synchronized with receiving equipment."
+    },
+    {
+      "id": 119,
+      "question": "Why is Phase Modulation (PM) not commonly used for radio transmissions?",
+      "options": [
+        "It is highly susceptible to noise interference compared to AM.",
+        "Due to the more complex hardware and difficulties in identifying phase changes.",
+        "It requires an atomic cesium clock to transmit any analog signal.",
+        "It cannot be carried or modulated by an audio signal."
+      ],
+      "correct_answer": "Due to the more complex hardware and difficulties in identifying phase changes."
+    },
+    {
+      "id": 120,
+      "question": "What baud rate does the Navy use for Frequency-Shift Keying (FSK) with circuit data?",
+      "options": [
+        "75 bits per second (bps)",
+        "1200 bits per second (bps)",
+        "9600 bits per second (bps)",
+        "16 kilobits per second (kbps)"
+      ],
+      "correct_answer": "75 bits per second (bps)"
+    },
+    {
+      "id": 121,
+      "question": "What is the typical baud rate range for Phase-Shift Keying (PSK) used by the Navy?",
+      "options": [
+        "75 to 2,400 bps",
+        "75 to 9,600 bps",
+        "1200 to 19,200 bps",
+        "256 kbps to 2.048 Mbps"
+      ],
+      "correct_answer": "75 to 9,600 bps"
+    },
+    {
+      "id": 122,
+      "question": "What is the function of the clock and data recovery circuit in digital communications?",
+      "options": [
+        "To restore unsecure decrypted data back into encrypted form.",
+        "To derive a clock from the data stream that is synchronized with the data.",
+        "To bypass failed patch panels when a circuit goes down.",
+        "To request a new SAA when a satellite beam moves."
+      ],
+      "correct_answer": "To derive a clock from the data stream that is synchronized with the data."
+    },
+    {
+      "id": 123,
+      "question": "What is a major disadvantage of Amplitude Modulation (AM)?",
+      "options": [
+        "It requires complex hardware and is difficult to identify phase changes.",
+        "It is limited by the bandwidth of the line and is susceptible to noise interference.",
+        "It cannot carry binary coded data.",
+        "It requires co-directional clocks to operate."
+      ],
+      "correct_answer": "It is limited by the bandwidth of the line and is susceptible to noise interference."
+    },
+    {
+      "id": 124,
+      "question": "What is the primary advantage of Frequency Modulation (FM)?",
+      "options": [
+        "It can travel over 5,000 miles via sky wave refraction.",
+        "FM is more robust against noise, interference, and fading.",
+        "It does not require a transmitter or a receiver to propagate.",
+        "It is easily decoded by the human ear without a demodulator."
+      ],
+      "correct_answer": "FM is more robust against noise, interference, and fading."
+    },
+    {
+      "id": 125,
+      "question": "What are transceivers in RF communications?",
+      "options": [
+        "Devices that combine transmitters and receivers, usually operating in half-duplex mode.",
+        "Devices used to connect a crypto device to a red phone.",
+        "Hardware that automatically translates domain names to IP addresses.",
+        "High-speed cesium clocks used for synchronous data."
+      ],
+      "correct_answer": "Devices that combine transmitters and receivers, usually operating in half-duplex mode."
+    },
+    {
+      "id": 126,
+      "question": "What three physical characteristics do antennas possess?",
+      "options": [
+        "Amplitude, frequency, and phase",
+        "Reciprocity, polarization, and directivity",
+        "Reflection, refraction, and diffraction",
+        "Attenuation, velocity, and conductivity"
+      ],
+      "correct_answer": "Reciprocity, polarization, and directivity"
+    },
+    {
+      "id": 127,
+      "question": "What is the function of the radar dome (RADOME)?",
+      "options": [
+        "To cool high-power transmitters using an electronic cooling loop.",
+        "To protect SATCOM circuit antennas and their supporting components from environmental damage.",
+        "To scramble data in a way that prevents information from being read.",
+        "To connect a variety of equipment to create an RF circuit."
+      ],
+      "correct_answer": "To protect SATCOM circuit antennas and their supporting components from environmental damage."
+    },
+    {
+      "id": 128,
+      "question": "What is the significance of the KY-58M and KIV-7M in Naval communications?",
+      "options": [
+        "They are retired ADNS hardware variants.",
+        "They are upgraded cryptographic equipment used in Naval communications.",
+        "They are specialized SATCOM satellites operating in highly elliptical orbits.",
+        "They are the two NCTAMS master stations."
+      ],
+      "correct_answer": "They are upgraded cryptographic equipment used in Naval communications."
+    },
+    {
+      "id": 129,
+      "question": "What does the term 'half-duplex' mean in communications?",
+      "options": [
+        "A mode where devices can simultaneously transmit and receive.",
+        "A mode where devices cannot simultaneously transmit and receive.",
+        "A circuit that only allows one-way transmission and can never receive.",
+        "A patching method that splits a signal into two equal parts."
+      ],
+      "correct_answer": "A mode where devices cannot simultaneously transmit and receive."
+    },
+    {
+      "id": 130,
+      "question": "What is the data rate range for Extremely High Frequency (EHF) SATCOM supported in the Navy?",
+      "options": [
+        "Up to 155 Megabits per second (Mbps) aggregate.",
+        "Low Data Rate (LDR) up to 75 bps to 2.4 Kbps, Medium Data Rate (MDR) up to 1544 Kbps, and Extended Data Rate (XDR) up to 8.192 Mbps.",
+        "Strictly limited to 75 bps for FSK with circuit data.",
+        "256 kbps to 2.048 Mbps aggregate for commercial broadband."
+      ],
+      "correct_answer": "Low Data Rate (LDR) up to 75 bps to 2.4 Kbps, Medium Data Rate (MDR) up to 1544 Kbps, and Extended Data Rate (XDR) up to 8.192 Mbps."
+    },
+    {
+      "id": 131,
+      "question": "Who are the primary users of the Defense Information Switch Network (DISN)?",
+      "options": [
+        "Commercially leased maritime shipping companies.",
+        "Military services and agencies within the DoD, including the Navy, Army, Air Force, and Marines.",
+        "Only the JFTOC watch officers at Virginia and Hawaii.",
+        "The Federal Communications Commission (FCC) and civilian emergency networks."
+      ],
+      "correct_answer": "Military services and agencies within the DoD, including the Navy, Army, Air Force, and Marines."
+    },
+    {
+      "id": 132,
+      "question": "What does RESTORATION PRIORITY (RP) indicate in a COMMPLAN?",
+      "options": [
+        "The priority of restoration for the circuit, designated in a COMMPLAN.",
+        "The order in which safety shoes and PPE are distributed to sailors.",
+        "The time required to activate tuned standby transmitters.",
+        "The sequence for restoring power after a severe electrical shock."
+      ],
+      "correct_answer": "The priority of restoration for the circuit, designated in a COMMPLAN."
+    },
+    {
+      "id": 133,
+      "question": "What does the Terminal Base Address (TBA) identify on the COMM Status Board?",
+      "options": [
+        "The physical location of the ship in the Area of Responsibility (AOR).",
+        "The address of the selected Digital Modular Radio (DMR) to the satellite.",
+        "The IP address of the unclassified NIPRNET router afloat.",
+        "The cryptographic key serial number used for a specific circuit."
+      ],
+      "correct_answer": "The address of the selected Digital Modular Radio (DMR) to the satellite."
+    },
+    {
+      "id": 134,
+      "question": "What does the term 'Line-item classification' refer to in a Satellite Access Request (SAR)?",
+      "options": [
+        "The priority rating assigned to the mission by the CO.",
+        "The classification of line items that vary by SAR type (UHF, SHF, EHF, GBS).",
+        "The sequence of routing through the chain of command.",
+        "The speed rating of the shipboard LAN."
+      ],
+      "correct_answer": "The classification of line items that vary by SAR type (UHF, SHF, EHF, GBS)."
+    },
+    {
+      "id": 135,
+      "question": "What is the best practice regarding data rate requests in a Satellite Access Request (SAR)?",
+      "options": [
+        "To request the absolute maximum data rate possible to secure bandwidth.",
+        "To request a data rate just slightly above the ship's needs to avoid slowdowns.",
+        "To always request 155 Mbps regardless of the equipment capabilities.",
+        "To request the lowest possible data rate to save government funding."
+      ],
+      "correct_answer": "To request a data rate just slightly above the ship's needs to avoid slowdowns."
+    },
+    {
+      "id": 136,
+      "question": "What is the purpose of the Plan of Intended Movement (PIM) in relation to a Satellite Access Request (SAR)?",
+      "options": [
+        "It outlines the schedule of watchstander rotations.",
+        "It captures the ship's PIM during the mission and ensures appropriate mission planning.",
+        "It details the movement of tools aloft in buckets.",
+        "It specifies the frequency of tag-out audits."
+      ],
+      "correct_answer": "It captures the ship's PIM during the mission and ensures appropriate mission planning."
+    },
+    {
+      "id": 137,
+      "question": "What does the term 'Guard' refer to in the context of a Satellite Access Request (SAR)?",
+      "options": [
+        "The physical watchstander posted at the entry of a RADHAZ zone.",
+        "The guard number that connects the DMR channel to DAMA Net on the connected satellite.",
+        "The safety observer watching personnel work aloft.",
+        "The frequency separation criteria required to prevent intermodulation."
+      ],
+      "correct_answer": "The guard number that connects the DMR channel to DAMA Net on the connected satellite."
+    },
+    {
+      "id": 138,
+      "question": "What is the first step in the Satellite Access Request (SAR) submission process?",
+      "options": [
+        "The SAR must move through a chain of command (COC) before submission.",
+        "The SAR is sent directly to the regional SATCOM Support Center (RSSC).",
+        "The COMMO bypasses the ship's command and sends it via JIST to DISA.",
+        "The CO verbally approves the frequencies over the 1MC."
+      ],
+      "correct_answer": "The SAR must move through a chain of command (COC) before submission."
+    },
+    {
+      "id": 139,
+      "question": "What is the significance of the Gateway Assignment Agreement (GAR) in relation to the SAA?",
+      "options": [
+        "It assigns the ship its tactical call sign for the operation.",
+        "It includes equipment state configuration for matching ship and shore configurations.",
+        "It coordinates the physical connection between the ship and the pier.",
+        "It authorizes the ship to radiate high power HF transmitters."
+      ],
+      "correct_answer": "It includes equipment state configuration for matching ship and shore configurations."
+    },
+    {
+      "id": 140,
+      "question": "What information does the Mission Data Sheet (MDS) include for GBS service?",
+      "options": [
+        "A complete log of all daily watch turnovers.",
+        "Receive Broadcast Manager (RBM) configuration, satellite frequencies, cryptographic information, and multicast addresses.",
+        "The list of all qualified Tag-Out administrators and their serial numbers.",
+        "The names of adjacent ships notified of personnel working aloft."
+      ],
+      "correct_answer": "Receive Broadcast Manager (RBM) configuration, satellite frequencies, cryptographic information, and multicast addresses."
+    },
+    {
+      "id": 141,
+      "question": "What does Section 1 of the SAA opening remarks explicitly warn about?",
+      "options": [
+        "Electrical shock risks on ungrounded circuits.",
+        "Possible loss of satellite access.",
+        "Aloft stop-work thresholds for wind speeds.",
+        "Hearing degradation from double-protection environments."
+      ],
+      "correct_answer": "Possible loss of satellite access."
+    },
+    {
+      "id": 142,
+      "question": "What is the purpose of the Real Time Spectrum Operations (RTSO) report?",
+      "options": [
+        "To report communication outages to senior government decision-makers within 30 minutes.",
+        "The RTSO report is used by the Information Warfare Commander (IWC) to track usage of various portions of the electromagnetic spectrum.",
+        "To request satellite access from the RSSC or GSSC.",
+        "To coordinate the frequencies used for Link 16 pseudo-random hopping."
+      ],
+      "correct_answer": "The RTSO report is used by the Information Warfare Commander (IWC) to track usage of various portions of the electromagnetic spectrum."
+    },
+    {
+      "id": 143,
+      "question": "What are the three important steps during OPTASK COMMS development?",
+      "options": [
+        "1. Establish priorities for nets by frequency band. 2. Determine guarding requirements. 3. Develop a Demand Assigned Multiple Access (DAMA) channelization plan.",
+        "1. Submit a SAR. 2. Verify SAA configurations. 3. Write an After Action Report.",
+        "1. Qualify safety observers. 2. Verify tag-out binders. 3. Route aloft chits.",
+        "1. Connect the SB-4124. 2. Set SA-2112 voice switches. 3. Route ADNS enclaves."
+      ],
+      "correct_answer": "1. Establish priorities for nets by frequency band. 2. Determine guarding requirements. 3. Develop a Demand Assigned Multiple Access (DAMA) channelization plan."
+    },
+    {
+      "id": 144,
+      "question": "What does the LINE NUMBER on the COMM Status Board represent?",
+      "options": [
+        "The physical terminal port where the circuit terminates.",
+        "The circuit as listed in the OPTASK COMMS.",
+        "The sequential number of the tag hung in the manual tag-out binder.",
+        "The frequency rating of the transmitter's power amplifier."
+      ],
+      "correct_answer": "The circuit as listed in the OPTASK COMMS."
+    },
+    {
+      "id": 145,
+      "question": "What does the CIRCUIT TITLE provide on the COMM Status Board?",
+      "options": [
+        "The security enclave rating of the circuit (e.g., SECRET).",
+        "The common name of the circuit used in Radio, identified in the OPTASK COMMS.",
+        "The manufacturer name of the Digital Modular Radio (DMR).",
+        "The physical location of the antenna aloft."
+      ],
+      "correct_answer": "The common name of the circuit used in Radio, identified in the OPTASK COMMS."
+    },
+    {
+      "id": 146,
+      "question": "What is LINK COORD in naval communications?",
+      "options": [
+        "A cryptographic key loader used to encrypt tactical data.",
+        "A separate non-secure voice circuit used for voice coordination of LINK II.",
+        "A router within the ship that directs IP addresses to the right enclave.",
+        "The team of operations specialists coordinating Link 16 configuration."
+      ],
+      "correct_answer": "A separate non-secure voice circuit used for voice coordination of LINK II."
+    },
+    {
+      "id": 147,
+      "question": "What is the frequency range of Link 16?",
+      "options": [
+        "HF",
+        "VHF",
+        "UHF",
+        "SHF"
+      ],
+      "correct_answer": "UHF"
+    },
+    {
+      "id": 148,
+      "question": "What are the capabilities of the Unicast Tactical System (UTS)?",
+      "options": [
+        "Continuously keyed broadcast with 155 Mbps aggregate data rate.",
+        "Near real-time communications and two-way data.",
+        "Low-speed submarine communication at depths of hundreds of feet.",
+        "Real-time voice conference switching across red and black patch panels."
+      ],
+      "correct_answer": "Near real-time communications and two-way data."
+    },
+    {
+      "id": 149,
+      "question": "What is the primary function of the Electronics Technician (ET) in Aegis BMD?",
+      "options": [
+        "Maintains and operates the SPY-1 radar and Aegis weapons system computers.",
+        "Operates, maintains, and repairs Command and Control, Information, Sensor, and Reconnaissance (C2ISR) systems.",
+        "Operates, tests, and maintains the vertical launching system (VLS) for SM-2 and SM-3 missiles.",
+        "Coordinates and maintains the configuration of shipboard links in the CIC."
+      ],
+      "correct_answer": "Operates, maintains, and repairs Command and Control, Information, Sensor, and Reconnaissance (C2ISR) systems."
+    },
+    {
+      "id": 150,
+      "question": "What are the responsibilities of the Gunners Mate (GM) in Aegis BMD operations?",
+      "options": [
+        "Operates the communications and shipboard network equipment.",
+        "Operates, tests, and maintains the vertical launching system (VLS) for the SM-3 and SM-2 missiles.",
+        "Maintains the electronic tag-out database as an administrator.",
+        "Drafts the Satellite Access Request (SAR) for the CO's release."
+      ],
+      "correct_answer": "Operates, tests, and maintains the vertical launching system (VLS) for the SM-3 and SM-2 missiles."
+    }
+  ]
+}
