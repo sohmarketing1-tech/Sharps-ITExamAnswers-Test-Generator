@@ -294,32 +294,34 @@
             margin-bottom: 20px;
         }
         .flashcard {
+            background: transparent;
+            border: none;
+            border-radius: var(--radius);
+            min-height: 220px;
+            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        .flashcard.flipped { transform: rotateY(180deg); }
+        .flashcard-face {
+            position: absolute;
+            inset: 0;
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            min-height: 220px;
             padding: 28px;
-            cursor: pointer;
-            transition: transform 0.35s, box-shadow 0.35s;
-            position: relative;
-            text-align: center;
+            backface-visibility: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            text-align: center;
             backdrop-filter: blur(8px);
-        }
-        .flashcard.flipped { transform: rotateY(180deg); }
-        .flashcard-front, .flashcard-back {
-            backface-visibility: hidden;
+            min-height: 220px;
         }
         .flashcard-back {
-            position: absolute;
-            inset: 28px;
             transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
         }
         .flashcard-term {
             font-size: 1.7rem;
@@ -515,8 +517,8 @@
             </div>
             <div class="flashcard-wrap">
                 <div class="flashcard" id="fc-card" role="button" tabindex="0" aria-label="Flashcard. Tap or press Space to flip.">
-                    <div class="flashcard-front" id="fc-front"></div>
-                    <div class="flashcard-back" id="fc-back"></div>
+                    <div class="flashcard-face flashcard-front" id="fc-front"></div>
+                    <div class="flashcard-face flashcard-back" id="fc-back"></div>
                 </div>
             </div>
             <div class="fc-controls">
