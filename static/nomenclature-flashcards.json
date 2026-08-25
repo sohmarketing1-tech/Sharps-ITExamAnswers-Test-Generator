@@ -1,0 +1,111 @@
+{
+  "title": "Naval Communications Hardware Nomenclature Flashcards",
+  "description": "Flashcards to rapidly master the official alphanumeric nomenclatures and hardware codes for Naval network routing, switching, cryptography, and tracking systems.",
+  "count": 13,
+  "flashcards": [
+    {
+      "id": 1,
+      "nomenclature": "USQ-144H",
+      "category": "Network Routing (ADNS)",
+      "equipment_name": "Automated Digital Network System (ADNS) - Legacy",
+      "front": "USQ-144H",
+      "back": "The legacy Automated Digital Network System (ADNS) hardware variant that is currently being retired across the fleet."
+    },
+    {
+      "id": 2,
+      "nomenclature": "USQ-144K(v)2",
+      "category": "Network Routing (ADNS)",
+      "equipment_name": "Automated Digital Network System (ADNS) - Afloat",
+      "front": "USQ-144K(v)2",
+      "back": "The current Automated Digital Network System (ADNS) variant installed Afloat (shipboard) to route IP addresses and manage network enclaves."
+    },
+    {
+      "id": 3,
+      "nomenclature": "USQ-144K(V)1",
+      "category": "Network Routing (ADNS)",
+      "equipment_name": "Automated Digital Network System (ADNS) - Shore",
+      "front": "USQ-144K(V)1",
+      "back": "The current Automated Digital Network System (ADNS) variant installed at Shore facilities (e.g., NCTAMS and NCTS) to terminate fleet IP connections."
+    },
+    {
+      "id": 4,
+      "nomenclature": "SA-2112(V)",
+      "category": "Audio & Voice Switching",
+      "equipment_name": "Secure Audio Switch (SAS)",
+      "front": "SA-2112(V)",
+      "back": "Secure Audio Switch (SAS) housed in a bright red cabinet. Used electrically to switch and connect voice circuits to crypto interface units and red phones."
+    },
+    {
+      "id": 5,
+      "nomenclature": "AN/USQ-155(V)",
+      "category": "Audio & Data Switching",
+      "equipment_name": "Tactical Variant Switch (TVS)",
+      "front": "AN/USQ-155(V)",
+      "back": "Tactical Variant Switch (TVS) designed to switch both digital and analog interfaces and establish secure voice conference calls aboard ships."
+    },
+    {
+      "id": 6,
+      "nomenclature": "SB-4124",
+      "category": "Physical Patching",
+      "equipment_name": "SB-4124 Patch Panel",
+      "front": "SB-4124",
+      "back": "The standard physical RF patching panel. Colorkeyed RED for unsecure/decrypted/unencrypted paths, and BLACK for secure/encrypted paths."
+    },
+    {
+      "id": 7,
+      "nomenclature": "SLM-5650B",
+      "category": "Satellite Modems",
+      "equipment_name": "Comtech Satellite RF Modem",
+      "front": "SLM-5650B",
+      "back": "The primary commercial/satellite RF modem (manufactured by Comtech EF Data) used on naval vessels for digital SATCOM data transmissions."
+    },
+    {
+      "id": 8,
+      "nomenclature": "TD-1271",
+      "category": "Multiplexers",
+      "equipment_name": "TD-1271 UHF DAMA Multiplexer",
+      "front": "TD-1271",
+      "back": "Multiplexer used to combine four individual incoming signals at a base data rate of 16 kbps each on UHF Demand Assigned Multiple Access (DAMA) satellite circuits."
+    },
+    {
+      "id": 9,
+      "nomenclature": "TD-1063",
+      "category": "Multiplexers",
+      "equipment_name": "TD-1063 Demultiplexer",
+      "front": "TD-1063",
+      "back": "Demultiplexer circuit device used to separate or 'break out' the multiple incoming composite signal streams for the Fleet Satellite Broadcast."
+    },
+    {
+      "id": 10,
+      "nomenclature": "KY-58M",
+      "category": "Cryptographic Devices",
+      "equipment_name": "Secure Tactical Radio Encryption Device",
+      "front": "KY-58M",
+      "back": "An upgraded cryptographic hardware device used to encrypt and decrypt tactical voice communications over VHF and UHF radio systems."
+    },
+    {
+      "id": 11,
+      "nomenclature": "PYQ-10",
+      "category": "Cryptographic Key Loaders",
+      "equipment_name": "Simple Key Loader (SKL)",
+      "front": "PYQ-10",
+      "back": "The Simple Key Loader (SKL). A handheld fill device used by technicians to securely store, transport, and load Cryptographic Keying Material (KEYMAT) into switches and crypto units."
+    },
+    {
+      "id": 12,
+      "nomenclature": "AN/SPY-1",
+      "category": "Aegis BMD Radars",
+      "equipment_name": "Multi-Functional Phased-Array Radar",
+      "front": "AN/SPY-1",
+      "back": "The primary sensor for Aegis Ballistic Missile Defense (BMD). A multi-functional, phased-array radar that simultaneously searches, tracks, and guides interceptor missiles."
+    },
+    {
+      "id": 13,
+      "nomenclature": "SBX",
+      "category": "Aegis BMD Radars",
+      "equipment_name": "Sea Based X-Band Radar",
+      "front": "SBX",
+      "back": "A massive, floating, mobile radar station housed under a large white dome. Designed to operate in extreme heavy seas to track long-range ballistic missile trajectories."
+    }
+  ]
+}

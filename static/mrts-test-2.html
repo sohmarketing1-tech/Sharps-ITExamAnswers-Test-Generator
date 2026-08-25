@@ -289,6 +289,70 @@
             60% { transform: translateX(-4px); }
             80% { transform: translateX(4px); }
         }
+        .flashcard-wrap {
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+        .flashcard {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            min-height: 220px;
+            padding: 28px;
+            cursor: pointer;
+            transition: transform 0.35s, box-shadow 0.35s;
+            position: relative;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        .flashcard.flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            backface-visibility: hidden;
+        }
+        .flashcard-back {
+            position: absolute;
+            inset: 28px;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+        .flashcard-term {
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin: 0 0 8px;
+        }
+        .flashcard-meta {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .flashcard-hint {
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-top: 14px;
+        }
+        .fc-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .fc-progress {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+        .batch-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
         .status { color: var(--muted); font-size: 0.95rem; margin-top: 18px; }
         .hidden { display: none !important; }
         h2 { margin: 0 0 14px; font-size: 1.4rem; }
@@ -342,6 +406,24 @@
                     <span class="menu-text">
                         <span class="menu-name">Acronym Match</span>
                         <span class="menu-desc">Pair dense naval abbreviations with their exact definitions.</span>
+                    </span>
+                </button>
+                <button class="menu-card" data-mode="nomflash">
+                    <span class="menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+                    </span>
+                    <span class="menu-text">
+                        <span class="menu-name">Nomenclature Flashcards</span>
+                        <span class="menu-desc">Flip through official hardware nomenclatures and their equipment names.</span>
+                    </span>
+                </button>
+                <button class="menu-card" data-mode="nommatch">
+                    <span class="menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                    </span>
+                    <span class="menu-text">
+                        <span class="menu-name">Nomenclature Match</span>
+                        <span class="menu-desc">Match hardware codes to equipment names in small batches.</span>
                     </span>
                 </button>
             </div>
@@ -421,17 +503,74 @@
             </div>
             <div class="status" id="ac-status"></div>
         </div>
+
+        <!-- Nomenclature Flashcards -->
+        <div id="nomflash-view" class="view">
+            <button class="back-btn" data-back>&larr; Back to menu</button>
+            <h2>Nomenclature Flashcards</h2>
+            <p class="section-desc">Tap the card to reveal the equipment name and description.</p>
+            <div class="game-stats">
+                <div class="stat"><div class="stat-label">Card</div><div class="stat-value" id="fc-progress">0/0</div></div>
+                <div class="stat"><div class="stat-label">Category</div><div class="stat-value" id="fc-category">—</div></div>
+            </div>
+            <div class="flashcard-wrap">
+                <div class="flashcard" id="fc-card" role="button" tabindex="0" aria-label="Flashcard. Tap or press Space to flip.">
+                    <div class="flashcard-front" id="fc-front"></div>
+                    <div class="flashcard-back" id="fc-back"></div>
+                </div>
+            </div>
+            <div class="fc-controls">
+                <button class="secondary" id="fc-prev">Previous</button>
+                <button id="fc-flip">Flip</button>
+                <button id="fc-next">Next</button>
+            </div>
+            <div class="fc-controls">
+                <button class="secondary" id="fc-shuffle">Shuffle</button>
+            </div>
+        </div>
+
+        <!-- Nomenclature Match -->
+        <div id="nommatch-view" class="view">
+            <button class="back-btn" data-back>&larr; Back to menu</button>
+            <h2>Nomenclature Match</h2>
+            <p class="section-desc">Match the nomenclature code on the left with the equipment name on the right.</p>
+            <div class="game-stats">
+                <div class="stat"><div class="stat-label">Batch</div><div class="stat-value" id="nm-batch">1/1</div></div>
+                <div class="stat"><div class="stat-label">Matched</div><div class="stat-value" id="nm-score">0</div></div>
+                <div class="stat"><div class="stat-label">Remaining</div><div class="stat-value" id="nm-remaining">0</div></div>
+            </div>
+            <p class="batch-label" id="nm-batch-label">Loading…</p>
+            <div class="matching-grid" id="nm-grid">
+                <div class="matching-col">
+                    <h4>Nomenclature</h4>
+                    <div id="nm-terms"></div>
+                </div>
+                <div class="matching-col">
+                    <h4>Equipment</h4>
+                    <div id="nm-defs"></div>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="secondary" id="nm-reset">Reset Batch</button>
+                <button id="nm-nextbatch" class="hidden">Next Batch</button>
+            </div>
+            <div class="status" id="nm-status"></div>
+        </div>
     </main>
 
     <script type="module">
-        const dataUrl = "/interactive-modes-db.json";
+        const MODES_URL = "/interactive-modes-db.json";
+        const NOMENCLATURE_FLASH_URL = "/nomenclature-flashcards.json";
+        const NOMENCLATURE_MATCH_URL = "/nomenclature-matching.json";
         let db = null;
 
         const state = {
             activeMode: "menu",
             gng: { items: [], index: 0, score: 0, answered: false },
             path: { items: [], index: 0, built: [], verifying: false },
-            ac: { pairs: [], selectedTerm: null, matched: new Set(), wrong: null }
+            ac: { pairs: [], selectedTerm: null, matched: new Set(), wrong: null },
+            nomflash: { cards: [], index: 0, flipped: false },
+            nommatch: { pairs: [], batches: [], batchIndex: 0, selectedTerm: null, matched: new Set(), wrong: null }
         };
 
         const els = {
@@ -439,14 +578,22 @@
             gngView: document.getElementById("gng-view"),
             pathView: document.getElementById("path-view"),
             acView: document.getElementById("acronym-view"),
+            nomflashView: document.getElementById("nomflash-view"),
+            nommatchView: document.getElementById("nommatch-view"),
             menuCards: document.querySelectorAll(".menu-card[data-mode]"),
             backBtns: document.querySelectorAll("[data-back]")
         };
 
+        async function loadJson(url) {
+            const res = await fetch(url, { cache: "no-store" });
+            if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
+            return res.json();
+        }
+
         async function loadData() {
-            const res = await fetch(dataUrl, { cache: "no-store" });
-            if (!res.ok) throw new Error(`Failed to load ${dataUrl}: ${res.status}`);
-            db = await res.json();
+            db = await loadJson(MODES_URL);
+            db.nomenclature_flashcards = await loadJson(NOMENCLATURE_FLASH_URL);
+            db.nomenclature_matching = await loadJson(NOMENCLATURE_MATCH_URL);
         }
 
         function shuffle(arr) {
@@ -460,11 +607,13 @@
 
         function setMode(mode) {
             state.activeMode = mode;
-            [els.menuView, els.gngView, els.pathView, els.acView].forEach(el => el.classList.toggle("active", false));
+            [els.menuView, els.gngView, els.pathView, els.acView, els.nomflashView, els.nommatchView].forEach(el => el.classList.toggle("active", false));
             if (mode === "menu") els.menuView.classList.add("active");
             if (mode === "gng") { els.gngView.classList.add("active"); startGng(); }
             if (mode === "path") { els.pathView.classList.add("active"); startPath(); }
             if (mode === "acronym") { els.acView.classList.add("active"); startAcronym(); }
+            if (mode === "nomflash") { els.nomflashView.classList.add("active"); startNomFlash(); }
+            if (mode === "nommatch") { els.nommatchView.classList.add("active"); startNomMatch(); }
         }
 
         els.menuCards.forEach(card => card.addEventListener("click", () => setMode(card.dataset.mode)));
@@ -691,6 +840,169 @@
             state.ac.defOrder = shuffle(state.ac.pairs.map(p => p.id));
             renderAcronym();
         });
+
+        // Nomenclature Flashcards
+        function startNomFlash() {
+            const data = db.nomenclature_flashcards;
+            state.nomflash.cards = shuffle(data.flashcards);
+            state.nomflash.index = 0;
+            state.nomflash.flipped = false;
+            renderNomFlash();
+        }
+
+        function renderNomFlash() {
+            const card = state.nomflash.cards[state.nomflash.index];
+            const front = document.getElementById("fc-front");
+            const back = document.getElementById("fc-back");
+            const cardEl = document.getElementById("fc-card");
+            front.innerHTML = `<div class="flashcard-term">${escapeHtml(card.front)}</div><div class="flashcard-hint">Tap to flip</div>`;
+            back.innerHTML = `<div class="flashcard-term">${escapeHtml(card.equipment_name || card.front)}</div><p>${escapeHtml(card.back)}</p><div class="flashcard-meta">${escapeHtml(card.category)}</div>`;
+            cardEl.classList.toggle("flipped", state.nomflash.flipped);
+            document.getElementById("fc-progress").textContent = `${state.nomflash.index + 1}/${state.nomflash.cards.length}`;
+            document.getElementById("fc-category").textContent = card.category || "—";
+        }
+
+        function flipNomFlash() {
+            state.nomflash.flipped = !state.nomflash.flipped;
+            document.getElementById("fc-card").classList.toggle("flipped", state.nomflash.flipped);
+        }
+
+        function nextNomFlash(delta) {
+            state.nomflash.index = (state.nomflash.index + delta + state.nomflash.cards.length) % state.nomflash.cards.length;
+            state.nomflash.flipped = false;
+            renderNomFlash();
+        }
+
+        document.getElementById("fc-card").addEventListener("click", flipNomFlash);
+        document.getElementById("fc-card").addEventListener("keydown", e => { if (e.code === "Space" || e.code === "Enter") { e.preventDefault(); flipNomFlash(); } });
+        document.getElementById("fc-flip").addEventListener("click", flipNomFlash);
+        document.getElementById("fc-next").addEventListener("click", () => nextNomFlash(1));
+        document.getElementById("fc-prev").addEventListener("click", () => nextNomFlash(-1));
+        document.getElementById("fc-shuffle").addEventListener("click", () => {
+            state.nomflash.cards = shuffle(state.nomflash.cards);
+            state.nomflash.index = 0;
+            state.nomflash.flipped = false;
+            renderNomFlash();
+        });
+
+        // Nomenclature Match
+        const BATCH_SIZE = 8;
+
+        function startNomMatch() {
+            const data = db.nomenclature_matching;
+            state.nommatch.pairs = shuffle(data.pairs.map((p, i) => ({ ...p, id: i })));
+            state.nommatch.batches = [];
+            for (let i = 0; i < state.nommatch.pairs.length; i += BATCH_SIZE) {
+                state.nommatch.batches.push(state.nommatch.pairs.slice(i, i + BATCH_SIZE));
+            }
+            state.nommatch.batchIndex = 0;
+            state.nommatch.selectedTerm = null;
+            state.nommatch.matched = new Set();
+            state.nommatch.wrong = null;
+            renderNomMatch();
+        }
+
+        function renderNomMatch() {
+            const batch = state.nommatch.batches[state.nommatch.batchIndex];
+            const byId = Object.fromEntries(batch.map(p => [p.id, p]));
+            const termOrder = batch.map(p => p.id);
+            const defOrder = shuffle(batch.map(p => p.id));
+            const isWrongTerm = state.nommatch.wrong && state.nommatch.wrong.term;
+            const isWrongDef = state.nommatch.wrong && state.nommatch.wrong.def;
+
+            document.getElementById("nm-batch").textContent = `${state.nommatch.batchIndex + 1}/${state.nommatch.batches.length}`;
+            document.getElementById("nm-score").textContent = state.nommatch.matched.size;
+            document.getElementById("nm-remaining").textContent = state.nommatch.pairs.length - state.nommatch.matched.size;
+            document.getElementById("nm-batch-label").textContent = `Batch ${state.nommatch.batchIndex + 1} of ${state.nommatch.batches.length} — match the nomenclature to its equipment`;
+
+            const termsContainer = document.getElementById("nm-terms");
+            const defsContainer = document.getElementById("nm-defs");
+            termsContainer.innerHTML = "";
+            defsContainer.innerHTML = "";
+
+            termOrder.forEach(id => {
+                const p = byId[id];
+                const div = document.createElement("div");
+                div.className = "match-item";
+                div.textContent = p.nomenclature;
+                div.dataset.id = p.id;
+                if (state.nommatch.matched.has(p.id)) div.classList.add("matched");
+                else if (state.nommatch.selectedTerm === p.id) div.classList.add("selected");
+                if (isWrongTerm === p.id) div.classList.add("wrong", "shake");
+                div.addEventListener("click", () => selectNomTerm(p.id));
+                termsContainer.appendChild(div);
+            });
+            defOrder.forEach(id => {
+                const p = byId[id];
+                const div = document.createElement("div");
+                div.className = "match-item";
+                div.textContent = p.equipment_name;
+                div.dataset.id = p.id;
+                if (state.nommatch.matched.has(p.id)) div.classList.add("matched");
+                if (isWrongDef === p.id) div.classList.add("wrong", "shake");
+                div.addEventListener("click", () => selectNomDef(p.id));
+                defsContainer.appendChild(div);
+            });
+
+            const nextBtn = document.getElementById("nm-nextbatch");
+            const allBatchMatched = batch.every(p => state.nommatch.matched.has(p.id));
+            nextBtn.classList.toggle("hidden", !allBatchMatched || state.nommatch.batchIndex >= state.nommatch.batches.length - 1);
+
+            const status = document.getElementById("nm-status");
+            if (state.nommatch.matched.size === state.nommatch.pairs.length) {
+                status.textContent = "All nomenclature pairs matched!";
+            } else if (state.nommatch.selectedTerm !== null) {
+                status.textContent = "Now click the matching equipment name.";
+            } else if (state.nommatch.wrong) {
+                status.textContent = "Not a match — try again.";
+            } else {
+                status.textContent = "Click a nomenclature first, then its equipment name.";
+            }
+        }
+
+        function selectNomTerm(id) {
+            if (state.nommatch.matched.has(id)) return;
+            state.nommatch.selectedTerm = id;
+            state.nommatch.wrong = null;
+            renderNomMatch();
+        }
+
+        function selectNomDef(id) {
+            if (state.nommatch.selectedTerm === null) return;
+            if (state.nommatch.selectedTerm === id) {
+                state.nommatch.matched.add(id);
+                state.nommatch.selectedTerm = null;
+                state.nommatch.wrong = null;
+            } else {
+                state.nommatch.wrong = { term: state.nommatch.selectedTerm, def: id };
+                setTimeout(() => { state.nommatch.wrong = null; renderNomMatch(); }, 600);
+            }
+            renderNomMatch();
+        }
+
+        document.getElementById("nm-reset").addEventListener("click", () => {
+            state.nommatch.selectedTerm = null;
+            state.nommatch.wrong = null;
+            // Remove matched IDs that belong to the current batch so user can retry
+            const batchIds = new Set(state.nommatch.batches[state.nommatch.batchIndex].map(p => p.id));
+            state.nommatch.matched = new Set([...state.nommatch.matched].filter(id => !batchIds.has(id)));
+            renderNomMatch();
+        });
+
+        document.getElementById("nm-nextbatch").addEventListener("click", () => {
+            if (state.nommatch.batchIndex < state.nommatch.batches.length - 1) {
+                state.nommatch.batchIndex++;
+                state.nommatch.selectedTerm = null;
+                state.nommatch.wrong = null;
+                renderNomMatch();
+            }
+        });
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         loadData().catch(err => {
             document.querySelector(".menu-subtitle").textContent = "Error loading study data: " + err.message;

@@ -1,0 +1,72 @@
+{
+  "title": "Naval Communications Nomenclature Matching Test",
+  "description": "Drag and match the official military alphanumeric nomenclature on the left with its corresponding equipment name and operational function on the right.",
+  "count": 13,
+  "pairs": [
+    {
+      "nomenclature": "USQ-144H",
+      "equipment_name": "ADNS Legacy Router",
+      "definition": "The legacy Automated Digital Network System (ADNS) router currently being retired from the fleet."
+    },
+    {
+      "nomenclature": "USQ-144K(v)2",
+      "equipment_name": "ADNS Afloat Router",
+      "definition": "The modern Automated Digital Network System (ADNS) variant installed Afloat to coordinate and route shipboard IP enclaves."
+    },
+    {
+      "nomenclature": "USQ-144K(V)1",
+      "equipment_name": "ADNS Shore Router",
+      "definition": "The modern Automated Digital Network System (ADNS) variant installed at Shore sites (NCTAMS/NCTS) to terminate fleet data paths."
+    },
+    {
+      "nomenclature": "SA-2112(V)",
+      "equipment_name": "Secure Audio Switch (SAS)",
+      "definition": "A bright red voice-switching cabinet used to electrically connect crypto units to shipboard red phones."
+    },
+    {
+      "nomenclature": "AN/USQ-155(V)",
+      "equipment_name": "Tactical Variant Switch (TVS)",
+      "definition": "An electronic switch capable of routing both digital and analog interfaces and creating tactical voice conference calls."
+    },
+    {
+      "nomenclature": "SB-4124",
+      "equipment_name": "Physical Patch Panel",
+      "definition": "The standard physical patch panel (RED indicating unsecure/decrypted data, BLACK indicating encrypted data)."
+    },
+    {
+      "nomenclature": "SLM-5650B",
+      "equipment_name": "Comtech Satellite Modem",
+      "definition": "The satellite RF modem manufactured by Comtech EF Data used on ships for digital data circuits."
+    },
+    {
+      "nomenclature": "TD-1271",
+      "equipment_name": "UHF DAMA Multiplexer",
+      "definition": "A multiplexer that combines four individual incoming signals at 16 kbps on UHF satellite circuits."
+    },
+    {
+      "nomenclature": "TD-1063",
+      "equipment_name": "Fleet Broadcast Demultiplexer",
+      "definition": "A demultiplexer used to split composite signal feeds specifically for the Fleet Satellite Broadcast."
+    },
+    {
+      "nomenclature": "KY-58M",
+      "equipment_name": "Tactical Crypto Unit",
+      "definition": "An upgraded cryptographic hardware device used to secure tactical UHF/VHF voice radio communications."
+    },
+    {
+      "nomenclature": "PYQ-10",
+      "equipment_name": "Simple Key Loader (SKL)",
+      "definition": "A handheld fill device used to store and load Cryptographic Keying Material (KEYMAT) into equipment."
+    },
+    {
+      "nomenclature": "AN/SPY-1",
+      "equipment_name": "Aegis Multi-Functional Radar",
+      "definition": "The phased-array radar on cruisers and destroyers that handles searching, tracking, and missile guidance simultaneously."
+    },
+    {
+      "nomenclature": "SBX",
+      "equipment_name": "Sea Based X-Band Radar",
+      "definition": "A massive, floating, mobile radar station designed to track ballistic missiles under heavy weather and sea conditions."
+    }
+  ]
+}
