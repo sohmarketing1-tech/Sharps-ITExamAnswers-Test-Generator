@@ -281,6 +281,14 @@
         .match-item.selected { border-color: var(--accent); background: rgba(var(--accent-base), 0.18); }
         .match-item.matched { border-color: var(--success); background: var(--success-bg); cursor: default; }
         .match-item.wrong { border-color: var(--danger); background: var(--danger-bg); }
+        .match-item.shake { animation: shake 0.4s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
         .status { color: var(--muted); font-size: 0.95rem; margin-top: 18px; }
         .hidden { display: none !important; }
         h2 { margin: 0 0 14px; font-size: 1.4rem; }
@@ -600,6 +608,8 @@
         function startAcronym() {
             const mode = db.modes.acronym_matching;
             state.ac.pairs = shuffle(mode.pairs.map((p, i) => ({ ...p, id: i })));
+            state.ac.termOrder = state.ac.pairs.map(p => p.id);
+            state.ac.defOrder = shuffle(state.ac.pairs.map(p => p.id));
             state.ac.selectedTerm = null;
             state.ac.matched = new Set();
             state.ac.wrong = null;
@@ -611,24 +621,30 @@
             const defsContainer = document.getElementById("ac-defs");
             termsContainer.innerHTML = "";
             defsContainer.innerHTML = "";
-            const terms = state.ac.pairs.slice().sort(() => Math.random() - 0.5);
-            const defs = state.ac.pairs.slice().sort(() => Math.random() - 0.5);
-            terms.forEach(p => {
+            const byId = Object.fromEntries(state.ac.pairs.map(p => [p.id, p]));
+            const isWrongTerm = state.ac.wrong && state.ac.wrong.term;
+            const isWrongDef = state.ac.wrong && state.ac.wrong.def;
+
+            state.ac.termOrder.forEach(id => {
+                const p = byId[id];
                 const div = document.createElement("div");
                 div.className = "match-item";
                 div.textContent = p.acronym;
                 div.dataset.id = p.id;
                 if (state.ac.matched.has(p.id)) div.classList.add("matched");
                 else if (state.ac.selectedTerm === p.id) div.classList.add("selected");
+                if (isWrongTerm === p.id) div.classList.add("wrong", "shake");
                 div.addEventListener("click", () => selectTerm(p.id));
                 termsContainer.appendChild(div);
             });
-            defs.forEach(p => {
+            state.ac.defOrder.forEach(id => {
+                const p = byId[id];
                 const div = document.createElement("div");
                 div.className = "match-item";
                 div.textContent = p.definition;
                 div.dataset.id = p.id;
                 if (state.ac.matched.has(p.id)) div.classList.add("matched");
+                if (isWrongDef === p.id) div.classList.add("wrong", "shake");
                 div.addEventListener("click", () => selectDef(p.id));
                 defsContainer.appendChild(div);
             });
@@ -639,6 +655,8 @@
                 status.textContent = "All pairs matched!";
             } else if (state.ac.selectedTerm !== null) {
                 status.textContent = "Now click the matching definition.";
+            } else if (state.ac.wrong) {
+                status.textContent = "Not a match — try again.";
             } else {
                 status.textContent = "Click an acronym first, then its definition.";
             }
@@ -647,6 +665,7 @@
         function selectTerm(id) {
             if (state.ac.matched.has(id)) return;
             state.ac.selectedTerm = id;
+            state.ac.wrong = null;
             renderAcronym();
         }
 
@@ -655,6 +674,7 @@
             if (state.ac.selectedTerm === id) {
                 state.ac.matched.add(id);
                 state.ac.selectedTerm = null;
+                state.ac.wrong = null;
             } else {
                 state.ac.wrong = { term: state.ac.selectedTerm, def: id };
                 setTimeout(() => { state.ac.wrong = null; renderAcronym(); }, 600);
@@ -667,6 +687,8 @@
             state.ac.matched = new Set();
             state.ac.wrong = null;
             state.ac.pairs = shuffle(state.ac.pairs);
+            state.ac.termOrder = state.ac.pairs.map(p => p.id);
+            state.ac.defOrder = shuffle(state.ac.pairs.map(p => p.id));
             renderAcronym();
         });
 
