@@ -1207,7 +1207,7 @@ function getExamCategory(exam) {
     const name = (exam.display_name || exam.title || exam.filename).toUpperCase();
     if (name.includes("IT ESSENTIALS") || name.includes("ITE")) return "IT Essentials";
     if (name.includes("CCNA")) return "CCNA";
-    return "Other";
+    return "Comms/MRTS";
 }
 
 function groupExamsByCategory(exams) {
@@ -1217,7 +1217,7 @@ function groupExamsByCategory(exams) {
         if (!groups[cat]) groups[cat] = [];
         groups[cat].push(exam);
     });
-    const order = ["IT Essentials", "CCNA", "Other"];
+    const order = ["IT Essentials", "CCNA", "Comms/MRTS"];
     return order.filter((cat) => groups[cat]).map((cat) => ({ category: cat, exams: groups[cat] }));
 }
 
@@ -1245,7 +1245,7 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     tabs.className = "exam-category-tabs";
     tabs.setAttribute("role", "tablist");
     tabs.setAttribute("aria-label", "Exam categories");
-    const displayNames = { "IT Essentials": "ITE", CCNA: "CCNA", Other: "Other" };
+    const displayNames = { "IT Essentials": "ITE", CCNA: "CCNA", "Comms/MRTS": "Comms/MRTS" };
     groups.forEach(({ category }) => {
         const tab = document.createElement("button");
         tab.type = "button";
