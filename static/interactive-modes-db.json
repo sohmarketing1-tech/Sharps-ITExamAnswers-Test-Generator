@@ -1,0 +1,121 @@
+{
+  "prompt_directive": "This system generates specialized interactive study modes to assess a student's situational decision-making, procedural sequencing, and technical vocabulary retention. The database provides three key formats: (1) 'go_no_go' which tests rapid compliance decisions against strict safety/environmental thresholds; (2) 'signal_path' which tests the chronological or structural ordering of physical data flow, signal conversions, and command hierarchies; and (3) 'acronym_matching' which provides a vocabulary grid-pairing mechanism to eliminate 'recognition crutches' on dense naval terminology.",
+  "modes": {
+    "go_no_go": {
+      "display_name": "Go / No-Go (Troubleshooting)",
+      "description": "Evaluate critical situations and make split-second safety and procedural determinations based on strict operating thresholds.",
+      "items": [
+        {
+          "id": 1,
+          "scenario": "A technician requests a signed working aloft chit to perform emergency antenna maintenance on the mainmast. The ship's instrumentation currently records the wind speed at 32 km/h and the ship's roll at 7 degrees. Do you approve the request?",
+          "correct_decision": "No-Go",
+          "explanation": "Work aloft must stop immediately if the ship's roll exceeds 10 degrees or wind speeds exceed 30 km/h. While the roll is within limits, the wind speed of 32 km/h makes the operation unsafe."
+        },
+        {
+          "id": 2,
+          "scenario": "A supervisor assigns a Sailor to clean light corrosion off an unsecure, de-energized receiver chassis. The Sailor grabs a roll of steel wool and some cleaning solvent from the gear locker. Do you allow the Sailor to proceed?",
+          "correct_decision": "No-Go",
+          "explanation": "Steel wool or emery cloth must never be used on electrical or electronic circuitry under any circumstances to prevent physical damage and short circuits."
+        },
+        {
+          "id": 3,
+          "scenario": "A safety technician conducts a sound level survey in an auxiliary machinery space and records a continuous noise level of 80 dB. The division head notes that wearing hearing protection is not mandatory for personnel working in this area. Is the division head correct?",
+          "correct_decision": "Go",
+          "explanation": "The Navy Hearing Conservation Program states that noise levels must exceed 85 dB for hearing protection to be mandatory. At 80 dB, protection is recommended but not legally mandatory."
+        },
+        {
+          "id": 4,
+          "scenario": "A technician is preparing to clean electronic components inside an unventilated deck locker using volatile paints and solvents. They put on an air-purifying respirator and verify that the space's oxygen level is currently 23% by volume. Do you clear the technician to start working?",
+          "correct_decision": "Go",
+          "explanation": "An air-purifying respirator is safe to use in unventilated spaces as long as the oxygen levels are adequate, which is defined as being greater than or equal to 22% oxygen by volume."
+        },
+        {
+          "id": 5,
+          "scenario": "An underway division is preparing to work aloft at a height of 8 feet above the weather deck. The technician has donned a full-body harness, attached their tools to lanyards, and routed a signed aloft chit, but no safety observer is present on deck. Can they ascend the ladder?",
+          "correct_decision": "No-Go",
+          "explanation": "A safety observer is strictly required to be present on deck to assist and monitor personnel whenever work is being performed aloft at heights of 5 feet or higher."
+        }
+      ]
+    },
+    "signal_path": {
+      "display_name": "Signal Path (Sequencing)",
+      "description": "Drag and drop the steps, atmospheric layers, or commands into the correct sequential order from start to finish.",
+      "items": [
+        {
+          "id": 1,
+          "task": "Order the physical conversion stages of a received satellite voice signal from the moment it hits the antenna to when it is reproduced as sound.",
+          "steps": [
+            "Radio Frequency (RF)",
+            "Intermediate Frequency (IF)",
+            "Audio Frequency (AF)"
+          ],
+          "explanation": "A received signal converts from Radio Frequency (RF) to Intermediate Frequency (IF), and finally to Audio Frequency (AF) for loudspeaker reproduction."
+        },
+        {
+          "id": 2,
+          "task": "Order the physical conversion stages of a digital data circuit from the received RF carrier wave down to the computer terminal input.",
+          "steps": [
+            "Radio Frequency (RF)",
+            "Intermediate Frequency (IF)",
+            "Direct Current (DC)"
+          ],
+          "explanation": "For digital data circuits, received signals convert from Radio Frequency (RF) to Intermediate Frequency (IF), and then to Direct Current (DC) pulses representing binary data."
+        },
+        {
+          "id": 3,
+          "task": "Order the layers of the Earth's atmosphere starting from the Earth's surface and moving upward.",
+          "steps": [
+            "Troposphere",
+            "Stratosphere",
+            "Ionosphere"
+          ],
+          "explanation": "The atmosphere is ordered from lowest to highest: the Troposphere (0 to 6-10 miles), the Stratosphere (10 to 30 miles), and the Ionosphere (30 to 250 miles)."
+        },
+        {
+          "id": 4,
+          "task": "Order the Navy's supporting telecommunications command structure from the highest administrative and operational manager down to the field-level station.",
+          "steps": [
+            "U.S. Fleet Forces Command",
+            "NAVIFOR",
+            "NETWARCOM",
+            "NCDOC",
+            "NCMS",
+            "NCTAMS",
+            "NCTS"
+          ],
+          "explanation": "The telecommunications hierarchy flows administratively and operationally from Fleet Forces down through TYCOM, NETWARCOM, cyber operations, communications security, and master stations down to local NCTS support stations."
+        }
+      ]
+    },
+    "acronym_matching": {
+      "display_name": "Acronym Matcher",
+      "description": "Match the core Naval Communications acronyms on the left to their precise operational definitions on the right.",
+      "pairs": [
+        {
+          "acronym": "ADNS",
+          "definition": "The router within the ship that coordinates and routes IP addresses afloat."
+        },
+        {
+          "acronym": "FLTNOC",
+          "definition": "The 'ISP' for the fleet that routes data and translates domain names."
+        },
+        {
+          "acronym": "JFTOC",
+          "definition": "The highest qualified watchstander supervising and coordinating telecommunications functions ashore."
+        },
+        {
+          "acronym": "HERO",
+          "definition": "The radiation hazard category concerned with the premature ignition of electrically initiated ordnance."
+        },
+        {
+          "acronym": "UTJ",
+          "definition": "A tactical data link utilizing JREAP-C for BMD reach-back from Combatant Commanders to the MDIOC."
+        },
+        {
+          "acronym": "KY-58M",
+          "definition": "An upgraded cryptographic equipment standard used to secure tactical voice and data systems."
+        }
+      ]
+    }
+  }
+}
