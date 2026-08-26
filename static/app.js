@@ -1306,6 +1306,7 @@ async function loadExam(filename, updateSelection = true) {
         state.title = data.title;
         state.url = data.url;
         state.currentFilename = data.filename;
+        state.flashcardFilename = filename;
         state.allQuestions = data.questions || [];
         updateHeader();
         if (updateSelection) updateExamButtonSelection(filename);
@@ -1313,10 +1314,8 @@ async function loadExam(filename, updateSelection = true) {
         const requested = parseInt(els.questionCount.value, 10) || 20;
         els.questionCount.value = Math.min(requested, data.count);
         setMessage("Ready to start.");
-        if (state.mode === "flashcards") {
-            state.flashcardFilename = filename;
-            if (typeof updateFcPanelStartBtn === "function") updateFcPanelStartBtn();
-        }
+        if (typeof updateFcPanelStartBtn === "function") updateFcPanelStartBtn();
+        if (typeof renderFlashcardExamButtons === "function") renderFlashcardExamButtons();
         savePrefs();
         updatePracticeSteps();
         await refreshMastery();
@@ -1361,7 +1360,10 @@ function setMode(mode) {
         els.startRow.classList.add("hidden");
         els.masteryPanel.classList.add("hidden");
         if (els.flashcardPanel) els.flashcardPanel.classList.remove("hidden");
-        updateFcPanelStartBtn();
+        if (!state.flashcardFilename && state.currentFilename) {
+            state.flashcardFilename = state.currentFilename;
+        }
+        if (typeof updateFcPanelStartBtn === "function") updateFcPanelStartBtn();
     }
 }
 
@@ -3821,7 +3823,10 @@ if (els.fcPanelModeQuestion) els.fcPanelModeQuestion.addEventListener("click", (
 if (els.fcPanelModeChoices) els.fcPanelModeChoices.addEventListener("click", () => fcPanelSetMode("choices"));
 if (els.fcPanelFilterAll) els.fcPanelFilterAll.addEventListener("click", () => fcPanelSetFilter("all"));
 if (els.fcPanelFilterReview) els.fcPanelFilterReview.addEventListener("click", () => fcPanelSetFilter("review"));
-if (els.fcPanelStartBtn) els.fcPanelStartBtn.addEventListener("click", startFlashcards);
+if (els.fcPanelStartBtn) els.fcPanelStartBtn.addEventListener("click", () => {
+    switchTab("flashcards");
+    startFlashcards();
+});
 
 els.masteryStartBtn.addEventListener("click", startMasterySession);
 els.masteryResetBtn.addEventListener("click", resetMastery);

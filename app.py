@@ -51,6 +51,10 @@ app_state = {
     "questions": [],
 }
 
+# In-memory cache for exam questions to avoid repeated disk reads.
+# Maps absolute file path -> (mtime, parsed data).
+_exam_cache = {}
+
 # In-memory store for anonymous session activity used by the public
 # "active now" counter. Resets when the web worker restarts.
 _active_sessions = {}
@@ -183,18 +187,33 @@ def get_current_url():
     return app_state["url"] or DEFAULT_TARGET_URL
 
 
+def _load_exam_cached(filepath: Path):
+    """Load exam data with an in-memory mtime cache."""
+    key = str(filepath)
+    try:
+        mtime = filepath.stat().st_mtime
+    except OSError:
+        mtime = None
+    cached = _exam_cache.get(key)
+    if cached and cached[0] == mtime:
+        return cached[1]
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        return None
+    if mtime is not None:
+        _exam_cache[key] = (mtime, data)
+    return data
+
+
 def get_questions_for_test(filename: str = ""):
     """Load questions for a test request, using a specific file if provided."""
     if filename:
         filepath = DATA_DIR / filename
-        if filepath.exists():
-            try:
-                with open(filepath, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                if isinstance(data, dict) and "questions" in data:
-                    return data.get("questions", [])
-            except Exception:
-                pass
+        data = _load_exam_cached(filepath)
+        if data and isinstance(data, dict) and "questions" in data:
+            return data.get("questions", [])
     return get_current_questions()
 
 
@@ -587,10 +606,8 @@ def _update_mastery_entry(entry: dict, is_correct: bool) -> bool:
     return False
 
 
-def get_mastery_summary(username: str, filename: str, questions: list) -> dict:
-    """Return mastery stats for a user and exam."""
-    user_data = load_user_data()
-    exam = _get_mastery_for_user(user_data, username, filename)
+def _compute_mastery_summary(exam: dict, questions: list) -> dict:
+    """Compute mastery summary from an already-loaded exam mastery dict."""
     question_store = exam.get("questions", {})
     total = len(questions)
     mastered = 0
@@ -604,6 +621,13 @@ def get_mastery_summary(username: str, filename: str, questions: list) -> dict:
         "remaining": total - mastered,
         "progress": round((mastered / total) * 100, 2) if total else 0,
     }
+
+
+def get_mastery_summary(username: str, filename: str, questions: list) -> dict:
+    """Return mastery stats for a user and exam."""
+    user_data = load_user_data()
+    exam = _get_mastery_for_user(user_data, username, filename)
+    return _compute_mastery_summary(exam, questions)
 
 
 @app.route("/")
@@ -733,14 +757,8 @@ def get_exams():
 
 def read_exam_file(filepath: Path) -> Optional[dict]:
     """Return exam data from a file without mutating app_state."""
-    if not filepath.exists():
-        return None
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except Exception:
-        return None
-    if isinstance(data, dict) and "questions" in data:
+    data = _load_exam_cached(filepath)
+    if data and isinstance(data, dict) and "questions" in data:
         return data
     return None
 
@@ -1375,7 +1393,7 @@ def get_mastery():
         return jsonify({"ok": False, "error": "No questions found."}), 503
     user_data = load_user_data()
     mastery = _get_mastery_for_user(user_data, user, filename)
-    summary = get_mastery_summary(user, filename, questions)
+    summary = _compute_mastery_summary(mastery, questions)
     return jsonify({"ok": True, "summary": summary, "mastery": mastery})
 
 
@@ -1393,10 +1411,7 @@ def mastery_batch():
     if not questions:
         return jsonify({"ok": False, "error": "No questions found."}), 503
 
-    working_set = []
-
     def _build_working_set(user_data: dict):
-        nonlocal working_set
         exam = _get_mastery_for_user(user_data, user, filename)
         question_store = exam.setdefault("questions", {})
         working_set = exam.setdefault("working_set", [])
@@ -1417,9 +1432,10 @@ def mastery_batch():
             candidates.sort(key=lambda q: question_store.get(str(q["id"]), {}).get("streak", 0))
         while len(working_set) < n and candidates:
             working_set.append(str(candidates.pop(0)["id"]))
-        return True
+        return exam
 
-    modify_user_data(_build_working_set)
+    exam = modify_user_data(_build_working_set)
+    working_set = exam.get("working_set", []) if isinstance(exam, dict) else []
 
     selected = [q for q in questions if str(q["id"]) in working_set[:n]]
 
@@ -1443,7 +1459,7 @@ def mastery_batch():
             item["image"] = q["image"]
         quiz.append(item)
 
-    summary = get_mastery_summary(user, filename, questions)
+    summary = _compute_mastery_summary(exam, questions)
     return jsonify({"ok": True, "quiz": quiz, "summary": summary, "filename": filename})
 
 
@@ -1481,11 +1497,11 @@ def mastery_submit():
                 newly_mastered += 1
                 if str(qid) in working_set:
                     working_set.remove(str(qid))
-        return True
+        return exam
 
-    modify_user_data(_submit_mastery)
+    exam = modify_user_data(_submit_mastery)
     all_questions = get_questions_for_test(filename)
-    summary = get_mastery_summary(user, filename, all_questions)
+    summary = _compute_mastery_summary(exam, all_questions)
     return jsonify({"ok": True, "summary": summary, "newly_mastered": newly_mastered})
 
 
@@ -1539,9 +1555,13 @@ def mastery_reset():
             return True
         return False
 
-    modify_user_data(_reset_mastery)
+    modified = modify_user_data(_reset_mastery)
     all_questions = get_questions_for_test(filename)
-    summary = get_mastery_summary(user, filename, all_questions)
+    if modified:
+        # Mastery was reset: return a 0-progress summary without re-reading user_data.
+        summary = _compute_mastery_summary({"questions": {}, "working_set": []}, all_questions)
+    else:
+        summary = get_mastery_summary(user, filename, all_questions)
     return jsonify({"ok": True, "summary": summary})
 
 
