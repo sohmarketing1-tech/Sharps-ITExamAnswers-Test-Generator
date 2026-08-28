@@ -1318,6 +1318,10 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     const grid = document.createElement("div");
     grid.className = "exam-grid";
     activeGroup.exams.forEach((exam) => {
+        const isNaval = exam.filename === "naval-messaging.json" && container === els.examButtons;
+        const cell = isNaval ? document.createElement("div") : null;
+        if (cell) cell.className = "exam-grid-cell";
+
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "btn btn-exam" + (activeFilename === exam.filename ? " active" : "");
@@ -1328,7 +1332,44 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
             container.dataset.viewCategory = getCategoryForFilename(exam.filename);
             renderExamGroups(container, exam.filename, onSelect, container.dataset.viewCategory);
         });
-        grid.appendChild(btn);
+
+        if (cell) {
+            cell.appendChild(btn);
+
+            const apps = [
+                {
+                    name: "Signal Match",
+                    mode: "signal",
+                    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`
+                },
+                {
+                    name: "Message Lines",
+                    mode: "game",
+                    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`
+                },
+                {
+                    name: "Category Sorter",
+                    mode: "sorter",
+                    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`
+                }
+            ];
+
+            const appRow = document.createElement("div");
+            appRow.className = "exam-mini-apps";
+            apps.forEach(({ name, mode, svg }) => {
+                const a = document.createElement("a");
+                a.href = `/comms-test-1.html?mode=${mode}`;
+                a.className = "exam-mini-app";
+                a.title = name;
+                a.innerHTML = `${svg}<span class="exam-mini-app-name">${escapeHtml(name)}</span>`;
+                appRow.appendChild(a);
+            });
+
+            cell.appendChild(appRow);
+            grid.appendChild(cell);
+        } else {
+            grid.appendChild(btn);
+        }
     });
     container.appendChild(grid);
 }

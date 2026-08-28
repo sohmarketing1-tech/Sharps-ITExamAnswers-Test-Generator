@@ -921,7 +921,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
                     </span>
                     <span class="menu-text">
-                        <span class="menu-name">GENSER Sequence</span>
+                        <span class="menu-name">Message Lines</span>
                         <span class="menu-desc">Put the message format lines in order</span>
                     </span>
                 </button>
@@ -2299,6 +2299,12 @@
             });
 
             attachSwipeGestures();
+
+            const params = new URLSearchParams(window.location.search);
+            const urlMode = params.get("mode");
+            if (urlMode && ["flashcards", "signal", "sorter", "game", "header", "dtg"].includes(urlMode)) {
+                showMode(urlMode);
+            }
         }
 
         init();
