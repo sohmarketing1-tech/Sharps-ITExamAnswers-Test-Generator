@@ -1262,8 +1262,8 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     container.appendChild(tabs);
 
     const categoryDescriptions = {
-        "IT Essentials": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test.",
-        "CCNA": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test."
+        "IT Essentials": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy.",
+        "CCNA": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy."
     };
     const categoryDescription = categoryDescriptions[activeCategory];
     if (categoryDescription && container !== els.flashcardExamButtons) {
