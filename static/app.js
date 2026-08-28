@@ -1508,7 +1508,12 @@ function updateStudyGuide() {
     if (!els.studyGuideRow || !els.studyGuideBtn) return;
     const guide = state.currentFilename ? state.studyGuide : "";
     els.studyGuideRow.classList.toggle("hidden", !guide);
-    els.studyGuideBtn.href = guide || "#";
+    if (guide) {
+        const params = new URLSearchParams({ file: guide, from: "study", exam: state.currentFilename });
+        els.studyGuideBtn.href = `/study-guide.html?${params}`;
+    } else {
+        els.studyGuideBtn.href = "#";
+    }
 }
 
 const EXAM_GAMES = {

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Study Guide - AnswrIT</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--body-bg-1, #0f172a);
+            color: var(--text, #f1f5f9);
+        }
+        .pdf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 18px;
+            background: var(--card, #1e293b);
+            border-bottom: 1px solid var(--border, #334155);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .pdf-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(var(--primary-base), 0.08);
+            color: var(--text, #f1f5f9);
+            border: 1px solid var(--border, #334155);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .pdf-back:hover {
+            background: rgba(var(--primary-base), 0.14);
+        }
+        .pdf-title {
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pdf-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(var(--accent-base), 0.12);
+            color: var(--accent, #38bdf8);
+            border: 1px solid rgba(var(--accent-base), 0.45);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .pdf-download:hover {
+            background: rgba(var(--accent-base), 0.2);
+        }
+        .pdf-viewer {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .pdf-viewer iframe,
+        .pdf-viewer embed {
+            flex: 1;
+            width: 100%;
+            border: none;
+        }
+        .pdf-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 40px 20px;
+            text-align: center;
+            gap: 16px;
+        }
+        .pdf-error a {
+            color: var(--accent, #38bdf8);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="pdf-header">
+        <a class="pdf-back" id="back-btn" href="/" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Back</span>
+        </a>
+        <span class="pdf-title" id="pdf-title">Study Guide</span>
+        <a class="pdf-download" id="download-btn" href="#" aria-label="Download PDF" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Download</span>
+        </a>
+    </div>
+
+    <div class="pdf-viewer" id="pdf-viewer">
+        <div class="pdf-error" id="pdf-error" hidden>
+            <p>Could not load the study guide.</p>
+            <a id="error-download" href="#">Download the PDF instead</a>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const file = params.get("file") || "";
+        const from = params.get("from") || "";
+        const exam = params.get("exam") || "";
+
+        const backBtn = document.getElementById("back-btn");
+        const downloadBtn = document.getElementById("download-btn");
+        const viewer = document.getElementById("pdf-viewer");
+        const errorBox = document.getElementById("pdf-error");
+        const errorDownload = document.getElementById("error-download");
+
+        function safeFilename(path) {
+            const parts = path.replace(/\\/g, "/").split("/");
+            return parts.filter((p) => p && p !== "..").pop();
+        }
+
+        const filename = safeFilename(file);
+        let downloadUrl = "";
+
+        if (filename && file.endsWith(".pdf") && !file.includes("..") && !file.includes(":")) {
+            downloadUrl = `/download/study-guide/${encodeURIComponent(filename)}`;
+            if (file.startsWith("/download/study-guide/")) {
+                downloadUrl = file;
+            }
+        }
+
+        if (from === "study" && exam) {
+            backBtn.href = `/study?exam=${encodeURIComponent(exam)}`;
+        } else if (from) {
+            backBtn.href = `/${from}`;
+        } else {
+            backBtn.href = "/";
+        }
+
+        if (downloadUrl) {
+            downloadBtn.href = downloadUrl;
+            errorDownload.href = downloadUrl;
+            const embed = document.createElement("embed");
+            embed.type = "application/pdf";
+            embed.src = file;
+            embed.setAttribute("aria-label", "Study guide PDF");
+            viewer.appendChild(embed);
+
+            document.getElementById("pdf-title").textContent = filename.replace(/\.pdf$/i, "").replace(/_/g, " ");
+
+            embed.addEventListener("error", () => {
+                embed.remove();
+                errorBox.hidden = false;
+            });
+
+            // Some browsers load PDFs in an overlay; give them a download fallback.
+            setTimeout(() => {
+                if (!embed.getBoundingClientRect().height) {
+                    errorBox.hidden = false;
+                }
+            }, 3000);
+        } else {
+            errorBox.hidden = false;
+            downloadBtn.classList.add("hidden");
+        }
+    </script>
+</body>
+</html>
