@@ -1318,7 +1318,7 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     const grid = document.createElement("div");
     grid.className = "exam-grid";
     activeGroup.exams.forEach((exam) => {
-        const isNaval = exam.filename === "naval-messaging.json" && container === els.examButtons;
+        const isNaval = exam.filename === "naval-messaging.json" && exam.filename === activeFilename && container === els.examButtons;
         const cell = isNaval ? document.createElement("div") : null;
         if (cell) cell.className = "exam-grid-cell";
 
