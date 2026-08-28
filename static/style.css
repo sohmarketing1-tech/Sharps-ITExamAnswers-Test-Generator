@@ -1784,16 +1784,16 @@ body {
     justify-content: flex-start;
     gap: 12px;
     padding: 14px 18px;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(245, 158, 11, 0.08) 100%);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.45);
+    background: rgba(var(--accent-base), 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(var(--accent-base), 0.55);
     text-decoration: none;
     font-weight: 700;
 }
 
 .btn-study-guide:hover {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.24) 0%, rgba(245, 158, 11, 0.12) 100%);
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.12);
+    background: rgba(var(--accent-base), 0.18);
+    box-shadow: 0 4px 14px rgba(var(--accent-base), 0.1);
 }
 
 .btn-study-guide svg {
