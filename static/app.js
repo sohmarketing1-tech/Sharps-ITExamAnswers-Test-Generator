@@ -1185,16 +1185,9 @@ async function loadExams() {
         updateFlashcardSteps();
         await renderFlashcardResume();
         if (state.exams.length > 0) {
-            const current = (prefs.examFilename && state.exams.find((e) => e.filename === prefs.examFilename))
-                ? prefs.examFilename
-                : null;
-            if (current) {
-                await loadExam(current, true);
-            } else {
-                state.currentFilename = null;
-                updateNoExamPrompt();
-                setMessage("Select an exam from above to get started.");
-            }
+            state.currentFilename = null;
+            updateNoExamPrompt();
+            setMessage("Select an exam from above to get started.");
             if (typeof window.EXAM_FILENAME === "string" && window.EXAM_FILENAME && state.exams.find((e) => e.filename === window.EXAM_FILENAME)) {
                 await loadExam(window.EXAM_FILENAME, true);
                 switchTab("practice");
