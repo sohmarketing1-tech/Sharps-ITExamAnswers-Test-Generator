@@ -1777,6 +1777,31 @@ body {
     box-shadow: 0 4px 10px rgba(var(--shadow-base), 0.08);
 }
 
+.btn-study-guide {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(245, 158, 11, 0.08) 100%);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.btn-study-guide:hover {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.24) 0%, rgba(245, 158, 11, 0.12) 100%);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.12);
+}
+
+.btn-study-guide svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
 .top-nav .btn-primary {
     background: linear-gradient(135deg, var(--primary-fill) 0%, var(--primary-fill-dark) 100%);
 }

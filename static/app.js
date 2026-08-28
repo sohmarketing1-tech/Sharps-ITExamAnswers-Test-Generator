@@ -42,6 +42,7 @@ const API = {
 const state = {
     exams: [],
     currentFilename: null,
+    studyGuide: "",
     title: "IT Exam Practice Test",
     url: "",
     allQuestions: [],
@@ -310,6 +311,8 @@ const els = {
     countGroup: document.getElementById("count-group"),
     startRow: document.getElementById("start-row"),
     settingsRow: document.getElementById("settings-row"),
+    studyGuideRow: document.getElementById("study-guide-row"),
+    studyGuideBtn: document.getElementById("study-guide-btn"),
     commsGames: document.getElementById("comms-games"),
     commsGamesList: document.getElementById("comms-games-list"),
     masteryPanel: document.getElementById("mastery-panel"),
@@ -1409,6 +1412,7 @@ async function loadExam(filename, updateSelection = true) {
         state.title = data.title;
         state.url = data.url;
         state.currentFilename = data.filename;
+        state.studyGuide = examMeta.study_guide || "";
         state.flashcardFilename = filename;
         state.allQuestions = data.questions || [];
         updateHeader();
@@ -1496,6 +1500,14 @@ function updateNoExamPrompt() {
     if (els.commsGames) {
         els.commsGames.classList.toggle("hidden", !state.currentFilename);
     }
+    updateStudyGuide();
+}
+
+function updateStudyGuide() {
+    if (!els.studyGuideRow || !els.studyGuideBtn) return;
+    const guide = state.currentFilename ? state.studyGuide : "";
+    els.studyGuideRow.classList.toggle("hidden", !guide);
+    els.studyGuideBtn.href = guide || "#";
 }
 
 const EXAM_GAMES = {
