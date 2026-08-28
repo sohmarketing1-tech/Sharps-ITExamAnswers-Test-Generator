@@ -4,971 +4,553 @@
   "questions": [
     {
       "id": 1,
-      "question": "To provide and maintain, secure and rapid communications, based on wartime requirements, to meet the needs of Naval Operating Forces",
+      "question": "What is the official mission of Naval Communications?",
       "options": [
-        "Standard Operating Procedure",
-        "Mission of Naval Communications",
-        "(DCS) Defense Communications System",
-        "(CWO) Communication Watch Officer"
+        "To build and test next-generation tactical radios for the Joint Chiefs of Staff.",
+        "To provide and maintain, secure and rapid communications, based on wartime requirements, to meet the needs of Naval Operating Forces.",
+        "To monitor civilian maritime distress frequencies and coordinate commercial shipping lanes.",
+        "To act as the exclusive administrative network provider for all shore stations."
       ],
-      "correct_answer": "Mission of Naval Communications"
+      "correct_answer": "To provide and maintain, secure and rapid communications, based on wartime requirements, to meet the needs of Naval Operating Forces."
     },
     {
       "id": 2,
-      "question": "Gives operational direction of DCS; Ensures that the system is operated & improved so as to meet the continual long, haul, point to point requirements that arise.",
+      "question": "Which military departments and agencies does the Defense Communications System (DCS) support?",
       "options": [
-        "(CAD) Collective Address Designator",
-        "(NCDOC) Navy Cyber Defense Operations Command",
-        "(DISA) Defense Information Systems Agency",
-        "(COMMSHIFT) Communications Guard Shift message"
+        "The 3 military departments (Navy, Army, Air Force) and other DoD activities.",
+        "The Department of Homeland Security, Coast Guard, and merchant marine fleets.",
+        "Only the Joint Chiefs of Staff and intelligence agencies.",
+        "The Navy, Marine Corps, and Space Force exclusively."
       ],
-      "correct_answer": "(DISA) Defense Information Systems Agency"
+      "correct_answer": "The 3 military departments (Navy, Army, Air Force) and other DoD activities."
     },
     {
       "id": 3,
-      "question": "Exists to support the 3 military departments & other DoD activities (Navy, Army, Airforce)",
+      "question": "Which agency is responsible for providing operational direction to the Defense Communications System (DCS)?",
       "options": [
-        "(DCS) Defense Communications System",
-        "(NIOC) Navy Information Operations Command",
-        "(TCS) Tech Control Supervisor",
-        "Mission of Naval Communications"
+        "NCMS (Navy Communications Security Material System)",
+        "NCDOC (Navy Cyber Defense Operations Command)",
+        "DISA (Defense Information Systems Agency)",
+        "NETWARCOM (Naval Network Warfare Command)"
       ],
-      "correct_answer": "(DCS) Defense Communications System"
+      "correct_answer": "DISA (Defense Information Systems Agency)"
     },
     {
       "id": 4,
-      "question": "Unclassified but sensitive",
+      "question": "Which network enclave is the DoD's largest interoperable command-and-control data network and supports the Global Command and Control System (GCCS)?",
       "options": [
+        "NIPRNET",
+        "SIPRNET",
         "JWICS",
-        "(GENSER) General Services",
-        "NIPRNET",
-        "CRITIC"
-      ],
-      "correct_answer": "NIPRNET"
-    },
-    {
-      "id": 5,
-      "question": "DOD's largest interoperable command and central data network, supporting the Global Command and Control System (SECRET/CLASSIFIED)",
-      "options": [
-        "CRITIC",
-        "NIPRNET",
-        "(SPECAT) Special Category",
-        "SIPRNET"
+        "DSSCS"
       ],
       "correct_answer": "SIPRNET"
     },
     {
-      "id": 6,
-      "question": "The sensitive, compartmented information portion of the DISN. Incorporates advanced networking technologies that permit point to point (Top Secret)",
+      "id": 5,
+      "question": "Which network serves as the Sensitive Compartmented Information (SCI) portion of the Defense Information Systems Network (DISN), supporting Top Secret communications?",
       "options": [
-        "(RD) Restricted Data",
+        "SIPRNET",
         "JWICS",
-        "(FRD) Formerly Restricted Data",
-        "NIPRNET"
+        "NIPRNET",
+        "NAVMACS"
       ],
       "correct_answer": "JWICS"
     },
     {
-      "id": 7,
-      "question": "Train, certify and provide combat ready Navy forces to commanders that are capable of conducting prompt, sustained, joint and combined operations of US national interests.",
+      "id": 6,
+      "question": "What is the security classification level and sensitivity associated with the NIPRNET?",
       "options": [
-        "Two Person Integrity (TPI)",
-        "(MSL) Master Station Log",
-        "US Fleet Forces Command",
-        "(RO) Radio Officer"
+        "Secret / Classified",
+        "Top Secret / Sensitive Compartmented Information (SCI)",
+        "Unclassified but sensitive",
+        "Unclassified with public release authorization"
       ],
-      "correct_answer": "US Fleet Forces Command"
+      "correct_answer": "Unclassified but sensitive"
+    },
+    {
+      "id": 7,
+      "question": "What is the core mission of U.S. Fleet Forces Command (USFF)?",
+      "options": [
+        "To execute tactical level network defense and protect navy domain databases.",
+        "To train, certify, and provide combat-ready Navy forces to commanders capable of conducting prompt, sustained operations.",
+        "To maintain physical inventory and cryptographic keys for the Department of the Navy.",
+        "To serve as the primary 24/7 communications routing station ashore."
+      ],
+      "correct_answer": "To train, certify, and provide combat-ready Navy forces to commanders capable of conducting prompt, sustained operations."
     },
     {
       "id": 8,
-      "question": "provides combat ready information warfare forces, which are forward deployable, fully trained, properly manned, capably equipped, always ready, well maintained and combat sustainable",
+      "question": "What is the primary role of Naval Information Forces (NAVIFOR)?",
       "options": [
-        "(CO) Commanding Officer",
-        "US Fleet Forces Command",
-        "(NAVIFOR) Naval Information Forces",
-        "(AIG) Address Indicator Group"
+        "To administer and distribute physical COMSEC keying material to ships.",
+        "To defend shipboard automation networks from active virus or phishing attempts.",
+        "To provide combat-ready information warfare forces that are forward-deployable, fully trained, properly manned, and capably equipped.",
+        "To manage the physical long-haul Defense Communications System (DCS) channels."
       ],
-      "correct_answer": "(NAVIFOR) Naval Information Forces"
+      "correct_answer": "To provide combat-ready information warfare forces that are forward-deployable, fully trained, properly manned, and capably equipped."
     },
     {
       "id": 9,
-      "question": "To execute tactical level command and control to direct, operate, maintain and secure Naval Communications",
+      "question": "What is the mission of Naval Network Warfare Command (NETWARCOM)?",
       "options": [
-        "(NETWARCOM) Naval Network Warfare Command",
-        "Communications Security Material System Custodian",
-        "(DISA) Defense Information Systems Agency",
-        "(JFTOC) Joint Fleet Telecommunications Operations Center"
+        "To establish national security strategy for cryptographic standards.",
+        "To manage physical logistics for communications equipment repairs.",
+        "To execute tactical level command and control to direct, operate, maintain, and secure Naval Communications.",
+        "To act as the sole administrative authority for Navy Information Operations (IO)."
       ],
-      "correct_answer": "(NETWARCOM) Naval Network Warfare Command"
+      "correct_answer": "To execute tactical level command and control to direct, operate, maintain, and secure Naval Communications."
     },
     {
       "id": 10,
-      "question": "Enable global power projection through protective network defense",
+      "question": "Which cyber defense functions are directly associated with Navy Cyber Defense Operations Command (NCDOC)?",
       "options": [
-        "(NCDOC) Navy Cyber Defense Operations Command",
-        "(NCTAMS) Naval Communications and Telecommunications Area Master System",
-        "(COMMO) Communications Officer",
-        "(FLTNOCS) Fleet Network Operations Center"
+        "Preparing shipboard communications watch bills and operating standard voice circuits.",
+        "Enabling global power projection through protective network defense, reporting/defending against viruses, phishing, and threats.",
+        "Managing the CMS account in accordance with the CMS1 manual instructions.",
+        "Authorizing and validating the release of message traffic."
       ],
-      "correct_answer": "(NCDOC) Navy Cyber Defense Operations Command"
+      "correct_answer": "Enabling global power projection through protective network defense, reporting/defending against viruses, phishing, and threats."
     },
     {
       "id": 11,
-      "question": "Maintain the COMSEC Material Control Office of Record (COR) for DON COMSEC Management Systems (CMS) and Key Management Infrastructure (KMI)",
+      "question": "What is the primary responsibility of Navy Communications Security Material System (NCMS)?",
       "options": [
-        "(PLA) Plain Language Address",
-        "(NAVMACS) Naval Modular Automated Communications Systems",
-        "(NCMS) Navy Communications Security Material System",
-        "Operating Signals"
+        "Operating regional FLTNOCs for secure IP routing.",
+        "Directing and monitoring the watchturnover inventory of civilian satellite equipment.",
+        "Maintaining the COMSEC Material Control Office of Record (COR) for Department of the Navy COMSEC systems and Key Management Infrastructure.",
+        "Authorizing the release of CRITIC intelligence messages directly to the President."
       ],
-      "correct_answer": "(NCMS) Navy Communications Security Material System"
+      "correct_answer": "Maintaining the COMSEC Material Control Office of Record (COR) for Department of the Navy COMSEC systems and Key Management Infrastructure."
     },
     {
       "id": 12,
-      "question": "Operates and maintains responsive information transfer systems that provide real time C4I information support to the fleet; 2 NCTAMS; NCTAMS PAC - Wahiawa, Hawaii; NCTAMS LANT - Norfolk, Virginia",
+      "question": "What are the two Naval Communications and Telecommunications Area Master Stations (NCTAMS) and where are they located?",
       "options": [
-        "Central Message Log",
-        "(NAVIFOR) Naval Information Forces",
-        "(NETWARCOM) Naval Network Warfare Command",
-        "(NCTAMS) Naval Communications and Telecommunications Area Master System"
+        "NCTAMS LANT (Norfolk, Virginia) and NCTAMS PAC (Wahiawa, Hawaii).",
+        "NCTAMS LANT (Jacksonville, Florida) and NCTAMS PAC (Guam).",
+        "NCTAMS MED (Naples, Italy) and NCTAMS LANT (San Diego, California).",
+        "NCTAMS PAC (Yokosuka, Japan) and NCTAMS LANT (Sicily, Italy)."
       ],
-      "correct_answer": "(NCTAMS) Naval Communications and Telecommunications Area Master System"
+      "correct_answer": "NCTAMS LANT (Norfolk, Virginia) and NCTAMS PAC (Wahiawa, Hawaii)."
     },
     {
       "id": 13,
-      "question": "Each NCTAMS operates as a JFTOC, functions as primary control point for day to day operations.; 24/7 Watch officer",
+      "question": "What is the function of the Joint Fleet Telecommunications Operations Center (JFTOC) and who staffs it?",
       "options": [
-        "Inventory",
-        "COMMSPOT Reports",
-        "(JFTOC) Joint Fleet Telecommunications Operations Center",
-        "(NAVMACS) Naval Modular Automated Communications Systems"
+        "It is a research center staffed by senior civilian network engineers.",
+        "It serves as the primary operational control point for day-to-day telecommunications operations at each NCTAMS, staffed by a 24/7 watch officer.",
+        "It conducts technical intelligence and signal collection, staffed by National Security Agency personnel.",
+        "It oversees the physical security of nuclear munitions, staffed by Navy Masters-at-Arms."
       ],
-      "correct_answer": "(JFTOC) Joint Fleet Telecommunications Operations Center"
+      "correct_answer": "It serves as the primary operational control point for day-to-day telecommunications operations at each NCTAMS, staffed by a 24/7 watch officer."
     },
     {
       "id": 14,
-      "question": "Provides a number of critical internet protocol (IP) services; 4 FLTNOCS; NCTS NAPLES = (ERNOC) European Central Region; NCTS BAHRAIN = (IORNOC) Indian Ocean Region; NCTAMS PAC = (PRNOC) Pacific Region; NCTAMS LANT = (UARNOC) United Atlantic Region",
+      "question": "Which of the following correctly pairs a Fleet Network Operations Center (FLTNOC) with its geographical region and station?",
       "options": [
-        "(NCTS) Naval Computer and Telecommunications Stations",
-        "Minimize Conditions",
-        "(FLTNOCS) Fleet Network Operations Center",
-        "Releaser"
+        "ERNOC (European Central Region) at NCTS Naples; IORNOC (Indian Ocean Region) at NCTS Bahrain.",
+        "PRNOC (Pacific Region) at NCTS San Diego; UARNOC (United Atlantic Region) at NCTS Jacksonville.",
+        "ERNOC (European Central Region) at NCTS Sicily; PRNOC (Pacific Region) at NCTS Guam.",
+        "IORNOC (Indian Ocean Region) at NCTS Yokosuka; UARNOC (United Atlantic Region) at NCTAMS PAC."
       ],
-      "correct_answer": "(FLTNOCS) Fleet Network Operations Center"
+      "correct_answer": "ERNOC (European Central Region) at NCTS Naples; IORNOC (Indian Ocean Region) at NCTS Bahrain."
     },
     {
       "id": 15,
-      "question": "The primary mission is to provide the Navy Information Technology infrastructure and support services; 7 NCTS manage and report to NCTAMS; NCTS Jacksonville; NCTS San Diego; NCTS Bahrain; NCTS Guam; NCTS Naples; NCTS Yokosuka; NCTS Sicily",
+      "question": "How many Naval Computer and Telecommunications Stations (NCTS) report to NCTAMS, and what are their locations?",
       "options": [
-        "(COMMSHIFT) Communications Guard Shift message",
-        "(NCDOC) Navy Cyber Defense Operations Command",
-        "(NIOC) Navy Information Operations Command",
-        "(NCTS) Naval Computer and Telecommunications Stations"
+        "5 locations: Norfolk, Wahiawa, San Diego, Jacksonville, Naples.",
+        "7 locations: Jacksonville, San Diego, Bahrain, Guam, Naples, Yokosuka, Sicily.",
+        "4 locations: ERNOC, IORNOC, PRNOC, UARNOC.",
+        "6 locations: Norfolk, Jacksonville, Bahrain, Naples, Yokosuka, Pearl Harbor."
       ],
-      "correct_answer": "(NCTS) Naval Computer and Telecommunications Stations"
+      "correct_answer": "7 locations: Jacksonville, San Diego, Bahrain, Guam, Naples, Yokosuka, Sicily."
     },
     {
       "id": 16,
-      "question": "15 NIOCS & 16 Subordinate detachments; Supports IO and Signt Operations",
+      "question": "What is the primary role of the Navy Information Operations Command (NIOC)?",
       "options": [
-        "(NETWARCOM) Naval Network Warfare Command",
-        "(FLTNOCS) Fleet Network Operations Center",
-        "(NCMS) Navy Communications Security Material System",
-        "(NIOC) Navy Information Operations Command"
+        "To establish secure voice communication circuits across naval battle groups.",
+        "To support Information Operations (IO) and Signals Intelligence (SIGINT) operations.",
+        "To serve as the primary backup station to NCTAMS PAC.",
+        "To perform physical security inventories of military communications equipment."
       ],
-      "correct_answer": "(NIOC) Navy Information Operations Command"
+      "correct_answer": "To support Information Operations (IO) and Signals Intelligence (SIGINT) operations."
     },
     {
       "id": 17,
-      "question": "Overall responsible for communications of that command",
+      "question": "In shipboard communications, who has overall authority and responsibility for the communications of that command?",
       "options": [
-        "(RO) Radio Officer",
-        "Minimize Conditions",
-        "Drafter",
-        "(CO) Commanding Officer"
+        "The Communications Watch Officer (CWO)",
+        "The Commanding Officer (CO)",
+        "The Communications Officer (COMMO)",
+        "The Technical Control Supervisor"
       ],
-      "correct_answer": "(CO) Commanding Officer"
+      "correct_answer": "The Commanding Officer (CO)"
     },
     {
       "id": 18,
-      "question": "Responsible for the organization, supervision and coordination of the command's exterior communications",
+      "question": "What are the primary responsibilities of the Radio Officer (RO) on a large deck ship?",
       "options": [
-        "Mission of Naval Communications",
-        "(COMMO) Communications Officer",
-        "(NAVIFOR) Naval Information Forces",
-        "Originator"
+        "Preparing the command's communications plan (COMMSPLAN), conducting communications training programs, preparing Standard Operating Procedures (SOP), and maintaining the watch, quarter, and station bill.",
+        "Overall authority for validating and releasing messages for transmission in the command's name.",
+        "Handling incoming and outgoing message traffic rapidly and monitoring watchstander performance hourly.",
+        "Establishing physical circuits and restoring or bypassing failed hardware."
       ],
-      "correct_answer": "(COMMO) Communications Officer"
+      "correct_answer": "Preparing the command's communications plan (COMMSPLAN), conducting communications training programs, preparing Standard Operating Procedures (SOP), and maintaining the watch, quarter, and station bill."
     },
     {
       "id": 19,
-      "question": "The Radio Officer is responsible for:; Preparing the command's communication plan (COMMSPLAN); Conducting communications training program and preparing Standard Operating Procedures (SOP) for the communication center.; Preparing and maintaining communications watch, quarter and station bill",
+      "question": "Which statement best describes the role and eligibility of the Communication Watch Officer (CWO)?",
       "options": [
-        "(RO) Radio Officer",
-        "Originator",
-        "US Fleet Forces Command",
-        "Inventory"
+        "The highest-ranking officer on the ship who oversees all internal telephone communications.",
+        "The highest qualified enlisted person in Radio (typically E4-E6) responsible for incoming/outgoing traffic, ensuring rapid and accurate message handling.",
+        "The dedicated COMSEC materials custodian who handles physical inventory auditing with a witness.",
+        "The supervisor responsible for physical hardware circuit patches and equipment status boards."
       ],
-      "correct_answer": "(RO) Radio Officer"
+      "correct_answer": "The highest qualified enlisted person in Radio (typically E4-E6) responsible for incoming/outgoing traffic, ensuring rapid and accurate message handling."
     },
     {
       "id": 20,
-      "question": "Incoming and outgoing traffic, ensuring that all messages transmitted or received are handled rapidly and accurately in accordance with existing regulations.; Ensure compliance with existing communications directives and monitoring the performance of on-watch personnel.",
+      "question": "What are the primary responsibilities of the Technical Control Supervisor?",
       "options": [
-        "(CAD) Collective Address Designator",
-        "Two Person Integrity (TPI)",
-        "(CWO) Communication Watch Officer",
-        "(DISA) Defense Information Systems Agency"
+        "Managing the command's CMS account and physical security storage vaults.",
+        "Drafting and composing outbound general service messages.",
+        "Reporting to the CWO, establishing and maintaining required circuits, initiating action to restore/bypass failed equipment, and maintaining the equipment status board.",
+        "Establishing the training watch bills for the entire deck department."
       ],
-      "correct_answer": "(CWO) Communication Watch Officer"
+      "correct_answer": "Reporting to the CWO, establishing and maintaining required circuits, initiating action to restore/bypass failed equipment, and maintaining the equipment status board."
     },
     {
       "id": 21,
-      "question": "Responsible to the CWO for establishing and maintaining required circuits, etc.; Establishing by maintaining required circuits and initiating action to restore or bypass failed equipment; Ensure quality monitoring and control procedures; Maintain status board on info on all equipment, nets and circuits etc.; Directly supervising all personnel assigned to technical control & transmitter room spaces",
+      "question": "What is Two-Person Integrity (TPI) and why is it used?",
       "options": [
-        "Standard Operating Procedure",
-        "(TCS) Tech Control Supervisor",
-        "(COMMO) Communications Officer",
-        "(AIG) Address Indicator Group"
+        "A protocol requiring two watchstanders to approve standard unclassified message traffic.",
+        "A mandatory security measure to prevent a single person from having sole access to Top Secret material and higher.",
+        "A system requiring two signatures to release a GENSER routine message.",
+        "A maintenance procedure where two technicians work together to repair high-voltage transmitters."
       ],
-      "correct_answer": "(TCS) Tech Control Supervisor"
+      "correct_answer": "A mandatory security measure to prevent a single person from having sole access to Top Secret material and higher."
     },
     {
       "id": 22,
-      "question": "Managing the CMS account in accordance with the instructions in the CMS1.; Advising the CO on matters concerning the physical security and handling of CMS publications and materials.",
+      "question": "What is required during a watch turnover inventory of COMSEC material?",
       "options": [
-        "(CWO) Communication Watch Officer",
-        "(PLA) Plain Language Address",
-        "(TCS) Tech Control Supervisor",
-        "Communications Security Material System Custodian"
+        "Only the oncoming watch supervisor must visually check the inventory list.",
+        "The oncoming watch with supervisor and a witness must visually inventory all COMSEC equipment, account for keying material, and pagecheck all COMSEC publications.",
+        "A physical audit of every shipboard network circuit card, done once a month.",
+        "A satellite signal connection test with NCTAMS LANT, signed by the CO."
       ],
-      "correct_answer": "Communications Security Material System Custodian"
+      "correct_answer": "The oncoming watch with supervisor and a witness must visually inventory all COMSEC equipment, account for keying material, and pagecheck all COMSEC publications."
     },
     {
       "id": 23,
-      "question": "Written to cover almost all routine and emergent situations. Examples include: Communications Guard Shift Procedures, HF Voice, Have Quick Procedures, UHF Voice",
+      "question": "What is a Standard Operating Procedure (SOP) and what are some common examples in naval communications?",
       "options": [
-        "(DCS) Defense Communications System",
-        "Communications Security Material System Custodian",
-        "Standard Operating Procedure",
-        "(CO) Commanding Officer"
+        "A set of high-level national strategy documents signed by the Secretary of Defense.",
+        "Step-by-step written guides for routine and emergent situations, such as Communications Guard Shift Procedures, HF Voice, Have Quick Procedures, and UHF Voice.",
+        "A temporary list of rules drafted daily by the CWO for watch turnovers.",
+        "The physical layout diagrams of shipboard antenna configurations."
       ],
-      "correct_answer": "Standard Operating Procedure"
+      "correct_answer": "Step-by-step written guides for routine and emergent situations, such as Communications Guard Shift Procedures, HF Voice, Have Quick Procedures, and UHF Voice."
     },
     {
       "id": 24,
-      "question": "Each time a watch section changes, the oncoming watch with supervisors and a witness must inventory all COMSEC material held at a watch station; Visually inventory all COMMSEC equipment and account for installed equipment by quality; Account for all keying material; Pagecheck all COMMSEC publications; 2 Person integrity; CMS",
+      "question": "Which of the following is true regarding the Master Station Log (MSL)?",
       "options": [
-        "COMMSPOT Reports",
-        "Operating Signals",
-        "Inventory",
-        "(NCTS) Naval Computer and Telecommunications Stations"
+        "Erasures and corrections are encouraged to keep the log clean.",
+        "It is an official narrative record of events (such as new radio day, watch turnover, inventories, major outages) where erasures are STRICTLY prohibited.",
+        "It is used exclusively for logging inbound message traffic numbers.",
+        "It is discarded at the end of each watch shift and replaced by a digital version."
       ],
-      "correct_answer": "Inventory"
+      "correct_answer": "It is an official narrative record of events (such as new radio day, watch turnover, inventories, major outages) where erasures are STRICTLY prohibited."
     },
     {
       "id": 25,
-      "question": "Security measure taken to prevent a single person access to Top Secret Material and higher.",
+      "question": "When are messages logged in the Central Message Log?",
       "options": [
-        "(NCTAMS) Naval Communications and Telecommunications Area Master System",
-        "Standard Operating Procedure",
-        "Releaser",
-        "Two Person Integrity (TPI)"
+        "Before they are received or verified by the CWO.",
+        "After they have been logged in the appropriate Circuit Log.",
+        "Only when they contain Top Secret or Restricted Data classifications.",
+        "Every 24 hours at the start of a New Radio Day."
       ],
-      "correct_answer": "Two Person Integrity (TPI)"
+      "correct_answer": "After they have been logged in the appropriate Circuit Log."
     },
     {
       "id": 26,
-      "question": "Official Narrative Record; New Radio Day; Watch Turnover; Message Received; Circuit Stations; Inventories; Significant Events; Ex. Power failures, complete system outages, major equipment outages, impairments such as HAZCONs and any other event that may have an impact on operation",
+      "question": "What is the purpose of the word 'MINIMIZE' in naval communications?",
       "options": [
-        "Two Person Integrity (TPI)",
-        "Central Message Log",
-        "(MSL) Master Station Log",
-        "(JFTOC) Joint Fleet Telecommunications Operations Center"
+        "To reduce the size of the font on official message paper.",
+        "To minimize the physical power output of shipboard transmitters to avoid detection.",
+        "To reduce unnecessary traffic to allow for essential message traffic, especially when capacity must be conserved.",
+        "To alert the crew to prepare for physical combat or damage control situations."
       ],
-      "correct_answer": "(MSL) Master Station Log"
+      "correct_answer": "To reduce unnecessary traffic to allow for essential message traffic, especially when capacity must be conserved."
     },
     {
       "id": 27,
-      "question": "All messages are logged in the Central Message Log after they have been logged in the appropriate Circuit Log",
+      "question": "Under Minimize conditions, what are FLASH (Z) and IMMEDIATE (O) traffic messages restricted to?",
       "options": [
-        "Central Message Log",
-        "US Fleet Forces Command",
-        "(CO) Commanding Officer",
-        "Drafter"
+        "FLASH is restricted to 50 words; IMMEDIATE is restricted to 100 words.",
+        "FLASH is restricted to 100 words; IMMEDIATE is restricted to 200 words.",
+        "FLASH is restricted to 150 words; IMMEDIATE is restricted to 300 words.",
+        "FLASH is restricted to 10 minutes; IMMEDIATE is restricted to 30 minutes with no word limit."
       ],
-      "correct_answer": "Central Message Log"
+      "correct_answer": "FLASH is restricted to 100 words; IMMEDIATE is restricted to 200 words."
     },
     {
       "id": 28,
-      "question": "Flash and Immediate traffic should be restricted to a maximum of 100 and 200 words; Reduce unnecessary to allow for essential traffic by use of the word \"Minimize\"",
+      "question": "Which of the following correctly matches the naval message precedence designator with its time limit?",
       "options": [
-        "(MSL) Master Station Log",
-        "Central Message Log",
-        "(RO) Radio Officer",
-        "Minimize Conditions"
+        "Z (Flash) = 3 hours; O (Immediate) = 6 hours.",
+        "Z (Flash) = ASAP/10 minutes; O (Immediate) = 30 minutes (0.5 hours); P (Priority) = 3 hours; R (Routine) = 6 hours.",
+        "Z (Flash) = 1 hour; O (Immediate) = 2 hours; P (Priority) = 4 hours; R (Routine) = 12 hours.",
+        "Z (Flash) = ASAP; O (Immediate) = 1 hour; Y (Yankee) = 6 hours."
       ],
-      "correct_answer": "Minimize Conditions"
+      "correct_answer": "Z (Flash) = ASAP/10 minutes; O (Immediate) = 30 minutes (0.5 hours); P (Priority) = 3 hours; R (Routine) = 6 hours."
     },
     {
       "id": 29,
-      "question": "Also known as Q and Z Signals. Used by Maritime and Allied Military Services. Helps to shorten Messages; Helps to shorten and clarify items that need to be communicated; ZUG=NO; ZUE=YES; ZUJ=STANDBY",
+      "question": "What is the primary difference between GENSER, DSSCS, and CRITIC message types?",
       "options": [
-        "(PLA) Plain Language Address",
-        "(MSL) Master Station Log",
-        "COMMSPOT Reports",
-        "Operating Signals"
+        "GENSER is unclassified civilian mail; DSSCS is encrypted satellite; CRITIC is manual Morse code.",
+        "GENSER handles general service traffic (Unclassified to Top Secret); DSSCS is for Defense Special Security (SI/SCI); CRITIC is for rapid reporting of critical intelligence to senior government decision-makers (President) sent with the highest priority.",
+        "GENSER is for large deck ships only; DSSCS is for submarines; CRITIC is for shore-based command centers.",
+        "GENSER requires a witness inventory; DSSCS requires Two-Person Integrity; CRITIC requires CO signature."
       ],
-      "correct_answer": "Operating Signals"
+      "correct_answer": "GENSER handles general service traffic (Unclassified to Top Secret); DSSCS is for Defense Special Security (SI/SCI); CRITIC is for rapid reporting of critical intelligence to senior government decision-makers (President) sent with the highest priority."
     },
     {
       "id": 30,
-      "question": "Most messages are unclassified; Ranges from unclass to Top Secret",
+      "question": "What are the three message drafting roles and what does each role do?",
       "options": [
-        "(FRD) Formerly Restricted Data",
-        "(GENSER) General Services",
-        "(FOUO) For Official Use Only",
-        "(RD) Restricted Data"
+        "Sender, Receiver, and Authenticator.",
+        "Originator (command/ship in whose name message is sent); Drafter (composes message, formats, assigns classification); Releaser (authorized to validate and authorize transmission).",
+        "Drafter (composes text); CWO (logs text); Tech Control (transmits text).",
+        "CO (signs the message); COMMO (inspects the message); RO (transmits the message)."
       ],
-      "correct_answer": "(GENSER) General Services"
+      "correct_answer": "Originator (command/ship in whose name message is sent); Drafter (composes message, formats, assigns classification); Releaser (authorized to validate and authorize transmission)."
     },
     {
       "id": 31,
-      "question": "Contains Sensitive Information. Can also contain SCI; world wide special purpose communication system used to process record message traffic",
+      "question": "In the ACP 131F manual, what do the signals ZUG, ZUE, and ZUJ represent?",
       "options": [
-        "(FRD) Formerly Restricted Data",
-        "(DSSCS) Defense Special Security Communication Systems",
-        "JWICS",
-        "(GENSER) General Services"
+        "ZUG = Yes, ZUE = No, ZUJ = Wait",
+        "ZUG = No, ZUE = Yes, ZUJ = Standby",
+        "ZUG = Acknowledge, ZUE = Disregard, ZUJ = Busy",
+        "ZUG = Error, ZUE = Correct, ZUJ = Transmit"
       ],
-      "correct_answer": "(DSSCS) Defense Special Security Communication Systems"
+      "correct_answer": "ZUG = No, ZUE = Yes, ZUJ = Standby"
     },
     {
       "id": 32,
-      "question": "Used to report critical information, including facts about an event or situation to senior government decision makers ie: The President; Sent as highest priority",
+      "question": "Which signal pairs correspond to asking for an acknowledgment versus providing one?",
       "options": [
-        "JWICS",
-        "CRITIC",
-        "(FOUO) For Official Use Only",
-        "(GENSER) General Services"
+        "INT QBZ (ask) and 55555 (provide)",
+        "INT QSL (ask) and QSL (provide)",
+        "ZBZ (ask) and ZUJ 1 (provide)",
+        "ZUG (ask) and ZUE (provide)"
       ],
-      "correct_answer": "CRITIC"
+      "correct_answer": "INT QSL (ask) and QSL (provide)"
     },
     {
       "id": 33,
-      "question": "The authority (Command or activity) in whose name the message sent",
+      "question": "What does the Z signal 'ZBZ' represent?",
       "options": [
-        "(NCMS) Navy Communications Security Material System",
-        "Drafter",
-        "Releaser",
-        "Originator"
+        "A query concerning printing acceptability of signals.",
+        "A warning that circuit maintenance is occurring.",
+        "A command to immediately switch to a backup broadcast channel.",
+        "An indication that cryptographic keys are about to shift."
       ],
-      "correct_answer": "Originator"
+      "correct_answer": "A query concerning printing acceptability of signals."
     },
     {
       "id": 34,
-      "question": "Person who actually composes the message; Responsible for:; Proper addressing and using plain language address designators; Clear and concise composition; Selecting the procedure; Ensuring the proper format; Assigning the proper classification",
+      "question": "What are the command size thresholds and definitions for PLA, CAD, and AIG addressing?",
       "options": [
-        "Operating Signals",
-        "Drafter",
-        "(AIG) Address Indicator Group",
-        "Originator"
+        "PLA is 1-2 commands; CAD is 3-5 commands; AIG is 6 or more.",
+        "PLA is 1 command (Plain Language Address); CAD represents 4 or more commands in a common administrative/operational chain; AIG represents 16 or more frequently occurring commands.",
+        "PLA is for small ships; CAD is for medium frigates; AIG is for aircraft carriers.",
+        "PLA is unclassified; CAD is classified; AIG is Top Secret."
       ],
-      "correct_answer": "Drafter"
+      "correct_answer": "PLA is 1 command (Plain Language Address); CAD represents 4 or more commands in a common administrative/operational chain; AIG represents 16 or more frequently occurring commands."
     },
     {
       "id": 35,
-      "question": "Designated individual authorized to release messages for transmission in the name of the command; Validates contents of message",
+      "question": "What does the acronym 'NAVMACS' stand for and what is its purpose?",
       "options": [
-        "Mission of Naval Communications",
-        "(COMMO) Communications Officer",
-        "Releaser",
-        "Inventory"
+        "Naval Maintenance and Cryptographic System; used for shipboard engine monitoring.",
+        "Naval Modular Automated Communications System; a shipboard message processing system developed to meet command mission requirements.",
+        "Navy Marine Cryptologic Satellite; used for high-frequency civilian television relays.",
+        "Naval Mobile Airborne Communications Station; a deployable tactical aircraft transponder."
       ],
-      "correct_answer": "Releaser"
+      "correct_answer": "Naval Modular Automated Communications System; a shipboard message processing system developed to meet command mission requirements."
     },
     {
       "id": 36,
-      "question": "Applied to all data concerned with the design, manufacture or use of nuclear weaponry and/or nuclear energy production",
+      "question": "In a GENSER message, which Format Lines correspond to the Heading (Transmission ID, Header Info, Security Warning, DTG, FM, TO, INFO) and which are the Break indicators?",
       "options": [
-        "(SPECAT) Special Category",
-        "(FOUO) For Official Use Only",
-        "(RD) Restricted Data",
-        "(DSSCS) Defense Special Security Communication Systems"
+        "Lines 1-5 represent the body; Line 12 is the Transmission ID; Line 11/13 are breaks.",
+        "Line 1 (Transmission ID), Line 2 (Header Info), Line 4 (Security Warning), Line 5 (DTG), Line 6 (FM/FROM), Line 7 (TO), Line 8 (INFO), and Lines 11 and 13 represent the 'BT' Break indicators.",
+        "Lines 1, 2, 4, 5 are Heading; Line 10/12 are breaks.",
+        "Line 2 (Header Info), Line 5 (Body), Line 14 (SSN), Line 16 (Break)."
       ],
-      "correct_answer": "(RD) Restricted Data"
+      "correct_answer": "Line 1 (Transmission ID), Line 2 (Header Info), Line 4 (Security Warning), Line 5 (DTG), Line 6 (FM/FROM), Line 7 (TO), Line 8 (INFO), and Lines 11 and 13 represent the 'BT' Break indicators."
     },
     {
       "id": 37,
-      "question": "Formerly Restricted Data that still must be properly safeguarded as classified defense information",
+      "question": "In Format Line 4 (Security Warning), what do the 3-letter groups 'ZNR' and 'ZNY' indicate?",
       "options": [
-        "NIPRNET",
-        "(FOUO) For Official Use Only",
-        "CRITIC",
-        "(FRD) Formerly Restricted Data"
+        "ZNR = Nuclear Data; ZNY = Conventional Data.",
+        "ZNR = UNCLASSIFIED message traffic; ZNY = CONFIDENTIAL or higher classified message traffic.",
+        "ZNR = Immediate Precedence; ZNY = Flash Precedence.",
+        "ZNR = Received; ZNY = Transmitted."
       ],
-      "correct_answer": "(FRD) Formerly Restricted Data"
+      "correct_answer": "ZNR = UNCLASSIFIED message traffic; ZNY = CONFIDENTIAL or higher classified message traffic."
     },
     {
       "id": 38,
-      "question": "Official information not requiring a security calssification that must be withheld and protected from public release",
+      "question": "What is the correct structure of a Date Time Group (DTG) in Format Line 5?",
       "options": [
-        "SIPRNET",
-        "(FOUO) For Official Use Only",
-        "(EFTO) Encrypted For Transmission Only",
-        "CRITIC"
+        "YYYYMMDD HHMMSS Zulu",
+        "DDHHMMZ MON YY (e.g., 262022Z JUN 25)",
+        "MM-DD-YY HH:MM (e.g., 06-26-25 20:22)",
+        "HHMMZ DD MONTH YYYY"
       ],
-      "correct_answer": "(FOUO) For Official Use Only"
+      "correct_answer": "DDHHMMZ MON YY (e.g., 262022Z JUN 25)"
     },
     {
       "id": 39,
-      "question": "Unclassified messages that when combined piece by piece can reveal sensitive information",
+      "question": "Where is the Standard Subject Identification Code (SSIC) located, and what is its purpose?",
       "options": [
-        "SIPRNET",
-        "(EFTO) Encrypted For Transmission Only",
-        "NIPRNET",
-        "JWICS"
+        "In Format Line 2; used to specify routing station numbers.",
+        "In Format Line 12 (Message Body); used to aid in the automated routing of a message internal to a command.",
+        "In Format Line 14; used to sign off and validate crypto codes.",
+        "In Format Line 4; used to flag radioactive or restricted hazards."
       ],
-      "correct_answer": "(EFTO) Encrypted For Transmission Only"
+      "correct_answer": "In Format Line 12 (Message Body); used to aid in the automated routing of a message internal to a command."
     },
     {
       "id": 40,
-      "question": "Messages are classified, identified with a special project or subject; Ex.; Limited distribution; Personal For; NATO Restricted; Allied Restricted",
+      "question": "In Format Line 12, what are the differences between AMPN and NARR components?",
       "options": [
-        "(DSSCS) Defense Special Security Communication Systems",
-        "(RD) Restricted Data",
-        "NIPRNET",
-        "(SPECAT) Special Category"
+        "AMPN is for unclassified messages; NARR is for classified messages.",
+        "AMPN is used when the message lists only ONE reference; NARR is used when the message lists MULTIPLE references.",
+        "AMPN stands for Amplified Encryption; NARR stands for Narrative Security.",
+        "AMPN is written by the Drafter; NARR is written by the Releaser."
       ],
-      "correct_answer": "(SPECAT) Special Category"
+      "correct_answer": "AMPN is used when the message lists only ONE reference; NARR is used when the message lists MULTIPLE references."
     },
     {
       "id": 41,
-      "question": "Required when a command shifts its guard from one broadcast servicing communications center",
+      "question": "How is the Ending Sign in Format Line 16 properly formatted?",
       "options": [
-        "(COMMSHIFT) Communications Guard Shift message",
-        "(NCTS) Naval Computer and Telecommunications Stations",
-        "(FLTNOCS) Fleet Network Operations Center",
-        "(NCMS) Navy Communications Security Material System"
+        "The word 'END' followed by the CO's signature.",
+        "8 Carriage Returns (Enter) followed by Four 'N's (NNNN).",
+        "A single Period '.' and 4 Carriage Returns.",
+        "The transmission serial number repeated three times."
       ],
-      "correct_answer": "(COMMSHIFT) Communications Guard Shift message"
+      "correct_answer": "8 Carriage Returns (Enter) followed by Four 'N's (NNNN)."
     },
     {
       "id": 42,
-      "question": "Used to advise of any situation that might cause significant disruption of tactical communications",
+      "question": "What are the standard security classification memory colors used in Naval communications?",
       "options": [
-        "COMMSPOT Reports",
-        "(TCS) Tech Control Supervisor",
-        "(CWO) Communication Watch Officer",
-        "(NAVIFOR) Naval Information Forces"
+        "Unclassified = Blue, Confidential = Green, Secret = Yellow, Top Secret = Red",
+        "Unclassified = Green, Confidential = Blue, Secret = Red, Top Secret = Orange",
+        "Unclassified = White, Confidential = Yellow, Secret = Pink, Top Secret = Black",
+        "Unclassified = Green, Confidential = Yellow, Secret = Orange, Top Secret = Red"
       ],
-      "correct_answer": "COMMSPOT Reports"
+      "correct_answer": "Unclassified = Green, Confidential = Blue, Secret = Red, Top Secret = Orange"
     },
     {
       "id": 43,
-      "question": "Shipboard message processing system developed to meet command mission requirements",
+      "question": "What is the meaning of the markings RD and FRD?",
       "options": [
-        "(NAVMACS) Naval Modular Automated Communications Systems",
-        "(NCDOC) Navy Cyber Defense Operations Command",
-        "(COMMSHIFT) Communications Guard Shift message",
-        "(DISA) Defense Information Systems Agency"
+        "RD = Radio Direction; FRD = Forward Radio Dispatch.",
+        "RD = Restricted Data (associated with nuclear weaponry/energy design); FRD = Formerly Restricted Data (still safeguarded as classified defense information).",
+        "RD = Routine Delivery; FRD = Fast Route Delivery.",
+        "RD = Received Document; FRD = Filed Received Document."
       ],
-      "correct_answer": "(NAVMACS) Naval Modular Automated Communications Systems"
+      "correct_answer": "RD = Restricted Data (associated with nuclear weaponry/energy design); FRD = Formerly Restricted Data (still safeguarded as classified defense information)."
     },
     {
       "id": 44,
-      "question": "Station's address written in a format that may be easily understood when read",
+      "question": "What does the marking 'EFTO' stand for, and when is it used?",
       "options": [
-        "(DCS) Defense Communications System",
-        "(NIOC) Navy Information Operations Command",
-        "(NAVMACS) Naval Modular Automated Communications Systems",
-        "(PLA) Plain Language Address"
+        "Emergency Fleet Tactical Operator; used during collision situations.",
+        "Encrypted For Transmission Only; used for unclassified messages that when combined piece-by-piece could reveal sensitive information.",
+        "Electronic Force Transfer Order; used for military pay routing.",
+        "Encryption Frequency Tuning Option; used to change radio frequencies."
       ],
-      "correct_answer": "(PLA) Plain Language Address"
+      "correct_answer": "Encrypted For Transmission Only; used for unclassified messages that when combined piece-by-piece could reveal sensitive information."
     },
     {
       "id": 45,
-      "question": "Collection of 16 or more frequently occuring groups of Plain Language Addresses",
+      "question": "What is the purpose of COMMSPOT reports?",
       "options": [
-        "(TCS) Tech Control Supervisor",
-        "(AIG) Address Indicator Group",
-        "Minimize Conditions",
-        "Standard Operating Procedure"
+        "To report physical weather patterns that affect shipboard visibility.",
+        "To advise of any situation that might cause significant disruption of tactical communications.",
+        "To spot enemy ships and report their coordinates to the battle group.",
+        "To log daily watch turnovers in the Master Station Log."
       ],
-      "correct_answer": "(AIG) Address Indicator Group"
+      "correct_answer": "To advise of any situation that might cause significant disruption of tactical communications."
     },
     {
       "id": 46,
-      "question": "Represents a collection of four or more Plain Language Addresses where all PLAs written the group share either a common operational and/or administrative chain of command",
+      "question": "In GENSER Format Line 2 (Message Header), what are the first characters and what is located at character position 4?",
       "options": [
-        "(COMMO) Communications Officer",
-        "Mission of Naval Communications",
-        "Communications Security Material System Custodian",
-        "(CAD) Collective Address Designator"
+        "First 2 letters are 'TT' (Header), and the 4th character is the Message Classification (U, C, S, T).",
+        "First 3 characters are the Date Time Group, and character position 4 is blank.",
+        "First 2 letters are 'ZZ', and character position 4 is the SSIC code.",
+        "First characters are the Routing Indicator, and character position 4 is the Station Serial Number."
       ],
-      "correct_answer": "(CAD) Collective Address Designator"
+      "correct_answer": "First 2 letters are 'TT' (Header), and the 4th character is the Message Classification (U, C, S, T)."
     },
     {
       "id": 47,
-      "question": "Transmission Identification",
+      "question": "In GENSER Format Line 2 (Message Header), what are located at character positions 5-8 and position 10-15?",
       "options": [
-        "Line 13",
-        "Line 11",
-        "Line 6",
-        "Line 1"
+        "Positions 5-8 are blank; Positions 10-15 are the Julian Date.",
+        "Positions 5-8 are the Content Indicator Code (CIC) which tells what kind of message it is; Positions 10-15 are the Originating Station Routing Indicator (OSRI).",
+        "Positions 5-8 are the Date Time Group; Positions 10-15 are the Station Serial Number.",
+        "Positions 5-8 are 'NNNN'; Positions 10-15 are the security warnings."
       ],
-      "correct_answer": "Line 1"
+      "correct_answer": "Positions 5-8 are the Content Indicator Code (CIC) which tells what kind of message it is; Positions 10-15 are the Originating Station Routing Indicator (OSRI)."
     },
     {
       "id": 48,
-      "question": "Message Header Info; 1st character indicates precedence of the message; R= Routine 6 hours; P= Priority 3 hours; O= Immediate .5 hours; Z= Flash ASAP/10 mins; Y= Yankee ASAP",
+      "question": "In GENSER Format Line 2 (Message Header), which character positions are strictly designated as BLANK spaces?",
       "options": [
-        "Line 12",
-        "Line 2",
-        "Line 5",
-        "Line 4"
+        "Positions 1 and 2",
+        "Positions 9 and 21",
+        "Positions 4 and 10",
+        "Positions 25 and 34"
       ],
-      "correct_answer": "Line 2"
+      "correct_answer": "Positions 9 and 21"
     },
     {
       "id": 49,
-      "question": "Security Warning; 3 Letter Group code that is used as necessary with comms to convey orders, instructions, request reports and info to speed up comms; ZNR - UNCLASSIFIED message traffic; ZNY - CONFIDENTIAL or higher classification",
+      "question": "In GENSER Format Line 2 (Message Header), what represents the day of the year (Julian Date) and what characters end the line?",
       "options": [
-        "Line 5",
-        "Line 4",
-        "Line 16",
-        "Line 11"
+        "Julian Date is at positions 17-20; the line ends with 'NNNN'.",
+        "Julian Date is at positions 22-24; the line ends with a routing indicator (position 34) and an End Period (.).",
+        "Julian Date is at positions 25-28; the line ends with 'BT'.",
+        "Julian Date is at positions 10-15; the line ends with a Carriage Return."
       ],
-      "correct_answer": "Line 4"
+      "correct_answer": "Julian Date is at positions 22-24; the line ends with a routing indicator (position 34) and an End Period (.)."
     },
     {
       "id": 50,
-      "question": "Date Time Group; Formatted as : date, hour, minute, timezone, month, year; Ex.; 262022ZJUN25",
+      "question": "What is represented in Format Line 14 of a GENSER message?",
       "options": [
-        "Line 7",
-        "Line 8",
-        "Line 5",
-        "Line 2"
+        "The Message Subject Line",
+        "The Station Serial Number (SSN), representing the number of messages per month",
+        "The Security Warning codes (ZNR / ZNY)",
+        "The Date Time Group of transmission"
       ],
-      "correct_answer": "Line 5"
-    },
-    {
-      "id": 51,
-      "question": "Originator; (From)",
-      "options": [
-        "Line 13",
-        "Line 1",
-        "Line 2",
-        "Line 6"
-      ],
-      "correct_answer": "Line 6"
-    },
-    {
-      "id": 52,
-      "question": "Action Addressee; (To/Destination)",
-      "options": [
-        "Line 2",
-        "Line 12",
-        "Line 4",
-        "Line 7"
-      ],
-      "correct_answer": "Line 7"
-    },
-    {
-      "id": 53,
-      "question": "Information Addressee",
-      "options": [
-        "Line 12",
-        "Line 1",
-        "Line 16",
-        "Line 8"
-      ],
-      "correct_answer": "Line 8"
-    },
-    {
-      "id": 54,
-      "question": "Break",
-      "options": [
-        "Line 4",
-        "Line 8",
-        "Line 11",
-        "Line 13"
-      ],
-      "correct_answer": "Line 11"
-    },
-    {
-      "id": 55,
-      "question": "Text; Standard Subject Identification Code (SSIC); Used to aid in the automated routing of a message internal to a command; If the subject of a message contains classified info marked with appropriate classification symbol; If message itself is classified the subject isnt the subject line shall end in (U) = unclassified; AMPN; Used when the message lists only one reference and it requires additional discussion or is one of the 5 communication types; TEL; DOC; MSG; CON; LTR; When a message lists multiple reference use of an NARR is required RMKS is Used to Explain the Purpose of a message",
-      "options": [
-        "Line 1",
-        "Line 11",
-        "Line 12",
-        "Line 16"
-      ],
-      "correct_answer": "Line 12"
-    },
-    {
-      "id": 56,
-      "question": "Break",
-      "options": [
-        "Line 13",
-        "Line 16",
-        "Line 1",
-        "Line 5"
-      ],
-      "correct_answer": "Line 13"
-    },
-    {
-      "id": 57,
-      "question": "Validation; Sation Serial Number (SSN)",
-      "options": [
-        "Line 2",
-        "Line 4",
-        "Line 14",
-        "Line 11"
-      ],
-      "correct_answer": "Line 14"
-    },
-    {
-      "id": 58,
-      "question": "Ending Sign; 8 Carriage Returns (Enter) followed by Four \"N\"s (NNNN)",
-      "options": [
-        "Line 1",
-        "Line 16",
-        "Line 14",
-        "Line 11"
-      ],
-      "correct_answer": "Line 16"
-    },
-    {
-      "id": 59,
-      "question": "What does the acronym DISA stand for?",
-      "options": [
-        "Defense Operations Systems Command",
-        "Defense Information Systems Agency",
-        "Defensive Information Systems Agency",
-        "Defense Information System Agency"
-      ],
-      "correct_answer": "Defense Information Systems Agency"
-    },
-    {
-      "id": 60,
-      "question": "What does the acronym DCS stand for?",
-      "options": [
-        "Offense Telecommunications System",
-        "Defense Communications System",
-        "Defense Television System",
-        "Defense Telecommunications System"
-      ],
-      "correct_answer": "Defense Communications System"
-    },
-    {
-      "id": 61,
-      "question": "What does the acronym NAVIFOR stand for?",
-      "options": [
-        "Naval Communications Command",
-        "Naval Operations Forces",
-        "Naval Information Forces",
-        "Naval Information Command"
-      ],
-      "correct_answer": "Naval Information Forces"
-    },
-    {
-      "id": 62,
-      "question": "What does the acronym NETWARCOM stand for?",
-      "options": [
-        "Naval Network Warfare Command",
-        "Natural Networks Warfare Command",
-        "National Network Warfare Command",
-        "National System Warfare Command"
-      ],
-      "correct_answer": "Naval Network Warfare Command"
-    },
-    {
-      "id": 63,
-      "question": "What does the acronym NCDOC stand for?",
-      "options": [
-        "Naval Tech Defense Operations Command",
-        "Navy Cyber Security Operations Command",
-        "Navy Cyber Defense Operations Command",
-        "Navy Cyber Offense Operations Command"
-      ],
-      "correct_answer": "Navy Cyber Defense Operations Command"
-    },
-    {
-      "id": 64,
-      "question": "What does the acronym NCMS stand for?",
-      "options": [
-        "Navy Communications Security Material System",
-        "Navy Communications Secure Material Network",
-        "Navy Communications Surveillance Material System",
-        "National Communications Secure Material System"
-      ],
-      "correct_answer": "Navy Communications Security Material System"
-    },
-    {
-      "id": 65,
-      "question": "What does the acronym NCTAMS stand for?",
-      "options": [
-        "Naval Communications and Television Area Master System",
-        "Naval Communications and Telecommunications Area Main System",
-        "Naval Communications and Telecommunications Area Master System",
-        "Naval Communications and Telecommunications Areas Master Network"
-      ],
-      "correct_answer": "Naval Communications and Telecommunications Area Master System"
-    },
-    {
-      "id": 66,
-      "question": "What does the acronym JFTOC stand for?",
-      "options": [
-        "Combined Fleet Telecommunications Operations Center",
-        "Joint Fleet Telecommunications Operations Command",
-        "Joint Fleet Telecommunications Operations Center",
-        "Joined Fleet Telecommunications Operations Center"
-      ],
-      "correct_answer": "Joint Fleet Telecommunications Operations Center"
-    },
-    {
-      "id": 67,
-      "question": "What does the acronym FLTNOCS stand for?",
-      "options": [
-        "Fleet System Operations Center",
-        "Fleet Network Operators Center",
-        "Fleet Network Operations Center",
-        "Force Network Operations Center"
-      ],
-      "correct_answer": "Fleet Network Operations Center"
-    },
-    {
-      "id": 68,
-      "question": "What does the acronym NCTS stand for?",
-      "options": [
-        "Naval Computing and Communications Stations",
-        "Naval Control and Telecommunications Stations",
-        "Naval Computer and Telecommunications Systems",
-        "Naval Computer and Telecommunications Stations"
-      ],
-      "correct_answer": "Naval Computer and Telecommunications Stations"
-    },
-    {
-      "id": 69,
-      "question": "What does the acronym NIOC stand for?",
-      "options": [
-        "Navy Communications Operations Command",
-        "Navy Information Operations Command",
-        "Navy Information Operations Center",
-        "Naval Information Operations Command"
-      ],
-      "correct_answer": "Navy Information Operations Command"
-    },
-    {
-      "id": 70,
-      "question": "What does the acronym CO stand for?",
-      "options": [
-        "Command Officer",
-        "Commissioned Officer",
-        "Commanding Officer",
-        "Commander Operator"
-      ],
-      "correct_answer": "Commanding Officer"
-    },
-    {
-      "id": 71,
-      "question": "What does the acronym COMMO stand for?",
-      "options": [
-        "Communications Official",
-        "Communications Officer",
-        "Transmission Official",
-        "Transmission Office"
-      ],
-      "correct_answer": "Communications Officer"
-    },
-    {
-      "id": 72,
-      "question": "What does the acronym RO stand for?",
-      "options": [
-        "Radio Office",
-        "Relay Office",
-        "Radio Officer",
-        "Relay Officer"
-      ],
-      "correct_answer": "Radio Officer"
-    },
-    {
-      "id": 73,
-      "question": "What does the acronym CWO stand for?",
-      "options": [
-        "Communication Guard Operator",
-        "Transmission Watch Official",
-        "Communication Watch Officer",
-        "Communication Watch Operator"
-      ],
-      "correct_answer": "Communication Watch Officer"
-    },
-    {
-      "id": 74,
-      "question": "What does the acronym TCS stand for?",
-      "options": [
-        "Technical Control Supervisor",
-        "Tech Control Supervisor",
-        "Tech Controller Supervisor",
-        "Tech Control Supervision"
-      ],
-      "correct_answer": "Tech Control Supervisor"
-    },
-    {
-      "id": 75,
-      "question": "What does the acronym TPI stand for?",
-      "options": [
-        "Two Persons Integration",
-        "Double Person Integrity",
-        "Two Person Interest",
-        "Two Person Integrity"
-      ],
-      "correct_answer": "Two Person Integrity"
-    },
-    {
-      "id": 76,
-      "question": "What does the acronym MSL stand for?",
-      "options": [
-        "Master Station Log",
-        "Master Stations Log",
-        "Master Status Record",
-        "Mastery Station Ledger"
-      ],
-      "correct_answer": "Master Station Log"
-    },
-    {
-      "id": 77,
-      "question": "What does the acronym GENSER stand for?",
-      "options": [
-        "General Services",
-        "General Systems",
-        "Genser Service",
-        "Generic Services"
-      ],
-      "correct_answer": "General Services"
-    },
-    {
-      "id": 78,
-      "question": "What does the acronym DSSCS stand for?",
-      "options": [
-        "Defense Special Safety Communication Systems",
-        "Defense Special Surveillance Communication Systems",
-        "Defense Special Security Communication Systems",
-        "Defense Special Security Transmission Systems"
-      ],
-      "correct_answer": "Defense Special Security Communication Systems"
-    },
-    {
-      "id": 79,
-      "question": "What does the acronym RD stand for?",
-      "options": [
-        "Restricted Data",
-        "Restrict Database",
-        "Restricted Database",
-        "Restrict Data"
-      ],
-      "correct_answer": "Restricted Data"
-    },
-    {
-      "id": 80,
-      "question": "What does the acronym FRD stand for?",
-      "options": [
-        "Formerly Restricted Details",
-        "Formerly Restricted Data",
-        "Formerly Restricted Date",
-        "Formally Restrict Data"
-      ],
-      "correct_answer": "Formerly Restricted Data"
-    },
-    {
-      "id": 81,
-      "question": "What does the acronym FOUO stand for?",
-      "options": [
-        "For Official Use One",
-        "For Office Use Only",
-        "For Official Use Only",
-        "For Official Usage One"
-      ],
-      "correct_answer": "For Official Use Only"
-    },
-    {
-      "id": 82,
-      "question": "What does the acronym EFTO stand for?",
-      "options": [
-        "Encoded For Transmit Only",
-        "Encrypted For Telecommunications Only",
-        "Encrypted For Transmission Only",
-        "Encoded For Transmission Only"
-      ],
-      "correct_answer": "Encrypted For Transmission Only"
-    },
-    {
-      "id": 83,
-      "question": "What does the acronym SPECAT stand for?",
-      "options": [
-        "Special Category",
-        "Special Categories",
-        "Specialty Catalog",
-        "Specialty Categories"
-      ],
-      "correct_answer": "Special Category"
-    },
-    {
-      "id": 84,
-      "question": "What does the acronym COMMSHIFT stand for?",
-      "options": [
-        "Communications Guard Shift traffic",
-        "Communications Guard Shift message",
-        "Communications Guard Turnover message",
-        "Communications Guardian Shifted message"
-      ],
-      "correct_answer": "Communications Guard Shift message"
-    },
-    {
-      "id": 85,
-      "question": "What does the acronym NAVMACS stand for?",
-      "options": [
-        "Naval Modular Automated Communications Systems",
-        "Naval Module Automated Communications Systems",
-        "Navy Modular Automated Communications Systems",
-        "Naval Modular Automatic Communications Operations"
-      ],
-      "correct_answer": "Naval Modular Automated Communications Systems"
-    },
-    {
-      "id": 86,
-      "question": "What does the acronym PLA stand for?",
-      "options": [
-        "Plain Language Address",
-        "Planned Languages Address",
-        "Plain Language Addresses",
-        "Plane Language Address"
-      ],
-      "correct_answer": "Plain Language Address"
-    },
-    {
-      "id": 87,
-      "question": "What does the acronym AIG stand for?",
-      "options": [
-        "Address Indicator Group",
-        "Location Indicators Group",
-        "Addresses Indicator Group",
-        "Addresses Indicator Unit"
-      ],
-      "correct_answer": "Address Indicator Group"
-    },
-    {
-      "id": 88,
-      "question": "What does the acronym CAD stand for?",
-      "options": [
-        "Collected Address Designer",
-        "Collective Location Designator",
-        "Collective Addressee Designator",
-        "Collective Address Designator"
-      ],
-      "correct_answer": "Collective Address Designator"
+      "correct_answer": "The Station Serial Number (SSN), representing the number of messages per month"
     }
   ]
 }
