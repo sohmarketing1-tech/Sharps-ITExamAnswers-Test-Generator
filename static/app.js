@@ -57,7 +57,7 @@ const state = {
     keyboardFocusIndex: -1,
     swipeOnboardingPending: false,
     flashcardSwipeOnboardingPending: false,
-    mode: "practice", // "practice" or "mastery"
+    mode: null, // "practice", "mastery", "flashcards", or null
     user: null,
     masterySummary: null,
     masteryImmediateFeedback: false,
@@ -1428,10 +1428,21 @@ function setMode(mode) {
             btn.classList.add("btn-secondary");
         }
     });
+
+    if (!mode) {
+        els.modeDescription.classList.add("hidden");
+        els.countGroup.classList.add("hidden");
+        els.startRow.classList.add("hidden");
+        els.masteryPanel.classList.add("hidden");
+        if (els.flashcardPanel) els.flashcardPanel.classList.add("hidden");
+        return;
+    }
+
     if (mode === "practice") {
         els.modePractice.classList.add("active", "btn-primary");
         els.modePractice.classList.remove("btn-secondary");
         els.modeDescription.textContent = "Random questions each test. Great for quick review.";
+        els.modeDescription.classList.remove("hidden");
         els.countGroup.classList.remove("hidden");
         els.startRow.classList.remove("hidden");
         els.masteryPanel.classList.add("hidden");
@@ -1441,6 +1452,7 @@ function setMode(mode) {
         els.modeMastery.classList.add("active", "btn-primary");
         els.modeMastery.classList.remove("btn-secondary");
         els.modeDescription.textContent = "Keep seeing questions until you've mastered every single one.";
+        els.modeDescription.classList.remove("hidden");
         els.countGroup.classList.add("hidden");
         els.startRow.classList.add("hidden");
         els.masteryPanel.classList.remove("hidden");
@@ -1450,6 +1462,7 @@ function setMode(mode) {
         els.modeFlashcards.classList.add("active", "btn-primary");
         els.modeFlashcards.classList.remove("btn-secondary");
         els.modeDescription.textContent = "Flip through cards at your own pace to memorize answers.";
+        els.modeDescription.classList.remove("hidden");
         els.countGroup.classList.add("hidden");
         els.startRow.classList.add("hidden");
         els.masteryPanel.classList.add("hidden");
@@ -6434,6 +6447,7 @@ if (els.masteryImmediateFeedbackToggle) {
     els.masteryImmediateFeedbackToggle.checked = state.masteryImmediateFeedback;
 }
 state._restoringPrefs = false;
+setMode(null);
 loadExams();
 checkAuth();
 

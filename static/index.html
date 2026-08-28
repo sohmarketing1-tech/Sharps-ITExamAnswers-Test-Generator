@@ -444,14 +444,14 @@
                             <div class="form-group">
                                 <label>Mode</label>
                                 <div class="mode-toggle">
-                                    <button id="mode-practice" class="btn btn-primary mode-btn active">Practice Test</button>
+                                    <button id="mode-practice" class="btn btn-secondary mode-btn">Practice Test</button>
                                     <button id="mode-mastery" class="btn btn-secondary mode-btn">Mastery Mode</button>
                                     <button id="mode-flashcards" class="btn btn-secondary mode-btn">Flashcards</button>
                                 </div>
-                                <p id="mode-description" class="mode-description">New random questions every time. Good for quick review.</p>
+                                <p id="mode-description" class="mode-description hidden">Pick a mode above to see options.</p>
                             </div>
 
-                            <div class="form-group" id="count-group">
+                            <div class="form-group hidden" id="count-group">
                                 <label for="question-count">Number of questions</label>
                                 <div class="count-row">
                                     <input type="number" id="question-count" class="no-spinner" min="1" value="20" placeholder="Type any number" />
@@ -505,7 +505,7 @@
                             </div>
                         </div>
 
-                        <div class="button-row" id="start-row">
+                        <div class="button-row hidden" id="start-row">
                             <div class="btn-tooltip-wrap">
                                 <button id="start-btn" class="btn btn-success btn-large" disabled>Start Test</button>
                                 <span class="btn-tooltip">Pick an exam first</span>
