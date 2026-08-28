@@ -1207,7 +1207,7 @@ function getExamCategory(exam) {
     const name = (exam.display_name || exam.title || exam.filename).toUpperCase();
     if (name.includes("IT ESSENTIALS") || name.includes("ITE")) return "IT Essentials";
     if (name.includes("CCNA")) return "CCNA";
-    return "Comms/MRTS";
+    return "Comms";
 }
 
 function groupExamsByCategory(exams) {
@@ -1217,7 +1217,7 @@ function groupExamsByCategory(exams) {
         if (!groups[cat]) groups[cat] = [];
         groups[cat].push(exam);
     });
-    const order = ["IT Essentials", "CCNA", "Comms/MRTS"];
+    const order = ["IT Essentials", "CCNA", "Comms"];
     return order.filter((cat) => groups[cat]).map((cat) => ({ category: cat, exams: groups[cat] }));
 }
 
@@ -1245,7 +1245,7 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     tabs.className = "exam-category-tabs";
     tabs.setAttribute("role", "tablist");
     tabs.setAttribute("aria-label", "Exam categories");
-    const displayNames = { "IT Essentials": "ITE", CCNA: "CCNA", "Comms/MRTS": "Comms/MRTS" };
+    const displayNames = { "IT Essentials": "ITE", CCNA: "CCNA", "Comms": "Comms" };
     groups.forEach(({ category }) => {
         const tab = document.createElement("button");
         tab.type = "button";
@@ -1264,7 +1264,7 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     const categoryDescriptions = {
         "IT Essentials": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy.",
         "CCNA": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy.",
-        "Comms/MRTS": "Unlike ITE and CCNA, there is no official question and answer bank for these lessons. The questions here are compiled from students' class notes into a study guide, and they may or may not appear on your test in some form. Pro Tip: do not just memorize keywords - make sure you actually understand the material, because the exact test questions are unknown."
+        "Comms": "Unlike ITE and CCNA, there is no official question and answer bank for these lessons. The questions here are compiled from students' class notes into a study guide, and they may or may not appear on your test in some form. Pro Tip: do not just memorize keywords - make sure you actually understand the material, because the exact test questions are unknown."
     };
     const categoryDescription = categoryDescriptions[activeCategory];
     if (categoryDescription && container !== els.flashcardExamButtons) {
