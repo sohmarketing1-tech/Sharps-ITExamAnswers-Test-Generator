@@ -1262,8 +1262,8 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     container.appendChild(tabs);
 
     const categoryDescriptions = {
-        "IT Essentials": "Questions are sourced directly from ITExamAnswers. At random, around 50 of these same questions will be on your test.",
-        "CCNA": "Questions are sourced directly from ITExamAnswers. At random, around 50 of these same questions will be on your test."
+        "IT Essentials": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test.",
+        "CCNA": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test."
     };
     const categoryDescription = categoryDescriptions[activeCategory];
     if (categoryDescription && container !== els.flashcardExamButtons) {
