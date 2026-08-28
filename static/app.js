@@ -306,6 +306,7 @@ const els = {
     modeMastery: document.getElementById("mode-mastery"),
     modeFlashcards: document.getElementById("mode-flashcards"),
     modeDescription: document.getElementById("mode-description"),
+    noExamPrompt: document.getElementById("no-exam-prompt"),
     countGroup: document.getElementById("count-group"),
     startRow: document.getElementById("start-row"),
     masteryPanel: document.getElementById("mastery-panel"),
@@ -1186,8 +1187,14 @@ async function loadExams() {
         if (state.exams.length > 0) {
             const current = (prefs.examFilename && state.exams.find((e) => e.filename === prefs.examFilename))
                 ? prefs.examFilename
-                : (data.current_filename || state.exams[0].filename);
-            await loadExam(current, true);
+                : null;
+            if (current) {
+                await loadExam(current, true);
+            } else {
+                state.currentFilename = null;
+                updateNoExamPrompt();
+                setMessage("Select an exam from above to get started.");
+            }
             if (typeof window.EXAM_FILENAME === "string" && window.EXAM_FILENAME && state.exams.find((e) => e.filename === window.EXAM_FILENAME)) {
                 await loadExam(window.EXAM_FILENAME, true);
                 switchTab("practice");
@@ -1412,6 +1419,7 @@ async function loadExam(filename, updateSelection = true) {
         if (typeof renderFlashcardExamButtons === "function") renderFlashcardExamButtons();
         savePrefs();
         updatePracticeSteps();
+        updateNoExamPrompt();
         await refreshMastery();
     } catch (err) {
         setMessage(err.message, "error");
@@ -1471,6 +1479,15 @@ function setMode(mode) {
             state.flashcardFilename = state.currentFilename;
         }
         if (typeof updateFcPanelStartBtn === "function") updateFcPanelStartBtn();
+    }
+}
+
+function updateNoExamPrompt() {
+    if (!els.noExamPrompt) return;
+    if (state.currentFilename) {
+        els.noExamPrompt.classList.add("hidden");
+    } else {
+        els.noExamPrompt.classList.remove("hidden");
     }
 }
 

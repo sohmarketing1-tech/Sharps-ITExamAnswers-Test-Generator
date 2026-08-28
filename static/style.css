@@ -2694,6 +2694,18 @@ body {
     }
 }
 
+.no-exam-prompt {
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 600;
+    background: rgba(var(--surface-base), 0.5);
+    border: 2px dashed rgba(var(--glass-base), 0.3);
+    border-radius: 12px;
+    margin: 8px 0;
+}
+
 .account-prompt {
     background: rgba(var(--warning-pale-base), 0.9);
     border: 1px solid rgba(var(--warning-light-base), 0.6);
