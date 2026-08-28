@@ -1192,8 +1192,9 @@ async function loadExams() {
         await renderFlashcardResume();
         if (state.exams.length > 0) {
             state.currentFilename = null;
+            state.studyGuide = "";
             updateNoExamPrompt();
-            setMessage("Select an exam from above to get started.");
+            setMessage("");
             const examParam = new URLSearchParams(window.location.search).get("exam");
             const requestedExam = examParam || (typeof window.EXAM_FILENAME === "string" ? window.EXAM_FILENAME : "");
             if (requestedExam && state.exams.find((e) => e.filename === requestedExam)) {

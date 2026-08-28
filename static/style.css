@@ -1782,23 +1782,26 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 12px;
-    padding: 14px 18px;
-    background: rgba(var(--accent-base), 0.1);
-    color: var(--accent);
-    border: 1px solid rgba(var(--accent-base), 0.55);
+    gap: 10px;
+    padding: 10px 14px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
     text-decoration: none;
-    font-weight: 700;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 .btn-study-guide:hover {
-    background: rgba(var(--accent-base), 0.18);
-    box-shadow: 0 4px 14px rgba(var(--accent-base), 0.1);
+    background: rgba(var(--primary-base), 0.06);
+    color: var(--text);
+    border-color: rgba(var(--primary-base), 0.25);
 }
 
 .btn-study-guide svg {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
 }
 
@@ -2699,18 +2702,18 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    padding: 8px 0 0;
-    margin-top: 14px;
+    padding: 18px 0 0;
+    margin-top: 18px;
     text-align: center;
+    border-top: 1px solid var(--border);
+    width: 100%;
 }
 
 .comms-games-label {
     margin: 0;
-    font-size: 0.72rem;
-    font-weight: 800;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
 }
 
 .comms-games-list {
