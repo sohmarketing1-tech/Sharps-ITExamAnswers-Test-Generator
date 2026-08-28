@@ -2532,38 +2532,66 @@ body {
 .exam-category-disclaimer {
     width: 100%;
     margin: 8px 0 10px;
-    padding: 10px 12px;
-    border-radius: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
     border: 1px solid var(--danger);
     background: rgba(var(--danger-base), 0.12);
     color: var(--danger);
     font-size: 0.85rem;
     line-height: 1.4;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .exam-category-disclaimer-summary {
-    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--danger);
+    color: var(--text-on-fill);
+    font-weight: 800;
+    font-size: 0.9rem;
     cursor: pointer;
     user-select: none;
-    color: var(--danger);
-    list-style-position: outside;
+    list-style: none;
+}
+
+.exam-category-disclaimer-summary::-webkit-details-marker {
+    display: none;
+}
+
+.exam-category-disclaimer-summary::after {
+    content: "▼";
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+
+.exam-category-disclaimer[open] .exam-category-disclaimer-summary::after {
+    content: "▲";
 }
 
 .exam-category-disclaimer-text {
-    margin: 8px 0 0;
-    padding-left: 16px;
+    margin: 12px 0 0;
+    padding: 0 4px;
     color: var(--danger);
+    text-align: left;
 }
 
 @media (max-width: 640px) {
     .exam-category-disclaimer {
-        padding: 8px 10px;
+        padding: 10px 12px;
         font-size: 0.78rem;
         line-height: 1.35;
     }
+    .exam-category-disclaimer-summary {
+        padding: 5px 12px;
+        font-size: 0.85rem;
+    }
     .exam-category-disclaimer-text {
-        padding-left: 12px;
+        margin-top: 10px;
     }
 }
 

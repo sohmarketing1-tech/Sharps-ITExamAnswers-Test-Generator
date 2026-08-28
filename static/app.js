@@ -1273,7 +1273,14 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
 
         const summary = document.createElement("summary");
         summary.className = "exam-category-disclaimer-summary";
-        summary.textContent = "Disclaimer";
+
+        const summaryLabel = document.createElement("span");
+        summaryLabel.textContent = "See less";
+        summary.appendChild(summaryLabel);
+
+        details.addEventListener("toggle", () => {
+            summaryLabel.textContent = details.open ? "See less" : "See more";
+        });
 
         const text = document.createElement("p");
         text.className = "exam-category-disclaimer-text";
