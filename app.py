@@ -7,7 +7,7 @@ import secrets
 from pathlib import Path
 from typing import Optional
 
-from flask import Flask, jsonify, request, redirect, Response, send_from_directory, session
+from flask import Flask, abort, jsonify, request, redirect, Response, send_from_directory, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from scraper import scrape_url, is_valid_itexamanswers_url, DEFAULT_TARGET_URL, DEFAULT_OUTPUT
@@ -1563,6 +1563,18 @@ def mastery_reset():
     else:
         summary = get_mastery_summary(user, filename, all_questions)
     return jsonify({"ok": True, "summary": summary})
+
+
+@app.route("/download/study-guide/<path:filename>")
+def download_study_guide(filename):
+    """Serve a study guide PDF as a download so it doesn't open in the browser viewer."""
+    if ".." in filename or not filename.endswith(".pdf"):
+        abort(400)
+    study_guides_dir = Path(app.static_folder) / "study-guides"
+    safe_path = (study_guides_dir / filename).resolve()
+    if not str(safe_path).startswith(str(study_guides_dir.resolve())) or not safe_path.exists():
+        abort(404)
+    return send_from_directory(study_guides_dir, filename, as_attachment=True)
 
 
 if __name__ == "__main__":
