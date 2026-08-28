@@ -2529,12 +2529,42 @@ body {
     box-shadow: 0 4px 14px rgba(var(--primary-fill-base), 0.4);
 }
 
-.exam-category-description {
+.exam-category-disclaimer {
+    width: 100%;
+    margin: 8px 0 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--danger);
+    background: rgba(var(--danger-base), 0.12);
+    color: var(--danger);
     font-size: 0.85rem;
-    color: var(--text-muted);
-    font-style: italic;
-    text-align: center;
-    margin: 4px 0 10px;
+    line-height: 1.4;
+    box-sizing: border-box;
+}
+
+.exam-category-disclaimer-summary {
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+    color: var(--danger);
+    list-style-position: outside;
+}
+
+.exam-category-disclaimer-text {
+    margin: 8px 0 0;
+    padding-left: 16px;
+    color: var(--danger);
+}
+
+@media (max-width: 640px) {
+    .exam-category-disclaimer {
+        padding: 8px 10px;
+        font-size: 0.78rem;
+        line-height: 1.35;
+    }
+    .exam-category-disclaimer-text {
+        padding-left: 12px;
+    }
 }
 
 .exam-grid {

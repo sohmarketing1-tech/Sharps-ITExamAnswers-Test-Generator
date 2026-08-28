@@ -1267,10 +1267,21 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     };
     const categoryDescription = categoryDescriptions[activeCategory];
     if (categoryDescription && container !== els.flashcardExamButtons) {
-        const desc = document.createElement("p");
-        desc.className = "exam-category-description";
-        desc.textContent = categoryDescription;
-        container.appendChild(desc);
+        const details = document.createElement("details");
+        details.className = "exam-category-disclaimer";
+        details.open = true;
+
+        const summary = document.createElement("summary");
+        summary.className = "exam-category-disclaimer-summary";
+        summary.textContent = "Disclaimer";
+
+        const text = document.createElement("p");
+        text.className = "exam-category-disclaimer-text";
+        text.textContent = categoryDescription;
+
+        details.appendChild(summary);
+        details.appendChild(text);
+        container.appendChild(details);
     }
 
     const activeGroup = groups.find((g) => g.category === activeCategory) || groups[0];
