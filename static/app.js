@@ -309,6 +309,7 @@ const els = {
     noExamPrompt: document.getElementById("no-exam-prompt"),
     countGroup: document.getElementById("count-group"),
     startRow: document.getElementById("start-row"),
+    settingsRow: document.getElementById("settings-row"),
     masteryPanel: document.getElementById("mastery-panel"),
     flashcardPanel: document.getElementById("flashcard-panel"),
     fcPanelModeQuestion: document.getElementById("fc-panel-mode-question"),
@@ -1476,11 +1477,11 @@ function setMode(mode) {
 }
 
 function updateNoExamPrompt() {
-    if (!els.noExamPrompt) return;
-    if (state.currentFilename) {
-        els.noExamPrompt.classList.add("hidden");
-    } else {
-        els.noExamPrompt.classList.remove("hidden");
+    if (els.noExamPrompt) {
+        els.noExamPrompt.classList.toggle("hidden", !!state.currentFilename);
+    }
+    if (els.settingsRow) {
+        els.settingsRow.classList.toggle("hidden", !state.currentFilename);
     }
 }
 
