@@ -1268,28 +1268,50 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     };
     const categoryDescription = categoryDescriptions[activeCategory];
     if (categoryDescription && container !== els.flashcardExamButtons) {
-        const details = document.createElement("details");
-        details.className = "exam-category-disclaimer";
-        details.open = true;
+        const disclaimer = document.createElement("div");
+        disclaimer.className = "exam-category-disclaimer";
 
-        const summary = document.createElement("summary");
-        summary.className = "exam-category-disclaimer-summary";
+        const expanded = document.createElement("div");
+        expanded.className = "exam-category-disclaimer-expanded";
 
-        const summaryLabel = document.createElement("span");
-        summaryLabel.textContent = "Disclaimer - See less";
-        summary.appendChild(summaryLabel);
-
-        details.addEventListener("toggle", () => {
-            summaryLabel.textContent = details.open ? "Disclaimer - See less" : "Disclaimer - See more";
-        });
+        const label = document.createElement("div");
+        label.className = "exam-category-disclaimer-label";
+        label.textContent = "Disclaimer";
+        expanded.appendChild(label);
 
         const text = document.createElement("p");
         text.className = "exam-category-disclaimer-text";
         text.textContent = categoryDescription;
 
-        details.appendChild(summary);
-        details.appendChild(text);
-        container.appendChild(details);
+        const seeLess = document.createElement("button");
+        seeLess.type = "button";
+        seeLess.className = "exam-category-disclaimer-toggle";
+        seeLess.textContent = "See less";
+        seeLess.addEventListener("click", () => {
+            expanded.style.display = "none";
+            collapsed.style.display = "flex";
+        });
+        text.appendChild(document.createTextNode(" "));
+        text.appendChild(seeLess);
+        expanded.appendChild(text);
+        disclaimer.appendChild(expanded);
+
+        const collapsed = document.createElement("div");
+        collapsed.className = "exam-category-disclaimer-collapsed";
+        collapsed.style.display = "none";
+
+        const seeMore = document.createElement("button");
+        seeMore.type = "button";
+        seeMore.className = "exam-category-disclaimer-toggle";
+        seeMore.textContent = "Disclaimer - See more";
+        seeMore.addEventListener("click", () => {
+            expanded.style.display = "block";
+            collapsed.style.display = "none";
+        });
+        collapsed.appendChild(seeMore);
+        disclaimer.appendChild(collapsed);
+
+        container.appendChild(disclaimer);
     }
 
     const activeGroup = groups.find((g) => g.category === activeCategory) || groups[0];

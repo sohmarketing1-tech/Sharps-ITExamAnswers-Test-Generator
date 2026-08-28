@@ -2532,7 +2532,7 @@ body {
 .exam-category-disclaimer {
     width: 100%;
     margin: 8px 0 10px;
-    padding: 12px 14px;
+    padding: 10px 14px;
     border-radius: 10px;
     border: 1px solid var(--danger);
     background: rgba(var(--danger-base), 0.12);
@@ -2540,58 +2540,55 @@ body {
     font-size: 0.85rem;
     line-height: 1.4;
     box-sizing: border-box;
-    text-align: center;
+    text-align: left;
 }
 
-.exam-category-disclaimer-summary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: var(--danger);
-    color: var(--text-on-fill);
+.exam-category-disclaimer-label {
+    font-size: 0.75rem;
     font-weight: 800;
-    font-size: 0.9rem;
-    cursor: pointer;
-    user-select: none;
-    list-style: none;
-}
-
-.exam-category-disclaimer-summary::-webkit-details-marker {
-    display: none;
-}
-
-.exam-category-disclaimer-summary::after {
-    content: "▼";
-    font-size: 0.7rem;
-    transition: transform 0.2s;
-}
-
-.exam-category-disclaimer[open] .exam-category-disclaimer-summary::after {
-    content: "▲";
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--danger);
+    margin-bottom: 4px;
 }
 
 .exam-category-disclaimer-text {
-    margin: 12px 0 0;
-    padding: 0 4px;
+    margin: 0;
     color: var(--danger);
-    text-align: left;
+}
+
+.exam-category-disclaimer-toggle {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: var(--danger);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.exam-category-disclaimer-collapsed {
+    display: none;
+    align-items: center;
+}
+
+.exam-category-disclaimer-collapsed .exam-category-disclaimer-toggle {
+    margin-left: 0;
+    text-decoration: underline;
 }
 
 @media (max-width: 640px) {
     .exam-category-disclaimer {
-        padding: 10px 12px;
+        padding: 8px 12px;
         font-size: 0.78rem;
         line-height: 1.35;
     }
-    .exam-category-disclaimer-summary {
-        padding: 5px 12px;
-        font-size: 0.85rem;
-    }
-    .exam-category-disclaimer-text {
-        margin-top: 10px;
+    .exam-category-disclaimer-label {
+        font-size: 0.7rem;
     }
 }
 
