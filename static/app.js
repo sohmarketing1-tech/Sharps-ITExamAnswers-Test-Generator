@@ -1261,6 +1261,18 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     });
     container.appendChild(tabs);
 
+    const categoryDescriptions = {
+        "IT Essentials": "Questions are sourced directly from ITExamAnswers. At random, around 50 of these same questions will be on your test.",
+        "CCNA": "Questions are sourced directly from ITExamAnswers. At random, around 50 of these same questions will be on your test."
+    };
+    const categoryDescription = categoryDescriptions[activeCategory];
+    if (categoryDescription && container !== els.flashcardExamButtons) {
+        const desc = document.createElement("p");
+        desc.className = "exam-category-description";
+        desc.textContent = categoryDescription;
+        container.appendChild(desc);
+    }
+
     const activeGroup = groups.find((g) => g.category === activeCategory) || groups[0];
     const grid = document.createElement("div");
     grid.className = "exam-grid";

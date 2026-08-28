@@ -2529,6 +2529,14 @@ body {
     box-shadow: 0 4px 14px rgba(var(--primary-fill-base), 0.4);
 }
 
+.exam-category-description {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    margin: 4px 0 10px;
+}
+
 .exam-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
