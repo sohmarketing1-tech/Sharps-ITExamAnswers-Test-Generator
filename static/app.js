@@ -1263,7 +1263,8 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
 
     const categoryDescriptions = {
         "IT Essentials": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy.",
-        "CCNA": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy."
+        "CCNA": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy.",
+        "Comms/MRTS": "Unlike ITE and CCNA, there is no official question and answer bank for these lessons. The questions here are compiled from students' class notes into a study guide, and they may or may not appear on your test in some form. Pro Tip: do not just memorize keywords — make sure you actually understand the material, because the exact test questions are unknown."
     };
     const categoryDescription = categoryDescriptions[activeCategory];
     if (categoryDescription && container !== els.flashcardExamButtons) {
