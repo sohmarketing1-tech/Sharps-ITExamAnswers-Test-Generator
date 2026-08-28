@@ -551,6 +551,369 @@
         "The Date Time Group of transmission"
       ],
       "correct_answer": "The Station Serial Number (SSN), representing the number of messages per month"
+    },
+    {
+      "question": "What does the acronym 'DISA' stand for in the context of defense communications?",
+      "options": [
+        "Defense Information Systems Agency",
+        "Department of Information Security Administration",
+        "Defense Intelligence Systems Authority",
+        "Directorate of Information and Security Assets"
+      ],
+      "id": 51,
+      "correct_answer": "Defense Information Systems Agency"
+    },
+    {
+      "question": "What does the acronym 'DCS' stand for in naval messaging systems?",
+      "options": [
+        "Defense Communications System",
+        "Department of Cryptologic Security",
+        "Direct Communication Station",
+        "Defense Cryptologic Service"
+      ],
+      "id": 52,
+      "correct_answer": "Defense Communications System"
+    },
+    {
+      "question": "What does the acronym 'USFF' stand for?",
+      "options": [
+        "United States Fleet Forces Command",
+        "United States Flag Flagship Command",
+        "United States Fleet Forward Command",
+        "Unified States Fleet Forces"
+      ],
+      "id": 53,
+      "correct_answer": "United States Fleet Forces Command"
+    },
+    {
+      "question": "What does the acronym 'NAVIFOR' stand for?",
+      "options": [
+        "Naval Information Forces",
+        "Naval Information Forward Command",
+        "Naval Intelligence Forces Command",
+        "Naval Information Warfare Directorate"
+      ],
+      "id": 54,
+      "correct_answer": "Naval Information Forces"
+    },
+    {
+      "question": "What does the acronym 'NETWARCOM' stand for?",
+      "options": [
+        "Naval Network Warfare Command",
+        "Navy Tactical Network and Warfare Command",
+        "Naval Telecommunications and Warfare Command",
+        "Navy Tactical Electronics Command"
+      ],
+      "id": 55,
+      "correct_answer": "Naval Network Warfare Command"
+    },
+    {
+      "question": "What does the acronym 'NCDOC' stand for?",
+      "options": [
+        "Navy Cyber Defense Operations Command",
+        "Naval Cryptologic Defense Operations Center",
+        "Navy Communication and Cryptography Center",
+        "National Cyber Defense Operations Command"
+      ],
+      "id": 56,
+      "correct_answer": "Navy Cyber Defense Operations Command"
+    },
+    {
+      "question": "What does the acronym 'NCMS' stand for?",
+      "options": [
+        "Navy Communications Security Material System",
+        "Naval Cryptologic Management Station",
+        "Navy Cryptologic Material System",
+        "National Communications Material System"
+      ],
+      "id": 57,
+      "correct_answer": "Navy Communications Security Material System"
+    },
+    {
+      "question": "What does the acronym 'NIOC' stand for?",
+      "options": [
+        "Navy Information Operations Command",
+        "Naval Intelligence Operations Center",
+        "National Information Operations Command",
+        "Naval Infrastructure and Operations Command"
+      ],
+      "id": 58,
+      "correct_answer": "Navy Information Operations Command"
+    },
+    {
+      "question": "What does the acronym 'NCTAMS' stand for in naval communications?",
+      "options": [
+        "Naval Computer and Telecommunications Area Master Station",
+        "Naval Communication and Tactical Area Master Station",
+        "National Computer and Telecommunications Area Master Station",
+        "Naval Cryptologic and Telecommunications Area Master Station"
+      ],
+      "id": 59,
+      "correct_answer": "Naval Computer and Telecommunications Area Master Station"
+    },
+    {
+      "question": "What does the acronym 'NCTS' stand for?",
+      "options": [
+        "Naval Computer and Telecommunications Station",
+        "Navy Communication and Tactical Station",
+        "National Cryptologic and Telecommunications Station",
+        "Naval Cryptologic Training and Support Station"
+      ],
+      "id": 60,
+      "correct_answer": "Naval Computer and Telecommunications Station"
+    },
+    {
+      "question": "What does the acronym 'JFTOC' stand for?",
+      "options": [
+        "Joint Fleet Telecommunications Operations Center",
+        "Joint Fleet Tactical Operations Center",
+        "Joint Force Telecommunications Operations Command",
+        "Joint Fleet Technical Operations Control"
+      ],
+      "id": 61,
+      "correct_answer": "Joint Fleet Telecommunications Operations Center"
+    },
+    {
+      "question": "What does the acronym 'FLTNOC' stand for?",
+      "options": [
+        "Fleet Network Operations Center",
+        "Fleet Network Operations Command",
+        "Fleet Network Operations Center and Services",
+        "Force Level Tactical Network Operations Center"
+      ],
+      "id": 62,
+      "correct_answer": "Fleet Network Operations Center"
+    },
+    {
+      "question": "What does the regional acronym 'ERNOC' stand for?",
+      "options": [
+        "European Central Region Network Operations Center",
+        "Eastern Regional Network Operations Center",
+        "European and Red Sea Network Operations Command",
+        "Expeditionary Rapid Network Operations Center"
+      ],
+      "id": 63,
+      "correct_answer": "European Central Region Network Operations Center"
+    },
+    {
+      "question": "What does the regional acronym 'IORNOC' stand for?",
+      "options": [
+        "Indian Ocean Region Network Operations Center",
+        "International Ocean Region Network Operations Center",
+        "Indian Ocean Regional Network Operations Command",
+        "Integrated Operations Regional Network Operations Center"
+      ],
+      "id": 64,
+      "correct_answer": "Indian Ocean Region Network Operations Center"
+    },
+    {
+      "question": "What does the regional acronym 'PRNOC' stand for?",
+      "options": [
+        "Pacific Region Network Operations Center",
+        "Primary Regional Network Operations Center",
+        "Pacific Region Network Operations Command",
+        "Polynesian Regional Network Operations Center"
+      ],
+      "id": 65,
+      "correct_answer": "Pacific Region Network Operations Center"
+    },
+    {
+      "question": "What does the regional acronym 'UARNOC' stand for?",
+      "options": [
+        "United Atlantic Region Network Operations Center",
+        "Unified Atlantic Regional Network Operations Command",
+        "United Atlantic Region Network Operations Command",
+        "Universal Atlantic Region Network Operations Center"
+      ],
+      "id": 66,
+      "correct_answer": "United Atlantic Region Network Operations Center"
+    },
+    {
+      "question": "What does the acronym 'CO' stand for in naval military command?",
+      "options": [
+        "Commanding Officer",
+        "Command Officer",
+        "Communications Officer",
+        "Chief Officer"
+      ],
+      "id": 67,
+      "correct_answer": "Commanding Officer"
+    },
+    {
+      "question": "What does the acronym 'COMMO' stand for in a shipboard department?",
+      "options": [
+        "Communications Officer",
+        "Communications Master Chief",
+        "Command Operations Officer",
+        "Chief of Military Maritime Operations"
+      ],
+      "id": 68,
+      "correct_answer": "Communications Officer"
+    },
+    {
+      "question": "What does the acronym 'RO' stand for on large deck naval vessels?",
+      "options": [
+        "Radio Officer",
+        "Receiver Operator",
+        "Radioman Officer",
+        "Routing Officer"
+      ],
+      "id": 69,
+      "correct_answer": "Radio Officer"
+    },
+    {
+      "question": "What does the acronym 'CWO' stand for in shipboard radio operations?",
+      "options": [
+        "Communications Watch Officer",
+        "Chief Warrant Officer",
+        "Cryptologic Watch Officer",
+        "Communications Watch Orderly"
+      ],
+      "id": 70,
+      "correct_answer": "Communications Watch Officer"
+    },
+    {
+      "question": "What does the acronym 'TCS' stand for when referring to the supervisor supporting the CWO?",
+      "options": [
+        "Technical Control Supervisor",
+        "Tactical Communications Supervisor",
+        "Technical Circuit Supervisor",
+        "Telecommunications Control Specialist"
+      ],
+      "id": 71,
+      "correct_answer": "Technical Control Supervisor"
+    },
+    {
+      "question": "What does the acronym 'GENSER' stand for?",
+      "options": [
+        "General Service",
+        "General Security",
+        "General Sender",
+        "Global Enterprise Network Service"
+      ],
+      "id": 72,
+      "correct_answer": "General Service"
+    },
+    {
+      "question": "What does the acronym 'DSSCS' stand for in military message traffic?",
+      "options": [
+        "Defense Special Security Communications System",
+        "Defense Secret Security Communications System",
+        "Department of Special Security Communications System",
+        "Defense Special Signals Communication Station"
+      ],
+      "id": 73,
+      "correct_answer": "Defense Special Security Communications System"
+    },
+    {
+      "question": "What does the term 'CRITIC' represent in national and military security reporting?",
+      "options": [
+        "Critical Intelligence Message",
+        "Cryptographic Information and Tactical Intelligence Center",
+        "Critical Reconnaissance and Intelligence Threat Indicator",
+        "Crisis Real-time Information Transmission Identification Code"
+      ],
+      "id": 74,
+      "correct_answer": "Critical Intelligence Message"
+    },
+    {
+      "question": "What does the acronym 'PLA' stand for in naval message addressing?",
+      "options": [
+        "Plain Language Address",
+        "Primary Location Address",
+        "Postal Location Address",
+        "Primary Language Address"
+      ],
+      "id": 75,
+      "correct_answer": "Plain Language Address"
+    },
+    {
+      "question": "What does the acronym 'AIG' stand for in message addressing?",
+      "options": [
+        "Address Indicator Group",
+        "Administrative Information Group",
+        "Action Indicator Group",
+        "Allied Information Group"
+      ],
+      "id": 76,
+      "correct_answer": "Address Indicator Group"
+    },
+    {
+      "question": "What does the acronym 'CAD' stand for in message addressing?",
+      "options": [
+        "Collective Address Designator",
+        "Command Address Directory",
+        "Common Address Directory",
+        "Command Administration Designator"
+      ],
+      "id": 77,
+      "correct_answer": "Collective Address Designator"
+    },
+    {
+      "question": "What does the special classification marking 'RD' stand for?",
+      "options": [
+        "Restricted Data",
+        "Releasable Document",
+        "Restricted Distribution",
+        "Re-routing Directory"
+      ],
+      "id": 78,
+      "correct_answer": "Restricted Data"
+    },
+    {
+      "question": "What does the special classification marking 'FRD' stand for?",
+      "options": [
+        "Formerly Restricted Data",
+        "Federal Restricted Document",
+        "Force Readiness Directory",
+        "Foreign Release Data"
+      ],
+      "id": 79,
+      "correct_answer": "Formerly Restricted Data"
+    },
+    {
+      "question": "What does the marking 'FOUO' stand for in unclassified defense documents?",
+      "options": [
+        "For Official Use Only",
+        "Federal Operational Use Only",
+        "For Operational Utility Only",
+        "Foreign Operations Unit Only"
+      ],
+      "id": 80,
+      "correct_answer": "For Official Use Only"
+    },
+    {
+      "question": "What does the marking 'SPECAT' stand for?",
+      "options": [
+        "Special Category",
+        "Special Classification Alert",
+        "Special Cryptographic Authority",
+        "Special Communications Agency Tactical"
+      ],
+      "id": 81,
+      "correct_answer": "Special Category"
+    },
+    {
+      "question": "What does the marking 'COMMSHIFT' represent?",
+      "options": [
+        "Communications Guard Shift message",
+        "Communications Security Shift report",
+        "Communications Channel Shift log",
+        "Command Circuit Shift directive"
+      ],
+      "id": 82,
+      "correct_answer": "Communications Guard Shift message"
+    },
+    {
+      "question": "What does the marking 'COMMSPOT' stand for?",
+      "options": [
+        "Communications Spot Report",
+        "Communications Security Spot check",
+        "Command Operations Monitoring Spot",
+        "Communications Outage Position Status"
+      ],
+      "id": 83,
+      "correct_answer": "Communications Spot Report"
     }
   ]
 }

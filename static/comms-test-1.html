@@ -568,26 +568,63 @@
         .sequence-item.correct .sequence-term {
             display: block;
         }
-        .sequence-controls {
-            display: flex;
-            gap: 6px;
+        .sequence-item.empty {
+            min-height: 64px;
+            border: 2px dashed #475569;
+            background: rgba(30, 41, 59, 0.45);
+            cursor: pointer;
         }
-        .sequence-controls button {
-            width: 44px;
-            height: 44px;
-            min-width: 44px;
-            min-height: 44px;
-            padding: 0;
-            border-radius: 10px;
-            background: var(--panel);
-            color: var(--text);
+        .sequence-item.empty:hover,
+        .sequence-item.empty.ready {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.08);
+        }
+        .sequence-placeholder {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        .sequence-bank-wrap {
+            width: 100%;
+            padding: 14px;
             border: 1px solid #475569;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: var(--radius);
+            background: var(--panel);
         }
-        .sequence-controls button:hover { background: #334155; }
+        .sequence-bank-wrap h3 {
+            margin: 0 0 12px;
+            color: var(--muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .sequence-bank {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+        .sequence-bank-item {
+            min-height: 58px;
+            padding: 10px 12px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background: var(--card);
+            color: var(--text);
+            text-align: left;
+            line-height: 1.3;
+        }
+        .sequence-bank-item:hover { border-color: #64748b; }
+        .sequence-bank-item.selected {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.14);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.18);
+        }
+        .sequence-bank-empty {
+            grid-column: 1 / -1;
+            color: var(--muted);
+            text-align: center;
+            font-size: 0.9rem;
+            padding: 8px;
+        }
         .game-actions {
             display: flex;
             gap: 12px;
@@ -1013,8 +1050,12 @@
                 </div>
             </div>
 
-            <p class="game-instructions">Drag and drop the lines, or use the ↑/↓ arrows, to put the GENSER format lines in order. Then tap Verify.</p>
+            <p class="game-instructions">Choose a message line from the word bank, then tap the numbered space where it belongs. Tap a filled space to move that line back to the bank.</p>
             <ul class="sequence-list" id="sequence-list"></ul>
+            <div class="sequence-bank-wrap">
+                <h3>Word bank</h3>
+                <div class="sequence-bank" id="sequence-bank"></div>
+            </div>
 
             <div class="game-actions">
                 <button id="verify-btn">Verify Order</button>
@@ -1186,6 +1227,8 @@
             },
             game: {
                 lines: [],
+                bank: [],
+                selectedId: null,
                 expected: [],
                 verified: false,
                 startTime: 0,
@@ -1262,6 +1305,7 @@
             onboardingSkip: document.getElementById("onboarding-skip"),
 
             gameList: document.getElementById("sequence-list"),
+            gameBank: document.getElementById("sequence-bank"),
             gameTimer: document.getElementById("timer"),
             gameScore: document.getElementById("score"),
             verifyBtn: document.getElementById("verify-btn"),
@@ -1597,13 +1641,29 @@
             }
         }
 
-        function moveGameItem(index, direction) {
+        function selectGameBankItem(id) {
             if (state.game.verified) return;
-            const newIndex = index + direction;
-            if (newIndex < 0 || newIndex >= state.game.lines.length) return;
-            const temp = state.game.lines[index];
-            state.game.lines[index] = state.game.lines[newIndex];
-            state.game.lines[newIndex] = temp;
+            state.game.selectedId = state.game.selectedId === id ? null : id;
+            renderGameList();
+        }
+
+        function placeGameItem(index) {
+            if (state.game.verified) return;
+            const current = state.game.lines[index];
+            if (!state.game.selectedId) {
+                if (!current) return;
+                state.game.bank.push(current);
+                state.game.lines[index] = null;
+                renderGameList();
+                return;
+            }
+
+            const bankIndex = state.game.bank.findIndex((item) => item.id === state.game.selectedId);
+            if (bankIndex < 0) return;
+            const selected = state.game.bank.splice(bankIndex, 1)[0];
+            if (current) state.game.bank.push(current);
+            state.game.lines[index] = selected;
+            state.game.selectedId = null;
             renderGameList();
         }
 
@@ -1611,10 +1671,7 @@
             els.gameList.innerHTML = "";
             state.game.lines.forEach((item, index) => {
                 const li = document.createElement("li");
-                li.className = "sequence-item";
-                li.draggable = !state.game.verified;
-                li.dataset.index = index;
-                li.dataset.id = item.id;
+                li.className = `sequence-item${item ? "" : " empty"}${state.game.selectedId ? " ready" : ""}`;
 
                 const number = document.createElement("span");
                 number.className = "sequence-number";
@@ -1622,78 +1679,61 @@
                 number.textContent = slotItem ? gameLineNumber(slotItem) : index + 1;
                 li.appendChild(number);
 
-                const label = document.createElement("div");
-                label.className = "sequence-label";
-                const element = document.createElement("strong");
-                element.className = "sequence-element";
-                element.textContent = item.element || item.definition || "Unknown line";
-                label.appendChild(element);
-                const term = document.createElement("span");
-                term.className = "sequence-term";
-                term.textContent = item.term;
-                label.appendChild(term);
-                li.appendChild(label);
+                if (item) {
+                    const label = document.createElement("div");
+                    label.className = "sequence-label";
+                    const element = document.createElement("strong");
+                    element.className = "sequence-element";
+                    element.textContent = item.element || item.definition || "Unknown line";
+                    label.appendChild(element);
+                    const term = document.createElement("span");
+                    term.className = "sequence-term";
+                    term.textContent = item.term;
+                    label.appendChild(term);
+                    li.appendChild(label);
+                } else {
+                    const placeholder = document.createElement("span");
+                    placeholder.className = "sequence-placeholder";
+                    placeholder.textContent = state.game.selectedId ? "Tap to place here" : "Choose a line from the word bank";
+                    li.appendChild(placeholder);
+                }
 
-                const controls = document.createElement("div");
-                controls.className = "sequence-controls";
-                const upBtn = document.createElement("button");
-                upBtn.textContent = "↑";
-                upBtn.setAttribute("aria-label", "Move up");
-                upBtn.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    moveGameItem(index, -1);
-                });
-                const downBtn = document.createElement("button");
-                downBtn.textContent = "↓";
-                downBtn.setAttribute("aria-label", "Move down");
-                downBtn.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    moveGameItem(index, 1);
-                });
-                controls.appendChild(upBtn);
-                controls.appendChild(downBtn);
-                li.appendChild(controls);
-
-                attachGameDragEvents(li);
+                if (!state.game.verified) li.addEventListener("click", () => placeGameItem(index));
                 els.gameList.appendChild(li);
             });
-        }
 
-        function attachGameDragEvents(li) {
-            if (state.game.verified) return;
-            li.addEventListener("dragstart", (e) => {
-                li.classList.add("dragging");
-                e.dataTransfer.setData("text/plain", li.dataset.index);
-                e.dataTransfer.effectAllowed = "move";
+            els.gameBank.innerHTML = "";
+            state.game.bank.forEach((item) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = `sequence-bank-item${state.game.selectedId === item.id ? " selected" : ""}`;
+                button.textContent = item.element || item.definition || "Unknown line";
+                button.setAttribute("aria-pressed", state.game.selectedId === item.id ? "true" : "false");
+                button.addEventListener("click", () => selectGameBankItem(item.id));
+                els.gameBank.appendChild(button);
             });
-            li.addEventListener("dragend", () => {
-                li.classList.remove("dragging");
-            });
-            li.addEventListener("dragover", (e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = "move";
-            });
-            li.addEventListener("drop", (e) => {
-                e.preventDefault();
-                if (state.game.verified) return;
-                const fromIndex = parseInt(e.dataTransfer.getData("text/plain"), 10);
-                const toIndex = parseInt(li.dataset.index, 10);
-                if (Number.isNaN(fromIndex) || Number.isNaN(toIndex) || fromIndex === toIndex) return;
-                const moved = state.game.lines.splice(fromIndex, 1)[0];
-                state.game.lines.splice(toIndex, 0, moved);
-                renderGameList();
-            });
+            if (!state.game.bank.length) {
+                const empty = document.createElement("div");
+                empty.className = "sequence-bank-empty";
+                empty.textContent = "All message lines have been placed.";
+                els.gameBank.appendChild(empty);
+            }
         }
 
         function verifyGameOrder() {
             if (state.game.verified) return;
+            if (state.game.lines.some((item) => !item)) {
+                els.gameResult.textContent = "Place every message line before verifying.";
+                els.gameResult.className = "result-message error";
+                return;
+            }
             stopGameTimer();
             state.game.verified = true;
 
             let correct = 0;
             const items = els.gameList.querySelectorAll(".sequence-item");
             state.game.lines.forEach((item, index) => {
-                const isCorrect = item.id === state.game.expected[index].id;
+                const isCorrect = item && item.id === state.game.expected[index].id;
                 items[index].classList.add(isCorrect ? "correct" : "incorrect");
                 items[index].classList.add("verified");
                 items[index].draggable = false;
@@ -1730,7 +1770,9 @@
                 const all = await getByCategory("genserFormatLines");
                 state.game.expected = all.slice().sort((a, b) => gameLineNumber(a) - gameLineNumber(b));
             }
-            state.game.lines = shuffleArray(state.game.expected);
+            state.game.lines = Array(state.game.expected.length).fill(null);
+            state.game.bank = shuffleArray(state.game.expected);
+            state.game.selectedId = null;
             renderGameList();
             startGameTimer();
         }
@@ -2248,8 +2290,18 @@
             els.menuCards.forEach((card) => {
                 card.addEventListener("click", () => showMode(card.dataset.mode));
             });
+            const studyExam = new URLSearchParams(window.location.search).get("from") === "study"
+                ? new URLSearchParams(window.location.search).get("exam")
+                : "";
             els.backBtns.forEach((btn) => {
-                btn.addEventListener("click", () => showMode("menu"));
+                if (studyExam) btn.textContent = "← Back to Exam Study";
+                btn.addEventListener("click", () => {
+                    if (studyExam) {
+                        window.location.href = `/study?exam=${encodeURIComponent(studyExam)}`;
+                        return;
+                    }
+                    showMode("menu");
+                });
             });
 
             els.select.addEventListener("change", () => loadCategory(els.select.value));

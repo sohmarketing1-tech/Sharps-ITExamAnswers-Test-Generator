@@ -310,6 +310,8 @@ const els = {
     countGroup: document.getElementById("count-group"),
     startRow: document.getElementById("start-row"),
     settingsRow: document.getElementById("settings-row"),
+    commsGames: document.getElementById("comms-games"),
+    commsGamesList: document.getElementById("comms-games-list"),
     masteryPanel: document.getElementById("mastery-panel"),
     flashcardPanel: document.getElementById("flashcard-panel"),
     fcPanelModeQuestion: document.getElementById("fc-panel-mode-question"),
@@ -1189,8 +1191,12 @@ async function loadExams() {
             state.currentFilename = null;
             updateNoExamPrompt();
             setMessage("Select an exam from above to get started.");
-            if (typeof window.EXAM_FILENAME === "string" && window.EXAM_FILENAME && state.exams.find((e) => e.filename === window.EXAM_FILENAME)) {
-                await loadExam(window.EXAM_FILENAME, true);
+            const examParam = new URLSearchParams(window.location.search).get("exam");
+            const requestedExam = examParam || (typeof window.EXAM_FILENAME === "string" ? window.EXAM_FILENAME : "");
+            if (requestedExam && state.exams.find((e) => e.filename === requestedExam)) {
+                els.examButtons.dataset.viewCategory = getCategoryForFilename(requestedExam);
+                renderExamButtons();
+                await loadExam(requestedExam, true);
                 switchTab("practice");
             }
         } else {
@@ -1237,10 +1243,25 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     const selectedCategory = activeFilename ? getCategoryForFilename(activeFilename) : "";
     const activeCategory = container.dataset.viewCategory || selectedCategory || defaultCategory || groups[0].category;
 
+    const header = document.createElement("div");
+    header.className = "exam-category-header";
+
     const label = document.createElement("div");
     label.className = "exam-category-label";
-    label.textContent = "Choose a category:";
-    container.appendChild(label);
+    label.textContent = "Choose an exam.";
+    header.appendChild(label);
+
+    if (container === els.examButtons) {
+        const historyBtn = document.createElement("button");
+        historyBtn.type = "button";
+        historyBtn.className = "screen-history-btn";
+        historyBtn.setAttribute("aria-label", "History");
+        historyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span>`;
+        historyBtn.addEventListener("click", () => switchTab("history"));
+        header.appendChild(historyBtn);
+    }
+
+    container.appendChild(header);
 
     const tabs = document.createElement("div");
     tabs.className = "exam-category-tabs";
@@ -1256,7 +1277,15 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
         tab.setAttribute("aria-selected", category === activeCategory ? "true" : "false");
         tab.addEventListener("click", () => {
             container.dataset.viewCategory = category;
-            renderExamGroups(container, activeFilename, onSelect, category);
+            if (container === els.examButtons) {
+                state.currentFilename = null;
+                setMode(null);
+                updateNoExamPrompt();
+            } else if (container === els.flashcardExamButtons) {
+                state.flashcardFilename = null;
+                updateFlashcardSteps();
+            }
+            renderExamGroups(container, null, onSelect, category);
         });
         tabs.appendChild(tab);
     });
@@ -1318,11 +1347,10 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     const activeGroup = groups.find((g) => g.category === activeCategory) || groups[0];
     const grid = document.createElement("div");
     grid.className = "exam-grid";
-    activeGroup.exams.forEach((exam) => {
-        const isNaval = exam.filename === "naval-messaging.json" && exam.filename === activeFilename && container === els.examButtons;
-        const cell = isNaval ? document.createElement("div") : null;
-        if (cell) cell.className = "exam-grid-cell";
-
+    const activeIndex = activeGroup.exams.findIndex((e) => e.filename === activeFilename);
+    const shouldCollapse = activeGroup.exams.length > 4 && activeIndex < 4;
+    let seeMoreBtn = null;
+    activeGroup.exams.forEach((exam, i) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "btn btn-exam" + (activeFilename === exam.filename ? " active" : "");
@@ -1334,42 +1362,22 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
             renderExamGroups(container, exam.filename, onSelect, container.dataset.viewCategory);
         });
 
-        if (cell) {
-            cell.appendChild(btn);
+        if (shouldCollapse && i >= 4) {
+            btn.classList.add("hidden", "exam-hidden");
+        }
+        grid.appendChild(btn);
 
-            const apps = [
-                {
-                    name: "Signal Match",
-                    mode: "signal",
-                    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`
-                },
-                {
-                    name: "Message Lines",
-                    mode: "game",
-                    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`
-                },
-                {
-                    name: "Category Sorter",
-                    mode: "sorter",
-                    svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`
-                }
-            ];
-
-            const appRow = document.createElement("div");
-            appRow.className = "exam-mini-apps";
-            apps.forEach(({ name, mode, svg }) => {
-                const a = document.createElement("a");
-                a.href = `/comms-test-1.html?mode=${mode}`;
-                a.className = "exam-mini-app";
-                a.title = name;
-                a.innerHTML = `${svg}<span class="exam-mini-app-name">${escapeHtml(name)}</span>`;
-                appRow.appendChild(a);
+        if (shouldCollapse && i === 3) {
+            seeMoreBtn = document.createElement("button");
+            seeMoreBtn.type = "button";
+            seeMoreBtn.className = "btn see-more-exams";
+            seeMoreBtn.style.gridColumn = "1 / -1";
+            seeMoreBtn.innerHTML = `<span class="exam-name">See more exams</span>`;
+            seeMoreBtn.addEventListener("click", () => {
+                grid.querySelectorAll(".exam-hidden").forEach((el) => el.classList.remove("hidden"));
+                seeMoreBtn.classList.add("hidden");
             });
-
-            cell.appendChild(appRow);
-            grid.appendChild(cell);
-        } else {
-            grid.appendChild(btn);
+            grid.appendChild(seeMoreBtn);
         }
     });
     container.appendChild(grid);
@@ -1408,12 +1416,14 @@ async function loadExam(filename, updateSelection = true) {
         setAvailableCount(data.count);
         const requested = parseInt(els.questionCount.value, 10) || 20;
         els.questionCount.value = Math.min(requested, data.count);
-        setMessage("Ready to start.");
+        setMessage("");
         if (typeof updateFcPanelStartBtn === "function") updateFcPanelStartBtn();
         if (typeof renderFlashcardExamButtons === "function") renderFlashcardExamButtons();
         savePrefs();
         updatePracticeSteps();
         updateNoExamPrompt();
+        renderGameModes();
+        setMode("practice");
         await refreshMastery();
     } catch (err) {
         setMessage(err.message, "error");
@@ -1483,6 +1493,107 @@ function updateNoExamPrompt() {
     if (els.settingsRow) {
         els.settingsRow.classList.toggle("hidden", !state.currentFilename);
     }
+    if (els.commsGames) {
+        els.commsGames.classList.toggle("hidden", !state.currentFilename);
+    }
+}
+
+const EXAM_GAMES = {
+    "naval-messaging.json": [
+        {
+            name: "Signal Match",
+            page: "comms-test-1.html",
+            mode: "signal",
+            iconClass: "comms-game-icon-signal",
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`
+        },
+        {
+            name: "Message Lines",
+            page: "comms-test-1.html",
+            mode: "game",
+            iconClass: "comms-game-icon-message",
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`
+        },
+        {
+            name: "Category Sorter",
+            page: "comms-test-1.html",
+            mode: "sorter",
+            iconClass: "comms-game-icon-sorter",
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`
+        }
+    ],
+    "naval-comms-exam-v3.json": [
+        {
+            name: "Go / No-Go",
+            page: "mrts-test-2.html",
+            mode: "gng",
+            iconClass: "comms-game-icon-gng",
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>`
+        },
+        {
+            name: "Signal Path",
+            page: "mrts-test-2.html",
+            mode: "path",
+            iconClass: "comms-game-icon-path",
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h2l3-9 6 18 3-9h2"/></svg>`
+        },
+        {
+            name: "Acronym Match",
+            page: "mrts-test-2.html",
+            mode: "acronym",
+            iconClass: "comms-game-icon-acronym",
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`
+        },
+        {
+            name: "Nomenclature Flash",
+            page: "mrts-test-2.html",
+            mode: "nomflash",
+            iconClass: "comms-game-icon-nomflash",
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 8v8M8 12h8"/></svg>`
+        },
+        {
+            name: "Nomenclature Match",
+            page: "mrts-test-2.html",
+            mode: "nommatch",
+            iconClass: "comms-game-icon-nommatch",
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`
+        }
+    ]
+};
+
+function renderGameModes() {
+    if (!els.commsGamesList || !els.commsGames) return;
+    const games = EXAM_GAMES[state.currentFilename];
+    if (!games) {
+        els.commsGames.classList.add("hidden");
+        return;
+    }
+    els.commsGamesList.innerHTML = "";
+    games.forEach(({ name, page, mode, iconClass, svg }) => {
+        const a = document.createElement("a");
+        const params = new URLSearchParams({ mode, from: "study", exam: state.currentFilename });
+        a.href = `/${page}?${params}`;
+        a.className = "comms-game";
+        a.title = name;
+        a.innerHTML = `<span class="comms-game-icon ${iconClass}">${svg}</span><span class="comms-game-name"><span class="comms-game-name-inner">${escapeHtml(name)}</span></span>`;
+        els.commsGamesList.appendChild(a);
+        const nameOuter = a.querySelector(".comms-game-name");
+        const nameInner = a.querySelector(".comms-game-name-inner");
+        if (nameInner && nameOuter) {
+            const unit = escapeHtml(name) + "&nbsp;&nbsp;";
+            nameInner.innerHTML = unit;
+            const w = nameInner.scrollWidth;
+            if (w > nameOuter.clientWidth) {
+                nameOuter.classList.add("scroll");
+                nameInner.innerHTML = unit + unit;
+                nameInner.style.setProperty("--w", `${w}px`);
+                nameInner.style.animationDuration = `${Math.max(3, w / 30)}s`;
+            } else {
+                nameInner.textContent = name;
+            }
+        }
+    });
+    els.commsGames.classList.remove("hidden");
 }
 
 function renderMasteryPanel() {

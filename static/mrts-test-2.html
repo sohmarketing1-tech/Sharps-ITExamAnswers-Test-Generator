@@ -679,7 +679,18 @@
         }
 
         els.menuCards.forEach(card => card.addEventListener("click", () => setMode(card.dataset.mode)));
-        els.backBtns.forEach(btn => btn.addEventListener("click", () => setMode("menu")));
+        const pageParams = new URLSearchParams(window.location.search);
+        const studyExam = pageParams.get("from") === "study" ? pageParams.get("exam") : "";
+        els.backBtns.forEach(btn => {
+            if (studyExam) btn.textContent = "← Back to Exam Study";
+            btn.addEventListener("click", () => {
+                if (studyExam) {
+                    window.location.href = `/study?exam=${encodeURIComponent(studyExam)}`;
+                    return;
+                }
+                setMode("menu");
+            });
+        });
 
         // Go / No-Go
         function startGng() {
@@ -1066,7 +1077,13 @@
             return div.innerHTML;
         }
 
-        loadData().catch(err => {
+        const params = new URLSearchParams(window.location.search);
+        const modeParam = params.get("mode");
+        loadData().then(() => {
+            if (modeParam && ["gng", "path", "acronym", "nomflash", "nommatch"].includes(modeParam)) {
+                setMode(modeParam);
+            }
+        }).catch(err => {
             document.querySelector(".menu-subtitle").textContent = "Error loading study data: " + err.message;
         });
     </script>
