@@ -1108,6 +1108,21 @@ async function renderHomeRecentActivity() {
 }
 
 async function saveRecentActivity(type, label, tab, detail = "") {
+    if (typeof gtag === "function") {
+        const eventMap = {
+            practice: "study_complete",
+            game: "game_complete",
+            mastery: "mastery_complete",
+            flashcards: "flashcards_session",
+            cli: "cli_practice",
+        };
+        gtag("event", eventMap[type] || "answr_it_action", {
+            event_category: type,
+            event_label: label,
+            screen_tab: tab,
+            detail: detail,
+        });
+    }
     if (!state.user) return;
     try {
         await fetch(API.recentActivity, {
@@ -2039,6 +2054,13 @@ function setPageMeta(title, description, canonical, h1, intro) {
     if (intro) {
         const introEl = document.getElementById("seo-intro");
         if (introEl) introEl.textContent = intro;
+    }
+    if (typeof gtag === "function") {
+        gtag("event", "page_view", {
+            page_title: title,
+            page_location: canonical,
+            page_path: window.location.pathname,
+        });
     }
 }
 
