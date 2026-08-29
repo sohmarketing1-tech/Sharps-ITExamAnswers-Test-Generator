@@ -58,7 +58,13 @@
     <link rel="apple-touch-icon" href="/images/answrit-icon.png" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="stylesheet" href="/style.css?v=133" />
-    $GA_SCRIPT$
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TB1BG7F1XQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-TB1BG7F1XQ', { send_page_view: false });
+    </script>
 </head>
 <body>
     <div class="ambient-bg" aria-hidden="true">

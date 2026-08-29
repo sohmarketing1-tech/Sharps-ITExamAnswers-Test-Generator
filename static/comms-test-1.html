@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Comms Test 1 — Naval Messaging | AnswrIT</title>
     <link rel="icon" href="/images/answrit-logo.png" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TB1BG7F1XQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-TB1BG7F1XQ', { send_page_view: false });
+    </script>
     <style>
         :root {
             --body-bg-1: #1a2f4d;
@@ -1754,6 +1761,14 @@
                 els.gameResult.textContent = `${correct}/${state.game.lines.length} correct — score ${score}. Tap Reset to try again.`;
                 els.gameResult.className = "result-message error";
             }
+            if (typeof gtag === "function") {
+                gtag("event", "mini_game_complete", {
+                    game_name: "Message Lines",
+                    score: score,
+                    correct: correct,
+                    total: state.game.lines.length,
+                });
+            }
             els.verifyBtn.disabled = true;
         }
 
@@ -1857,6 +1872,13 @@
 
             els.signalResult.textContent = `All answered! Final score: ${state.signal.score}`;
             els.signalResult.className = "result-message success";
+            if (typeof gtag === "function") {
+                gtag("event", "mini_game_complete", {
+                    game_name: "Signal Match",
+                    score: state.signal.score,
+                    high_score: getSignalHighScore(),
+                });
+            }
         }
 
         function handleSignalOption(item, btn) {
@@ -1946,6 +1968,13 @@
             els.sorterStartBtn.disabled = false;
             els.sorterResult.textContent = `Finished! Score: ${state.sorter.score}/${state.sorter.items.length}`;
             els.sorterResult.className = "result-message success";
+            if (typeof gtag === "function") {
+                gtag("event", "mini_game_complete", {
+                    game_name: "GENSER Sorter",
+                    score: state.sorter.score,
+                    total: state.sorter.items.length,
+                });
+            }
         }
 
         function handleSorterDrop(bucketName) {

@@ -1110,8 +1110,8 @@ async function renderHomeRecentActivity() {
 async function saveRecentActivity(type, label, tab, detail = "") {
     if (typeof gtag === "function") {
         const eventMap = {
-            practice: "study_complete",
-            game: "game_complete",
+            practice: "practice_quiz_complete",
+            game: "game_tab_opened",
             mastery: "mastery_complete",
             flashcards: "flashcards_session",
             cli: "cli_practice",

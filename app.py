@@ -92,21 +92,6 @@ def build_exam_links_html() -> str:
     return f'<ul class="exam-links">{ "".join(items) }</ul>' if items else ""
 
 
-def build_ga_script() -> str:
-    ga_id = os.environ.get("GA_ID") or os.environ.get("NEXT_PUBLIC_GA_ID") or os.environ.get("VITE_GA_ID") or ""
-    if not ga_id:
-        return ""
-    return (
-        f'<script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>'
-        f'<script>'
-        f'  window.dataLayer = window.dataLayer || [];'
-        f'  function gtag(){{dataLayer.push(arguments);}}'
-        f'  gtag("js", new Date());'
-        f'  gtag("config", "{ga_id}", {{ send_page_view: false }});'
-        f'</script>'
-    )
-
-
 def render_index_html(page_title: str, page_description: str, canonical_url: str,
                       h1_text: str, seo_intro: str, exam_filename: str = "") -> Response:
     index_path = BASE_DIR / "static" / "index.html"
@@ -121,7 +106,6 @@ def render_index_html(page_title: str, page_description: str, canonical_url: str
         "$SEO_INTRO$": seo_intro,
         "$EXAM_FILENAME$": exam_filename,
         "$EXAM_LINKS$": build_exam_links_html(),
-        "$GA_SCRIPT$": build_ga_script(),
     }
     for token, value in replacements.items():
         html = html.replace(token, value)
