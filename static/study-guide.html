@@ -14,7 +14,7 @@
             flex-direction: column;
             box-sizing: border-box;
             background: var(--body-bg-1, #0f172a);
-            color: var(--text, #f1f5f9);
+            color: var(--text-on-bg, #f1f5f9);
         }
         .pdf-header {
             display: flex;
@@ -34,15 +34,15 @@
             gap: 8px;
             padding: 10px 14px;
             border-radius: 999px;
-            background: rgba(var(--primary-base), 0.08);
-            color: var(--text, #f1f5f9);
-            border: 1px solid var(--border, #334155);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-on-bg, #f1f5f9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 600;
         }
         .pdf-back:hover {
-            background: rgba(var(--primary-base), 0.14);
+            background: rgba(255, 255, 255, 0.14);
         }
         .pdf-title {
             font-size: 1rem;
@@ -52,6 +52,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--text-on-bg, #f1f5f9);
         }
         .pdf-download {
             display: inline-flex;
@@ -59,15 +60,15 @@
             gap: 6px;
             padding: 10px 14px;
             border-radius: 999px;
-            background: rgba(var(--accent-base), 0.12);
-            color: var(--accent, #38bdf8);
-            border: 1px solid rgba(var(--accent-base), 0.45);
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.45);
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 600;
         }
         .pdf-download:hover {
-            background: rgba(var(--accent-base), 0.2);
+            background: rgba(56, 189, 248, 0.2);
         }
         .pdf-viewer {
             position: relative;
