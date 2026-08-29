@@ -16,7 +16,7 @@ app = Flask(__name__, static_folder="static", static_url_path="")
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-SITE_URL = "https://answrit.net"
+SITE_URL = "https://www.answrit.net"
 DEFAULT_PAGE_TITLE = "AnswrIT - Free Practice Tests, Flashcards & Study Guides for Cisco ITE, CCNA & Navy IT"
 DEFAULT_PAGE_DESCRIPTION = "AnswrIT is a free interactive study platform for Cisco ITE, CCNA, Netacad, and Navy IT Rate exams. Take practice tests, flip flashcards, track mastery, and play interactive study games."
 

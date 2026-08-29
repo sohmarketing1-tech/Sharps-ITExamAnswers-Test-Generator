@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://answrit.net/sitemap.xml
+Sitemap: https://www.answrit.net/sitemap.xml
