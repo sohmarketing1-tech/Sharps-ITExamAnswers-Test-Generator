@@ -1995,6 +1995,53 @@ function goBackToApp() {
 const TAB_KEY = "answrit_active_tab";
 const PREFS_KEY = "answrit_prefs";
 
+const HOME_H1 = "AnswrIT — Cisco Netacad & Navy IT Exam Study Platform";
+const HOME_INTRO = "Free interactive practice tests, flashcards, and mastery tools for Cisco ITE, CCNA, Netacad, and Navy IT Rate A school exams.";
+
+const PAGE_TITLES = {
+    home: "AnswrIT - Free Practice Tests, Flashcards & Study Guides for Cisco ITE, CCNA & Navy IT",
+    practice: "Practice Tests & Exam Study — AnswrIT",
+    flashcards: "Flashcards & Spaced Repetition — AnswrIT",
+    gallery: "Interactive Study Games & Arcade — AnswrIT",
+    history: "Progress & Mastery Tracking — AnswrIT",
+    packetTracer: "Packet Tracer Final Practice — AnswrIT",
+    community: "Community Chat — AnswrIT",
+};
+
+const PAGE_DESCRIPTIONS = {
+    home: "AnswrIT is a free interactive study platform for Cisco ITE, CCNA, Netacad, and Navy IT Rate exams. Take practice tests, flip flashcards, track mastery, and play interactive study games.",
+    practice: "Take custom-length, interactive practice tests for Cisco ITE, CCNA, Netacad, and Navy IT Rate A school exams. Track mastery and focus on weak areas.",
+    flashcards: "Swipe through flashcard decks for networking terms, Q/Z signals, and naval communications. Study at your own pace with smart review tracking.",
+    gallery: "Play interactive study games and drills for CCNA, ITE, and Naval Communications. GENSER sequence, signal matching, subnetting, CLI, and more.",
+    history: "View your practice test scores, mastery progress, streaks, and study history across all Cisco and Navy IT exams on AnswrIT.",
+    packetTracer: "Practice subnetting, Cisco CLI commands, and Packet Tracer lab tasks for the CCNA final exam. Build confidence before test day.",
+    community: "Talk with peers, recommend changes, request new exams, and report bugs on the AnswrIT community chat.",
+};
+
+function setPageMeta(title, description, canonical, h1, intro) {
+    document.title = title;
+    const descEl = document.querySelector('meta[name="description"]');
+    if (descEl) descEl.setAttribute("content", description);
+    const canonEl = document.querySelector('link[rel="canonical"]');
+    if (canonEl) canonEl.setAttribute("href", canonical);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", title);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute("content", description);
+    const twTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twTitle) twTitle.setAttribute("content", title);
+    const twDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twDesc) twDesc.setAttribute("content", description);
+    if (h1) {
+        const h1El = document.getElementById("seo-h1");
+        if (h1El) h1El.textContent = h1;
+    }
+    if (intro) {
+        const introEl = document.getElementById("seo-intro");
+        if (introEl) introEl.textContent = intro;
+    }
+}
+
 function savePrefs() {
     if (state._restoringPrefs) return;
     try {
@@ -2052,11 +2099,19 @@ function switchTab(tabName) {
     });
     stopChatPolling();
     // Update URL
-    const TAB_ROUTES = { home: "/", practice: "/study", flashcards: "/study", packetTracer: "/packet-tracer", gallery: "/apps", history: "/history" };
+    const TAB_ROUTES = { home: "/", practice: "/study", flashcards: "/flashcards", packetTracer: "/packet-tracer", gallery: "/apps", history: "/history" };
     const route = TAB_ROUTES[tabName];
     if (route && window.location.pathname !== route) {
         history.pushState({ tab: tabName }, "", route);
     }
+
+    const pageTitle = PAGE_TITLES[tabName] || (GAME_NAMES[tabName] ? `${GAME_NAMES[tabName]} — AnswrIT` : PAGE_TITLES.home);
+    const pageDescription = PAGE_DESCRIPTIONS[tabName] || (GAME_NAMES[tabName] ? `Play ${GAME_NAMES[tabName]} on AnswrIT, an interactive study game for CCNA, ITE, and naval communications.` : PAGE_DESCRIPTIONS.home);
+    const base = window.location.origin;
+    const canonical = route ? (route === "/" ? `${base}/` : `${base}${route}/`) : `${base}${window.location.pathname}`;
+    const h1 = tabName === "home" ? HOME_H1 : null;
+    const intro = tabName === "home" ? HOME_INTRO : null;
+    setPageMeta(pageTitle, pageDescription, canonical, h1, intro);
     if (tabName === "home") {
         showScreen("home");
     } else if (tabName === "packetTracer") {

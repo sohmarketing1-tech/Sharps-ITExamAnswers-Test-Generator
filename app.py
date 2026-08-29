@@ -17,8 +17,8 @@ app = Flask(__name__, static_folder="static", static_url_path="")
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 SITE_URL = "https://answrit.net"
-DEFAULT_PAGE_TITLE = "AnswrIT - ITE & CCNA Exam Answers | Netacad & Navy IT Rate Study Guide"
-DEFAULT_PAGE_DESCRIPTION = "Free ITE answers, CCNA exam answers, and Netacad study help for the Navy IT rate A school and Cisco certification students. Practice tests, flashcards, and mastery tracking."
+DEFAULT_PAGE_TITLE = "AnswrIT - Free Practice Tests, Flashcards & Study Guides for Cisco ITE, CCNA & Navy IT"
+DEFAULT_PAGE_DESCRIPTION = "AnswrIT is a free interactive study platform for Cisco ITE, CCNA, Netacad, and Navy IT Rate exams. Take practice tests, flip flashcards, track mastery, and play interactive study games."
 
 
 @app.after_request
@@ -636,9 +636,43 @@ def index():
         page_title=DEFAULT_PAGE_TITLE,
         page_description=DEFAULT_PAGE_DESCRIPTION,
         canonical_url=f"{SITE_URL}/",
-        h1_text="AnswrIT - Free ITE & CCNA Exam Answers for Netacad Students",
-        seo_intro="Boost your scores with free ITE answers, CCNA answers, and Netacad study tools. Built for Navy IT rate A school students and anyone taking Cisco IT Essentials or CCNA certification exams.",
+        h1_text="AnswrIT — Cisco Netacad & Navy IT Exam Study Platform",
+        seo_intro="Free interactive practice tests, flashcards, and mastery tools for Cisco ITE, CCNA, Netacad, and Navy IT Rate A school exams.",
     )
+
+
+SPA_PAGE_SEO = {
+    "/study": {
+        "title": "Practice Tests & Exam Study — AnswrIT",
+        "description": "Take custom-length, interactive practice tests for Cisco ITE, CCNA, Netacad, and Navy IT Rate A school exams. Track mastery and focus on weak areas.",
+        "h1": "Interactive Practice Tests for Cisco & Navy IT Exams",
+        "intro": "Build and take practice tests for ITE, CCNA, and Navy IT Rate A school exams. Set your own question count, see instant feedback, and track mastery over time.",
+    },
+    "/flashcards": {
+        "title": "Flashcards & Spaced Repetition — AnswrIT",
+        "description": "Swipe through flashcard decks for networking terms, Q/Z signals, and naval communications. Study at your own pace with smart review tracking.",
+        "h1": "Flashcard Decks for Networking & Naval Communications",
+        "intro": "Memorize networking terms, Q/Z signals, and naval comms concepts with swipeable flashcards. Flip, rate, and review only the cards you need.",
+    },
+    "/apps": {
+        "title": "Interactive Study Games & Arcade — AnswrIT",
+        "description": "Play interactive study games and drills for CCNA, ITE, and Naval Communications. GENSER sequence, signal matching, subnetting, CLI, and more.",
+        "h1": "Interactive Study Games for CCNA, ITE & Naval Communications",
+        "intro": "Reinforce what you have learned with arcade-style study games. GENSER sequence ordering, signal matching, subnetting, CLI commands, and more.",
+    },
+    "/history": {
+        "title": "Progress & Mastery Tracking — AnswrIT",
+        "description": "View your practice test scores, mastery progress, streaks, and study history across all Cisco and Navy IT exams on AnswrIT.",
+        "h1": "Track Your Mastery & Exam Progress",
+        "intro": "Review scores, streaks, and mastered questions across every exam. See where you are strong and where to focus next.",
+    },
+    "/packet-tracer": {
+        "title": "Packet Tracer Final Practice — AnswrIT",
+        "description": "Practice subnetting, Cisco CLI commands, and Packet Tracer lab tasks for the CCNA final exam. Build confidence before test day.",
+        "h1": "Packet Tracer Final Exam Practice",
+        "intro": "Work through subnetting, CLI configuration, and Packet Tracer lab scenarios designed to prepare you for the CCNA final.",
+    },
+}
 
 
 @app.route("/study")
@@ -652,12 +686,17 @@ def index():
 @app.route("/packet-tracer")
 @app.route("/packet-tracer/")
 def spa_pages():
+    path = request.path.rstrip("/") or "/"
+    seo = SPA_PAGE_SEO.get(path)
+    if not seo:
+        return redirect("/", code=302)
+    canonical = f"{SITE_URL}{path}/" if path != "/" else f"{SITE_URL}/"
     return render_index_html(
-        page_title=DEFAULT_PAGE_TITLE,
-        page_description=DEFAULT_PAGE_DESCRIPTION,
-        canonical_url=f"{SITE_URL}/",
-        h1_text="AnswrIT",
-        seo_intro="",
+        page_title=seo["title"],
+        page_description=seo["description"],
+        canonical_url=canonical,
+        h1_text=seo["h1"],
+        seo_intro=seo["intro"],
     )
 
 
@@ -668,11 +707,11 @@ def exam_page(slug: str):
         return redirect("/", code=302)
     filename = exam.get("filename", f"{slug}.json")
     display = display_name_for(filename, exam.get("display_name", ""))
-    title = f"{display} Exam Answers - AnswrIT"
-    description = f"Free {display} exam answers and practice tests. Study flashcards, mastery mode, and timed quizzes for Netacad and Navy IT A school students."
+    title = f"{display} Practice Test & Study Guide — AnswrIT"
+    description = f"Free {display} practice test, flashcards, and study guide. Interactive mastery mode and quizzes for Netacad and Navy IT A school students."
     canonical = f"{SITE_URL}/exams/{slug}/"
-    h1 = f"{display} Exam Answers & Practice Tests"
-    intro = f"Get free {display} exam answers, practice tests, and flashcards on AnswrIT. Built for Netacad students and Navy IT rate A school trainees."
+    h1 = f"{display} Practice Test & Study Guide"
+    intro = f"Prepare for the {display} with free practice tests, flashcards, and mastery mode on AnswrIT. Built for Netacad and Navy IT Rate A school students."
     return render_index_html(
         page_title=title,
         page_description=description,
@@ -699,8 +738,10 @@ def sitemap():
     lines = ['<?xml version="1.0" encoding="UTF-8"?>']
     lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
     lines.append(f"  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><priority>1.0</priority></url>")
+    for page in ["/study/", "/flashcards/", "/apps/", "/history/", "/packet-tracer/"]:
+        lines.append(f"  <url><loc>{SITE_URL}{page}</loc><lastmod>{today}</lastmod><priority>0.7</priority></url>")
     for slug in slugs:
-        lines.append(f"  <url><loc>{SITE_URL}/exams/{slug}/</loc><lastmod>{today}</lastmod><priority>0.8</priority></url>")
+        lines.append(f"  <url><loc>{SITE_URL}/exams/{slug}/</loc><lastmod>{today}</lastmod><priority>0.9</priority></url>")
     lines.append("</urlset>")
     return Response("\n".join(lines), mimetype="application/xml")
 

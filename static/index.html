@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>$PAGE_TITLE$</title>
     <meta name="description" content="$PAGE_DESCRIPTION$" />
-    <meta name="keywords" content="ITE answers, ITE exam answers, Netacad ITE, Cisco ITE, CCNA answers, CCNA exam answers, Navy IT rate A school, IT Essentials answers, Netacad answers, Cisco certification study guide, AnswrIT, answer it" />
+    <meta name="keywords" content="AnswrIT, AnswerIT, Answer IT, Answer-IT, Cisco ITE, CCNA prep, Netacad study guide, Navy IT rate, Naval messaging, practice test, flashcards, mastery, ITE answers, CCNA answers" />
     <meta name="robots" content="index, follow" />
     <meta name="google-site-verification" content="zy_GMrk7XuRJ3CPyBjJulYKXw-0XidwXvo18Ai_C2nY" />
     <link rel="canonical" href="$CANONICAL_URL$" />
@@ -25,7 +25,7 @@
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "AnswrIT",
-        "alternateName": "Answer It",
+        "alternateName": ["AnswerIT", "Answer IT", "Answer-IT"],
         "url": "$SITE_URL$",
         "description": "$PAGE_DESCRIPTION$",
         "potentialAction": {
@@ -33,6 +33,25 @@
             "target": "/?q={search_term_string}",
             "query-input": "required name=search_term_string"
         }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalApplication",
+        "name": "AnswrIT",
+        "alternateName": ["AnswerIT", "Answer IT", "Answer-IT"],
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "educationalUse": "Exam preparation",
+        "description": "$PAGE_DESCRIPTION$",
+        "url": "$SITE_URL$",
+        "about": "Cisco Netacad IT Essentials, CCNA, and Navy IT Rate exam preparation"
     }
     </script>
     <link rel="icon" type="image/png" href="/images/answrit-icon.png" />
@@ -211,8 +230,8 @@
             <section id="home-screen" class="screen active">
                 <!-- Hero -->
                 <div class="home-hero-col">
-                    <h1 class="home-welcome-title">Welcome back</h1>
-                    <p class="home-welcome-sub">What would you like to do?</p>
+                    <h1 class="home-welcome-title" id="seo-h1">$H1_TEXT$</h1>
+                    <p class="home-welcome-sub" id="seo-intro">$SEO_INTRO$</p>
                 </div>
 
                 <!-- Primary Actions -->
