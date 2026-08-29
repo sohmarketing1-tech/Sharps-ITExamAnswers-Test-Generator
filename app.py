@@ -727,8 +727,7 @@ def google_verify():
     return send_from_directory(app.static_folder, "google46429450d03302f8.html")
 
 
-@app.route("/sitemap.xml")
-def sitemap():
+def _build_sitemap() -> str:
     today = datetime.date.today().isoformat()
     slugs = []
     for exam in load_exam_manifest():
@@ -743,7 +742,18 @@ def sitemap():
     for slug in slugs:
         lines.append(f"  <url><loc>{SITE_URL}/exams/{slug}/</loc><lastmod>{today}</lastmod><priority>0.9</priority></url>")
     lines.append("</urlset>")
-    return Response("\n".join(lines), mimetype="application/xml")
+    return "\n".join(lines)
+
+
+def write_sitemap(path: Path = BASE_DIR / "static" / "sitemap.xml"):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(_build_sitemap(), encoding="utf-8")
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    write_sitemap()
+    return send_from_directory(BASE_DIR / "static", "sitemap.xml", mimetype="application/xml")
 
 
 @app.route("/api/state")
@@ -1616,6 +1626,9 @@ def download_study_guide(filename):
     if not str(safe_path).startswith(str(study_guides_dir.resolve())) or not safe_path.exists():
         abort(404)
     return send_from_directory(study_guides_dir, filename, as_attachment=True)
+
+
+write_sitemap()
 
 
 if __name__ == "__main__":
