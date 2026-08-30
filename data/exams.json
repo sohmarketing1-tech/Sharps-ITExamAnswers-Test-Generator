@@ -68,20 +68,22 @@
       "display_name": "CCNA 1 v7 Final Exam"
     },
     {
-      "title": "Naval Messaging",
+      "title": "Comms Test 1",
       "url": "",
       "filename": "naval-messaging.json",
       "count": 83,
-      "display_name": "Naval Messaging",
+      "display_name": "Comms Test 1",
       "study_guide": "/study-guides/Naval_Messaging_Complete_Study_Guide.pdf"
     },
     {
-      "title": "MRTS Test 2",
+      "title": "Comms Test 2",
       "url": "",
       "filename": "naval-comms-exam-v3.json",
       "count": 100,
-      "display_name": "MRTS Test 2",
-      "study_guide": "/study-guides/Naval_Communications_and_Telecommunications_Operations_Manual.pdf"
+      "display_name": "Comms Test 2",
+      "study_guide": "/study-guides/Naval_Communications_and_Telecommunications_Operations_Manual.pdf",
+      "flashcard_file": "master-recall-flashcards.json",
+      "flashcard_count": 50
     }
   ]
 }

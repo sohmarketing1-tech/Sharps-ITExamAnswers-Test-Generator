@@ -506,24 +506,10 @@
                         </div>
 
                         <div id="flashcard-panel" class="flashcard-panel hidden">
-                            <div class="form-group">
-                                <label>Card style</label>
-                                <div class="mode-toggle">
-                                    <button id="fc-panel-mode-question" class="btn btn-primary mode-btn active">Question only</button>
-                                    <button id="fc-panel-mode-choices" class="btn btn-secondary mode-btn">Show choices</button>
-                                </div>
-                                <p id="fc-panel-mode-desc" class="mode-description">Front shows just the question. Flip to see the answer.</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Cards to show</label>
-                                <div class="mode-toggle">
-                                    <button id="fc-panel-filter-all" class="btn btn-primary mode-btn active">All cards</button>
-                                    <button id="fc-panel-filter-review" class="btn btn-secondary mode-btn">Review only</button>
-                                </div>
-                                <p id="fc-panel-review-count" class="mode-description">Log in to keep a saved review list.</p>
-                            </div>
+                            <p id="fc-panel-review-count" class="mode-description">Log in to keep a saved review list.</p>
                             <div class="button-row compact">
                                 <button id="fc-panel-start-btn" class="btn btn-success" disabled>Start Flashcards</button>
+                                <button id="fc-panel-review-start-btn" class="btn btn-secondary" disabled>Review Flagged Cards</button>
                             </div>
                         </div>
 
@@ -771,40 +757,11 @@
                             <div class="btn-exam skeleton"><span class="exam-name skeleton-text">&nbsp;</span><span class="exam-count skeleton-text">&nbsp;</span></div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Card style</label>
-                            <div class="mode-toggle">
-                                <button id="flashcard-mode-question" class="btn btn-primary mode-btn active">Question only</button>
-                                <button id="flashcard-mode-choices" class="btn btn-secondary mode-btn">Show choices</button>
-                            </div>
-                            <p id="flashcard-mode-description" class="mode-description">Front shows just the question. Flip to see the answer.</p>
-                        </div>
-
-                        <div class="flashcard-preview" id="flashcard-preview">
-                            <div class="flashcard-preview-card">
-                                <span class="flashcard-preview-label">Front</span>
-                                <p id="flashcard-preview-front">What is the loopback IP address?</p>
-                            </div>
-                            <div class="flashcard-preview-card flashcard-preview-back">
-                                <span class="flashcard-preview-label">Back</span>
-                                <p id="flashcard-preview-back">127.0.0.1</p>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="flashcard-filter-group">
-                            <label>Cards to show</label>
-                            <div class="mode-toggle">
-                                <button id="flashcard-filter-all" class="btn btn-primary mode-btn active">All cards</button>
-                                <button id="flashcard-filter-review" class="btn btn-secondary mode-btn">Review only</button>
-                            </div>
-                            <p id="flashcard-review-count" class="mode-description">Log in to keep a saved review list.</p>
-                        </div>
+                        <p id="flashcard-review-count" class="mode-description">Log in to keep a saved review list.</p>
 
                         <div class="button-row" id="flashcard-start-row">
-                            <div class="btn-tooltip-wrap">
-                                <button id="flashcard-start-btn" class="btn btn-success btn-large" disabled>Start Flashcards</button>
-                                <span class="btn-tooltip">Pick an exam first</span>
-                            </div>
+                            <button id="flashcard-start-btn" class="btn btn-success btn-large" disabled>Start Flashcards</button>
+                            <button id="flashcard-review-start-btn" class="btn btn-secondary btn-large" disabled>Review Flagged Cards</button>
                         </div>
 
                         <div id="flashcard-resume-container" class="flashcard-resume hidden">
@@ -922,7 +879,7 @@
                         <span class="app-tile-icon app-tile-icon-comms" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                         </span>
-                        <span class="app-tile-name">MRTS Test 2</span>
+                        <span class="app-tile-name">Comms Test 2</span>
                         <span class="app-tile-subtitle">Go/No-Go, Signal Path &amp; Acronyms</span>
                     </a>
 

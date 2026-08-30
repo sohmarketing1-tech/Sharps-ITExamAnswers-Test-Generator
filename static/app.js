@@ -317,13 +317,9 @@ const els = {
     commsGamesList: document.getElementById("comms-games-list"),
     masteryPanel: document.getElementById("mastery-panel"),
     flashcardPanel: document.getElementById("flashcard-panel"),
-    fcPanelModeQuestion: document.getElementById("fc-panel-mode-question"),
-    fcPanelModeChoices: document.getElementById("fc-panel-mode-choices"),
-    fcPanelModeDesc: document.getElementById("fc-panel-mode-desc"),
-    fcPanelFilterAll: document.getElementById("fc-panel-filter-all"),
-    fcPanelFilterReview: document.getElementById("fc-panel-filter-review"),
     fcPanelReviewCount: document.getElementById("fc-panel-review-count"),
     fcPanelStartBtn: document.getElementById("fc-panel-start-btn"),
+    fcPanelReviewStartBtn: document.getElementById("fc-panel-review-start-btn"),
     masteryBar: document.getElementById("mastery-bar"),
     masteryText: document.getElementById("mastery-text"),
     masteryStartBtn: document.getElementById("mastery-start-btn"),
@@ -335,15 +331,9 @@ const els = {
     resultsMasteryBar: document.getElementById("results-mastery-bar"),
     resultsMasteryText: document.getElementById("results-mastery-text"),
     flashcardExamButtons: document.getElementById("flashcard-exam-buttons"),
-    flashcardModeQuestion: document.getElementById("flashcard-mode-question"),
-    flashcardModeChoices: document.getElementById("flashcard-mode-choices"),
-    flashcardModeDescription: document.getElementById("flashcard-mode-description"),
-    flashcardPreviewFront: document.getElementById("flashcard-preview-front"),
-    flashcardPreviewBack: document.getElementById("flashcard-preview-back"),
-    flashcardFilterAll: document.getElementById("flashcard-filter-all"),
-    flashcardFilterReview: document.getElementById("flashcard-filter-review"),
     flashcardReviewCount: document.getElementById("flashcard-review-count"),
     flashcardStartBtn: document.getElementById("flashcard-start-btn"),
+    flashcardReviewStartBtn: document.getElementById("flashcard-review-start-btn"),
     flashcardSetupMessage: document.getElementById("flashcard-setup-message"),
     flashcardResumeContainer: document.getElementById("flashcard-resume-container"),
     flashcardResumeText: document.getElementById("flashcard-resume-text"),
@@ -1374,7 +1364,10 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
         btn.type = "button";
         btn.className = "btn btn-exam" + (activeFilename === exam.filename ? " active" : "");
         btn.dataset.filename = exam.filename;
-        btn.innerHTML = `<span class="exam-name">${escapeHtml(exam.display_name || exam.title)}</span><span class="exam-count">${exam.count || 0} questions</span>`;
+        const isFlashcardPicker = container === els.flashcardExamButtons;
+        const itemCount = isFlashcardPicker ? (exam.flashcard_count || exam.count || 0) : (exam.count || 0);
+        const itemLabel = isFlashcardPicker ? "cards" : "questions";
+        btn.innerHTML = `<span class="exam-name">${escapeHtml(exam.display_name || exam.title)}</span><span class="exam-count">${itemCount} ${itemLabel}</span>`;
         btn.addEventListener("click", () => {
             onSelect(exam.filename);
             container.dataset.viewCategory = getCategoryForFilename(exam.filename);
@@ -2476,6 +2469,7 @@ function stopChatPolling() {
 function renderFlashcardExamButtons() {
     renderExamGroups(els.flashcardExamButtons, state.flashcardFilename, selectFlashcardExam, "IT Essentials");
     els.flashcardStartBtn.disabled = !state.flashcardFilename;
+    els.flashcardReviewStartBtn.disabled = !state.flashcardFilename;
 }
 
 function selectFlashcardExam(filename) {
@@ -2487,29 +2481,13 @@ function selectFlashcardExam(filename) {
     updateFlashcardSteps();
 }
 
-function setFlashcardMode(mode) {
-    state.flashcardMode = mode;
-    els.flashcardModeQuestion.classList.toggle("active", mode === "question");
-    els.flashcardModeQuestion.classList.toggle("btn-primary", mode === "question");
-    els.flashcardModeQuestion.classList.toggle("btn-secondary", mode !== "question");
-    els.flashcardModeChoices.classList.toggle("active", mode === "choices");
-    els.flashcardModeChoices.classList.toggle("btn-primary", mode === "choices");
-    els.flashcardModeChoices.classList.toggle("btn-secondary", mode !== "choices");
-
-    if (mode === "question") {
-        els.flashcardModeDescription.textContent = "Front shows just the question. Flip to see the answer.";
-        els.flashcardPreviewFront.textContent = "What is the loopback IP address?";
-        els.flashcardPreviewBack.textContent = "127.0.0.1";
-    } else {
-        els.flashcardModeDescription.textContent = "Front shows the question and answer choices. Flip to reveal the correct answer.";
-        els.flashcardPreviewFront.innerHTML = "What is the loopback IP address?<br><br>A. 192.168.1.1<br>B. 10.0.0.1<br>C. 127.0.0.1";
-        els.flashcardPreviewBack.textContent = "C. 127.0.0.1";
-    }
-    saveFlashcardSession();
-    savePrefs();
+function setFlashcardMode() {
+    state.flashcardMode = "question";
 }
 
-async function startFlashcards() {
+async function startFlashcards(filter = "all") {
+    state.flashcardMode = "question";
+    state.flashcardFilter = filter;
     if (!state.flashcardFilename) {
         els.flashcardSetupMessage.textContent = "Select an exam first.";
         return;
@@ -2644,6 +2622,12 @@ function loadFlashcardSession() {
     }
 }
 
+function isCurrentFlashcardSession(session) {
+    if (!session || !session.questions) return false;
+    const exam = state.exams.find((item) => item.filename === session.filename);
+    return session.filter === "review" || !exam?.flashcard_count || session.questions.length === exam.flashcard_count;
+}
+
 async function renderFlashcardResume() {
     let session = loadFlashcardSession();
 
@@ -2653,6 +2637,14 @@ async function renderFlashcardResume() {
             try { localStorage.setItem(FLASHCARD_SESSION_KEY, JSON.stringify(serverSession)); } catch (e) {}
             session = serverSession;
         }
+    }
+
+    if (session && !isCurrentFlashcardSession(session)) {
+        localStorage.removeItem(FLASHCARD_SESSION_KEY);
+        if (state.user) {
+            fetch("/api/flashcard/session", { method: "DELETE", credentials: "same-origin" }).catch(() => {});
+        }
+        session = null;
     }
 
     const hasSession = !!(session && session.questions && session.questions.length);
@@ -2685,7 +2677,7 @@ async function resumeFlashcardSession() {
         }
     }
     if (!session) session = loadFlashcardSession();
-    if (!session || !session.questions || !session.questions.length) {
+    if (!session || !session.questions || !session.questions.length || !isCurrentFlashcardSession(session)) {
         clearFlashcardSession();
         return;
     }
@@ -2844,12 +2836,6 @@ async function toggleFlashcardReview() {
 
 function setFlashcardFilter(filter) {
     state.flashcardFilter = filter;
-    els.flashcardFilterAll.classList.toggle("active", filter === "all");
-    els.flashcardFilterAll.classList.toggle("btn-primary", filter === "all");
-    els.flashcardFilterAll.classList.toggle("btn-secondary", filter !== "all");
-    els.flashcardFilterReview.classList.toggle("active", filter === "review");
-    els.flashcardFilterReview.classList.toggle("btn-primary", filter === "review");
-    els.flashcardFilterReview.classList.toggle("btn-secondary", filter !== "review");
     updateFlashcardReviewCount();
     saveFlashcardSession();
     savePrefs();
@@ -2857,21 +2843,22 @@ function setFlashcardFilter(filter) {
 
 async function updateFlashcardReviewCount() {
     if (!state.flashcardFilename) return;
-    if (!state.user) {
-        els.flashcardReviewCount.textContent = "Log in to keep a saved review list.";
-        return;
+    let text = "Log in to keep a saved review list.";
+    if (state.user) {
+        try {
+            const res = await fetch(
+                `${API.flashcardReviews}?filename=${encodeURIComponent(state.flashcardFilename)}`,
+                { credentials: "same-origin" }
+            );
+            const data = await res.json();
+            const count = data.ok ? data.reviews.length : 0;
+            text = `${count} card${count === 1 ? "" : "s"} marked for review.`;
+        } catch (err) {
+            text = "Could not load review count.";
+        }
     }
-    try {
-        const res = await fetch(
-            `${API.flashcardReviews}?filename=${encodeURIComponent(state.flashcardFilename)}`,
-            { credentials: "same-origin" }
-        );
-        const data = await res.json();
-        const count = data.ok ? data.reviews.length : 0;
-        els.flashcardReviewCount.textContent = `${count} card${count === 1 ? "" : "s"} marked for review.`;
-    } catch (err) {
-        els.flashcardReviewCount.textContent = "Could not load review count.";
-    }
+    els.flashcardReviewCount.textContent = text;
+    if (els.fcPanelReviewCount) els.fcPanelReviewCount.textContent = text;
 }
 
 function retakeSameTest() {
@@ -4109,47 +4096,17 @@ if (els.modeFlashcards) els.modeFlashcards.addEventListener("click", () => setMo
 
 // Flashcard panel (inline on setup screen)
 function updateFcPanelStartBtn() {
-    if (els.fcPanelStartBtn) {
-        els.fcPanelStartBtn.disabled = !state.flashcardFilename;
-    }
+    const disabled = !state.flashcardFilename;
+    if (els.fcPanelStartBtn) els.fcPanelStartBtn.disabled = disabled;
+    if (els.fcPanelReviewStartBtn) els.fcPanelReviewStartBtn.disabled = disabled;
 }
-function fcPanelSetMode(mode) {
-    setFlashcardMode(mode);
-    if (els.fcPanelModeQuestion && els.fcPanelModeChoices) {
-        els.fcPanelModeQuestion.classList.toggle("active", mode === "question");
-        els.fcPanelModeQuestion.classList.toggle("btn-primary", mode === "question");
-        els.fcPanelModeQuestion.classList.toggle("btn-secondary", mode !== "question");
-        els.fcPanelModeChoices.classList.toggle("active", mode === "choices");
-        els.fcPanelModeChoices.classList.toggle("btn-primary", mode === "choices");
-        els.fcPanelModeChoices.classList.toggle("btn-secondary", mode !== "choices");
-    }
-    if (els.fcPanelModeDesc) {
-        els.fcPanelModeDesc.textContent = mode === "question"
-            ? "Front shows just the question. Flip to see the answer."
-            : "Front shows question and answer choices. Flip to reveal the correct one.";
-    }
-}
-function fcPanelSetFilter(filter) {
-    setFlashcardFilter(filter);
-    if (els.fcPanelFilterAll && els.fcPanelFilterReview) {
-        els.fcPanelFilterAll.classList.toggle("active", filter === "all");
-        els.fcPanelFilterAll.classList.toggle("btn-primary", filter === "all");
-        els.fcPanelFilterAll.classList.toggle("btn-secondary", filter !== "all");
-        els.fcPanelFilterReview.classList.toggle("active", filter === "review");
-        els.fcPanelFilterReview.classList.toggle("btn-primary", filter === "review");
-        els.fcPanelFilterReview.classList.toggle("btn-secondary", filter !== "review");
-    }
-    if (els.fcPanelReviewCount) {
-        els.fcPanelReviewCount.textContent = els.flashcardReviewCount ? els.flashcardReviewCount.textContent : "";
-    }
-}
-if (els.fcPanelModeQuestion) els.fcPanelModeQuestion.addEventListener("click", () => fcPanelSetMode("question"));
-if (els.fcPanelModeChoices) els.fcPanelModeChoices.addEventListener("click", () => fcPanelSetMode("choices"));
-if (els.fcPanelFilterAll) els.fcPanelFilterAll.addEventListener("click", () => fcPanelSetFilter("all"));
-if (els.fcPanelFilterReview) els.fcPanelFilterReview.addEventListener("click", () => fcPanelSetFilter("review"));
 if (els.fcPanelStartBtn) els.fcPanelStartBtn.addEventListener("click", () => {
     switchTab("flashcards");
-    startFlashcards();
+    startFlashcards("all");
+});
+if (els.fcPanelReviewStartBtn) els.fcPanelReviewStartBtn.addEventListener("click", () => {
+    switchTab("flashcards");
+    startFlashcards("review");
 });
 
 els.masteryStartBtn.addEventListener("click", startMasterySession);
@@ -4210,11 +4167,8 @@ els.chatInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendChatMessage();
 });
 
-els.flashcardModeQuestion.addEventListener("click", () => setFlashcardMode("question"));
-els.flashcardModeChoices.addEventListener("click", () => setFlashcardMode("choices"));
-els.flashcardFilterAll.addEventListener("click", () => setFlashcardFilter("all"));
-els.flashcardFilterReview.addEventListener("click", () => setFlashcardFilter("review"));
-els.flashcardStartBtn.addEventListener("click", startFlashcards);
+els.flashcardStartBtn.addEventListener("click", () => startFlashcards("all"));
+els.flashcardReviewStartBtn.addEventListener("click", () => startFlashcards("review"));
 els.flashcard.addEventListener("click", (e) => {
     if (e.target.closest(".card-arrow-btn")) return;
     flipFlashcard();

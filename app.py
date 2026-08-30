@@ -846,20 +846,40 @@ def exam_questions_endpoint():
     if not filename:
         return jsonify({"ok": False, "error": "No filename provided."}), 400
 
-    filepath = DATA_DIR / filename
+    exam_meta = next((exam for exam in load_exam_manifest() if exam.get("filename") == filename), {})
+    flashcard_filename = exam_meta.get("flashcard_file", "")
+    filepath = DATA_DIR / (flashcard_filename or filename)
     if not filepath.exists():
         return jsonify({"ok": False, "error": f"Exam file not found: {filename}"}), 404
 
-    exam_data = read_exam_file(filepath)
-    if exam_data is None:
-        return jsonify({"ok": False, "error": f"Failed to read {filename}"}), 500
+    if flashcard_filename:
+        flashcard_data = _load_exam_cached(filepath)
+        if not isinstance(flashcard_data, dict) or not isinstance(flashcard_data.get("flashcards"), list):
+            return jsonify({"ok": False, "error": f"Failed to read {flashcard_filename}"}), 500
+        questions = [
+            {
+                "id": card.get("id"),
+                "question": card.get("front", ""),
+                "correct_answer": card.get("back", ""),
+                "options": [],
+                "category": card.get("category", ""),
+            }
+            for card in flashcard_data["flashcards"]
+        ]
+        title = flashcard_data.get("title")
+    else:
+        exam_data = read_exam_file(filepath)
+        if exam_data is None:
+            return jsonify({"ok": False, "error": f"Failed to read {filename}"}), 500
+        questions = exam_data.get("questions", [])
+        title = exam_data.get("title")
 
     return jsonify({
         "ok": True,
-        "title": exam_data.get("title"),
-        "filename": filepath.name,
-        "count": len(exam_data.get("questions", [])),
-        "questions": exam_data.get("questions", []),
+        "title": title,
+        "filename": filename,
+        "count": len(questions),
+        "questions": questions,
     })
 
 

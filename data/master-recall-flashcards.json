@@ -1,0 +1,307 @@
+{
+  "title": "Naval Communications and Systems Master Recall Flashcards",
+  "description": "Comprehensive active-recall flashcard deck designed to test your mastery of Safety, Hardware Nomenclatures, Satellites, Signal Propagation, Data Links, CDLMS, Aegis BMD, and administrative timelines.",
+  "count": 50,
+  "flashcards": [
+    {
+      "id": 1,
+      "category": "Safety & Electrical Procedures",
+      "front": "Direct Cause of Electrical Shock",
+      "back": "Electric current passing through the body (Amperage), NOT voltage. Voltage is simply the pressure that pushes the current through a path of least resistance."
+    },
+    {
+      "id": 2,
+      "category": "Safety & Electrical Procedures",
+      "front": "Shock Severity Equation",
+      "back": "Severity is directly proportional to (Current * Time) / Body Resistance. Prolonged exposure and low resistance (e.g., wet/damaged skin) drastically increase injury severity."
+    },
+    {
+      "id": 3,
+      "category": "Safety & Electrical Procedures",
+      "front": "Most Lethal Shock Path",
+      "back": "Hand-to-hand or hand-to-foot. These paths channel current straight through the chest and heart, causing Ventricular Fibrillation (a disorganized rhythm preventing blood flow)."
+    },
+    {
+      "id": 4,
+      "category": "Safety & Electrical Procedures",
+      "front": "First Responder Flow for Electrical Shock",
+      "back": "(1) Isolate/turn off power or switch to STANDBY; (2) Insulate yourself; (3) Disconnect victim using non-conductive tools (wooden board, boot); (4) Never touch victim's skin directly; (5) Contact 911/Medical."
+    },
+    {
+      "id": 5,
+      "category": "Safety & Electrical Procedures",
+      "front": "Aloft Stop-Work Environmental Thresholds",
+      "back": "Stop all work aloft immediately if the ship rolls >= 10 degrees or if winds exceed 30 knots (noted as 30 nautical miles in collaborative class notes)."
+    },
+    {
+      "id": 6,
+      "category": "Safety & Electrical Procedures",
+      "front": "Height Limit for Safety Observers aloft",
+      "back": "A safety observer is mandatory when personnel are working aloft or anywhere higher than 5 feet off the deck."
+    },
+    {
+      "id": 7,
+      "category": "Safety & Electrical Procedures",
+      "front": "OOD 1MC Aloft Warnings",
+      "back": "Must be passed prior to personnel ascending and repeated every 15 minutes: 'Do not rotate antennas, energize or radiate any electrical or electronic equipment while personnel are working aloft.'"
+    },
+    {
+      "id": 8,
+      "category": "Safety & Electrical Procedures",
+      "front": "Aloft Consoles Standby Signage",
+      "back": "Console transmitters/radars must be in STANDBY. Hang physical signs reading 'Secured Personnel Aloft' indicating date, time, and climber's initials."
+    },
+    {
+      "id": 9,
+      "category": "Safety & Electrical Procedures",
+      "front": "Yellow Caution Tag vs. Red Danger Tag",
+      "back": "Yellow Caution Tag (6 fields) provides temporary, special operating instructions. Red Danger Tag (5 fields) completely prohibits the operation of the component to safeguard sailors and gear."
+    },
+    {
+      "id": 10,
+      "category": "Safety & Electrical Procedures",
+      "front": "OOC vs. CAL Labels",
+      "back": "Out of Commission (OOC) sticker has 5 fields. Out of Calibration (CAL) sticker has 6 fields, including the offset 'Correction' value."
+    },
+    {
+      "id": 11,
+      "category": "Safety & Electrical Procedures",
+      "front": "Tag-Out Serial Number Format",
+      "back": "[Department]-[Division]-[Sequential Number] (e.g., ENG-DANGER-0001). Tags can never be reused, nor used for simple component ID or leak marking."
+    },
+    {
+      "id": 12,
+      "category": "Safety & Electrical Procedures",
+      "front": "Tag-Out Coordination Systems",
+      "back": "CSOOW and EOOW/EDO must verbally coordinate tagouts affecting: (1) interior/monitoring communications, (2) electronic cooling loops, (3) service/high-pressure air, (4) fire main."
+    },
+    {
+      "id": 13,
+      "category": "Safety & Electrical Procedures",
+      "front": "PPE Voltage Ratings & Glove Classes",
+      "back": "Rubber insulated boots protect up to 600V (no exposed metal). Rubber insulating gloves are rated by wall thickness and voltage, split into Classes 0, 1, 2, and 3."
+    },
+    {
+      "id": 14,
+      "category": "Safety & Electrical Procedures",
+      "front": "Hearing Conservation Limits (HCP)",
+      "back": "Hearing PPE is mandatory at noise levels >= 85 dB. Continuous exposure limit is 140 dB over 8 hours. Personal music players/earbuds are banned in noise-hazard zones."
+    },
+    {
+      "id": 15,
+      "category": "Safety & Electrical Procedures",
+      "front": "Respirator Safety Conditions",
+      "back": "Air-purifying respirators are mandatory when working with paints/solvents, but only safe if oxygen is >= 22% by volume (unventilated spaces require extreme caution)."
+    },
+    {
+      "id": 16,
+      "category": "Hardware Nomenclatures",
+      "front": "SA-2112(V) Secure Audio Switch (SAS)",
+      "back": "A bright red cabinet voice switch. Connects cryptographic interface units to TA-978 red phones in secure voice circuits only."
+    },
+    {
+      "id": 17,
+      "category": "Hardware Nomenclatures",
+      "front": "AN/USQ-155(V) Tactical Variant Switch (TVS)",
+      "back": "Switches digital and analog interfaces and can establish tactical voice conference calls."
+    },
+    {
+      "id": 18,
+      "category": "Hardware Nomenclatures",
+      "front": "SB-4124 Patch Panel Color-Coding",
+      "back": "RED indicates decrypted/unencrypted (Plain Text) paths. BLACK indicates encrypted (Cipher Text) paths. Interconnects RF components physically."
+    },
+    {
+      "id": 19,
+      "category": "Hardware Nomenclatures",
+      "front": "SLM-5650B Modem",
+      "back": "A commercial satellite RF modem manufactured by Comtech EF Data, used shipboard for digital RF transmissions."
+    },
+    {
+      "id": 20,
+      "category": "Hardware Nomenclatures",
+      "front": "TD-1271 Multiplexer vs. TD-1063 Demultiplexer",
+      "back": "TD-1271 combines 4 signals at 16 kbps each in UHF DAMA circuits. TD-1063 demultiplexes/separates composite signals for the Fleet Satellite Broadcast."
+    },
+    {
+      "id": 21,
+      "category": "Hardware Nomenclatures",
+      "front": "PYQ-10 Simple Key Loader (SKL)",
+      "back": "A handheld fill device used to load Cryptographic Keying Material (KEYMAT) into switches and crypto units."
+    },
+    {
+      "id": 22,
+      "category": "Satellite Orbits & Specs",
+      "front": "LEO Orbit Parameters",
+      "back": "Low Earth Orbit (400 to 1,600 miles altitude). Requires significantly less energy to transmit and receive signals due to proximity."
+    },
+    {
+      "id": 23,
+      "category": "Satellite Orbits & Specs",
+      "front": "MEO Orbit Parameters",
+      "back": "Medium Earth Orbit. Synchronous orbit situated between 1,500 and 6,500 miles above Earth."
+    },
+    {
+      "id": 24,
+      "category": "Satellite Orbits & Specs",
+      "front": "HEO/Molniya Orbit Parameters",
+      "back": "Highly Elliptical Orbit. Asynchronous, highly elliptical 24,000-mile orbit with a fast, close approach at 900 miles."
+    },
+    {
+      "id": 25,
+      "category": "Satellite Orbits & Specs",
+      "front": "Geosynchronous Orbit Parameters",
+      "back": "Located exactly 22,500 miles up. Travels at the exact speed of Earth's rotation to remain stationary over one meridian."
+    },
+    {
+      "id": 26,
+      "category": "Satellite Orbits & Specs",
+      "front": "UHF SATCOM Capabilities",
+      "back": "300 MHz to 3 GHz. Mapped as HLL: High mobility, Low capacity (64 Kbps), Low anti-jam. Vulnerable to jamming and nuclear radiation."
+    },
+    {
+      "id": 27,
+      "category": "Satellite Orbits & Specs",
+      "front": "SHF SATCOM Capabilities",
+      "back": "3 GHz to 30 GHz. Mapped as HLM: Low mobility, High capacity (up to 155 Mbps), Moderate anti-jam."
+    },
+    {
+      "id": 28,
+      "category": "Satellite Orbits & Specs",
+      "front": "EHF SATCOM Capabilities",
+      "back": "30 GHz to 300 GHz. Mapped as HMH: Moderate mobility, High capacity, High anti-jam. Nuclear survivable but heavily degraded by rain/weather."
+    },
+    {
+      "id": 29,
+      "category": "Satellite Orbits & Specs",
+      "front": "EHF Data Rate Tiers",
+      "back": "LDR (Low Data Rate: 75 bps to 2.4 Kbps), MDR (Medium Data Rate: up to 1.544 Mbps), and XDR (Extended Data Rate: up to 8.192 Mbps)."
+    },
+    {
+      "id": 30,
+      "category": "Propagation & Signaling",
+      "front": "Frequency and Wavelength Relationship",
+      "back": "Inversely proportional. Frequency (Hz) Up = Wavelength (feet) Down. Higher frequency waves carry more energy, but propagation range is path-dependent."
+    },
+    {
+      "id": 31,
+      "category": "Propagation & Signaling",
+      "front": "Troposphere Weather Effects",
+      "back": "Surface to 6-10 miles. Lowest layer containing all weather systems. Directly attenuates (scatters/absorbs) space wave and RF propagation."
+    },
+    {
+      "id": 32,
+      "category": "Propagation & Signaling",
+      "front": "Stratosphere Characteristics",
+      "back": "10 to 30 miles altitude. Sits between Troposphere and Ionosphere. Highly stable, constant temperature, little to no effect on RF propagation."
+    },
+    {
+      "id": 33,
+      "category": "Propagation & Signaling",
+      "front": "F-Layer Diurnal Splitting",
+      "back": "Daylight solar UV splits the F layer (90-250 miles) into F1 and F2 sublayers. At night, they merge back into one F layer. This region is the primary driver for long-distance skywave HF."
+    },
+    {
+      "id": 34,
+      "category": "Propagation & Signaling",
+      "front": "Ground Surface Conductivity",
+      "back": "Directly limits surface wave range. Rocky terrain exhibits low conductivity (high attenuation). Seawater exhibits maximum conductivity (minimal signal loss)."
+    },
+    {
+      "id": 35,
+      "category": "Propagation & Signaling",
+      "front": "Transceiver Conversions (Voice vs. Data)",
+      "back": "Voice RX Path: RF -> IF -> AF (audio frequency: 20Hz-20kHz). Data RX Path: RF -> IF -> DC (direct current representing binary states)."
+    },
+    {
+      "id": 36,
+      "category": "Propagation & Signaling",
+      "front": "DTE vs. DCE Serial Clocking",
+      "back": "DTE (router/terminal) generates/consumes user data. DCE (modem) interfaces with the network and ALWAYS provides the clock rate on classic synchronous links."
+    },
+    {
+      "id": 37,
+      "category": "Tactical Data Links & CDLMS",
+      "front": "Link 11 Range & Frequencies",
+      "back": "TADIL-A. Range is ~150 nautical miles ship-to-air. Uses HF (BLOS) or UHF (LOS). Coordinated via the non-secure voice circuit LINK COORD."
+    },
+    {
+      "id": 38,
+      "category": "Tactical Data Links & CDLMS",
+      "front": "Link 16 Signal Characteristics",
+      "back": "TADIL-J. Secure, high-capacity, jam-resistant tactical backbone using J-series message packets and a pseudo-random frequency-hopping pattern."
+    },
+    {
+      "id": 39,
+      "category": "Tactical Data Links & CDLMS",
+      "front": "Hawklink Characteristics",
+      "back": "Point-to-point, two-way, near-real-time data and voice LOS connection between ships (CG, DDG) and SH-60 helicopters (VHF LOS)."
+    },
+    {
+      "id": 40,
+      "category": "Tactical Data Links & CDLMS",
+      "front": "MTJ vs. UTJ Networks",
+      "back": "Both fall under JREAP-C (SHF). MTJ (Multicast J) is secure, low-latency, group (one-to-many) distribution via satellite. UTJ (Unicast J) is secure, direct point-to-point (one-to-one)."
+    },
+    {
+      "id": 41,
+      "category": "Tactical Data Links & CDLMS",
+      "front": "CDLMS Upper Chassis (C4S A) vs. Lower Chassis (SYS B)",
+      "back": "Upper Chassis (C4S A) handles message processing, time-tagging, database normalization, routing, and Link 11-16 forwarding. Lower Chassis (SYS B) houses data-terminal hardware and converts digital-analog signals."
+    },
+    {
+      "id": 42,
+      "category": "Tactical Data Links & CDLMS",
+      "front": "CDLMS V8 Variant Modernization",
+      "back": "Consolidates hardware footprints. Remote session is routed directly to the CND display, retiring the physical HMI console, and replacing the MDU with the NIMACS console."
+    },
+    {
+      "id": 43,
+      "category": "Aegis BMD & Watchteams",
+      "front": "Aegis BMD Mission Flow & Hardware",
+      "back": "DETECT (phased-array AN/SPY-1 tracking >100 targets simultaneously) -> TRACK -> DESTROY/INTERCEPT (SM-3 midcourse/exo-atmospheric intercept vs. SM-2 terminal/endgame phase defense)."
+    },
+    {
+      "id": 44,
+      "category": "Aegis BMD & Watchteams",
+      "front": "Aegis BMD Watchstander Rates (IT, ET, FCA, GM)",
+      "back": "IT (operates comms/networks), ET (maintains antennas/C2ISR), FCA (operates SPY-1 radar/Aegis computers), GM (operates VLS/missiles)."
+    },
+    {
+      "id": 45,
+      "category": "Aegis BMD & Watchteams",
+      "front": "Aegis BMD CIC Stations (TAO, BMDO, RSC, MSS, ADWC)",
+      "back": "TAO (overall tactical weapon leader), BMDO (reporting/liaison to POTUS), RSC (controls SPY-1 radar), MSS (fires interceptors/VLS supervisor), ADWC (air defense coordination)."
+    },
+    {
+      "id": 46,
+      "category": "Aegis BMD & Watchteams",
+      "front": "Link Response Team",
+      "back": "A cross-rate troubleshooting team (IT, ET, FC, OS, GM) that immediately responds to investigate and restore down data links."
+    },
+    {
+      "id": 47,
+      "category": "Timelines & Planning",
+      "front": "Satellite Access Request (SAR) Submission Timeline",
+      "back": "Must be submitted to RSSC/GSSC 30 to 60 days prior to underway (with a strict 21-day absolute minimum)."
+    },
+    {
+      "id": 48,
+      "category": "Timelines & Planning",
+      "front": "OPTASK COMMS vs. COMMPLAN Timelines",
+      "back": "OPTASK COMMS is generated 7-10 days prior by the OTC (battle group wide). COMMPLAN is ship-specific and completed 72 hours prior by the COMMO."
+    },
+    {
+      "id": 49,
+      "category": "Timelines & Planning",
+      "front": "Daily COMMSTAT (2301) vs. COMSPOT Timelines",
+      "back": "Daily COMMSTAT (2301) is broadcast by NCTAMS at 2301 ZULU daily. COMSPOT is an outage report sent after 30 minutes of communication disruption, updated hourly on the hour."
+    },
+    {
+      "id": 50,
+      "category": "Timelines & Planning",
+      "front": "After Action Report (AAR) Timeline",
+      "back": "Must be completed and submitted to NCTAMS within 10 days of mission completion to prevent delay/denial of future satellite access requests."
+    }
+  ]
+}
