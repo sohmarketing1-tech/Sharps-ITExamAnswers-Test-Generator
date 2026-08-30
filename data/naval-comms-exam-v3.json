@@ -1,5 +1,5 @@
 {
-  "title": "Naval Communications and Telecommunications Operations MUST-KNOW practice exam",
+  "title": "Naval Communications and Telecommunications Operations MUST-KNOW practice exam v3",
   "url": "",
   "questions": [
     {
@@ -661,6 +661,445 @@
         "To prevent electrical shocks when cleaning components with steel wool"
       ],
       "correct_answer": "To support flight operations and meet clearance requirements"
+    },
+    {
+      "id": 61,
+      "question": "How many days prior to a mission start must a Satellite Access Request (SAR) be submitted, and what is the absolute minimum timeframe?",
+      "options": [
+        "7 to 10 days prior; minimum 3 days",
+        "15 to 30 days prior; minimum 10 days",
+        "30 to 60 days prior; minimum 21 days",
+        "72 hours prior; minimum 48 hours"
+      ],
+      "correct_answer": "30 to 60 days prior; minimum 21 days"
+    },
+    {
+      "id": 62,
+      "question": "How many days prior to an operation is the OPTASK COMMS message generated, and who is responsible for creating it?",
+      "options": [
+        "72 hours prior; the Communications Officer (COMMO)",
+        "7 to 10 days prior; the Officer in Tactical Command (OTC)",
+        "30 to 60 days prior; the Commanding Officer (CO)",
+        "Daily at 2301 ZULU; the NCTAMS watchstander"
+      ],
+      "correct_answer": "7 to 10 days prior; the Officer in Tactical Command (OTC)"
+    },
+    {
+      "id": 63,
+      "question": "When must the shipboard-generated COMMPLAN be completed and submitted prior to underway, and who is responsible for its development?",
+      "options": [
+        "30 to 60 days prior; by the Officer in Tactical Command (OTC)",
+        "10 days after mission completion; by the Commanding Officer (CO)",
+        "72 hours prior; by the Communications Officer (COMMO)",
+        "Every 15 minutes; by the Technical Control Supervisor"
+      ],
+      "correct_answer": "72 hours prior; by the Communications Officer (COMMO)"
+    },
+    {
+      "id": 64,
+      "question": "What is the Daily COMMSTAT message also known as, and which command is responsible for transmitting it?",
+      "options": [
+        "The '2301' message; transmitted by NCTAMS",
+        "The 'OPTASK' message; transmitted by DISA",
+        "The 'COMSPOT' report; transmitted by the ship's COMMO",
+        "The 'GCIB' index; transmitted by USFF"
+      ],
+      "correct_answer": "The '2301' message; transmitted by NCTAMS"
+    },
+    {
+      "id": 65,
+      "question": "After a communication disruption or outage occurs, at what timeframe must a COMSPOT report be submitted, and how often must it be updated?",
+      "options": [
+        "Within 10 minutes of occurrence; updated daily",
+        "After 15 minutes of occurrence; updated every 15 minutes",
+        "After 30 minutes of occurrence; updated hourly on the hour",
+        "Immediately; updated only when fully resolved"
+      ],
+      "correct_answer": "After 30 minutes of occurrence; updated hourly on the hour"
+    },
+    {
+      "id": 66,
+      "question": "Within how many days of mission completion must the After Action Report (AAR) be completed and submitted?",
+      "options": [
+        "Within 72 hours",
+        "Within 7 days",
+        "Within 10 days",
+        "Within 30 days"
+      ],
+      "correct_answer": "Within 10 days"
+    },
+    {
+      "id": 67,
+      "question": "Which classified part of the ship's COMMPLAN outlines the frequencies and other communications information for each circuit used by the ship?",
+      "options": [
+        "The SAA (Satellite Access Authorization)",
+        "The FREQPLAN (Frequency Plan)",
+        "The OPTASK COMMS",
+        "The COMSPOT Report"
+      ],
+      "correct_answer": "The FREQPLAN (Frequency Plan)"
+    },
+    {
+      "id": 68,
+      "question": "How many columns are contained in the standard FREQPLAN table, and what is one of those columns?",
+      "options": [
+        "5 columns; including the Department Serial",
+        "6 columns; including the Correction Offset",
+        "7 columns; including the Emission Designator",
+        "10 columns; including the POTUS classification"
+      ],
+      "correct_answer": "7 columns; including the Emission Designator"
+    },
+    {
+      "id": 69,
+      "question": "What is the purpose of the Communications Information Bulletin (CIB), and who is responsible for controlling/transmitting it?",
+      "options": [
+        "To provide operators with accurate procedural or reference information on specific tactical communications; controlled by NCTAMS",
+        "To request access to military satellites; controlled by RSSC",
+        "To report immediate casualties and equipment outages; controlled by the ship's CO",
+        "To outline the weekly schedule of flight deck operations; controlled by the OOD"
+      ],
+      "correct_answer": "To provide operators with accurate procedural or reference information on specific tactical communications; controlled by NCTAMS"
+    },
+    {
+      "id": 70,
+      "question": "What does the Satellite Access Authorization (SAA) provide to a ship prior to underway?",
+      "options": [
+        "It authorizes the ship to perform aloft chits without the OOD's permission",
+        "It assigns ships satellite access, identifies coverage areas, frequencies, and circuit configurations for upcoming missions",
+        "It outlines the 6-part tag-out binder index and audit sheets",
+        "It lists the unsecure voice circuit called LINK COORD for HF"
+      ],
+      "correct_answer": "It assigns ships satellite access, identifies coverage areas, frequencies, and circuit configurations for upcoming missions"
+    },
+    {
+      "id": 71,
+      "question": "Which satellite orbit is characterized by a 24,000-mile asynchronous orbit with a closest approach of 900 miles?",
+      "options": [
+        "Low Earth Orbit (LEO)",
+        "Medium Earth Orbit (MEO)",
+        "Molniya or Highly Elliptical Orbit (HEO)",
+        "Geosynchronous Orbit"
+      ],
+      "correct_answer": "Molniya or Highly Elliptical Orbit (HEO)"
+    },
+    {
+      "id": 72,
+      "question": "What is the altitude range for a Low Earth Orbit (LEO), and what is its primary operational advantage according to the study guide?",
+      "options": [
+        "30 to 250 miles; unaffected by ultraviolet radiation",
+        "400 to 1,600 miles; requires less energy to transmit signals",
+        "1,500 to 6,500 miles; matches the Earth's rotation",
+        "22,500 miles; remains stationary over a single point"
+      ],
+      "correct_answer": "400 to 1,600 miles; requires less energy to transmit signals"
+    },
+    {
+      "id": 73,
+      "question": "At what altitude is a Geosynchronous Orbit positioned, and what is its key movement characteristic?",
+      "options": [
+        "900 miles; has a fast, elliptical closest approach",
+        "1,500 to 6,500 miles; moves in an asynchronous orbit",
+        "22,500 miles; travels at the exact same rate as the Earth's rotation",
+        "24,000 miles; rotates continuously 360 degrees driven by a gyroscope"
+      ],
+      "correct_answer": "22,500 miles; travels at the exact same rate as the Earth's rotation"
+    },
+    {
+      "id": 74,
+      "question": "What is the altitude range of a Medium Earth Orbit (MEO) as described in your study sources?",
+      "options": [
+        "30 to 55 miles",
+        "400 to 1,600 miles",
+        "1,500 to 6,500 miles",
+        "22,500 to 24,000 miles"
+      ],
+      "correct_answer": "1,500 to 6,500 miles"
+    },
+    {
+      "id": 75,
+      "question": "Which SATCOM band operates in the 300 MHz to 3 GHz range, and how are its mobility and capacity classified in the mnemonic 'HLL'?",
+      "options": [
+        "SHF; Low capacity and High mobility",
+        "UHF; High mobility, Low capacity, and Low anti-jam",
+        "EHF; Moderate mobility and High capacity",
+        "VHF; High capacity, Low mobility, and Low anti-jam"
+      ],
+      "correct_answer": "UHF; High mobility, Low capacity, and Low anti-jam"
+    },
+    {
+      "id": 76,
+      "question": "Which SATCOM band operates in the 3 to 30 GHz range, and how are its capabilities classified under the mnemonic 'HLM'?",
+      "options": [
+        "UHF; High capacity, Low mobility, and Moderate anti-jam",
+        "EHF; Moderate mobility, High capacity, and High anti-jam",
+        "SHF; Low mobility, High capacity, and Moderate anti-jam",
+        "HF; High capacity, Low mobility, and Low anti-jam"
+      ],
+      "correct_answer": "SHF; Low mobility, High capacity, and Moderate anti-jam"
+    },
+    {
+      "id": 77,
+      "question": "Which SATCOM band operates in the 30 to 300 GHz range, and how are its capabilities classified under the mnemonic 'HMH'?",
+      "options": [
+        "EHF; Moderate mobility, High capacity, and High anti-jam",
+        "SHF; High mobility, High capacity, and Moderate anti-jam",
+        "UHF; Low mobility, Low capacity, and Low anti-jam",
+        "ELF; High capacity, Moderate mobility, and High anti-jam"
+      ],
+      "correct_answer": "EHF; Moderate mobility, High capacity, and High anti-jam"
+    },
+    {
+      "id": 78,
+      "question": "What is the data transmission speed capability of Super High Frequency (SHF) SATCOM?",
+      "options": [
+        "Up to 75 bits per second",
+        "Up to 2.4 Kbps",
+        "Up to 8.192 Mbps",
+        "Up to 155 Megabits per second (Mbps)"
+      ],
+      "correct_answer": "Up to 155 Megabits per second (Mbps)"
+    },
+    {
+      "id": 79,
+      "question": "What is the operational data rate speed for EHF Low Data Rate (LDR) communications?",
+      "options": [
+        "75 bits per second (bps) to 2.4 Kbps",
+        "2.4 Kbps to 1544 Kbps",
+        "Up to 8.192 Mbps",
+        "Up to 155 Mbps"
+      ],
+      "correct_answer": "75 bits per second (bps) to 2.4 Kbps"
+    },
+    {
+      "id": 80,
+      "question": "What is the maximum operational speed supported by EHF Extended Data Rate (XDR) communications?",
+      "options": [
+        "75 bps",
+        "1.544 Mbps",
+        "8.192 Mbps",
+        "155 Mbps"
+      ],
+      "correct_answer": "8.192 Mbps"
+    },
+    {
+      "id": 81,
+      "question": "What is the tactical ship-to-air range limitation of Link 11 (TADIL-A)?",
+      "options": [
+        "Approximately 25 to 30 nautical miles",
+        "Approximately 150 nautical miles",
+        "Approximately 1,000 to 2,000 miles",
+        "Over 5,000 miles"
+      ],
+      "correct_answer": "Approximately 150 nautical miles"
+    },
+    {
+      "id": 82,
+      "question": "What is the name of the separate non-secure voice circuit used for voice coordination of Link 11?",
+      "options": [
+        "LINK COORD",
+        "J-SERIES",
+        "OPTASK COMMS",
+        "C2P REMOTE"
+      ],
+      "correct_answer": "LINK COORD"
+    },
+    {
+      "id": 83,
+      "question": "Which of the following is a primary characteristic of Link 16 (TADIL-J) signals?",
+      "options": [
+        "Low-speed asynchronous transmission without error-checking",
+        "UHF operations featuring jam resistance, increased security, high capacity, and a pseudo-random hopping pattern",
+        "Simplex analog voice transmission operating in the LF band",
+        "Relying entirely on a physical landline fiber cable attached to the pier"
+      ],
+      "correct_answer": "UHF operations featuring jam resistance, increased security, high capacity, and a pseudo-random hopping pattern"
+    },
+    {
+      "id": 84,
+      "question": "What is the standardized message formatting family used by Link 16 (TADIL-J)?",
+      "options": [
+        "Q and Z signals",
+        "Format Lines 1 through 16",
+        "J-series messages",
+        "Emission designators"
+      ],
+      "correct_answer": "J-series messages"
+    },
+    {
+      "id": 85,
+      "question": "What is the primary purpose and transmission method of the Hawklink tactical data link?",
+      "options": [
+        "To provide long-range ELF one-way communications to submerged submarines",
+        "To exchange two-way voice and digital data between ships and SH-60-family helicopters via VHF LOS",
+        "To route unclassified email packets from ship workstations to the exchange server",
+        "To automate the tag-out audit log over satellite networks"
+      ],
+      "correct_answer": "To exchange two-way voice and digital data between ships and SH-60-family helicopters via VHF LOS"
+    },
+    {
+      "id": 86,
+      "question": "Which of the following describes the operational difference between Multicast J (MTJ) and Unicast J (UTJ) J-series message paths?",
+      "options": [
+        "MTJ is a simplex one-way link; UTJ is a full duplex link",
+        "MTJ transmits via satellite (EHF/SHF) to multiple selected points; UTJ transmits via SHF, EHF, CBSP, or pier connection to one specific destination",
+        "MTJ is used only for unclassified voice; UTJ is used only for secret tactical coordinates",
+        "MTJ uses red patch panels; UTJ uses black patch panels"
+      ],
+      "correct_answer": "MTJ transmits via satellite (EHF/SHF) to multiple selected points; UTJ transmits via SHF, EHF, CBSP, or pier connection to one specific destination"
+    },
+    {
+      "id": 87,
+      "question": "What is the satellite-based tactical link designed to complement the TADIL-J link used across joint and NATO arenas by supporting real-time Over-the-Horizon (OTH) J-series message exchange?",
+      "options": [
+        "Link 22",
+        "Satellite Tactical Digital Information Link J (STJ / TADIL-S)",
+        "Hawklink",
+        "Link 11"
+      ],
+      "correct_answer": "Satellite Tactical Digital Information Link J (STJ / TADIL-S)"
+    },
+    {
+      "id": 88,
+      "question": "What are the three primary types of tactical data shared through data link circuits to build the Common Tactical Picture (CTP)?",
+      "options": [
+        "Voltage, Current, and Resistance limits",
+        "Unit position, enemy position, and targeting information",
+        "Front Matter, Operational Remarks, and SAA coordination dates",
+        "LDR, MDR, and XDR data rates"
+      ],
+      "correct_answer": "Unit position, enemy position, and targeting information"
+    },
+    {
+      "id": 89,
+      "question": "Which of the following describes the difference between full duplex, half duplex, and simplex communications?",
+      "options": [
+        "Full duplex is unencrypted; Half duplex is encrypted; Simplex is administrative",
+        "Full duplex allows simultaneous transmit and receive; Half duplex allows transmit OR receive at a given time; Simplex is one-way only, never bothFull duplex is for satellite links; Half duplex is for line-of-sight; Simplex is for pier fiber",
+        "Full duplex has 6 fields; Half duplex has 5 fields; Simplex has 4 fields"
+      ],
+      "correct_answer": "Full duplex allows simultaneous transmit and receive; Half duplex allows transmit OR receive at a given time; Simplex is one-way only, never both"
+    },
+    {
+      "id": 90,
+      "question": "Which ratings (rates) and watchstanders set up and coordinate tactical data links and track threats beyond sensor range?",
+      "options": [
+        "Commanding Officers (CO) and Radio Officers (RO)",
+        "Information Systems Technicians (IT) and Operations Specialists (OS)",
+        "Supply Corps Officers and Personnel Specialists",
+        "Shipboard Engineers and Damage Controlmen"
+      ],
+      "correct_answer": "Information Systems Technicians (IT) and Operations Specialists (OS)"
+    },
+    {
+      "id": 91,
+      "question": "How many fields are required to be completed on a standard Yellow Caution tag and a Red Danger tag in the Tag-Out system?",
+      "options": [
+        "Caution tag has 5 fields; Danger tag has 6 fields",
+        "Caution tag has 6 fields; Danger tag has 5 fields",
+        "Caution tag has 4 fields; Danger tag has 4 fields",
+        "Caution tag has 6 fields; Danger tag has 6 fields"
+      ],
+      "correct_answer": "Caution tag has 6 fields; Danger tag has 5 fields"
+    },
+    {
+      "id": 92,
+      "question": "What are the specific field counts for Out of Commission (OOC) and Out of Calibration (CAL) labels/stickers in the Tag-Out system?",
+      "options": [
+        "OOC has 5 fields; CAL has 6 fields (including the Correction offset value)",
+        "OOC has 6 fields; CAL has 5 fields (including the serial number)",
+        "OOC has 4 fields; CAL has 4 fields (including the verifier signature)",
+        "OOC has 5 fields; CAL has 5 fields (including the date)"
+      ],
+      "correct_answer": "OOC has 5 fields; CAL has 6 fields (including the Correction offset value)"
+    },
+    {
+      "id": 93,
+      "question": "Which of the following represents the correct standardized serial number format for a Tag-Out?",
+      "options": [
+        "DANGER-RED-Sequential Number",
+        "[Department]-[Division]-[Sequential Number] (e.g., ENG-DANGER-0001)",
+        "[AOR]-[NCTAMS]-[Julian Date]",
+        "[Serial Number]-[Date]-[Authorizing Official Signature]"
+      ],
+      "correct_answer": "[Department]-[Division]-[Sequential Number] (e.g., ENG-DANGER-0001)"
+    },
+    {
+      "id": 94,
+      "question": "What action must occur when more than one tag-out log is maintained on a ship?",
+      "options": [
+        "All logs must be submitted directly to POTUS daily",
+        "An exchange of information concerning tag-out action is required between Authorizing Officials (AOs)",
+        "The logs are compiled automatically by the SB-4124 patch panel",
+        "The secondary logs must be deleted immediately from the database"
+      ],
+      "correct_answer": "An exchange of information concerning tag-out action is required between Authorizing Officials (AOs)"
+    },
+    {
+      "id": 95,
+      "question": "What are the four specific mutually dependent systems requiring verbal concurrence between Authorizing Officials (e.g., CSOOW and EOOW/EDO) before tagging can occur?",
+      "options": [
+        "VLS launchers, SM-3 missiles, SPY-1 radar, and SBX dome",
+        "NIPRNet, SIPRNet, JWICS, and CENTRIXS routers",
+        "Monitoring and interior communications, electronic cooling loops, ship's service/high-pressure air, and fire main systems",
+        "AS-4163 Stovepipe, AS-4172A Dog Bowl, AS-380 Spider, and OE-82 antennas"
+      ],
+      "correct_answer": "Monitoring and interior communications, electronic cooling loops, ship's service/high-pressure air, and fire main systems"
+    },
+    {
+      "id": 96,
+      "question": "What security measure is strictly required when a watchstander is handling or inventorying Top Secret level COMSEC material?",
+      "options": [
+        "Two Person Integrity (TPI) is mandatory, requiring a witness and oncoming watch supervisor",
+        "At least one handler is required, but two are recommended",
+        "The watchstander must de-energize the entire room's equipment first",
+        "A signed aloft chit must be posted on the safe's door"
+      ],
+      "correct_answer": "Two Person Integrity (TPI) is mandatory, requiring a witness and oncoming watch supervisor"
+    },
+    {
+      "id": 97,
+      "question": "Under what oxygen concentration conditions are air-purifying respirators considered safe to use when working with paints or circuit cleaners?",
+      "options": [
+        "Below 19.5% oxygen by volume",
+        "Between 15% and 18% oxygen by volume",
+        "Equal to or greater than 22% oxygen by volume",
+        "Exactly 100% pure oxygen under pressure"
+      ],
+      "correct_answer": "Equal to or greater than 22% oxygen by volume"
+    },
+    {
+      "id": 98,
+      "question": "What is the maximum sound pressure limit over an 8-hour continuous period allowed under the Navy Hearing Conservation Program (HCP)?",
+      "options": [
+        "85 dB",
+        "100 dB",
+        "120 dB",
+        "140 dB"
+      ],
+      "correct_answer": "140 dB"
+    },
+    {
+      "id": 99,
+      "question": "What is the biological term for the disorganized heart rhythm that prevents the heart from pumping blood and is the leading cause of death from electrical shock?",
+      "options": [
+        "Ventricular Fibrillation",
+        "Cardiac Attenuation",
+        "Arhythmic Polarization",
+        "Muscular Reciprocity"
+      ],
+      "correct_answer": "Ventricular Fibrillation"
+    },
+    {
+      "id": 100,
+      "question": "What represents the physical 'one' nomenclature question on the exam that distinguishes the bright red cabinet switch used strictly for voice from the tactical switch?",
+      "options": [
+        "The SA-2112(V) Secure Audio Switch (SAS) is used strictly for voice; the AN/USQ-155(V) Tactical Variant Switch (TVS) is capable of switching both digital and analog interfaces",
+        "The SB-4124 is used for unsecure voice; the SB-424 is used for secure digital data",
+        "The TD-1271 is a voice switch; the TD-1063 is a satellite tracking antenna switch",
+        "The KY-58M is a mechanical red voice switch; the KIV-7M is a digital black data switch"
+      ],
+      "correct_answer": "The SA-2112(V) Secure Audio Switch (SAS) is used strictly for voice; the AN/USQ-155(V) Tactical Variant Switch (TVS) is capable of switching both digital and analog interfaces"
     }
   ]
 }

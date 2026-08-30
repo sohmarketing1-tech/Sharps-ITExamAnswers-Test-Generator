@@ -79,8 +79,9 @@
       "title": "MRTS Test 2",
       "url": "",
       "filename": "naval-comms-exam-v3.json",
-      "count": 60,
-      "display_name": "MRTS Test 2"
+      "count": 100,
+      "display_name": "MRTS Test 2",
+      "study_guide": "/study-guides/Naval_Communications_and_Telecommunications_Operations_Manual.pdf"
     }
   ]
 }
