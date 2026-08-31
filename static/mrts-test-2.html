@@ -632,7 +632,7 @@
             path: { items: [], index: 0, built: [], verifying: false },
             ac: { pairs: [], selectedTerm: null, matched: new Set(), wrong: null },
             nomflash: { cards: [], index: 0, flipped: false },
-            nommatch: { pairs: [], batches: [], batchIndex: 0, selectedTerm: null, matched: new Set(), wrong: null }
+            nommatch: { pairs: [], batches: [], definitionOrders: [], batchIndex: 0, selectedTerm: null, matched: new Set(), wrong: null }
         };
 
         const els = {
@@ -968,6 +968,7 @@
             for (let i = 0; i < state.nommatch.pairs.length; i += BATCH_SIZE) {
                 state.nommatch.batches.push(state.nommatch.pairs.slice(i, i + BATCH_SIZE));
             }
+            state.nommatch.definitionOrders = state.nommatch.batches.map(batch => shuffle(batch.map(p => p.id)));
             state.nommatch.batchIndex = 0;
             state.nommatch.selectedTerm = null;
             state.nommatch.matched = new Set();
@@ -979,7 +980,7 @@
             const batch = state.nommatch.batches[state.nommatch.batchIndex];
             const byId = Object.fromEntries(batch.map(p => [p.id, p]));
             const termOrder = batch.map(p => p.id);
-            const defOrder = shuffle(batch.map(p => p.id));
+            const defOrder = state.nommatch.definitionOrders[state.nommatch.batchIndex];
             const isWrongTerm = state.nommatch.wrong && state.nommatch.wrong.term;
             const isWrongDef = state.nommatch.wrong && state.nommatch.wrong.def;
 
