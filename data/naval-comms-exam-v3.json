@@ -975,7 +975,8 @@
       "question": "Which of the following describes the difference between full duplex, half duplex, and simplex communications?",
       "options": [
         "Full duplex is unencrypted; Half duplex is encrypted; Simplex is administrative",
-        "Full duplex allows simultaneous transmit and receive; Half duplex allows transmit OR receive at a given time; Simplex is one-way only, never bothFull duplex is for satellite links; Half duplex is for line-of-sight; Simplex is for pier fiber",
+        "Full duplex allows simultaneous transmit and receive; Half duplex allows transmit OR receive at a given time; Simplex is one-way only, never both",
+        "Full duplex is for satellite links; Half duplex is for line-of-sight; Simplex is for pier fiber",
         "Full duplex has 6 fields; Half duplex has 5 fields; Simplex has 4 fields"
       ],
       "correct_answer": "Full duplex allows simultaneous transmit and receive; Half duplex allows transmit OR receive at a given time; Simplex is one-way only, never both"
