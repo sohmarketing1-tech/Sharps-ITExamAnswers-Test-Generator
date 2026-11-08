@@ -1615,9 +1615,9 @@ function messageHtml(m, avatars, room) {
         </a>` : "";
     const reply = m.reply_to ? `<span class="reply-ref">${icon("reply")}<b>${esc(m.reply_to.username)}</b> ${esc(m.reply_to.message)}</span>` : "";
     return `<div class="msg ${m.mine ? "mine" : ""}" data-id="${esc(m.id)}">
-        ${avatarHtml(m.username, (avatars || {})[m.username])}
+        <button type="button" class="avatar-link" data-profile="${esc(m.username)}" aria-label="View ${esc(m.display)}'s profile">${avatarHtml(m.username, (avatars || {})[m.username])}</button>
         <div class="msg-body">
-            <span class="msg-meta">${m.mine ? "You" : `<b>${esc(m.display)}</b>`}${m.admin ? ' <span class="admin-badge">Admin</span>' : ""} · ${esc(time)}<button type="button" class="msg-more" data-act="${esc(m.id)}" aria-label="Reply, react or more">⋯</button></span>
+            <span class="msg-meta">${m.mine ? "You" : `<button type="button" class="name-link" data-profile="${esc(m.username)}">${esc(m.display)}</button>`}${m.admin ? ' <span class="admin-badge">Admin</span>' : ""} · ${esc(time)}<button type="button" class="msg-more" data-act="${esc(m.id)}" aria-label="Reply, react or more">⋯</button></span>
             <button type="button" class="bubble ${m.quote && !m.message ? "bubble-empty" : ""}" data-act="${esc(m.id)}" aria-label="Message options">${reply}${quote}${m.message ? `<span class="bubble-text">${esc(m.message)}</span>` : ""}</button>
             ${m.reactions && m.reactions.length ? `<span class="reacts">${m.reactions.map((x) => `<button type="button" class="react ${x.mine ? "on" : ""}" data-react="${esc(m.id)}" data-emoji="${x.emoji}" aria-pressed="${x.mine}">${x.emoji} ${x.count}</button>`).join("")}</span>` : ""}
         </div>
@@ -1761,6 +1761,54 @@ async function viewChatRoom(root, [roomId], _q, alive) {
         input.focus();
     };
 }
+
+// ─── Profiles ──────────────────────────────────────────────────────────────
+async function showProfile(username) {
+    if (!state.user) {
+        openSheet(`<p class="sheet-title">${esc(username)}</p><p class="muted" style="margin:0">Log in to view profiles and send messages.</p>
+            <div class="sheet-actions"><a class="btn btn-primary btn-block" href="#/login?next=${encodeURIComponent(parseHash().path)}">Log in</a><button type="button" class="sheet-btn muted-btn" data-a="cancel">Close</button></div>`,
+            (el, close) => { $("[data-a]", el).onclick = close; $("a", el).onclick = close; });
+        return;
+    }
+    const r = await api(`/api/people/${encodeURIComponent(username)}`);
+    if (!r.ok) { alert(r.data.error || "Couldn't load that profile."); return; }
+    const p = r.data.person;
+    const active = p.last_active_days === null ? "Not active yet" : p.last_active_days === 0 ? "Active today" : p.last_active_days === 1 ? "Active yesterday" : `Active ${p.last_active_days} days ago`;
+    openSheet(`
+        <div class="profile">
+            ${avatarHtml(p.username, p.avatar, "avatar avatar-xl")}
+            <p class="profile-name">${esc(p.display)}${p.admin ? ' <span class="admin-badge">Admin</span>' : ""}</p>
+            <p class="profile-sub">${p.admin ? "The AnswrIT team" : `@${esc(p.username)}`} · ${esc(active)}</p>
+            ${p.admin ? "" : `<div class="profile-stats">
+                <div><strong>${p.streak ? `🔥 ${p.streak}` : "0"}</strong><span>day streak</span></div>
+                <div><strong>${p.tests_taken}</strong><span>practice test${p.tests_taken === 1 ? "" : "s"}</span></div>
+            </div>`}
+        </div>
+        <div class="sheet-actions">
+            ${p.me ? `<a class="btn btn-secondary btn-block" href="#/account">This is you · Edit your profile</a>` : `<button type="button" class="btn btn-primary btn-block" id="profile-dm">${icon("send")}Message ${esc(p.display)}</button>`}
+            <button type="button" class="sheet-btn muted-btn" data-a="cancel">Close</button>
+        </div>`, (el, close) => {
+        $("[data-a]", el).onclick = close;
+        const link = $("a", el);
+        if (link) link.onclick = close;
+        const dm = $("#profile-dm", el);
+        if (dm) dm.onclick = async () => {
+            dm.disabled = true;
+            const s = await api("/api/dm/start", { method: "POST", body: { username: p.username } });
+            close();
+            if (s.ok) go(`messages/${s.data.id}`); else alert(s.data.error || "Couldn't start the conversation.");
+        };
+    });
+}
+document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-profile]");
+    if (!b) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const open = $("#sheet");
+    if (open) open.remove();
+    showProfile(b.dataset.profile);
+});
 
 // "Ask about this question" from a practice test or Mastery: posts the question to its course room.
 function askAboutQuestion(filename, q) {
@@ -2001,7 +2049,7 @@ async function viewConvo(root, [cid], _q, alive) {
         const owner = c.owner === state.user;
         openSheet(`
             <p class="sheet-title">${esc(c.name)} · ${c.members.length} of 25</p>
-            <div class="pp-results">${c.members.map((m) => `<div class="pp-user static">${avatarHtml(m.username, (s.data.avatars || {})[m.username])}<span>${esc(m.display)}${m.username === c.owner ? ' <span class="admin-badge">Creator</span>' : ""}${m.username === state.user ? " (you)" : ""}</span>
+            <div class="pp-results">${c.members.map((m) => `<div class="pp-user static"><button type="button" class="avatar-link" data-profile="${esc(m.username)}" aria-label="View ${esc(m.display)}'s profile">${avatarHtml(m.username, (s.data.avatars || {})[m.username])}</button><span>${esc(m.display)}${m.username === c.owner ? ' <span class="admin-badge">Creator</span>' : ""}${m.username === state.user ? " (you)" : ""}</span>
                 ${owner && m.username !== state.user ? `<button type="button" class="pp-remove" data-rm="${esc(m.username)}" aria-label="Remove ${esc(m.display)}">${icon("close")}</button>` : ""}</div>`).join("")}</div>
             <div class="sheet-actions">
                 ${owner ? `<button type="button" class="sheet-btn" data-a="add">${icon("people")}Add people</button><button type="button" class="sheet-btn" data-a="rename">${icon("pencil")}Rename group</button>` : ""}

@@ -1806,6 +1806,34 @@ def _convo_summary(c: dict, user: str) -> dict:
     }
 
 
+@app.route("/api/people/<username>", methods=["GET"])
+def person_profile(username):
+    """A student's public mini-profile for chat: picture, name, activity, streak and test count.
+
+    Scores are deliberately not shown. Requires login.
+    """
+    viewer = current_user()
+    if not viewer:
+        return jsonify({"ok": False, "error": "Log in to view profiles."}), 401
+    name = str(username).strip().lower()
+    users = _load_json_cached(USERS_FILE, "users.json")
+    rec = users.get(name)
+    if not rec:
+        return jsonify({"ok": False, "error": "That user wasn't found."}), 404
+    activity = rec.get("activity") or {}
+    last = _parse_utc(activity.get("last_seen"))
+    days = (datetime.datetime.now(datetime.timezone.utc).date() - last.date()).days if last else None
+    streak = int(activity.get("streak") or 0) if days is not None and days <= 1 else 0
+    with _JSON_CACHE_LOCK:
+        progress = _load_json_cached(USER_DATA_FILE, "user_data.json").get(name, {})
+        tests = int(progress.get("tests_taken") or len(progress.get("test_history") or []))
+    return jsonify({"ok": True, "person": {
+        "username": name, "display": _display(name), "admin": is_admin(name), "me": name == viewer,
+        "avatar": (rec.get("profile") or {}).get("avatar_image", ""),
+        "last_active_days": days, "streak": streak, "tests_taken": tests,
+    }})
+
+
 @app.route("/api/users/search", methods=["GET"])
 def users_search():
     """Find people to message by username (logged-in users only)."""
