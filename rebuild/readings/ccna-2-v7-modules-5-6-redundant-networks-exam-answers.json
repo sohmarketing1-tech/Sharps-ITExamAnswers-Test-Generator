@@ -1,0 +1,73 @@
+[
+ {
+  "exam": "ccna-2-v7-modules-5-6-redundant-networks-exam-answers",
+  "page_number": 6,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-04-04_153917.jpg",
+  "exhibit": null,
+  "question": "Match the STP protocol with the correct description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Rapid PVST+",
+   "STP",
+   "MSTP"
+  ],
+  "definitions": [
+   "the legacy standard for STP that runs all VLANs in a single spanning-tree instance",
+   "a protocol that allows multiple VLANs to run in a single spanning-tree instance",
+   "a Cisco enhancement of RSTP to provide a spanning-tree instance for each VLAN",
+   "an evolution of STP that provides faster convergence"
+  ],
+  "correct_pairs": {
+   "STP": "the legacy standard for STP that runs all VLANs in a single spanning-tree instance",
+   "MSTP": "a protocol that allows multiple VLANs to run in a single spanning-tree instance",
+   "Rapid PVST+": "a Cisco enhancement of RSTP to provide a spanning-tree instance for each VLAN"
+  },
+  "correct_answer": "",
+  "notes": "Two answer pictures that agree. Used the second (box style), which also shows the unused box 'an evolution of STP that provides faster convergence'; the first (letter style) leaves that box out and capitalizes the descriptions."
+ },
+ {
+  "exam": "ccna-2-v7-modules-5-6-redundant-networks-exam-answers",
+  "page_number": 9,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/1905334005.webp",
+  "exhibit": null,
+  "question": "Match the spanning-tree feature with the protocol type. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "MSTP",
+   "RSTP",
+   "PVST+",
+   "MST"
+  ],
+  "definitions": [
+   "Cisco implementation of IEEE 802.1D",
+   "Fast converging enhancement of IEEE 802.1D",
+   "IEEE standard that reduces the number of STP instances",
+   "Proprietary per VLAN implementation of IEEE 802.1w"
+  ],
+  "correct_pairs": {
+   "PVST+": "Cisco implementation of IEEE 802.1D",
+   "RSTP": "Fast converging enhancement of IEEE 802.1D",
+   "MSTP": "IEEE standard that reduces the number of STP instances"
+  },
+  "correct_answer": "",
+  "notes": "DECIDED BY CLAUDE, the site's answer is wrong. The site's picture and text table pair MSTP with 'Fast converging enhancement of IEEE 802.1D', RSTP with 'Cisco implementation of IEEE 802.1D', PVST+ with 'Proprietary per VLAN implementation of IEEE 802.1w' and MST with 'IEEE standard that reduces the number of STP instances'. Three of those contradict Cisco's definitions and the site's own explanations elsewhere ('802.1w, or RSTP, provides faster convergence'; 'Rapid PVST+ provides a separate instance of 802.1w per VLAN'). Used: RSTP = fast converging enhancement of 802.1D, PVST+ = Cisco implementation of 802.1D, MSTP = IEEE standard that reduces the number of STP instances. 'Proprietary per VLAN implementation of IEEE 802.1w' is Rapid PVST+, which isn't an item, so that box stays empty; MST (Cisco's name for its MSTP implementation) is the leftover item. Worth the owner double-checking."
+ },
+ {
+  "exam": "ccna-2-v7-modules-5-6-redundant-networks-exam-answers",
+  "page_number": 49,
+  "answer_picture": null,
+  "exhibit": null,
+  "question": "Which mode configuration setting would allow formation of an EtherChannel link between switches SW1 and SW2 without sending negotiation traffic?\nSW1: on\nSW2: on\nSW1: desirable\nSW2: desirable\nSW1: auto\nSW2: auto\ntrunking enabled on both switches\nSW1: auto\nSW2: auto\nPortFast enabled on both switches\nSW1: passive\nSW2: active",
+  "options": [
+   "SW1: on\nSW2: on",
+   "SW1: desirable\nSW2: desirable",
+   "SW1: auto\nSW2: auto\ntrunking enabled on both switches",
+   "SW1: auto\nSW2: auto\nPortFast enabled on both switches",
+   "SW1: passive\nSW2: active"
+  ],
+  "correct_answer": "SW1: on\nSW2: on",
+  "notes": "Choices are paragraphs, not a list; the red one is correct. Line breaks inside choices kept as \\n."
+ }
+]

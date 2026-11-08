@@ -31,10 +31,10 @@
       "options": [
         "255.255.255.0",
         "255.255.255.128",
-        "255.255.255.224​",
+        "255.255.255.224",
         "255.255.255.240"
       ],
-      "correct_answer": "255.255.255.224​"
+      "correct_answer": "255.255.255.224"
     },
     {
       "id": 4,
@@ -313,14 +313,14 @@
     },
     {
       "id": 27,
-      "question": "An IPv6 enabled device sends a data packet with the destination address of FF02::1. What is the target of this packet?​",
+      "question": "An IPv6 enabled device sends a data packet with the destination address of FF02::1. What is the target of this packet?",
       "options": [
         "the one IPv6 device on the link that has been uniquely configured with this address",
-        "all IPv6 enabled devices on the local link​ or network",
-        "only IPv6 DHCP servers​",
+        "all IPv6 enabled devices on the local link or network",
+        "only IPv6 DHCP servers",
         "only IPv6 configured routers"
       ],
-      "correct_answer": "all IPv6 enabled devices on the local link​ or network"
+      "correct_answer": "all IPv6 enabled devices on the local link or network"
     },
     {
       "id": 28,
@@ -736,6 +736,161 @@
         "network unreachable"
       ],
       "correct_answer": "beyond scope of the source address"
+    },
+    {
+      "question": "Match the subnetwork to a host address that would be included within the subnetwork. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "192.168.1.32/27",
+        "192.168.1.64/27",
+        "192.168.1.96/27"
+      ],
+      "definitions": [
+        "192.168.1.63",
+        "192.168.1.68",
+        "192.168.1.128",
+        "192.168.1.48",
+        "192.168.1.121"
+      ],
+      "correct_pairs": {
+        "192.168.1.32/27": "192.168.1.48",
+        "192.168.1.64/27": "192.168.1.68",
+        "192.168.1.96/27": "192.168.1.121"
+      },
+      "correct_answer": "",
+      "id": 65
+    },
+    {
+      "question": "Match each IPv4 address to the appropriate address category. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "224.10.0.254/24",
+        "192.168.100.161/25",
+        "203.0.113.100/24",
+        "10.10.10.128/25",
+        "172.110.12.64/28",
+        "192.168.1.191/26",
+        "10.0.0.159/27"
+      ],
+      "definitions": [
+        "host address",
+        "network address",
+        "broadcast address"
+      ],
+      "correct_pairs": {
+        "192.168.100.161/25": "host address",
+        "203.0.113.100/24": "host address",
+        "10.10.10.128/25": "network address",
+        "172.110.12.64/28": "network address",
+        "192.168.1.191/26": "broadcast address",
+        "10.0.0.159/27": "broadcast address"
+      },
+      "correct_answer": "",
+      "id": 66
+    },
+    {
+      "question": "Refer to the exhibit. Match the network with the correct IP address and prefix that will satisfy the usable host addressing requirements for each network.",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Network D",
+        "Network A",
+        "Network B",
+        "Network C"
+      ],
+      "definitions": [
+        "192.168.0.128 /25",
+        "192.168.0.96 /27",
+        "192.168.0.80 /30",
+        "192.168.0.0 /26"
+      ],
+      "correct_pairs": {
+        "Network A": "192.168.0.128 /25",
+        "Network B": "192.168.0.0 /26",
+        "Network C": "192.168.0.96 /27",
+        "Network D": "192.168.0.80 /30"
+      },
+      "correct_answer": "",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/01/i304956v6n1_207918.png",
+      "id": 67
+    },
+    {
+      "question": "Match the IPv6 address with the IPv6 address type. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "::1",
+        "FF02::1",
+        "FF02::1:FFAE:F85F",
+        "2001:DB8::BAF:3F57:FE94"
+      ],
+      "definitions": [
+        "all node multicast",
+        "loopback",
+        "global unicast",
+        "solicited node multicast"
+      ],
+      "correct_pairs": {
+        "::1": "loopback",
+        "FF02::1": "all node multicast",
+        "FF02::1:FFAE:F85F": "solicited node multicast",
+        "2001:DB8::BAF:3F57:FE94": "global unicast"
+      },
+      "correct_answer": "",
+      "id": 68
+    },
+    {
+      "question": "Three methods allow IPv6 and IPv4 to co-exist. Match each method with its description. (Not all options are used.) Place the options in the following order:",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "The IPv4 packets and IPv6 packets coexist in the same network.",
+        "The IPv6 packet is transported inside an IPv4 packet.",
+        "IPv6 packets are converted into IPv4 packets, and vice versa."
+      ],
+      "definitions": [
+        "DHCP",
+        "translation",
+        "tunneling",
+        "dual-stack"
+      ],
+      "correct_pairs": {
+        "The IPv4 packets and IPv6 packets coexist in the same network.": "dual-stack",
+        "The IPv6 packet is transported inside an IPv4 packet.": "tunneling",
+        "IPv6 packets are converted into IPv4 packets, and vice versa.": "translation"
+      },
+      "correct_answer": "",
+      "id": 69
+    },
+    {
+      "question": "Match each description with an appropriate IP address. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "a private address",
+        "a loopback address",
+        "an experimental address",
+        "a TEST-NET address",
+        "a link-local address"
+      ],
+      "definitions": [
+        "169.254.1.5",
+        "127.0.0.1",
+        "240.2.6.255",
+        "192.0.2.123",
+        "172.19.20.5"
+      ],
+      "correct_pairs": {
+        "a private address": "172.19.20.5",
+        "a loopback address": "127.0.0.1",
+        "an experimental address": "240.2.6.255",
+        "a TEST-NET address": "192.0.2.123",
+        "a link-local address": "169.254.1.5"
+      },
+      "correct_answer": "",
+      "id": 70
     }
   ]
 }

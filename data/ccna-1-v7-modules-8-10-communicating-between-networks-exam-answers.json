@@ -70,14 +70,14 @@
     },
     {
       "id": 7,
-      "question": "Why is NAT not needed in IPv6?​",
+      "question": "Why is NAT not needed in IPv6?",
       "options": [
-        "Because IPv6 has integrated security, there is no need to hide the IPv6 addresses of internal networks.​",
-        "Any host or user can get a public IPv6 network address because the number of available IPv6 addresses is extremely large.​",
-        "The problems that are induced by NAT applications are solved because the IPv6 header improves packet handling by intermediate routers.​",
+        "Because IPv6 has integrated security, there is no need to hide the IPv6 addresses of internal networks.",
+        "Any host or user can get a public IPv6 network address because the number of available IPv6 addresses is extremely large.",
+        "The problems that are induced by NAT applications are solved because the IPv6 header improves packet handling by intermediate routers.",
         "The end-to-end connectivity problems that are caused by NAT are solved because the number of routes increases with the number of nodes that are connected to the Internet."
       ],
-      "correct_answer": "Any host or user can get a public IPv6 network address because the number of available IPv6 addresses is extremely large.​"
+      "correct_answer": "Any host or user can get a public IPv6 network address because the number of available IPv6 addresses is extremely large."
     },
     {
       "id": 8,
@@ -184,12 +184,12 @@
       "id": 17,
       "question": "How do hosts ensure that their packets are directed to the correct network destination?",
       "options": [
-        "They have to keep their own local routing table that contains a route to the loopback interface, a local network route, and a remote default route.​",
+        "They have to keep their own local routing table that contains a route to the loopback interface, a local network route, and a remote default route.",
         "They always direct their packets to the default gateway, which will be responsible for the packet delivery.",
         "They search in their own local routing table for a route to the network destination address and pass this information to the default gateway.",
         "They send a query packet to the default gateway asking for the best route."
       ],
-      "correct_answer": "They have to keep their own local routing table that contains a route to the loopback interface, a local network route, and a remote default route.​"
+      "correct_answer": "They have to keep their own local routing table that contains a route to the loopback interface, a local network route, and a remote default route."
     },
     {
       "id": 18,
@@ -671,6 +671,157 @@
         "The port-to-MAC address table on a switch has the same entries as the ARP table on the switch."
       ],
       "correct_answer": "The type field 0x806 appears in the header of the Ethernet frame."
+    },
+    {
+      "question": "Refer to the exhibit. Match the packets with their destination IP address to the exiting interfaces on the router. (Not all targets are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "FastEthernet0/1",
+        "FastEthernet1/0",
+        "FastEthernet0/0",
+        "FastEthernet1/1",
+        "Serial0/0/0"
+      ],
+      "definitions": [
+        "packets with destination of 172.17.6.15",
+        "packets with destination of 172.17.14.8",
+        "packets with destination of 172.17.8.20",
+        "packets with destination of 172.17.10.5",
+        "packets with destination of 172.17.12.10"
+      ],
+      "correct_pairs": {
+        "FastEthernet0/0": "packets with destination of 172.17.6.15",
+        "FastEthernet0/1": "packets with destination of 172.17.14.8",
+        "Serial0/0/0": "packets with destination of 172.17.8.20",
+        "FastEthernet1/1": "packets with destination of 172.17.10.5",
+        "FastEthernet1/0": "packets with destination of 172.17.12.10"
+      },
+      "correct_answer": "",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-v7-Modul-8-10_Qns-15-Exten-exhibit-1594760765.9811.png",
+      "id": 60
+    },
+    {
+      "question": "Match the commands to the correct actions. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Router(config-line)# password class",
+        "Router(config)# banner motd #",
+        "Router(config)# hostname CL1"
+      ],
+      "definitions": [
+        "provides security on the console",
+        "configures a name on the router",
+        "displays a message after accessing the router"
+      ],
+      "correct_pairs": {
+        "Router(config-line)# password class": "provides security on the console",
+        "Router(config)# hostname CL1": "configures a name on the router",
+        "Router(config)# banner motd #": "displays a message after accessing the router"
+      },
+      "correct_answer": "",
+      "id": 61
+    },
+    {
+      "question": "A network administrator requires access to manage routers and switches locally and remotely. Match the description to the access method. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "console",
+        "Telnet",
+        "AUX",
+        "SSH"
+      ],
+      "definitions": [
+        "unsecure remote access",
+        "remote access method that uses encryption",
+        "remote access via a dialup connection",
+        "preferred out-of-band access method"
+      ],
+      "correct_pairs": {
+        "Telnet": "unsecure remote access",
+        "SSH": "remote access method that uses encryption",
+        "AUX": "remote access via a dialup connection",
+        "console": "preferred out-of-band access method"
+      },
+      "correct_answer": "",
+      "id": 62
+    },
+    {
+      "question": "Match the phases to the functions during the boot up process of a Cisco router. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "perform the POST and load the bootstrap program",
+        "locate and load the startup configuration file",
+        "locate and load the Cisco IOS software"
+      ],
+      "definitions": [
+        "phase 1",
+        "phase 3",
+        "phase 2"
+      ],
+      "correct_pairs": {
+        "perform the POST and load the bootstrap program": "phase 1",
+        "locate and load the startup configuration file": "phase 3",
+        "locate and load the Cisco IOS software": "phase 2"
+      },
+      "correct_answer": "",
+      "id": 63
+    },
+    {
+      "question": "Match the command with the device mode at which the command is entered. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "R1#",
+        "R1(config-if)#",
+        "R1(config)#",
+        "R1(config-line)#",
+        "R1>"
+      ],
+      "definitions": [
+        "ip address 192.168.4.4 255.255.255.0",
+        "login",
+        "service password-encryption",
+        "enable",
+        "copy running-config startup-config"
+      ],
+      "correct_pairs": {
+        "R1(config-if)#": "ip address 192.168.4.4 255.255.255.0",
+        "R1(config-line)#": "login",
+        "R1(config)#": "service password-encryption",
+        "R1>": "enable",
+        "R1#": "copy running-config startup-config"
+      },
+      "correct_answer": "",
+      "id": 64
+    },
+    {
+      "question": "Match the configuration mode with the command that is available in that mode. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "interface fastethernet 0/0",
+        "login",
+        "copy running-config startup-config",
+        "enable"
+      ],
+      "definitions": [
+        "R1>",
+        "R1(config-line)#",
+        "R1#",
+        "R1(config)#"
+      ],
+      "correct_pairs": {
+        "enable": "R1>",
+        "login": "R1(config-line)#",
+        "copy running-config startup-config": "R1#",
+        "interface fastethernet 0/0": "R1(config)#"
+      },
+      "correct_answer": "",
+      "id": 65
     }
   ]
 }

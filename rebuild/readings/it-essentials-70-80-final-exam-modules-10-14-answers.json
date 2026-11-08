@@ -1,0 +1,274 @@
+[
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 1,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2025/01/Screenshot-2025-01-31-171113-1738339921.3956.png",
+  "exhibit": null,
+  "question": "Match the Windows 10 boot sequence after the boot manager (bootmgr.exe) loads. NEW (Version 8.0): Place the options in the following order:",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "the Windows boot loader winload.exe loads",
+   "ntoskrnl.exe and hal.dll are loaded",
+   "winload.exeis loaded",
+   "ntoskrnl.exe loads and executes",
+   "winlogon.exe is loaded and executes the logon process"
+  ],
+  "definitions": [
+   "Step one",
+   "Step two",
+   "Step three",
+   "Step four",
+   "Step five"
+  ],
+  "correct_pairs": {
+   "the Windows boot loader winload.exe loads": "Step one",
+   "ntoskrnl.exe and hal.dll are loaded": "Step two",
+   "winload.exeis loaded": "Step three",
+   "ntoskrnl.exe loads and executes": "Step four",
+   "winlogon.exe is loaded and executes the logon process": "Step five"
+  },
+  "correct_answer": "",
+  "notes": "Two answer pictures, no exhibit. Used the second (Version 8.0) picture because the question text includes 'NEW (Version 8.0)' and the page text matches it; it is a line-matching screen where the left 'Categories' are the boot events and the right 'Options' are the steps. Kept the site typo 'winload.exeis loaded'. The first picture (older version, https://itexamanswers.net/wp-content/uploads/2020/01/2023-07-25_154422.jpg) has different wording: Step one = 'The Windows boot loader Winload.exe loads.', Step two = 'Ntoskrnl.exe and hal.dll are loaded.', Step three = 'Winload.exe reads the Registry, chooses a hardware profile, and loads the device drivers.', Step four = 'Ntoskrnl.exe takes over the process.', Step five = 'Winlogon.exe is loaded and executes the logon process.' (same as page 220 of the course final)."
+ },
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 2,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/09/IT-Essentials-7.0-Final-Exam-10-14-Answers_20.jpg",
+  "exhibit": null,
+  "question": "Match the correct API with its function within the Windows 10 environment.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Open Graphics Library (OpenGL)",
+   "DirectX",
+   "Windows APIs",
+   "Java APIs"
+  ],
+  "definitions": [
+   "This is a cross-platform standard specification for multimedia graphics.",
+   "This is a collection of APIs related to multimedia tasks for Microsoft Windows.",
+   "This allows applications from older versions of Windows to operate on newer versions.",
+   "This is a collection of APIs related to the development of Java programming."
+  ],
+  "correct_pairs": {
+   "Open Graphics Library (OpenGL)": "This is a cross-platform standard specification for multimedia graphics.",
+   "DirectX": "This is a collection of APIs related to multimedia tasks for Microsoft Windows.",
+   "Windows APIs": "This allows applications from older versions of Windows to operate on newer versions.",
+   "Java APIs": "This is a collection of APIs related to the development of Java programming."
+  },
+  "correct_answer": "",
+  "notes": "none"
+ },
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 11,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/09/IT-Essentials-7.0-Final-Exam-10-14-Answers_110-1.jpg",
+  "exhibit": null,
+  "question": "Match the tabs of the Windows 10 Task Manager to their functions. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Performance",
+   "Startup",
+   "Services",
+   "Users",
+   "Details"
+  ],
+  "definitions": [
+   "Allows for a process to have its affinity set.",
+   "Displays resource utilization information for CPU, memory, network, disk, and others",
+   "Allows programs that are running on system startup to be disabled.",
+   "Allows for a start, stop or restart of a particular service."
+  ],
+  "correct_pairs": {
+   "Details": "Allows for a process to have its affinity set.",
+   "Performance": "Displays resource utilization information for CPU, memory, network, disk, and others",
+   "Startup": "Allows programs that are running on system startup to be disabled.",
+   "Services": "Allows for a start, stop or restart of a particular service."
+  },
+  "correct_answer": "",
+  "notes": "Leftover (unused): Users. The picture's second heading has no trailing period ('...disk, and others'); the page text adds one."
+ },
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 12,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/09/IT-Essentials-7.0-Final-Exam-10-14-Answers_120.jpg",
+  "exhibit": null,
+  "question": "Match the drive status indicators in the Disk Management utility with their description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Offline",
+   "Healthy",
+   "Initializing",
+   "Missing",
+   "Not Initialized",
+   "Online"
+  ],
+  "definitions": [
+   "a volume that is functioning properly",
+   "a basic disk that is being converted into a dynamic disk",
+   "a disk that does not contain a valid signature",
+   "a basic or dynamic disk that is accessible and shows no problems",
+   "a dynamic disk that is corrupted or unavailable"
+  ],
+  "correct_pairs": {
+   "Healthy": "a volume that is functioning properly",
+   "Initializing": "a basic disk that is being converted into a dynamic disk",
+   "Not Initialized": "a disk that does not contain a valid signature",
+   "Online": "a basic or dynamic disk that is accessible and shows no problems",
+   "Offline": "a dynamic disk that is corrupted or unavailable"
+  },
+  "correct_answer": "",
+  "notes": "Leftover (unused): Missing."
+ },
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 13,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2023-07-25_153534-1.jpg",
+  "exhibit": null,
+  "question": "Match the wireless security settings to the description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Open",
+   "WEP",
+   "WPA2-Personal",
+   "WPA2-Enterprise"
+  ],
+  "definitions": [
+   "The Advanced Encryption Standard (AES) cipher and preshared keys (PSKs) are used to encrypt communications.",
+   "Authentication is passed from the access point to a centralized authentication RADIUS server.",
+   "Data is sent unencrypted with no authentication."
+  ],
+  "correct_pairs": {
+   "WPA2-Personal": "The Advanced Encryption Standard (AES) cipher and preshared keys (PSKs) are used to encrypt communications.",
+   "WPA2-Enterprise": "Authentication is passed from the access point to a centralized authentication RADIUS server.",
+   "Open": "Data is sent unencrypted with no authentication."
+  },
+  "correct_answer": "",
+  "notes": "Leftover (unused): WEP."
+ },
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 24,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/09/IT-Essentials-7.0-Final-Exam-10-14-Answers_240.jpg",
+  "exhibit": null,
+  "question": "Match the individual languages with their corresponding classification.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "C++",
+   "VBScript",
+   "Java",
+   "C#",
+   "Python",
+   "JavaScript"
+  ],
+  "definitions": [
+   "Scripting Languages",
+   "Compiled Languages"
+  ],
+  "correct_pairs": {
+   "VBScript": "Scripting Languages",
+   "Python": "Scripting Languages",
+   "JavaScript": "Scripting Languages",
+   "C++": "Compiled Languages",
+   "Java": "Compiled Languages",
+   "C#": "Compiled Languages"
+  },
+  "correct_answer": "",
+  "notes": "none"
+ },
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 155,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2022/12/2022-12-23_154855.jpg",
+  "exhibit": null,
+  "question": "Match the file system with the respective description.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "NTFS",
+   "ExFAT",
+   "FAT32",
+   "CDFS",
+   "NFS"
+  ],
+  "definitions": [
+   "Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.",
+   "Usually used on flash drives as it can support files larger than 4GB.",
+   "Supports partition sizes up to 2TB or 2,048GB.",
+   "Created specifically for optical disk media.",
+   "A network-based file system that allows file access over the network."
+  ],
+  "correct_pairs": {
+   "NTFS": "Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.",
+   "ExFAT": "Usually used on flash drives as it can support files larger than 4GB.",
+   "FAT32": "Supports partition sizes up to 2TB or 2,048GB.",
+   "CDFS": "Created specifically for optical disk media.",
+   "NFS": "A network-based file system that allows file access over the network."
+  },
+  "correct_answer": "",
+  "notes": "none"
+ },
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 156,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2022/12/2022-12-23_154529.jpg",
+  "exhibit": null,
+  "question": "Match the steps that will lead to the loading of bootmgr.exe in a 32 bit Windows 10 environment.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Step 2",
+   "Step 3",
+   "Step 4",
+   "Step 1"
+  ],
+  "definitions": [
+   "CMOS configuration settings loaded",
+   "MBR",
+   "VBR",
+   "POST executed"
+  ],
+  "correct_pairs": {
+   "Step 2": "CMOS configuration settings loaded",
+   "Step 3": "MBR",
+   "Step 4": "VBR",
+   "Step 1": "POST executed"
+  },
+  "correct_answer": "",
+  "notes": "Headings and slots look swapped: the box headings are the boot events and the placed items are 'Step 1'..'Step 4'. Followed the picture (heading = definition, step label = term). Order: Step 1 POST executed, Step 2 CMOS configuration settings loaded, Step 3 MBR, Step 4 VBR; matches page text. Watermark overlaps 'CMOS configuration settings loaded' but it is legible."
+ },
+ {
+  "exam": "it-essentials-70-80-final-exam-modules-10-14-answers",
+  "page_number": 158,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2022/12/2022-12-23_154441.jpg",
+  "exhibit": null,
+  "question": "Select the Windows 10 version that best meets the described use.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Windows 10 Home",
+   "Windows 10 Education",
+   "Windows 10 Pro",
+   "Windows 10 Enterprise"
+  ],
+  "definitions": [
+   "Used for personal computing and gaming with built-in features like family safety and parental control.",
+   "Used in an academic environment with volume licensing options.",
+   "Used in small business environments with built-in security, productivity, and management features.",
+   "Used in large to mid-size business environments requiring advanced security and management features."
+  ],
+  "correct_pairs": {
+   "Windows 10 Home": "Used for personal computing and gaming with built-in features like family safety and parental control.",
+   "Windows 10 Education": "Used in an academic environment with volume licensing options.",
+   "Windows 10 Pro": "Used in small business environments with built-in security, productivity, and management features.",
+   "Windows 10 Enterprise": "Used in large to mid-size business environments requiring advanced security and management features."
+  },
+  "correct_answer": "",
+  "notes": "Watermark overlaps the first heading ('...family safety and parental control.') but it is legible and consistent with the page text."
+ }
+]

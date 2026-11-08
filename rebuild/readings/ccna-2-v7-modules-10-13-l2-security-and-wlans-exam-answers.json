@@ -1,0 +1,29 @@
+[
+ {
+  "exam": "ccna-2-v7-modules-10-13-l2-security-and-wlans-exam-answers",
+  "page_number": 37,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-21_003214.jpg",
+  "exhibit": null,
+  "question": "Match each functional component of AAA with its description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "authentication",
+   "authorization",
+   "accounting"
+  ],
+  "definitions": [
+   "determines what resources users can access or the operations they are allowed to perform",
+   "calculates how much a user must pay for remote access to a device",
+   "proves that users are who they say they are",
+   "records what users do and what they access"
+  ],
+  "correct_pairs": {
+   "authorization": "determines what resources users can access or the operations they are allowed to perform",
+   "authentication": "proves that users are who they say they are",
+   "accounting": "records what users do and what they access"
+  },
+  "correct_answer": "",
+  "notes": "Two answer pictures that agree. Used the first (arrow style), which also shows the unused box 'calculates how much a user must pay for remote access to a device'."
+ }
+]

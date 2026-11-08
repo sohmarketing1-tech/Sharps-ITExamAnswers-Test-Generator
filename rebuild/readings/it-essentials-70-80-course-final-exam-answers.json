@@ -1,0 +1,368 @@
+[
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 34,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2016/05/2023-07-25_224909.jpg",
+  "exhibit": null,
+  "question": "Place the six stages of the troubleshooting process in the correct order.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Identify the problem.",
+   "Establish a theory of probable cause.",
+   "Test the theory to determine the cause.",
+   "Establish a plan of action to resolve the problem and implement the solution.",
+   "Verify full system functionality and if applicable, implement preventive measures.",
+   "Document findings, actions, and outcomes."
+  ],
+  "definitions": [
+   "Step 1",
+   "Step 2",
+   "Step 3",
+   "Step 4",
+   "Step 5",
+   "Step 6"
+  ],
+  "correct_pairs": {
+   "Identify the problem.": "Step 1",
+   "Establish a theory of probable cause.": "Step 2",
+   "Test the theory to determine the cause.": "Step 3",
+   "Establish a plan of action to resolve the problem and implement the solution.": "Step 4",
+   "Verify full system functionality and if applicable, implement preventive measures.": "Step 5",
+   "Document findings, actions, and outcomes.": "Step 6"
+  },
+  "correct_answer": "",
+  "notes": "none"
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 52,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2016/05/2023-07-25_151517-1.jpg",
+  "exhibit": null,
+  "question": "Match the memory type to the feature. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "DDR SDRAM",
+   "DDR3 SDRAM",
+   "GDDR SDRAM",
+   "DDR2 SDRAM",
+   "DDR4 SDRAM"
+  ],
+  "definitions": [
+   "It's connector has 288 pins and has advanced error correction features available.",
+   "It's connector has 184 pins and is able to support two writes and two reads per CPU clock cycle.",
+   "It's connector has 240 pins and consumes 1.5 Volts of power.",
+   "It's connector has 240 pins and consumes 1.8 Volts of power."
+  ],
+  "correct_pairs": {
+   "DDR4 SDRAM": "It's connector has 288 pins and has advanced error correction features available.",
+   "DDR SDRAM": "It's connector has 184 pins and is able to support two writes and two reads per CPU clock cycle.",
+   "DDR3 SDRAM": "It's connector has 240 pins and consumes 1.5 Volts of power.",
+   "DDR2 SDRAM": "It's connector has 240 pins and consumes 1.8 Volts of power."
+  },
+  "correct_answer": "",
+  "notes": "Leftover (unused): GDDR SDRAM. Kept the site's typo \"It's\" (for \"Its\") in every heading."
+ },
+ {
+  "page_number": 57,
+  "image": "https://itexamanswers.net/wp-content/uploads/2019/09/ITE-v7.0-IT-Essentials-Version-7.0-IT-Essentials-7.0-Final-Exam-1-9-Answers-003-927x1024.png",
+  "question": "Match the problem to the possible solution. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "The PCI NIC adapter card has stopped working.",
+   "The computer does not display any video after installing a new PCIe video card.",
+   "The user can hear the fans spinning but the PC will not start and there are no beeps from the speaker.",
+   "The motherboard capacitors are distended, swollen, emitting residue, or bulging.",
+   "After upgrading the single core CPU to a dual core CPU only one CPU graph is seen in the task manager."
+  ],
+  "definitions": [
+   "Replace the motherboard.",
+   "Check fo faulting cable, damaged or mis-seated CPU or other motherbard component prior to replacing the motherboard if required.",
+   "Update the BIOS firmware.",
+   "Connect the auxillary power cable for the adapter card."
+  ],
+  "correct_pairs": {
+   "The motherboard capacitors are distended, swollen, emitting residue, or bulging.": "Replace the motherboard.",
+   "The user can hear the fans spinning but the PC will not start and there are no beeps from the speaker.": "Check fo faulting cable, damaged or mis-seated CPU or other motherbard component prior to replacing the motherboard if required.",
+   "After upgrading the single core CPU to a dual core CPU only one CPU graph is seen in the task manager.": "Update the BIOS firmware.",
+   "The computer does not display any video after installing a new PCIe video card.": "Connect the auxillary power cable for the adapter card."
+  },
+  "correct_answer": "",
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "notes": "Same picture as it-essentials-70-80-final-exam-modules-1-9-answers Q57; reading reused. "
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 220,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2016/05/Match-the-Windows-10-boot-sequence-after-the-boot-manager-bootmgr.exe-loads.jpg",
+  "exhibit": null,
+  "question": "Match the Windows 10 boot sequence after the boot manager (bootmgr.exe) loads.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "The Windows boot loader Winload.exe loads.",
+   "Ntoskrnl.exe and hal.dll are loaded.",
+   "Winload.exe reads the Registry, chooses a hardware profile, and loads the device drivers.",
+   "Ntoskrnl.exe takes over the process.",
+   "Winlogon.exe is loaded and executes the logon process."
+  ],
+  "definitions": [
+   "Step one",
+   "Step two",
+   "Step three",
+   "Step four",
+   "Step five"
+  ],
+  "correct_pairs": {
+   "The Windows boot loader Winload.exe loads.": "Step one",
+   "Ntoskrnl.exe and hal.dll are loaded.": "Step two",
+   "Winload.exe reads the Registry, chooses a hardware profile, and loads the device drivers.": "Step three",
+   "Ntoskrnl.exe takes over the process.": "Step four",
+   "Winlogon.exe is loaded and executes the logon process.": "Step five"
+  },
+  "correct_answer": "",
+  "notes": "Ordering question; the picture labels the slots 'Step one'..'Step five', used as given."
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 221,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2016/05/2023-07-25_150034.jpg",
+  "exhibit": null,
+  "question": "Match the correct API with its function within the Windows 10 environment.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Open Graphics Library (OpenGL)",
+   "DirectX",
+   "Windows APIs",
+   "Java APIs"
+  ],
+  "definitions": [
+   "This is a cross-platform standard specification for multimedia graphics.",
+   "This is a collection of APIs related to multimedia tasks for Microsoft Windows.",
+   "This allows applications from older versions of Windows to operate on newer versions.",
+   "This is a collection of APIs related to the development of Java programming."
+  ],
+  "correct_pairs": {
+   "Open Graphics Library (OpenGL)": "This is a cross-platform standard specification for multimedia graphics.",
+   "DirectX": "This is a collection of APIs related to multimedia tasks for Microsoft Windows.",
+   "Windows APIs": "This allows applications from older versions of Windows to operate on newer versions.",
+   "Java APIs": "This is a collection of APIs related to the development of Java programming."
+  },
+  "correct_answer": "",
+  "notes": "none"
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 230,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2016/05/Match-the-tabs-of-the-Windows-10-Task-Manager-to-their-functions.jpg",
+  "exhibit": null,
+  "question": "Match the tabs of the Windows 10 Task Manager to their functions. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Performance",
+   "Startup",
+   "Services",
+   "Users",
+   "Details"
+  ],
+  "definitions": [
+   "Allows for a process to have its affinity set.",
+   "Displays resource utilization information for CPU, memory, network, disk, and others",
+   "Allows programs that are running on system startup to be disabled.",
+   "Allows for a start, stop or restart of a particular service."
+  ],
+  "correct_pairs": {
+   "Details": "Allows for a process to have its affinity set.",
+   "Performance": "Displays resource utilization information for CPU, memory, network, disk, and others",
+   "Startup": "Allows programs that are running on system startup to be disabled.",
+   "Services": "Allows for a start, stop or restart of a particular service."
+  },
+  "correct_answer": "",
+  "notes": "Leftover (unused): Users. The picture's second heading has no trailing period ('...disk, and others'); the page text adds one."
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 231,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2016/05/2023-07-25_221655.jpg",
+  "exhibit": null,
+  "question": "Match the drive status indicators in the Disk Management utility with their description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Offline",
+   "Healthy",
+   "Initializing",
+   "Missing",
+   "Not Initialized",
+   "Online"
+  ],
+  "definitions": [
+   "a volume that is functioning properly",
+   "a basic disk that is being converted into a dynamic disk",
+   "a disk that does not contain a valid signature",
+   "a basic or dynamic disk that is accessible and shows no problems",
+   "a dynamic disk that is corrupted or unavailable"
+  ],
+  "correct_pairs": {
+   "Healthy": "a volume that is functioning properly",
+   "Initializing": "a basic disk that is being converted into a dynamic disk",
+   "Not Initialized": "a disk that does not contain a valid signature",
+   "Online": "a basic or dynamic disk that is accessible and shows no problems",
+   "Offline": "a dynamic disk that is corrupted or unavailable"
+  },
+  "correct_answer": "",
+  "notes": "Leftover (unused): Missing."
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 232,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2016/05/2023-07-25_150426-1.jpg",
+  "exhibit": null,
+  "question": "Match the wireless security settings to the description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Open",
+   "WEP",
+   "WPA2-Personal",
+   "WPA2-Enterprise"
+  ],
+  "definitions": [
+   "The Advanced Encryption Standard (AES) cipher and preshared keys (PSKs) are used to encrypt communications.",
+   "Authentication is passed from the access point to a centralized authentication RADIUS server.",
+   "Data is sent unencrypted with no authentication."
+  ],
+  "correct_pairs": {
+   "WPA2-Personal": "The Advanced Encryption Standard (AES) cipher and preshared keys (PSKs) are used to encrypt communications.",
+   "WPA2-Enterprise": "Authentication is passed from the access point to a centralized authentication RADIUS server.",
+   "Open": "Data is sent unencrypted with no authentication."
+  },
+  "correct_answer": "",
+  "notes": "Leftover (unused): WEP."
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 243,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2016/05/2023-07-25_223801.jpg",
+  "exhibit": null,
+  "question": "Match the individual languages with their corresponding classification.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "C++",
+   "VBScript",
+   "Java",
+   "C#",
+   "Python",
+   "JavaScript"
+  ],
+  "definitions": [
+   "Scripting Languages",
+   "Compiled Languages"
+  ],
+  "correct_pairs": {
+   "VBScript": "Scripting Languages",
+   "Python": "Scripting Languages",
+   "JavaScript": "Scripting Languages",
+   "C++": "Compiled Languages",
+   "Java": "Compiled Languages",
+   "C#": "Compiled Languages"
+  },
+  "correct_answer": "",
+  "notes": "none"
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 347,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2022/12/2022-12-23_154529.jpg",
+  "exhibit": null,
+  "question": "Match the steps that will lead to the loading of bootmgr.exe in a 32 bit Windows 10 environment.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Step 2",
+   "Step 3",
+   "Step 4",
+   "Step 1"
+  ],
+  "definitions": [
+   "CMOS configuration settings loaded",
+   "MBR",
+   "VBR",
+   "POST executed"
+  ],
+  "correct_pairs": {
+   "Step 2": "CMOS configuration settings loaded",
+   "Step 3": "MBR",
+   "Step 4": "VBR",
+   "Step 1": "POST executed"
+  },
+  "correct_answer": "",
+  "notes": "Same picture as it-essentials-70-80-final-exam-modules-10-14-answers Q156; reading reused. Headings and slots look swapped: the box headings are the boot events and the placed items are 'Step 1'..'Step 4'. Followed the picture (heading = definition, step label = term). Order: Step 1 POST executed, Step 2 CMOS configuration settings loaded, Step 3 MBR, Step 4 VBR; matches page text. Watermark overlaps 'CMOS configuration settings loaded' but it is legible."
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 348,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2022/12/2022-12-23_154441.jpg",
+  "exhibit": null,
+  "question": "Select the Windows 10 version that best meets the described use.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Windows 10 Home",
+   "Windows 10 Education",
+   "Windows 10 Pro",
+   "Windows 10 Enterprise"
+  ],
+  "definitions": [
+   "Used for personal computing and gaming with built-in features like family safety and parental control.",
+   "Used in an academic environment with volume licensing options.",
+   "Used in small business environments with built-in security, productivity, and management features.",
+   "Used in large to mid-size business environments requiring advanced security and management features."
+  ],
+  "correct_pairs": {
+   "Windows 10 Home": "Used for personal computing and gaming with built-in features like family safety and parental control.",
+   "Windows 10 Education": "Used in an academic environment with volume licensing options.",
+   "Windows 10 Pro": "Used in small business environments with built-in security, productivity, and management features.",
+   "Windows 10 Enterprise": "Used in large to mid-size business environments requiring advanced security and management features."
+  },
+  "correct_answer": "",
+  "notes": "Same picture as it-essentials-70-80-final-exam-modules-10-14-answers Q158; reading reused. Watermark overlaps the first heading ('...family safety and parental control.') but it is legible and consistent with the page text."
+ },
+ {
+  "exam": "it-essentials-70-80-course-final-exam-answers",
+  "page_number": 349,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2022/12/2022-12-23_154855.jpg",
+  "exhibit": null,
+  "question": "Match the file system with the respective description.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "NTFS",
+   "ExFAT",
+   "FAT32",
+   "CDFS",
+   "NFS"
+  ],
+  "definitions": [
+   "Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.",
+   "Usually used on flash drives as it can support files larger than 4GB.",
+   "Supports partition sizes up to 2TB or 2,048GB.",
+   "Created specifically for optical disk media.",
+   "A network-based file system that allows file access over the network."
+  ],
+  "correct_pairs": {
+   "NTFS": "Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.",
+   "ExFAT": "Usually used on flash drives as it can support files larger than 4GB.",
+   "FAT32": "Supports partition sizes up to 2TB or 2,048GB.",
+   "CDFS": "Created specifically for optical disk media.",
+   "NFS": "A network-based file system that allows file access over the network."
+  },
+  "correct_answer": "",
+  "notes": "Same picture as it-essentials-70-80-final-exam-modules-10-14-answers Q155; reading reused. none"
+ }
+]

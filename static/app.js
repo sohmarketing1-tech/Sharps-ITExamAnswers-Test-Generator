@@ -59,6 +59,9 @@ const state = {
     swipeOnboardingPending: false,
     flashcardSwipeOnboardingPending: false,
     mode: null, // "practice", "mastery", "flashcards", or null
+    flashcardCorrect: new Set(),
+    flashcardMissed: new Set(),
+    flashcardToastTimeout: null,
     user: null,
     masterySummary: null,
     masteryImmediateFeedback: false,
@@ -185,6 +188,7 @@ const els = {
     questionCountHint: document.getElementById("question-count-hint"),
     startBtn: document.getElementById("start-btn"),
     setupMessage: document.getElementById("setup-message"),
+    commsTest2Disclaimer: document.getElementById("comms-test-2-disclaimer"),
     accountPrompt: document.getElementById("account-prompt"),
     tabNav: document.querySelector(".tab-nav"),
     tabHome: document.getElementById("tab-home"),
@@ -317,9 +321,8 @@ const els = {
     commsGamesList: document.getElementById("comms-games-list"),
     masteryPanel: document.getElementById("mastery-panel"),
     flashcardPanel: document.getElementById("flashcard-panel"),
-    fcPanelReviewCount: document.getElementById("fc-panel-review-count"),
     fcPanelStartBtn: document.getElementById("fc-panel-start-btn"),
-    fcPanelReviewStartBtn: document.getElementById("fc-panel-review-start-btn"),
+    fcPanelReviewMissedBtn: document.getElementById("fc-panel-review-missed-btn"),
     masteryBar: document.getElementById("mastery-bar"),
     masteryText: document.getElementById("mastery-text"),
     masteryStartBtn: document.getElementById("mastery-start-btn"),
@@ -331,9 +334,8 @@ const els = {
     resultsMasteryBar: document.getElementById("results-mastery-bar"),
     resultsMasteryText: document.getElementById("results-mastery-text"),
     flashcardExamButtons: document.getElementById("flashcard-exam-buttons"),
-    flashcardReviewCount: document.getElementById("flashcard-review-count"),
     flashcardStartBtn: document.getElementById("flashcard-start-btn"),
-    flashcardReviewStartBtn: document.getElementById("flashcard-review-start-btn"),
+    flashcardReviewMissedBtn: document.getElementById("flashcard-review-missed-btn"),
     flashcardSetupMessage: document.getElementById("flashcard-setup-message"),
     flashcardResumeContainer: document.getElementById("flashcard-resume-container"),
     flashcardResumeText: document.getElementById("flashcard-resume-text"),
@@ -341,29 +343,24 @@ const els = {
     flashcardDiscardBtn: document.getElementById("flashcard-discard-btn"),
     flashcardSessionStatus: document.getElementById("flashcard-session-status"),
     flashcardStudyArea: document.getElementById("flashcard-study-area"),
-    flashcardStackNext: document.getElementById("flashcard-stack-next"),
+    flashcardResults: document.getElementById("flashcard-results"),
+    flashcardResultsCard: document.querySelector("#flashcard-results .flashcard-results-card"),
+    flashcardScorePercent: document.getElementById("flashcard-score-percent"),
+    flashcardScoreDetail: document.getElementById("flashcard-score-detail"),
+    flashcardCategoryBreakdown: document.getElementById("flashcard-category-breakdown"),
+    flashcardRestartBtn: document.getElementById("flashcard-restart-btn"),
+    flashcardReviewMissedResultsBtn: document.getElementById("flashcard-review-missed-results-btn"),
+    flashcardResultsExitBtn: document.getElementById("flashcard-results-exit-btn"),
     flashcard: document.getElementById("flashcard"),
-    flashcardInner: document.querySelector("#flashcard .flashcard-inner"),
-    flashcardFrontFace: document.querySelector("#flashcard .flashcard-front"),
-    flashcardBackFace: document.querySelector("#flashcard .flashcard-back"),
     flashcardFrontText: document.getElementById("flashcard-front-text"),
-    flashcardFrontImage: document.getElementById("flashcard-front-image"),
-    flashcardFrontOptions: document.getElementById("flashcard-front-options"),
     flashcardBackText: document.getElementById("flashcard-back-text"),
-    flashcardBackQuestion: document.getElementById("flashcard-back-question"),
+    flashcardCategory: document.getElementById("flashcard-category"),
     flashcardCounter: document.getElementById("flashcard-counter"),
-    flashcardShuffleBtn: document.getElementById("flashcard-shuffle-btn"),
-    flashcardFlipBtn: document.getElementById("flashcard-flip-btn"),
     flashcardPrevBtn: document.getElementById("flashcard-prev-btn"),
+    flashcardMissedBtn: document.getElementById("flashcard-missed-btn"),
+    flashcardGotItBtn: document.getElementById("flashcard-gotit-btn"),
     flashcardNextBtn: document.getElementById("flashcard-next-btn"),
-    flashcardPrevArrows: document.querySelectorAll("#flashcard .flashcard-prev-arrow"),
-    flashcardNextArrows: document.querySelectorAll("#flashcard .flashcard-next-arrow"),
-    flashcardSwipeOnboarding: document.getElementById("flashcard-swipe-onboarding"),
-    flashcardSwipeOnboardingLabel: document.getElementById("flashcard-swipe-onboarding-label"),
-    flashcardSwipeDirectionFlash: document.getElementById("flashcard-swipe-direction-flash"),
-    flashcardSwipeDirectionFlashLabel: document.getElementById("flashcard-swipe-direction-flash-label"),
-    flashcardMarkBtn: document.getElementById("flashcard-mark-btn"),
-    flashcardReviewBadge: document.getElementById("flashcard-review-badge"),
+    flashcardToast: document.getElementById("flashcard-toast"),
     flashcardExitBtn: document.getElementById("flashcard-exit-btn"),
     subnetDrillsPanel: document.getElementById("subnet-drills-panel"),
     subnetDiffEasy: document.getElementById("subnet-diff-easy"),
@@ -665,7 +662,7 @@ function renderAuthState() {
     }
     renderChatInputState();
     if (state.currentTab === "flashcards" && state.flashcardFilename) {
-        updateFlashcardReviewCount();
+        updateFlashcardReviewAvailability();
     }
 }
 
@@ -1234,7 +1231,8 @@ function groupExamsByCategory(exams) {
         groups[cat].push(exam);
     });
     const order = ["IT Essentials", "CCNA", "Comms"];
-    return order.filter((cat) => groups[cat]).map((cat) => ({ category: cat, exams: groups[cat] }));
+    // Comms always shows as a tab: its exams were retired and it now shows a message instead.
+    return order.filter((cat) => groups[cat] || cat === "Comms").map((cat) => ({ category: cat, exams: groups[cat] || [] }));
 }
 
 function getCategoryForFilename(filename) {
@@ -1302,8 +1300,7 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
 
     const categoryDescriptions = {
         "IT Essentials": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy.",
-        "CCNA": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy.",
-        "Comms": "Unlike ITE and CCNA, there is no official question and answer bank for these lessons. The questions here are compiled from students' class notes into a study guide, and they may or may not appear on your test in some form. Pro Tip: do not just memorize keywords - make sure you actually understand the material, because the exact test questions are unknown."
+        "CCNA": "Questions are sourced directly from the test. At random, around 50 of these same questions will be on your test. Pro Tip: focus on the keywords in the correct answers to speed up memorization. Most shipmates score 90% or 100% with this method. Unlike ITExamAnswers and Quizlet, this site is built specifically to make studying and memorizing answers easy."
     };
     const categoryDescription = categoryDescriptions[activeCategory];
     if (categoryDescription && container !== els.flashcardExamButtons) {
@@ -1354,6 +1351,17 @@ function renderExamGroups(container, activeFilename, onSelect, defaultCategory =
     }
 
     const activeGroup = groups.find((g) => g.category === activeCategory) || groups[0];
+    if (activeGroup.category === "Comms" && !activeGroup.exams.length) {
+        const note = document.createElement("div");
+        note.className = "comms-note";
+        note.innerHTML = `
+            <h3 class="comms-note-title">Comms study material has been removed</h3>
+            <p>We didn't have enough material for this section, and what we did have wasn't enough to get most students a good score, so we removed it.</p>
+            <p>Please study with your peers for this section. It's not as hard as you think, and the final test is the easiest one you'll take in this class.</p>
+            <p class="comms-note-signoff">We'll see you in C school!</p>`;
+        container.appendChild(note);
+        return;
+    }
     const grid = document.createElement("div");
     grid.className = "exam-grid";
     const activeIndex = activeGroup.exams.findIndex((e) => e.filename === activeFilename);
@@ -1430,6 +1438,9 @@ async function loadExam(filename, updateSelection = true) {
         const requested = parseInt(els.questionCount.value, 10) || 20;
         els.questionCount.value = Math.min(requested, data.count);
         setMessage("");
+        if (els.commsTest2Disclaimer) {
+            els.commsTest2Disclaimer.classList.toggle("hidden", filename !== "naval-comms-exam-v3.json");
+        }
         if (typeof updateFcPanelStartBtn === "function") updateFcPanelStartBtn();
         if (typeof renderFlashcardExamButtons === "function") renderFlashcardExamButtons();
         savePrefs();
@@ -1508,6 +1519,9 @@ function updateNoExamPrompt() {
     }
     if (els.commsGames) {
         els.commsGames.classList.toggle("hidden", !state.currentFilename);
+    }
+    if (els.commsTest2Disclaimer && !state.currentFilename) {
+        els.commsTest2Disclaimer.classList.add("hidden");
     }
     updateStudyGuide();
 }
@@ -2468,14 +2482,15 @@ function stopChatPolling() {
 
 function renderFlashcardExamButtons() {
     renderExamGroups(els.flashcardExamButtons, state.flashcardFilename, selectFlashcardExam, "IT Essentials");
-    els.flashcardStartBtn.disabled = !state.flashcardFilename;
-    els.flashcardReviewStartBtn.disabled = !state.flashcardFilename;
+    const disabled = !state.flashcardFilename;
+    if (els.flashcardStartBtn) els.flashcardStartBtn.disabled = disabled;
+    if (els.flashcardReviewMissedBtn) els.flashcardReviewMissedBtn.disabled = disabled || !getFlashcardMissedCount(state.flashcardFilename);
 }
 
 function selectFlashcardExam(filename) {
     state.flashcardFilename = filename;
     renderFlashcardExamButtons();
-    updateFlashcardReviewCount();
+    updateFlashcardReviewAvailability();
     els.flashcardSetupMessage.textContent = "";
     savePrefs();
     updateFlashcardSteps();
@@ -2483,6 +2498,12 @@ function selectFlashcardExam(filename) {
 
 function setFlashcardMode() {
     state.flashcardMode = "question";
+}
+
+function setFlashcardFilter(filter) {
+    state.flashcardFilter = filter;
+    saveFlashcardSession();
+    savePrefs();
 }
 
 async function startFlashcards(filter = "all") {
@@ -2494,46 +2515,40 @@ async function startFlashcards(filter = "all") {
     }
     clearFlashcardSession();
     try {
-        const [questionsRes, reviewsRes] = await Promise.all([
-            fetch(API.examQuestions, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ filename: state.flashcardFilename }),
-                credentials: "same-origin",
-            }),
-            state.user
-                ? fetch(`${API.flashcardReviews}?filename=${encodeURIComponent(state.flashcardFilename)}`, {
-                      credentials: "same-origin",
-                  }).catch(() => null)
-                : Promise.resolve(null),
-        ]);
-        const data = await questionsRes.json();
+        const res = await fetch(API.examQuestions, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ filename: state.flashcardFilename }),
+            credentials: "same-origin",
+        });
+        const data = await res.json();
         if (!data.ok || !data.questions || !data.questions.length) {
-            els.flashcardSetupMessage.textContent = data.error || "Could not load questions.";
+            els.flashcardSetupMessage.textContent = data.error || "Could not load flashcards.";
             return;
         }
 
-        let allQuestions = [...data.questions];
-        state.flashcardReviews = new Set();
-        if (reviewsRes && reviewsRes.ok) {
-            const reviewData = await reviewsRes.json();
-            if (reviewData.ok) {
-                state.flashcardReviews = new Set(reviewData.reviews.map(String));
-            }
-        }
-
-        if (state.flashcardFilter === "review") {
-            allQuestions = allQuestions.filter((q) => state.flashcardReviews.has(String(q.id)));
-            if (!allQuestions.length) {
-                els.flashcardSetupMessage.textContent = "No cards marked for review yet.";
+        let allCards = [...data.questions];
+        if (filter === "missed") {
+            const missedIds = getFlashcardMissedIds(state.flashcardFilename);
+            allCards = allCards.filter((q) => missedIds.has(String(q.id)));
+            if (!allCards.length) {
+                els.flashcardSetupMessage.textContent = "No missed cards to review yet.";
                 return;
             }
+        } else {
+            // Shuffle the deck once at the start so every session has a different order.
+            for (let i = allCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allCards[i], allCards[j]] = [allCards[j], allCards[i]];
+            }
         }
 
-        state.flashcardQuestions = allQuestions;
+        state.flashcardQuestions = allCards;
         state.flashcardIndex = 0;
         state.flashcardFlipped = false;
-        markFlashcardRunStart();
+        state.flashcardCorrect = new Set();
+        state.flashcardMissed = new Set();
+        state.flashcardToastTimeout = null;
         showFlashcardStudyArea();
         renderFlashcard();
         saveFlashcardSession();
@@ -2546,20 +2561,57 @@ async function startFlashcards(filter = "all") {
 
 function showFlashcardStudyArea() {
     document.querySelector("#flashcards-screen .setup-grid").classList.add("hidden");
+    if (els.flashcardResults) els.flashcardResults.classList.add("hidden");
     els.flashcardStudyArea.classList.remove("hidden");
 }
 
 function showFlashcardSetup() {
     document.querySelector("#flashcards-screen .setup-grid").classList.remove("hidden");
     els.flashcardStudyArea.classList.add("hidden");
+    if (els.flashcardResults) els.flashcardResults.classList.add("hidden");
     state.flashcardQuestions = [];
     state.flashcardIndex = 0;
     state.flashcardFlipped = false;
+    state.flashcardCorrect = new Set();
+    state.flashcardMissed = new Set();
     els.flashcardSetupMessage.textContent = "";
     renderFlashcardResume();
+    updateFlashcardReviewAvailability();
 }
 
 const FLASHCARD_SESSION_KEY = "answrit_flashcard_session";
+const FLASHCARD_MISSED_KEY_PREFIX = "answrit_flashcard_missed_";
+
+function missedKey(filename) {
+    return FLASHCARD_MISSED_KEY_PREFIX + filename;
+}
+
+function getFlashcardMissedIds(filename) {
+    try {
+        const raw = localStorage.getItem(missedKey(filename));
+        return new Set(JSON.parse(raw || "[]"));
+    } catch (e) {
+        return new Set();
+    }
+}
+
+function getFlashcardMissedCount(filename) {
+    return getFlashcardMissedIds(filename).size;
+}
+
+function setFlashcardMissedIds(filename, ids) {
+    try {
+        localStorage.setItem(missedKey(filename), JSON.stringify(Array.from(ids)));
+    } catch (e) {
+        console.error("Failed to save missed flashcard IDs", e);
+    }
+}
+
+function updateFlashcardReviewAvailability() {
+    if (els.flashcardReviewMissedBtn) {
+        els.flashcardReviewMissedBtn.disabled = !state.flashcardFilename || !getFlashcardMissedCount(state.flashcardFilename);
+    }
+}
 
 function saveFlashcardSession() {
     if (state._restoringPrefs) return;
@@ -2571,7 +2623,8 @@ function saveFlashcardSession() {
         questions: state.flashcardQuestions,
         index: state.flashcardIndex,
         flipped: state.flashcardFlipped,
-        reviews: Array.from(state.flashcardReviews),
+        correct: Array.from(state.flashcardCorrect || new Set()),
+        missed: Array.from(state.flashcardMissed || new Set()),
         savedAt: Date.now(),
     };
     try {
@@ -2625,7 +2678,7 @@ function loadFlashcardSession() {
 function isCurrentFlashcardSession(session) {
     if (!session || !session.questions) return false;
     const exam = state.exams.find((item) => item.filename === session.filename);
-    return session.filter === "review" || !exam?.flashcard_count || session.questions.length === exam.flashcard_count;
+    return session.filter === "missed" || !exam?.flashcard_count || session.questions.length === exam.flashcard_count;
 }
 
 async function renderFlashcardResume() {
@@ -2647,17 +2700,13 @@ async function renderFlashcardResume() {
         session = null;
     }
 
-    const hasSession = !!(session && session.questions && session.questions.length);
+    const hasSession = !!(session && session.questions && session.questions.length && session.index < session.questions.length);
 
     els.flashcardResumeContainer.classList.toggle("hidden", !hasSession);
     document.getElementById("flashcard-start-row").classList.toggle("hidden", hasSession);
 
     if (els.flashcardSessionStatus) {
-        if (!state.user) {
-            els.flashcardSessionStatus.textContent = "⚠️ Not signed in — progress is only saved on this device.";
-        } else {
-            els.flashcardSessionStatus.textContent = "";
-        }
+        els.flashcardSessionStatus.textContent = !state.user ? "⚠️ Not signed in — progress is only saved on this device." : "";
     }
 
     if (!hasSession) return;
@@ -2687,82 +2736,85 @@ async function resumeFlashcardSession() {
     state.flashcardQuestions = session.questions;
     state.flashcardIndex = Math.min(session.index || 0, session.questions.length - 1);
     state.flashcardFlipped = !!session.flipped;
-    state.flashcardReviews = new Set((session.reviews || []).map(String));
+    state.flashcardCorrect = new Set((session.correct || []).map(String));
+    state.flashcardMissed = new Set((session.missed || []).map(String));
 
     renderFlashcardExamButtons();
-    setFlashcardMode(state.flashcardMode);
-    setFlashcardFilter(state.flashcardFilter);
-    updateFlashcardReviewCount();
+    setFlashcardMode();
     showFlashcardStudyArea();
     renderFlashcard();
     saveFlashcardSession();
-}
-
-const FLASHCARD_MIN_HEIGHT = 360;
-
-function adjustFlashcardHeight() {
-    if (!els.flashcardInner || !els.flashcardFrontFace || !els.flashcardBackFace) return;
-    const contentHeight = Math.max(els.flashcardFrontFace.scrollHeight, els.flashcardBackFace.scrollHeight);
-    els.flashcardInner.style.minHeight = `${Math.max(FLASHCARD_MIN_HEIGHT, contentHeight)}px`;
 }
 
 function renderFlashcard() {
     const q = state.flashcardQuestions[state.flashcardIndex];
     if (!q) return;
 
-    els.flashcard.classList.toggle("flipped", state.flashcardFlipped);
+    const cardEl = els.flashcard;
+    cardEl.classList.toggle("flipped", state.flashcardFlipped);
 
-    // Reset to the baseline height before measuring, so a shorter card after
-    // a taller one shrinks back down instead of staying stretched.
-    if (els.flashcardInner) els.flashcardInner.style.minHeight = `${FLASHCARD_MIN_HEIGHT}px`;
+    const front = q.front || q.question || "";
+    const back = q.back || q.correct_answer || q._correct_answer || "";
+    const category = q.category || "General";
 
-    els.flashcardFrontText.textContent = q.question;
-
-    els.flashcardFrontImage.innerHTML = "";
-    if (q.image) {
-        const img = document.createElement("img");
-        img.src = q.image;
-        img.alt = "Question image";
-        img.onerror = () => { img.style.display = "none"; adjustFlashcardHeight(); };
-        img.onload = adjustFlashcardHeight;
-        els.flashcardFrontImage.appendChild(img);
+    if (els.flashcardCategory) els.flashcardCategory.textContent = category;
+    if (els.flashcardFrontText) els.flashcardFrontText.textContent = front;
+    if (els.flashcardBackText) els.flashcardBackText.textContent = back;
+    if (els.flashcardCounter) {
+        els.flashcardCounter.textContent = `Card ${state.flashcardIndex + 1} of ${state.flashcardQuestions.length}`;
     }
-
-    els.flashcardFrontOptions.innerHTML = "";
-    if (state.flashcardMode === "choices" && q.options && q.options.length) {
-        const ul = document.createElement("ul");
-        shuffleArray(q.options).forEach((opt) => {
-            const li = document.createElement("li");
-            li.textContent = opt;
-            ul.appendChild(li);
-        });
-        els.flashcardFrontOptions.appendChild(ul);
-    }
-
-    const correct = q.correct_answer || q._correct_answer || "";
-    els.flashcardBackText.textContent = correct;
-    if (els.flashcardBackQuestion) els.flashcardBackQuestion.textContent = q.question;
-    els.flashcardCounter.textContent = `Card ${state.flashcardIndex + 1} of ${state.flashcardQuestions.length}`;
-
-    const isMarked = state.flashcardReviews.has(String(q.id));
-    els.flashcardReviewBadge.classList.toggle("hidden", !isMarked);
-    els.flashcardMarkBtn.textContent = isMarked ? "Unmark review" : "Mark for review";
-    els.flashcardMarkBtn.classList.toggle("btn-secondary", !isMarked);
-    els.flashcardMarkBtn.classList.toggle("btn-warning", isMarked);
-
-    els.flashcardPrevBtn.disabled = state.flashcardIndex === 0;
-    els.flashcardNextBtn.disabled = state.flashcardIndex === state.flashcardQuestions.length - 1;
-    els.flashcardPrevArrows.forEach((btn) => { btn.disabled = state.flashcardIndex === 0; });
-    els.flashcardNextArrows.forEach((btn) => { btn.disabled = state.flashcardIndex === state.flashcardQuestions.length - 1; });
-
-    adjustFlashcardHeight();
-    maybeShowFlashcardSwipeOnboarding();
+    if (els.flashcardPrevBtn) els.flashcardPrevBtn.disabled = state.flashcardIndex === 0;
+    if (els.flashcardNextBtn) els.flashcardNextBtn.disabled = state.flashcardIndex === state.flashcardQuestions.length - 1;
 }
 
 function flipFlashcard() {
     state.flashcardFlipped = !state.flashcardFlipped;
     els.flashcard.classList.toggle("flipped", state.flashcardFlipped);
     saveFlashcardSession();
+}
+
+const FLASHCARD_MISSED_MESSAGES = [
+    "We'll get it next time!",
+    "No worries, keep pushing!",
+    "Reviewing is learning!",
+    "Mistakes are proof you are trying!",
+    "Adding this back to the deck!",
+];
+
+const FLASHCARD_CORRECT_MESSAGES = [
+    "Spot on!",
+    "Locked in!",
+    "Got it!",
+    "You're crushing this!",
+    "Perfect!",
+    "Mastered!",
+];
+
+function showFlashcardToast(message) {
+    if (!els.flashcardToast) return;
+    if (state.flashcardToastTimeout) clearTimeout(state.flashcardToastTimeout);
+    els.flashcardToast.textContent = message;
+    els.flashcardToast.classList.remove("hidden");
+    els.flashcardToast.classList.add("show");
+    state.flashcardToastTimeout = setTimeout(() => {
+        els.flashcardToast.classList.remove("show");
+        els.flashcardToast.classList.add("hide");
+        state.flashcardToastTimeout = setTimeout(() => {
+            els.flashcardToast.classList.add("hidden");
+            els.flashcardToast.classList.remove("hide");
+        }, 250);
+    }, 900);
+}
+
+function advanceFlashcard() {
+    if (state.flashcardIndex < state.flashcardQuestions.length - 1) {
+        state.flashcardIndex += 1;
+        state.flashcardFlipped = false;
+        renderFlashcard();
+        saveFlashcardSession();
+    } else {
+        showFlashcardResults();
+    }
 }
 
 function nextFlashcard() {
@@ -2774,16 +2826,6 @@ function nextFlashcard() {
     }
 }
 
-function handleFlashcardNextAction() {
-    if (state.flashcardIndex >= state.flashcardQuestions.length - 1) return;
-    animateFlashcardNavigate("next", () => nextFlashcard());
-}
-
-function handleFlashcardPrevAction() {
-    if (state.flashcardIndex <= 0) return;
-    animateFlashcardNavigate("prev", () => prevFlashcard());
-}
-
 function prevFlashcard() {
     if (state.flashcardIndex > 0) {
         state.flashcardIndex -= 1;
@@ -2793,72 +2835,124 @@ function prevFlashcard() {
     }
 }
 
-function shuffleFlashcards() {
+function handleFlashcardMissed() {
+    if (!state.flashcardQuestions.length) return;
+    const q = state.flashcardQuestions[state.flashcardIndex];
+    const qid = String(q.id);
+    state.flashcardMissed.add(qid);
+    state.flashcardCorrect.delete(qid);
+    showFlashcardToast(pickRandom(FLASHCARD_MISSED_MESSAGES));
+    setTimeout(() => {
+        if (state.flashcardFlipped) flipFlashcard();
+        setTimeout(advanceFlashcard, 200);
+    }, 800);
+}
+
+function handleFlashcardGotIt() {
+    if (!state.flashcardQuestions.length) return;
+    const q = state.flashcardQuestions[state.flashcardIndex];
+    const qid = String(q.id);
+    state.flashcardCorrect.add(qid);
+    state.flashcardMissed.delete(qid);
+    showFlashcardToast(pickRandom(FLASHCARD_CORRECT_MESSAGES));
+    setTimeout(() => {
+        if (state.flashcardFlipped) flipFlashcard();
+        setTimeout(advanceFlashcard, 200);
+    }, 800);
+}
+
+function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function showFlashcardResults() {
+    if (els.flashcardStudyArea) els.flashcardStudyArea.classList.add("hidden");
+    if (els.flashcardResults) els.flashcardResults.classList.remove("hidden");
+    document.querySelector("#flashcards-screen .setup-grid").classList.add("hidden");
+
+    const total = state.flashcardQuestions.length;
+    const correct = state.flashcardCorrect.size;
+    const missed = state.flashcardMissed.size;
+    const answered = Math.min(correct + missed, total) || total;
+    const percent = answered ? Math.round((correct / answered) * 100) : 0;
+
+    if (els.flashcardScorePercent) els.flashcardScorePercent.textContent = `${percent}%`;
+    if (els.flashcardScoreDetail) els.flashcardScoreDetail.textContent = `${correct} of ${answered} correct`;
+
+    // Persist missed IDs for future review sessions.
+    if (state.flashcardFilename) {
+        setFlashcardMissedIds(state.flashcardFilename, state.flashcardMissed);
+    }
+    clearFlashcardSession();
+    updateFlashcardReviewAvailability();
+
+    const counts = {};
+    state.flashcardMissed.forEach((qid) => {
+        const q = state.flashcardQuestions.find((card) => String(card.id) === qid);
+        if (!q) return;
+        const cat = q.category || "General";
+        counts[cat] = (counts[cat] || 0) + 1;
+    });
+
+    const container = els.flashcardCategoryBreakdown;
+    if (!container) return;
+    container.innerHTML = "";
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    if (!sorted.length) {
+        container.innerHTML = '<p class="flashcard-breakdown-empty">Great job — no weak categories!</p>';
+        return;
+    }
+    const title = document.createElement("h3");
+    title.className = "flashcard-breakdown-title";
+    title.textContent = "Categories to review";
+    container.appendChild(title);
+    const list = document.createElement("ul");
+    list.className = "flashcard-breakdown-list";
+    sorted.forEach(([cat, count]) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="flashcard-breakdown-cat">${escapeHtml(cat)}</span><span class="flashcard-breakdown-count">${count} missed</span>`;
+        list.appendChild(li);
+    });
+    container.appendChild(list);
+}
+
+function restartFlashcards() {
+    if (!state.flashcardQuestions.length) {
+        showFlashcardSetup();
+        return;
+    }
+    state.flashcardIndex = 0;
+    state.flashcardFlipped = false;
+    state.flashcardCorrect = new Set();
+    state.flashcardMissed = new Set();
+    // Reshuffle so the restart is not the same order.
     for (let i = state.flashcardQuestions.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [state.flashcardQuestions[i], state.flashcardQuestions[j]] = [state.flashcardQuestions[j], state.flashcardQuestions[i]];
     }
-    state.flashcardIndex = 0;
-    state.flashcardFlipped = false;
+    showFlashcardStudyArea();
     renderFlashcard();
     saveFlashcardSession();
 }
 
-async function toggleFlashcardReview() {
-    const q = state.flashcardQuestions[state.flashcardIndex];
-    if (!q) return;
-    if (!state.user) {
-        alert("Log in to mark cards for review.");
-        return;
+function handleFlashcardKeydown(e) {
+    if (!els.flashcardStudyArea || els.flashcardStudyArea.classList.contains("hidden")) return;
+    if (e.key === " " || e.code === "Space") {
+        e.preventDefault();
+        flipFlashcard();
+    } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prevFlashcard();
+    } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        nextFlashcard();
+    } else if (e.key === "a" || e.key === "A") {
+        e.preventDefault();
+        handleFlashcardMissed();
+    } else if (e.key === "d" || e.key === "D") {
+        e.preventDefault();
+        handleFlashcardGotIt();
     }
-    try {
-        const res = await fetch(API.flashcardReviewToggle, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ filename: state.flashcardFilename, question_id: q.id }),
-            credentials: "same-origin",
-        });
-        const data = await res.json();
-        if (data.ok) {
-            if (data.marked) {
-                state.flashcardReviews.add(String(q.id));
-            } else {
-                state.flashcardReviews.delete(String(q.id));
-            }
-            renderFlashcard();
-            updateFlashcardReviewCount();
-            saveFlashcardSession();
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-function setFlashcardFilter(filter) {
-    state.flashcardFilter = filter;
-    updateFlashcardReviewCount();
-    saveFlashcardSession();
-    savePrefs();
-}
-
-async function updateFlashcardReviewCount() {
-    if (!state.flashcardFilename) return;
-    let text = "Log in to keep a saved review list.";
-    if (state.user) {
-        try {
-            const res = await fetch(
-                `${API.flashcardReviews}?filename=${encodeURIComponent(state.flashcardFilename)}`,
-                { credentials: "same-origin" }
-            );
-            const data = await res.json();
-            const count = data.ok ? data.reviews.length : 0;
-            text = `${count} card${count === 1 ? "" : "s"} marked for review.`;
-        } catch (err) {
-            text = "Could not load review count.";
-        }
-    }
-    els.flashcardReviewCount.textContent = text;
-    if (els.fcPanelReviewCount) els.fcPanelReviewCount.textContent = text;
 }
 
 function retakeSameTest() {
@@ -3421,22 +3515,6 @@ function showSwipeDirectionFlash(direction) {
     flashSwipeDirection(els.swipeDirectionFlash, els.swipeDirectionFlashLabel, direction);
 }
 
-// Call once when a brand-new flashcard session begins (not on resume).
-// Flags the swipe onboarding to play on the very first card, capped at the
-// user's first 5 runs total.
-function markFlashcardRunStart() {
-    markSwipeOnboardingRun(FLASHCARD_SWIPE_ONBOARD_KEY, FLASHCARD_SWIPE_ONBOARD_MAX_RUNS, (v) => { state.flashcardSwipeOnboardingPending = v; });
-}
-
-function maybeShowFlashcardSwipeOnboarding() {
-    if (state.flashcardIndex !== 0 || !state.flashcardSwipeOnboardingPending) return;
-    state.flashcardSwipeOnboardingPending = false;
-    flashcardSwipeOnboarding.show();
-}
-
-function showFlashcardSwipeDirectionFlash(direction) {
-    flashSwipeDirection(els.flashcardSwipeDirectionFlash, els.flashcardSwipeDirectionFlashLabel, direction);
-}
 
 // ---- Generic swipeable-card helpers (shared by the quiz card and flashcards) ----
 
@@ -3537,14 +3615,6 @@ const quizSwipeOnboarding = createSwipeOnboarding({
     prevText: "Swipe right for Previous",
 });
 
-const flashcardSwipeOnboarding = createSwipeOnboarding({
-    overlay: els.flashcardSwipeOnboarding,
-    card: els.flashcard,
-    stackNext: els.flashcardStackNext,
-    label: els.flashcardSwipeOnboardingLabel,
-    nextText: "Swipe left for Next",
-    prevText: "Swipe right for Previous",
-});
 
 // Briefly flashes the word "Next"/"Previous" over a card so the user gets
 // unambiguous confirmation of which way they just navigated.
@@ -3730,21 +3800,6 @@ function animateCardNavigate(direction, doNavigate) {
     );
 }
 
-let flashcardCardAnimInFlight = false;
-function animateFlashcardNavigate(direction, doNavigate) {
-    const targetIndex = direction === "next" ? state.flashcardIndex + 1 : state.flashcardIndex - 1;
-    const clampedIndex = Math.max(0, Math.min(targetIndex, state.flashcardQuestions.length - 1));
-    showFlashcardSwipeDirectionFlash(direction);
-    animateCardSwipe(
-        els.flashcard,
-        els.flashcardStackNext,
-        direction,
-        doNavigate,
-        (container) => renderFlashcardPreviewInto(container, state.flashcardQuestions[clampedIndex]),
-        () => flashcardCardAnimInFlight,
-        (v) => { flashcardCardAnimInFlight = v; }
-    );
-}
 
 // Wires up horizontal swipe-to-navigate on a card (touch devices only):
 // swipe left = next, swipe right = previous. Gated by distance/time/angle
@@ -3791,12 +3846,6 @@ wireSwipeNavigation(
     () => !els.swipeOnboarding.classList.contains("hidden")
 );
 
-wireSwipeNavigation(
-    els.flashcard,
-    handleFlashcardNextAction,
-    handleFlashcardPrevAction,
-    () => !els.flashcardSwipeOnboarding.classList.contains("hidden")
-);
 
 async function submitTest() {
     stopTimer();
@@ -4098,15 +4147,17 @@ if (els.modeFlashcards) els.modeFlashcards.addEventListener("click", () => setMo
 function updateFcPanelStartBtn() {
     const disabled = !state.flashcardFilename;
     if (els.fcPanelStartBtn) els.fcPanelStartBtn.disabled = disabled;
-    if (els.fcPanelReviewStartBtn) els.fcPanelReviewStartBtn.disabled = disabled;
+    if (els.fcPanelReviewMissedBtn) {
+        els.fcPanelReviewMissedBtn.disabled = disabled || !getFlashcardMissedCount(state.flashcardFilename);
+    }
 }
 if (els.fcPanelStartBtn) els.fcPanelStartBtn.addEventListener("click", () => {
     switchTab("flashcards");
     startFlashcards("all");
 });
-if (els.fcPanelReviewStartBtn) els.fcPanelReviewStartBtn.addEventListener("click", () => {
+if (els.fcPanelReviewMissedBtn) els.fcPanelReviewMissedBtn.addEventListener("click", () => {
     switchTab("flashcards");
-    startFlashcards("review");
+    startFlashcards("missed");
 });
 
 els.masteryStartBtn.addEventListener("click", startMasterySession);
@@ -4168,21 +4219,22 @@ els.chatInput.addEventListener("keydown", (e) => {
 });
 
 els.flashcardStartBtn.addEventListener("click", () => startFlashcards("all"));
-els.flashcardReviewStartBtn.addEventListener("click", () => startFlashcards("review"));
+els.flashcardReviewMissedBtn.addEventListener("click", () => startFlashcards("missed"));
 els.flashcard.addEventListener("click", (e) => {
-    if (e.target.closest(".card-arrow-btn")) return;
+    if (e.target.closest(".flashcard-action-btn") || e.target.closest(".flashcard-nav-btn")) return;
     flipFlashcard();
 });
-els.flashcardFlipBtn.addEventListener("click", flipFlashcard);
-els.flashcardNextBtn.addEventListener("click", handleFlashcardNextAction);
-els.flashcardPrevBtn.addEventListener("click", handleFlashcardPrevAction);
-els.flashcardNextArrows.forEach((btn) => btn.addEventListener("click", handleFlashcardNextAction));
-els.flashcardPrevArrows.forEach((btn) => btn.addEventListener("click", handleFlashcardPrevAction));
-els.flashcardShuffleBtn.addEventListener("click", shuffleFlashcards);
-els.flashcardMarkBtn.addEventListener("click", toggleFlashcardReview);
+els.flashcardPrevBtn.addEventListener("click", prevFlashcard);
+els.flashcardMissedBtn.addEventListener("click", handleFlashcardMissed);
+els.flashcardGotItBtn.addEventListener("click", handleFlashcardGotIt);
+els.flashcardNextBtn.addEventListener("click", nextFlashcard);
 els.flashcardExitBtn.addEventListener("click", showFlashcardSetup);
 els.flashcardResumeBtn.addEventListener("click", resumeFlashcardSession);
 els.flashcardDiscardBtn.addEventListener("click", clearFlashcardSession);
+els.flashcardRestartBtn.addEventListener("click", restartFlashcards);
+els.flashcardReviewMissedResultsBtn.addEventListener("click", () => startFlashcards("missed"));
+els.flashcardResultsExitBtn.addEventListener("click", showFlashcardSetup);
+document.addEventListener("keydown", handleFlashcardKeydown);
 window.addEventListener("pagehide", saveFlashcardSession);
 window.addEventListener("beforeunload", saveFlashcardSession);
 
@@ -4202,27 +4254,7 @@ function isKeyboardShortcutContext() {
     return true;
 }
 
-document.addEventListener("keydown", (e) => {
-    if (!screens.flashcards.classList.contains("active")) return;
-    if (!isKeyboardShortcutContext()) return;
-    if (!els.flashcardStudyArea.classList.contains("hidden")) {
-        const key = e.key || e.code;
-        if (e.key === " " || e.code === "Space") {
-            e.preventDefault();
-            flipFlashcard();
-        } else if (key === "ArrowRight" || key === "Right") {
-            e.preventDefault();
-            nextFlashcard();
-        } else if (key === "ArrowLeft" || key === "Left") {
-            e.preventDefault();
-            prevFlashcard();
-        } else if (e.key.toLowerCase() === "s") {
-            shuffleFlashcards();
-        } else if (e.key.toLowerCase() === "r") {
-            toggleFlashcardReview();
-        }
-    }
-});
+document.addEventListener("keydown", handleFlashcardKeydown);
 
 // Desktop-only keyboard shortcuts for the quiz: left/right navigate, numbers
 // 1-5 choose/toggle, up/down move focus, Enter/Space toggle multi-select.

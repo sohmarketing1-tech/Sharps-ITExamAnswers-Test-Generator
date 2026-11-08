@@ -1,0 +1,49 @@
+[
+ {
+  "exam": "ccna-1-v7-modules-4-7-ethernet-concepts-exam-answers",
+  "page_number": 5,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-12-25_150053.jpg",
+  "exhibit": null,
+  "question": "Match the situation with the appropriate use of network media.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Horizontal cabling structure",
+   "Desktop PCs in an enterprise office",
+   "Backbone cabling in an enterprise",
+   "Long-haul networks",
+   "Guest access in a coffee shop",
+   "Waiting rooms in a hospital"
+  ],
+  "definitions": [
+   "Copper Cables",
+   "Fiber Optic",
+   "Wireless"
+  ],
+  "correct_pairs": {
+   "Horizontal cabling structure": "Copper Cables",
+   "Desktop PCs in an enterprise office": "Copper Cables",
+   "Backbone cabling in an enterprise": "Fiber Optic",
+   "Long-haul networks": "Fiber Optic",
+   "Guest access in a coffee shop": "Wireless",
+   "Waiting rooms in a hospital": "Wireless"
+  },
+  "correct_answer": "",
+  "notes": "Picture shows each situation as a heading with the media (Copper Cables / Fiber Optic / Wireless) as the placed item, each media used twice. Because a term can map to only one definition, this is written as a categorize question: situations are terms, the three media are the categories. Wording follows the picture, which differs from page text ('desktop PCs in offices in an enterprise' vs picture 'Desktop PCs in an enterprise office'; 'Fiber optic' vs 'Fiber Optic'; lowercase in page text)."
+ },
+ {
+  "exam": "ccna-1-v7-modules-4-7-ethernet-concepts-exam-answers",
+  "page_number": 46,
+  "answer_picture": null,
+  "exhibit": "https://itexamanswers.net/wp-content/uploads/2019/12/i274301v1n1_206934.png",
+  "question": "Refer to the exhibit. The PC is connected to the console port of the switch. All the other connections are made through FastEthernet links. Which types of UTP cables can be used to connect the devices?​",
+  "options": [
+   "1 - rollover, 2 - crossover, 3 - straight-through",
+   "1 - rollover, 2 - straight-through, 3 - crossover",
+   "1 - crossover, 2 - rollover, 3 - straight-through",
+   "1 - crossover, 2 - straight-through, 3 - rollover"
+  ],
+  "correct_answer": "1 - rollover, 2 - straight-through, 3 - crossover",
+  "notes": "The only picture is the exhibit (PC -1- switch -2- router -3- router); it does not show the answer, so answer_picture is null. Options and answer come from page text and its explanation (rollover to console, straight-through switch-to-router, crossover router-to-router). A stray 'Copy' before the options in the page text was dropped. The question text contains a trailing zero-width space, kept as copied."
+ }
+]

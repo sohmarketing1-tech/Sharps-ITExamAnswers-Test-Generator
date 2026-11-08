@@ -1,0 +1,654 @@
+{
+  "title": "CCNA 2 v7 Modules 5 - 6: Redundant Networks Exam Answers",
+  "url": "https://itexamanswers.net/ccna-2-v7-modules-5-6-redundant-networks-exam-answers.html",
+  "questions": [
+    {
+      "id": 1,
+      "question": "What additional information is contained in the 12-bit extended system ID of a BPDU?",
+      "options": [
+        "MAC address",
+        "VLAN ID",
+        "IP address",
+        "port ID"
+      ],
+      "correct_answer": "VLAN ID"
+    },
+    {
+      "id": 2,
+      "question": "During the implementation of Spanning Tree Protocol, all switches are rebooted by the network administrator. What is the first step of the spanning-tree election process?",
+      "options": [
+        "Each switch with a lower root ID than its neighbor will not send BPDUs.",
+        "All the switches send out BPDUs advertising themselves as the root bridge.",
+        "Each switch determines the best path to forward traffic.",
+        "Each switch determines what port to block to prevent a loop from occurring."
+      ],
+      "correct_answer": "All the switches send out BPDUs advertising themselves as the root bridge."
+    },
+    {
+      "id": 3,
+      "question": "Which STP port role is adopted by a switch port if there is no other port with a lower cost to the root bridge?",
+      "options": [
+        "designated port",
+        "root port",
+        "alternate",
+        "disabled port"
+      ],
+      "correct_answer": "root port"
+    },
+    {
+      "id": 4,
+      "question": "Which two concepts relate to a switch port that is intended to have only end devices attached and intended never to be used to connect to another switch? (Choose two.)",
+      "options": [
+        "bridge ID",
+        "edge port",
+        "extended system ID",
+        "PortFast",
+        "PVST+"
+      ],
+      "correct_answer": "edge port | PortFast"
+    },
+    {
+      "id": 5,
+      "question": "Which three components are combined to form a bridge ID?",
+      "options": [
+        "extended system ID",
+        "cost",
+        "IP address",
+        "bridge priority",
+        "MAC address",
+        "port ID"
+      ],
+      "correct_answer": "extended system ID | bridge priority | MAC address"
+    },
+    {
+      "id": 6,
+      "question": "Match the STP protocol with the correct description. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Rapid PVST+",
+        "STP",
+        "MSTP"
+      ],
+      "definitions": [
+        "the legacy standard for STP that runs all VLANs in a single spanning-tree instance",
+        "a protocol that allows multiple VLANs to run in a single spanning-tree instance",
+        "a Cisco enhancement of RSTP to provide a spanning-tree instance for each VLAN",
+        "an evolution of STP that provides faster convergence"
+      ],
+      "correct_pairs": {
+        "STP": "the legacy standard for STP that runs all VLANs in a single spanning-tree instance",
+        "MSTP": "a protocol that allows multiple VLANs to run in a single spanning-tree instance",
+        "Rapid PVST+": "a Cisco enhancement of RSTP to provide a spanning-tree instance for each VLAN"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 7,
+      "question": "In which two port states does a switch learn MAC addresses and process BPDUs in a PVST network? (Choose two.)",
+      "options": [
+        "disabled",
+        "forwarding",
+        "listening",
+        "blocking",
+        "learning"
+      ],
+      "correct_answer": "forwarding | learning"
+    },
+    {
+      "id": 8,
+      "question": "If no bridge priority is configured in PVST, which criteria is considered when electing the root bridge?",
+      "options": [
+        "lowest MAC address",
+        "lowest IP address",
+        "highest IP address",
+        "highest MAC address"
+      ],
+      "correct_answer": "lowest MAC address"
+    },
+    {
+      "id": 9,
+      "question": "Match the spanning-tree feature with the protocol type. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "MSTP",
+        "RSTP",
+        "PVST+",
+        "MST"
+      ],
+      "definitions": [
+        "Cisco implementation of IEEE 802.1D",
+        "Fast converging enhancement of IEEE 802.1D",
+        "IEEE standard that reduces the number of STP instances",
+        "Proprietary per VLAN implementation of IEEE 802.1w"
+      ],
+      "correct_pairs": {
+        "PVST+": "Cisco implementation of IEEE 802.1D",
+        "RSTP": "Fast converging enhancement of IEEE 802.1D",
+        "MSTP": "IEEE standard that reduces the number of STP instances"
+      },
+      "correct_answer": ""
+    },
+    {
+      "id": 10,
+      "question": "When the show spanning-tree vlan 33 command is issued on a switch, three ports are shown in the forwarding state. In which two port roles could these interfaces function while in the forwarding state? (Choose two.)",
+      "options": [
+        "alternate",
+        "designated",
+        "disabled",
+        "blocked",
+        "root"
+      ],
+      "correct_answer": "designated | root"
+    },
+    {
+      "id": 11,
+      "question": "What is the function of STP in a scalable network?",
+      "options": [
+        "It decreases the size of the failure domain to contain the impact of failures.",
+        "It protects the edge of the enterprise network from malicious activity.",
+        "It combines multiple switch trunk links to act as one logical link for increased bandwidth.",
+        "It disables redundant paths to eliminate Layer 2 loops."
+      ],
+      "correct_answer": "It disables redundant paths to eliminate Layer 2 loops."
+    },
+    {
+      "id": 12,
+      "question": "What is a characteristic of spanning tree?",
+      "options": [
+        "It is enabled by default on Cisco switches.",
+        "It is used to discover information about an adjacent Cisco device.",
+        "It has a TTL mechanism that works at Layer 2.",
+        "It prevents propagation of Layer 2 broadcast frames."
+      ],
+      "correct_answer": "It is enabled by default on Cisco switches."
+    },
+    {
+      "id": 13,
+      "question": "Which spanning tree standard supports only one root bridge so that traffic from all VLANs flows over the same path?",
+      "options": [
+        "PVST+",
+        "802.1D",
+        "MST",
+        "Rapid PVST"
+      ],
+      "correct_answer": "802.1D"
+    },
+    {
+      "id": 14,
+      "question": "What is the purpose of the Spanning Tree Protocol (STP)?",
+      "options": [
+        "creates smaller collision domains",
+        "prevents routing loops on a router",
+        "prevents Layer 2 loops",
+        "allows Cisco devices to exchange routing table updates",
+        "creates smaller broadcast domains"
+      ],
+      "correct_answer": "prevents Layer 2 loops"
+    },
+    {
+      "id": 15,
+      "question": "What is the value used to determine which port on a non-root bridge will become a root port in a STP network?",
+      "options": [
+        "the path cost",
+        "the highest MAC address of all the ports in the switch",
+        "the lowest MAC address of all the ports in the switch",
+        "the VTP revision number"
+      ],
+      "correct_answer": "the path cost"
+    },
+    {
+      "id": 16,
+      "question": "Refer to the exhibit. Which switch will be the root bridge after the election process is complete?",
+      "options": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "correct_answer": "S2",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-2-v7-Modules-5-6-Redundant-Networks-Exam-10.png"
+    },
+    {
+      "id": 17,
+      "question": "What are two drawbacks to turning spanning tree off and having multiple paths through the Layer 2 switch network? (Choose two.)",
+      "options": [
+        "The MAC address table becomes unstable.",
+        "The switch acts like a hub.",
+        "Port security becomes unstable.",
+        "Broadcast frames are transmitted indefinitely.",
+        "Port security shuts down all of the ports that have attached devices."
+      ],
+      "correct_answer": "The MAC address table becomes unstable. | Broadcast frames are transmitted indefinitely."
+    },
+    {
+      "id": 18,
+      "question": "A small company network has six interconnected Layer 2 switches. Currently all switches are using the default bridge priority value. Which value can be used to configure the bridge priority of one of the switches to ensure that it becomes the root bridge in this design?",
+      "options": [
+        "1",
+        "28672",
+        "32768",
+        "34816",
+        "61440"
+      ],
+      "correct_answer": "28672"
+    },
+    {
+      "id": 19,
+      "question": "Refer to the exhibit. The administrator tried to create an EtherChannel between S1 and the other two switches via the commands that are shown, but was unsuccessful. What is the problem?",
+      "options": [
+        "Traffic cannot be sent to two different switches through the same EtherChannel link.",
+        "Traffic cannot be sent to two different switches, but only to two different devices like an EtherChannel-enabled server and a switch.",
+        "Traffic can only be sent to two different switches if EtherChannel is implemented on Gigabit Ethernet interfaces.",
+        "Traffic can only be sent to two different switches if EtherChannel is implemented on Layer 3 switches."
+      ],
+      "correct_answer": "Traffic cannot be sent to two different switches through the same EtherChannel link.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-2-v7-Modules-5-6-Redundant-Networks-Exam-19.png"
+    },
+    {
+      "id": 20,
+      "question": "Which statement is true regarding the use of PAgP to create EtherChannels?",
+      "options": [
+        "It requires full duplex.",
+        "It increases the number of ports that are participating in spanning tree.",
+        "It requires more physical links than LACP does.",
+        "It mandates that an even number of ports (2, 4, 6, etc.) be used for aggregation.",
+        "It is Cisco proprietary."
+      ],
+      "correct_answer": "It is Cisco proprietary."
+    },
+    {
+      "id": 21,
+      "question": "What are two requirements to be able to configure an EtherChannel between two switches? (Choose two.)",
+      "options": [
+        "All the interfaces need to work at the same speed.",
+        "All interfaces need to be assigned to different VLANs.",
+        "Different allowed ranges of VLANs must exist on each end.",
+        "All the interfaces need to be working in the same duplex mode.",
+        "The interfaces that are involved need to be contiguous on the switch."
+      ],
+      "correct_answer": "All the interfaces need to work at the same speed. | All the interfaces need to be working in the same duplex mode."
+    },
+    {
+      "id": 22,
+      "question": "Refer to the exhibit. On the basis of the output that is shown, what can be determined about the EtherChannel bundle?",
+      "options": [
+        "The EtherChannel bundle is down.",
+        "Two Gigabit Ethernet ports are used to form the EtherChannel.",
+        "A Cisco proprietary protocol was used to negotiate the EtherChannel link.",
+        "The EtherChannel bundle is operating at both Layer 2 and Layer 3."
+      ],
+      "correct_answer": "A Cisco proprietary protocol was used to negotiate the EtherChannel link.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-2-v7-Modules-5-6-Redundant-Networks-Exam-20.png"
+    },
+    {
+      "id": 23,
+      "question": "Which two parameters must match on the ports of two switches to create a PAgP EtherChannel between the switches? (Choose two.)",
+      "options": [
+        "port ID",
+        "PAgP mode",
+        "MAC address",
+        "speed",
+        "VLAN information"
+      ],
+      "correct_answer": "speed | VLAN information"
+    },
+    {
+      "id": 24,
+      "question": "Refer to the exhibit. A network administrator is configuring an EtherChannel link between two switches, SW1 and SW2. Which statement describes the effect after the commands are issued on SW1 and SW2?",
+      "options": [
+        "The EtherChannel is established after SW2 initiates the link request.",
+        "The EtherChannel is established after SW1 initiates the link request.",
+        "The EtherChannel is established without negotiation.",
+        "The EtherChannel fails to establish."
+      ],
+      "correct_answer": "The EtherChannel fails to establish.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-2-v7-Modules-5-6-Redundant-Networks-Exam-21.png"
+    },
+    {
+      "id": 25,
+      "question": "Refer to the exhibit. A network administrator is configuring an EtherChannel link between two switches, SW1 and SW2. However, the EtherChannel link fails to establish. What change in configuration would correct the problem?",
+      "options": [
+        "Configure SW2 EtherChannel mode to desirable.",
+        "Configure SW2 EtherChannel mode to on.",
+        "Configure SW1 EtherChannel mode to on.",
+        "Configure SW2 EtherChannel mode to auto."
+      ],
+      "correct_answer": "Configure SW2 EtherChannel mode to desirable.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-2-v7-Modules-5-6-Redundant-Networks-Exam-22.png"
+    },
+    {
+      "id": 26,
+      "question": "A network administrator configured an EtherChannel link with three interfaces between two switches. What is the result if one of the three interfaces is down?",
+      "options": [
+        "The remaining two interfaces continue to load balance traffic.",
+        "The remaining two interfaces become separate links between the two switches.",
+        "One interface becomes an active link for data traffic and the other becomes a backup link.",
+        "The EtherChannel fails."
+      ],
+      "correct_answer": "The remaining two interfaces continue to load balance traffic."
+    },
+    {
+      "id": 27,
+      "question": "A network administrator is configuring an EtherChannel link between switches SW1 and SW2 by using the command SW1(config-if-range)# channel-group 1 mode auto. Which command must be used on SW2 to enable this EtherChannel?",
+      "options": [
+        "SW2(config-if-range)# channel-group 1 mode passive",
+        "SW2(config-if-range)# channel-group 1 mode desirable",
+        "SW2(config-if-range)# channel-group 1 mode on",
+        "SW2(config-if-range)# channel-group 1 mode active"
+      ],
+      "correct_answer": "SW2(config-if-range)# channel-group 1 mode desirable"
+    },
+    {
+      "id": 28,
+      "question": "Which technology is an open protocol standard that allows switches to automatically bundle physical ports into a single logical link?",
+      "options": [
+        "PAgP",
+        "LACP",
+        "Multilink PPP",
+        "DTP"
+      ],
+      "correct_answer": "LACP"
+    },
+    {
+      "id": 29,
+      "question": "What is a requirement to configure a trunking EtherChannel between two switches?",
+      "options": [
+        "The allowed range of VLANs must be the same on both switches.",
+        "The participating interfaces must be assigned the same VLAN number on both switches.",
+        "The participating interfaces must be physically contiguous on a switch.",
+        "The participating interfaces must be on the same module on a switch."
+      ],
+      "correct_answer": "The allowed range of VLANs must be the same on both switches."
+    },
+    {
+      "id": 30,
+      "question": "What are two advantages of using LACP? (Choose two.)",
+      "options": [
+        "It allows directly connected switches to negotiate an EtherChannel link.",
+        "It eliminates the need for configuring trunk interfaces when deploying VLANs on multiple switches.",
+        "It decreases the amount of configuration that is needed on a switch.",
+        "It provides a simulated environment for testing link aggregation.",
+        "It allows the use of multivendor devices.",
+        "LACP allows Fast Ethernet and Gigabit Ethernet interfaces to be mixed within a single EtherChannel."
+      ],
+      "correct_answer": "It allows directly connected switches to negotiate an EtherChannel link. | It allows the use of multivendor devices."
+    },
+    {
+      "id": 31,
+      "question": "A switch is configured to run STP. What term describes a non-root port that is permitted to forward traffic on the network?",
+      "options": [
+        "root port",
+        "designated port",
+        "alternate port",
+        "disabled"
+      ],
+      "correct_answer": "designated port"
+    },
+    {
+      "id": 32,
+      "question": "What are two advantages of EtherChannel? (Choose two.)",
+      "options": [
+        "Spanning Tree Protocol views the physical links in an EtherChannel as one logical connection.",
+        "Load balancing occurs between links configured as different EtherChannels.",
+        "Configuring the EtherChannel interface provides consistency in the configuration of the physical links.",
+        "Spanning Tree Protocol ensures redundancy by transitioning failed interfaces in an EtherChannel to a forwarding state.",
+        "EtherChannel uses upgraded physical links to provide increased bandwidth."
+      ],
+      "correct_answer": "Spanning Tree Protocol views the physical links in an EtherChannel as one logical connection. | Configuring the EtherChannel interface provides consistency in the configuration of the physical links."
+    },
+    {
+      "id": 33,
+      "question": "Refer to the exhibit. What are the possible port roles for ports A, B, C, and D in this RSTP-enabled network?",
+      "options": [
+        "alternate, designated, root, root",
+        "designated, alternate, root, root",
+        "alternate, root, designated, root",
+        "designated, root, alternate, root"
+      ],
+      "correct_answer": "alternate, designated, root, root",
+      "image": "https://itexamanswers.net/wp-content/uploads/2020/01/CCNA-2-v7-Modules-5-6-Redundant-Networks-Exam.png"
+    },
+    {
+      "id": 34,
+      "question": "Refer to the exhibit. Which switching technology would allow each access layer switch link to be aggregated to provide more bandwidth between each Layer 2 switch and the Layer 3 switch?",
+      "options": [
+        "trunking",
+        "HSRP",
+        "PortFast",
+        "EtherChannel"
+      ],
+      "correct_answer": "EtherChannel",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-2-v7-Modules-5-6-Redundant-Networks-Exam-02.png"
+    },
+    {
+      "id": 35,
+      "question": "Refer to the exhibit. An administrator wants to form an EtherChannel between the two switches by using the Port Aggregation Protocol. If switch S1 is configured to be in auto mode, which mode should be configured on S2 to form the EtherChannel?",
+      "options": [
+        "auto",
+        "on",
+        "off",
+        "desirable"
+      ],
+      "correct_answer": "desirable",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-2-v7-Modules-5-6-Redundant-Networks-Exam-06.png"
+    },
+    {
+      "id": 36,
+      "question": "A set of switches is being connected in a LAN topology. Which STP bridge priority value will make it least likely for the switch to be selected as the root?",
+      "options": [
+        "65535",
+        "4096",
+        "32768",
+        "61440"
+      ],
+      "correct_answer": "61440"
+    },
+    {
+      "id": 37,
+      "question": "In which two PVST+ port states are MAC addresses learned? (Choose two.)",
+      "options": [
+        "learning",
+        "forwarding",
+        "disabled",
+        "listening",
+        "blocking"
+      ],
+      "correct_answer": "learning | forwarding"
+    },
+    {
+      "id": 38,
+      "question": "Which port role is assigned to the switch port that has the lowest cost to reach the root bridge?",
+      "options": [
+        "designated port",
+        "disabled port",
+        "root port",
+        "non-designated port"
+      ],
+      "correct_answer": "root port"
+    },
+    {
+      "id": 39,
+      "question": "A switch is configured to run STP. What term describes the switch port closest, in terms of overall cost, to the root bridge?",
+      "options": [
+        "root port",
+        "designated port",
+        "alternate port",
+        "disabled"
+      ],
+      "correct_answer": "root port"
+    },
+    {
+      "id": 40,
+      "question": "A switch is configured to run STP. What term describes a field used to specify a VLAN ID?",
+      "options": [
+        "extended system ID",
+        "port ID",
+        "bridge priority",
+        "bridge ID"
+      ],
+      "correct_answer": "extended system ID"
+    },
+    {
+      "id": 41,
+      "question": "A switch is configured to run STP. What term describes the reference point for all path calculations?",
+      "options": [
+        "root bridge",
+        "root port",
+        "designated port",
+        "alternate port"
+      ],
+      "correct_answer": "root bridge"
+    },
+    {
+      "id": 42,
+      "question": "A switch is configured to run STP. What term describes a field that has a default value of 32,768 and is the initial deciding factor when electing a root bridge?",
+      "options": [
+        "bridge priority",
+        "MAC Address",
+        "extended system ID",
+        "bridge ID"
+      ],
+      "correct_answer": "bridge priority"
+    },
+    {
+      "id": 43,
+      "question": "Which statement describes an EtherChannel implementation?",
+      "options": [
+        "EtherChannel operates only at Layer 2.",
+        "PAgP cannot be used in conjunction with EtherChannel.",
+        "A trunked port can be part of an EtherChannel bundle.",
+        "EtherChannel can support up to a maximum of ten separate links."
+      ],
+      "correct_answer": "A trunked port can be part of an EtherChannel bundle."
+    },
+    {
+      "id": 44,
+      "question": "Refer to the exhibit. A network administrator issued the show etherchannel summary command on the switch S1. What conclusion can be drawn?",
+      "options": [
+        "The EtherChannel is suspended.",
+        "The EtherChannel is not functional.",
+        "The port aggregation protocol PAgP is misconfigured.",
+        "FastEthernet ports Fa0/1, Fa0/2, and Fa0/3 do not join the EtherChannel."
+      ],
+      "correct_answer": "The EtherChannel is not functional.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i247497v1n1_247497.png"
+    },
+    {
+      "id": 45,
+      "question": "Which statement describes a characteristic of EtherChannel?",
+      "options": [
+        "It can combine up to a maximum of 4 physical links.",
+        "It can bundle mixed types of 100 Mb/s and 1Gb/s Ethernet links.",
+        "It consists of multiple parallel links between a switch and a router.",
+        "It is made by combining multiple physical links that are seen as one link between two switches."
+      ],
+      "correct_answer": "It is made by combining multiple physical links that are seen as one link between two switches."
+    },
+    {
+      "id": 46,
+      "question": "Which two channel group modes would place an interface in a negotiating state using PAgP? (Choose two.)",
+      "options": [
+        "on",
+        "desirable",
+        "active",
+        "auto",
+        "passive"
+      ],
+      "correct_answer": "desirable | auto"
+    },
+    {
+      "id": 47,
+      "question": "Which mode configuration setting would allow formation of an EtherChannel link between switches SW1 and SW2 without sending negotiation traffic?\nSW1: on\nSW2: on\nSW1: desirable\nSW2: desirable\nSW1: auto\nSW2: auto\ntrunking enabled on both switches\nSW1: auto\nSW2: auto\nPortFast enabled on both switches\nSW1: passive\nSW2: active",
+      "options": [
+        "SW1: on\nSW2: on",
+        "SW1: desirable\nSW2: desirable",
+        "SW1: auto\nSW2: auto\ntrunking enabled on both switches",
+        "SW1: auto\nSW2: auto\nPortFast enabled on both switches",
+        "SW1: passive\nSW2: active"
+      ],
+      "correct_answer": "SW1: on\nSW2: on"
+    },
+    {
+      "id": 48,
+      "question": "Refer to the exhibit. An EtherChannel was configured between switches S1 and S2, but the interfaces do not form an EtherChannel. What is the problem?",
+      "options": [
+        "The interface port-channel number has to be different on each switch.",
+        "The switch ports were not configured with speed and duplex mode.",
+        "The switch ports have to be configured as access ports with each port having a VLAN assigned.",
+        "The EtherChannel was not configured with the same allowed range of VLANs on each interface."
+      ],
+      "correct_answer": "The EtherChannel was not configured with the same allowed range of VLANs on each interface.",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i216436v1n4_Item-216436.png"
+    },
+    {
+      "id": 49,
+      "question": "When EtherChannel is configured, which mode will force an interface into a port channel without exchanging aggregation protocol packets?",
+      "options": [
+        "active",
+        "auto",
+        "on",
+        "desirable"
+      ],
+      "correct_answer": "on"
+    },
+    {
+      "id": 50,
+      "question": "What are two load-balancing methods in the EtherChannel technology? (Choose two.)",
+      "options": [
+        "combination of source port and IP to destination port and IP",
+        "source IP to destination IP",
+        "source port to destination port",
+        "combination of source MAC and IP to destination MAC and IP",
+        "source MAC to destination MAC"
+      ],
+      "correct_answer": "source IP to destination IP | source MAC to destination MAC"
+    },
+    {
+      "id": 51,
+      "question": "Which protocol provides up to 16 instances of RSTP, combines many VLANs with the same physical and logical topology into a common RSTP instance, and provides support for PortFast, BPDU guard, BPDU filter, root guard, and loop guard?",
+      "options": [
+        "STP",
+        "Rapid PVST+",
+        "PVST+",
+        "MST"
+      ],
+      "correct_answer": "MST"
+    },
+    {
+      "id": 52,
+      "question": "What is the outcome of a Layer 2 broadcast storm?",
+      "options": [
+        "Routers will take over the forwarding of frames as switches become congested.",
+        "New traffic is discarded by the switch because it is unable to be processed.",
+        "CSMA/CD will cause each host to continue transmitting frames.",
+        "ARP broadcast requests are returned to the transmitting host."
+      ],
+      "correct_answer": "New traffic is discarded by the switch because it is unable to be processed."
+    },
+    {
+      "id": 53,
+      "question": "Which two network design features require Spanning Tree Protocol (STP) to ensure correct network operation? (Choose two.)",
+      "options": [
+        "static default routes",
+        "implementing VLANs to contain broadcasts",
+        "redundant links between Layer 2 switches",
+        "link-state dynamic routing that provides redundant routes",
+        "removing single points of failure with multiple Layer 2 switches"
+      ],
+      "correct_answer": "redundant links between Layer 2 switches | removing single points of failure with multiple Layer 2 switches"
+    },
+    {
+      "id": 54,
+      "question": "A network administrator has configured an EtherChannel between two switches that are connected via four trunk links. If the physical interface for one of the trunk links changes to a down state, what happens to the EtherChannel?",
+      "options": [
+        "Spanning Tree Protocol will transition the failed physical interface into forwarding mode.",
+        "Spanning Tree Protocol will recalculate the remaining trunk links.",
+        "The EtherChannel will transition to a down state.",
+        "The EtherChannel will remain functional."
+      ],
+      "correct_answer": "The EtherChannel will remain functional."
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+[
+ {
+  "exam": "ccna-1-v7-modules-11-13-ip-addressing-exam-answers-full",
+  "page_number": 5,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/CCNA1-v7-ITN-IP-Addressing-Exam-Answers-001-1536x942-1.png",
+  "exhibit": null,
+  "question": "Match the subnetwork to a host address that would be included within the subnetwork. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "192.168.1.32/27",
+   "192.168.1.64/27",
+   "192.168.1.96/27"
+  ],
+  "definitions": [
+   "192.168.1.63",
+   "192.168.1.68",
+   "192.168.1.128",
+   "192.168.1.48",
+   "192.168.1.121"
+  ],
+  "correct_pairs": {
+   "192.168.1.32/27": "192.168.1.48",
+   "192.168.1.64/27": "192.168.1.68",
+   "192.168.1.96/27": "192.168.1.121"
+  },
+  "correct_answer": "",
+  "notes": "Picture is hand-drawn lines from the subnets (left) to the boxes headed by host addresses (right). The unused options are two box headings (192.168.1.63 = broadcast of .32/27, 192.168.1.128 = network address), not leftover terms."
+ },
+ {
+  "exam": "ccna-1-v7-modules-11-13-ip-addressing-exam-answers-full",
+  "page_number": 10,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/CCNA1-v7-ITN-IP-Addressing-Exam-Answers-002-1536x1013-1.png",
+  "exhibit": null,
+  "question": "Match each IPv4 address to the appropriate address category. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "224.10.0.254/24",
+   "192.168.100.161/25",
+   "203.0.113.100/24",
+   "10.10.10.128/25",
+   "172.110.12.64/28",
+   "192.168.1.191/26",
+   "10.0.0.159/27"
+  ],
+  "definitions": [
+   "host address",
+   "network address",
+   "broadcast address"
+  ],
+  "correct_pairs": {
+   "192.168.100.161/25": "host address",
+   "203.0.113.100/24": "host address",
+   "10.10.10.128/25": "network address",
+   "172.110.12.64/28": "network address",
+   "192.168.1.191/26": "broadcast address",
+   "10.0.0.159/27": "broadcast address"
+  },
+  "correct_answer": "",
+  "notes": "Picture is hand-drawn lines from left items to the category boxes. 224.10.0.254/24 has no line (leftover)."
+ },
+ {
+  "exam": "ccna-1-v7-modules-11-13-ip-addressing-exam-answers-full",
+  "page_number": 17,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_191902.jpg",
+  "exhibit": "https://itexamanswers.net/wp-content/uploads/2020/01/i304956v6n1_207918.png",
+  "question": "Refer to the exhibit. Match the network with the correct IP address and prefix that will satisfy the usable host addressing requirements for each network.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Network D",
+   "Network A",
+   "Network B",
+   "Network C"
+  ],
+  "definitions": [
+   "192.168.0.128 /25",
+   "192.168.0.96 /27",
+   "192.168.0.80 /30",
+   "192.168.0.0 /26"
+  ],
+  "correct_pairs": {
+   "Network A": "192.168.0.128 /25",
+   "Network B": "192.168.0.0 /26",
+   "Network C": "192.168.0.96 /27",
+   "Network D": "192.168.0.80 /30"
+  },
+  "correct_answer": "",
+  "notes": "Answer picture is a lettered line-matching image (networks left, addresses right); definitions listed in right-column order. Matches page text."
+ },
+ {
+  "exam": "ccna-1-v7-modules-11-13-ip-addressing-exam-answers-full",
+  "page_number": 26,
+  "type": "unknown",
+  "question": "Consider the following range of addresses:",
+  "notes": "No picture and no answer choices. The question stem is truncated ('Consider the following range of addresses:') and the range itself is missing; page_text_around_question holds only an unrelated-looking explanation (25 hosts -> /27; subnets 10.16.10.64/27, .96/27, .128/27, .160/27 from 10.16.10.64-10.16.10.191) followed by other questions. In the real ITN exam this stem is usually the IPv6 range 2001:0DB8:BC15:00A0:0000:: to 2001:0DB8:BC15:00AF:0000:: with answer prefix length /60 (fill-in, not multiple choice), but that is not on this page, so it cannot be built from the source. The /27 explanation looks scraped from a different question."
+ },
+ {
+  "exam": "ccna-1-v7-modules-11-13-ip-addressing-exam-answers-full",
+  "page_number": 32,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_192048.jpg",
+  "exhibit": null,
+  "question": "Match the IPv6 address with the IPv6 address type. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "::1",
+   "FF02::1",
+   "FF02::1:FFAE:F85F",
+   "2001:DB8::BAF:3F57:FE94"
+  ],
+  "definitions": [
+   "all node multicast",
+   "loopback",
+   "global unicast",
+   "solicited node multicast"
+  ],
+  "correct_pairs": {
+   "::1": "loopback",
+   "FF02::1": "all node multicast",
+   "FF02::1:FFAE:F85F": "solicited node multicast",
+   "2001:DB8::BAF:3F57:FE94": "global unicast"
+  },
+  "correct_answer": "",
+  "notes": "Lettered line-matching picture; no leftover options are shown despite '(Not all options are used.)' (explanation says link-local/unique local were the unused ones, not pictured). Matches page text."
+ },
+ {
+  "exam": "ccna-1-v7-modules-11-13-ip-addressing-exam-answers-full",
+  "page_number": 38,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/CCNA1-v7-ITN-IP-Addressing-Exam-Answers-005-1536x650-1.png",
+  "exhibit": null,
+  "question": "Three methods allow IPv6 and IPv4 to co-exist. Match each method with its description. (Not all options are used.) Place the options in the following order:",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "The IPv4 packets and IPv6 packets coexist in the same network.",
+   "The IPv6 packet is transported inside an IPv4 packet.",
+   "IPv6 packets are converted into IPv4 packets, and vice versa."
+  ],
+  "definitions": [
+   "DHCP",
+   "translation",
+   "tunneling",
+   "dual-stack"
+  ],
+  "correct_pairs": {
+   "The IPv4 packets and IPv6 packets coexist in the same network.": "dual-stack",
+   "The IPv6 packet is transported inside an IPv4 packet.": "tunneling",
+   "IPv6 packets are converted into IPv4 packets, and vice versa.": "translation"
+  },
+  "correct_answer": "",
+  "notes": "Question text in the task includes the page's trailing 'Place the options in the following order:'; copied as given. Picture uses hand-drawn lines; unused option is the box heading DHCP."
+ },
+ {
+  "exam": "ccna-1-v7-modules-11-13-ip-addressing-exam-answers-full",
+  "page_number": 46,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_193118.jpg",
+  "exhibit": null,
+  "question": "Match each description with an appropriate IP address. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "a private address",
+   "a loopback address",
+   "an experimental address",
+   "a TEST-NET address",
+   "a link-local address"
+  ],
+  "definitions": [
+   "169.254.1.5",
+   "127.0.0.1",
+   "240.2.6.255",
+   "192.0.2.123",
+   "172.19.20.5"
+  ],
+  "correct_pairs": {
+   "a private address": "172.19.20.5",
+   "a loopback address": "127.0.0.1",
+   "an experimental address": "240.2.6.255",
+   "a TEST-NET address": "192.0.2.123",
+   "a link-local address": "169.254.1.5"
+  },
+  "correct_answer": "",
+  "notes": "Lettered line-matching picture; no unused options are shown despite '(Not all options are used.)'. Matches page text."
+ }
+]

@@ -482,10 +482,10 @@
       "options": [
         "has a positive impact on bandwidth by dropping most of the invalid frames",
         "makes a fast forwarding decision based on the source MAC address of the frame",
-        "has a lower latency appropriate for high-performance computing applications​",
+        "has a lower latency appropriate for high-performance computing applications",
         "provides the flexibility to support any mix of Ethernet speeds"
       ],
-      "correct_answer": "has a lower latency appropriate for high-performance computing applications​"
+      "correct_answer": "has a lower latency appropriate for high-performance computing applications"
     },
     {
       "id": 43,
@@ -829,6 +829,46 @@
         "straight-through"
       ],
       "correct_answer": "straight-through"
+    },
+    {
+      "question": "Match the situation with the appropriate use of network media.",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Horizontal cabling structure",
+        "Desktop PCs in an enterprise office",
+        "Backbone cabling in an enterprise",
+        "Long-haul networks",
+        "Guest access in a coffee shop",
+        "Waiting rooms in a hospital"
+      ],
+      "definitions": [
+        "Copper Cables",
+        "Fiber Optic",
+        "Wireless"
+      ],
+      "correct_pairs": {
+        "Horizontal cabling structure": "Copper Cables",
+        "Desktop PCs in an enterprise office": "Copper Cables",
+        "Backbone cabling in an enterprise": "Fiber Optic",
+        "Long-haul networks": "Fiber Optic",
+        "Guest access in a coffee shop": "Wireless",
+        "Waiting rooms in a hospital": "Wireless"
+      },
+      "correct_answer": "",
+      "id": 73
+    },
+    {
+      "question": "Refer to the exhibit. The PC is connected to the console port of the switch. All the other connections are made through FastEthernet links. Which types of UTP cables can be used to connect the devices?",
+      "options": [
+        "1 - rollover, 2 - crossover, 3 - straight-through",
+        "1 - rollover, 2 - straight-through, 3 - crossover",
+        "1 - crossover, 2 - rollover, 3 - straight-through",
+        "1 - crossover, 2 - straight-through, 3 - rollover"
+      ],
+      "correct_answer": "1 - rollover, 2 - straight-through, 3 - crossover",
+      "image": "https://itexamanswers.net/wp-content/uploads/2019/12/i274301v1n1_206934.png",
+      "id": 74
     }
   ]
 }

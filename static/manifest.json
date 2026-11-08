@@ -9,16 +9,22 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "images/answrit-icon.png",
+      "src": "/images/answrit-it-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "images/answrit-icon.png",
+      "src": "/images/answrit-it-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/images/apple-touch-icon-it.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

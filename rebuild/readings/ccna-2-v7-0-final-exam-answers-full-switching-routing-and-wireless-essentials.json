@@ -1,0 +1,248 @@
+[
+ {
+  "exam": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials",
+  "page_number": 10,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/CCNA-2-v7-final-exam-answers-10.png",
+  "exhibit": null,
+  "question": "Match the forwarding characteristic to its type. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "appropriate for high performance computing applications",
+   "error checking before forwarding",
+   "forwarding process can begin after receiving the destination address",
+   "forwarding process only begins after receiving the entire frame",
+   "may forward invalid frames",
+   "only forwards valid frames"
+  ],
+  "definitions": [
+   "cut-through",
+   "store-and-forward"
+  ],
+  "correct_pairs": {
+   "appropriate for high performance computing applications": "cut-through",
+   "forwarding process can begin after receiving the destination address": "cut-through",
+   "may forward invalid frames": "cut-through",
+   "error checking before forwarding": "store-and-forward",
+   "forwarding process only begins after receiving the entire frame": "store-and-forward",
+   "only forwards valid frames": "store-and-forward"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture: 3 items into each of 2 boxes (cut-through, store-and-forward). All 6 items are used even though the question says not all options are used."
+ },
+ {
+  "exam": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials",
+  "page_number": 13,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/CCNA-2-v7-final-exam-answers-13.png",
+  "exhibit": null,
+  "question": "Match the link state to the interface and protocol status. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "disabled",
+   "Layer 1 problem",
+   "Layer 2 problem",
+   "operational"
+  ],
+  "definitions": [
+   "administratively down",
+   "down/down",
+   "up/disabled",
+   "up/down",
+   "up/up"
+  ],
+  "correct_pairs": {
+   "disabled": "administratively down",
+   "Layer 1 problem": "down/down",
+   "Layer 2 problem": "up/down",
+   "operational": "up/up"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture; 'up/disabled' is the unused box. Picture wording kept (lowercase 'disabled', 'operational'); the page's text table agrees on the pairs."
+ },
+ {
+  "exam": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials",
+  "page_number": 16,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/CCNA-2-v7-final-exam-answers-16.png",
+  "exhibit": null,
+  "question": "Match the description to the correct VLAN type. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "default VLAN",
+   "management VLAN",
+   "data VLANs",
+   "native VLAN"
+  ],
+  "definitions": [
+   "configured to carry user generated traffic",
+   "all switch ports are assigned to this VLAN after initial bootup of the switch",
+   "carries untagged traffic",
+   "an IP address and subnet mask are assigned to this VLAN, allowing the switch to be accessed by HTTP, Telnet, SSH, or SNMP",
+   "only accessible by the network administrator"
+  ],
+  "correct_pairs": {
+   "data VLANs": "configured to carry user generated traffic",
+   "default VLAN": "all switch ports are assigned to this VLAN after initial bootup of the switch",
+   "native VLAN": "carries untagged traffic",
+   "management VLAN": "an IP address and subnet mask are assigned to this VLAN, allowing the switch to be accessed by HTTP, Telnet, SSH, or SNMP"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture; 'only accessible by the network administrator' is the unused box. The page's text table agrees."
+ },
+ {
+  "exam": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials",
+  "page_number": 43,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2021-11-15_105846-ans.jpg",
+  "exhibit": null,
+  "question": "Match the step to each switch boot sequence description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "step 1",
+   "step 2",
+   "step 3",
+   "step 4",
+   "step 5",
+   "step 6"
+  ],
+  "definitions": [
+   "perform low-level CPU initialization",
+   "enter global configuration mode",
+   "execute POST",
+   "flash file system initialization",
+   "load the boot loader from ROM",
+   "load the IOS",
+   "transfer switch control to the IOS"
+  ],
+  "correct_pairs": {
+   "step 1": "execute POST",
+   "step 2": "load the boot loader from ROM",
+   "step 3": "perform low-level CPU initialization",
+   "step 4": "flash file system initialization",
+   "step 5": "load the IOS",
+   "step 6": "transfer switch control to the IOS"
+  },
+  "correct_answer": "",
+  "notes": "Steps are dragged into description boxes; 'enter global configuration mode' stays empty. The explanation's list says 'CPU register initializations' for step 3; the picture's wording is kept."
+ },
+ {
+  "exam": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials",
+  "page_number": 93,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/1905334006.webp",
+  "exhibit": null,
+  "question": "Match the purpose with its DHCP message type. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "DHCPREQUEST",
+   "DHCPNAK",
+   "DHCPOFFER",
+   "DHCPDISCOVER",
+   "DHCPACK"
+  ],
+  "definitions": [
+   "A message that is used to locate any available DHCP server on a network",
+   "A message is used by a server to finalize a successful lease with a client",
+   "A message that is used to acknowledge that the lease is successful",
+   "A message that is used to identify the explicit server and lease offer to accept",
+   "A message that is used to suggest a lease to a client"
+  ],
+  "correct_pairs": {
+   "DHCPDISCOVER": "A message that is used to locate any available DHCP server on a network",
+   "DHCPOFFER": "A message that is used to suggest a lease to a client",
+   "DHCPREQUEST": "A message that is used to identify the explicit server and lease offer to accept",
+   "DHCPACK": "A message is used by a server to finalize a successful lease with a client"
+  },
+  "correct_answer": "",
+  "notes": "DECIDED BY CLAUDE, the site's answer is wrong. The site's picture (and its text table) pairs DHCPREQUEST with 'locate any available DHCP server', DHCPDISCOVER with 'identify the explicit server and lease offer to accept' and DHCPNAK with 'acknowledge that the lease is successful'. That contradicts Cisco's definitions and the site's own explanation for CCNA 2 Modules 7-9 Q19 ('DHCPDISCOVER ... identify any DHCP servers', 'DHCPREQUEST ... identify both the specific DHCP server and the lease that the client is accepting', 'DHCPACK ... used by a server to finalize a successful lease with a client'). Used those: DISCOVER/OFFER/REQUEST/ACK as above; DHCPNAK and 'acknowledge that the lease is successful' are the unused options. The picture's OFFER and ACK pairs agree with this."
+ },
+ {
+  "exam": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials",
+  "page_number": 97,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-20_225135.jpg",
+  "exhibit": null,
+  "question": "Match each DHCP message type with its description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "DHCPACK",
+   "DHCPREQUEST",
+   "DHCPNACK",
+   "DHCPDISCOVER",
+   "DHCPOFFER"
+  ],
+  "definitions": [
+   "a client initiating a message to find a DHCP server",
+   "a DHCP server responding to the initial request by a client",
+   "the client accepting the IP address provided by the DHCP server",
+   "the DHCP server confirming that the address lease has been accepted"
+  ],
+  "correct_pairs": {
+   "DHCPDISCOVER": "a client initiating a message to find a DHCP server",
+   "DHCPOFFER": "a DHCP server responding to the initial request by a client",
+   "DHCPREQUEST": "the client accepting the IP address provided by the DHCP server",
+   "DHCPACK": "the DHCP server confirming that the address lease has been accepted"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture; DHCPNACK is the leftover. The explanation's text says 'the lease has been accepted'; the picture says 'the address lease has been accepted' (picture kept). Same picture as Modules 1-4 Q78."
+ },
+ {
+  "exam": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials",
+  "page_number": 108,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2021-11-16_223240.png",
+  "exhibit": null,
+  "question": "Match the DHCP message types to the order of the DHCPv4 process. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Step 1",
+   "Step 2",
+   "Step 3",
+   "Step 4"
+  ],
+  "definitions": [
+   "DHCPACK",
+   "DHCPREQUEST",
+   "DHCPDISCOVER",
+   "DHCPREPLY",
+   "DHCPINFORMATION-REQUEST",
+   "DHCPOFFER"
+  ],
+  "correct_pairs": {
+   "Step 1": "DHCPDISCOVER",
+   "Step 2": "DHCPOFFER",
+   "Step 3": "DHCPREQUEST",
+   "Step 4": "DHCPACK"
+  },
+  "correct_answer": "",
+  "notes": "Steps are dragged into message boxes; DHCPREPLY and DHCPINFORMATION-REQUEST stay empty. The page's text table agrees."
+ },
+ {
+  "exam": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials",
+  "page_number": 116,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2020-04-28_074010.jpg",
+  "exhibit": null,
+  "question": "Match the step number to the sequence of stages that occur during the HSRP failover process. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Step 1",
+   "Step 2",
+   "Step 3"
+  ],
+  "definitions": [
+   "The standby router assumes the role of the forwarding router using both the IP and MAC addresses of the virtual router.",
+   "The standby router stops seeing hello messages from the forwarding router.",
+   "The forwarding router fails.",
+   "The host initiates an ARP request for the MAC address of the new forwarding router."
+  ],
+  "correct_pairs": {
+   "Step 1": "The forwarding router fails.",
+   "Step 2": "The standby router stops seeing hello messages from the forwarding router.",
+   "Step 3": "The standby router assumes the role of the forwarding router using both the IP and MAC addresses of the virtual router."
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture; 'The host initiates an ARP request…' is the unused box. The page's text table agrees."
+ }
+]

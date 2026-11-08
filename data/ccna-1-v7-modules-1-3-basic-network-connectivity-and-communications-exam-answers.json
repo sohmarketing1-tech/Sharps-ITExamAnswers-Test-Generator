@@ -6,7 +6,7 @@
       "id": 1,
       "question": "During a routine inspection, a technician discovered that software that was installed on a computer was secretly collecting data about websites that were visited by users of the computer. Which type of threat is affecting this computer?",
       "options": [
-        "DoS attack​",
+        "DoS attack",
         "identity theft",
         "spyware",
         "zero-day attack"
@@ -771,6 +771,185 @@
         "integrity"
       ],
       "correct_answer": "fault tolerance"
+    },
+    {
+      "question": "Match the requirements of a reliable network with the supporting network architecture. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "fault tolerance",
+        "scalability",
+        "security"
+      ],
+      "definitions": [
+        "Protect the network from unauthorized access.",
+        "Provide redundant links and devices.",
+        "Match the type of communication with a specific priority.",
+        "Expand the network without degrading the service for existing users.",
+        "Ensure that streaming data is provided over high speed links."
+      ],
+      "correct_pairs": {
+        "security": "Protect the network from unauthorized access.",
+        "fault tolerance": "Provide redundant links and devices.",
+        "scalability": "Expand the network without degrading the service for existing users."
+      },
+      "correct_answer": "",
+      "id": 69
+    },
+    {
+      "question": "Match each characteristic to its corresponding Internet connectivity type. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "cable",
+        "satellite",
+        "DSL",
+        "dialup telephone"
+      ],
+      "definitions": [
+        "uses coaxial cable as a medium",
+        "not suited for heavily wooded areas",
+        "typically has very low bandwidth",
+        "high bandwidth connection that runs over telephone line"
+      ],
+      "correct_pairs": {
+        "cable": "uses coaxial cable as a medium",
+        "satellite": "not suited for heavily wooded areas",
+        "dialup telephone": "typically has very low bandwidth",
+        "DSL": "high bandwidth connection that runs over telephone line"
+      },
+      "correct_answer": "",
+      "id": 70
+    },
+    {
+      "question": "An administrator is configuring a switch console port with a password. In what order will the administrator travel through the IOS modes of operation in order to reach the mode in which the configuration commands will be entered? (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "privileged EXEC mode",
+        "line configuration mode",
+        "global configuration mode",
+        "user EXEC mode"
+      ],
+      "definitions": [
+        "first mode",
+        "final mode",
+        "third mode",
+        "second mode"
+      ],
+      "correct_pairs": {
+        "user EXEC mode": "first mode",
+        "line configuration mode": "final mode",
+        "global configuration mode": "third mode",
+        "privileged EXEC mode": "second mode"
+      },
+      "correct_answer": "",
+      "id": 71
+    },
+    {
+      "question": "Match the description with the associated IOS mode. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "changes made affect the operation of the device as a whole",
+        "accessed by entering the enable command",
+        "identified by a prompt ending with the # character",
+        "limited number of basic monitoring commands",
+        "accessed by entering the configure terminal command",
+        "the first entrance into the CLI of an IOS device",
+        "used to enable the password for vty lines"
+      ],
+      "definitions": [
+        "user EXEC mode",
+        "privileged EXEC mode",
+        "global configuration mode"
+      ],
+      "correct_pairs": {
+        "limited number of basic monitoring commands": "user EXEC mode",
+        "the first entrance into the CLI of an IOS device": "user EXEC mode",
+        "accessed by entering the enable command": "privileged EXEC mode",
+        "identified by a prompt ending with the # character": "privileged EXEC mode",
+        "changes made affect the operation of the device as a whole": "global configuration mode",
+        "accessed by entering the configure terminal command": "global configuration mode"
+      },
+      "correct_answer": "",
+      "id": 72
+    },
+    {
+      "question": "Match the definitions to their respective CLI hot keys and shortcuts. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "Ctrl-Shift-6",
+        "Tab",
+        "Up Arrow",
+        "?",
+        "Space bar"
+      ],
+      "definitions": [
+        "scrolls backwards through previously entered commands",
+        "provides context-sensitive help",
+        "aborts commands such as trace and ping",
+        "displays the next screen",
+        "completes abbreviated commands and parameters"
+      ],
+      "correct_pairs": {
+        "Up Arrow": "scrolls backwards through previously entered commands",
+        "?": "provides context-sensitive help",
+        "Ctrl-Shift-6": "aborts commands such as trace and ping",
+        "Space bar": "displays the next screen",
+        "Tab": "completes abbreviated commands and parameters"
+      },
+      "correct_answer": "",
+      "id": 73
+    },
+    {
+      "question": "Match the description to the organization. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "This organization is responsible for overseeing and managing IP address allocation, domain name management, and protocol identifiers.",
+        "This organization is the largest developer of international standards in the world for a wide variety of products and services. It is known for its Open Systems Interconnection (OSI) reference model.",
+        "This organization promotes the open development, evolution, and use of the Internet throughout the world."
+      ],
+      "definitions": [
+        "ISOC",
+        "ISO",
+        "EIA",
+        "IANA"
+      ],
+      "correct_pairs": {
+        "This organization promotes the open development, evolution, and use of the Internet throughout the world.": "ISOC",
+        "This organization is the largest developer of international standards in the world for a wide variety of products and services. It is known for its Open Systems Interconnection (OSI) reference model.": "ISO",
+        "This organization is responsible for overseeing and managing IP address allocation, domain name management, and protocol identifiers.": "IANA"
+      },
+      "correct_answer": "",
+      "id": 74
+    },
+    {
+      "question": "For the TCP/IP protocol suite, what is the correct order of events when a Telnet message is being prepared to be sent over the network?",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "The Ethernet header is added.",
+        "The TCP header is added.",
+        "The IP header is added.",
+        "The Telnet-formatted data is provided to the next layer."
+      ],
+      "definitions": [
+        "Third",
+        "Fourth",
+        "First",
+        "Second"
+      ],
+      "correct_pairs": {
+        "The Ethernet header is added.": "Fourth",
+        "The TCP header is added.": "Second",
+        "The IP header is added.": "Third",
+        "The Telnet-formatted data is provided to the next layer.": "First"
+      },
+      "correct_answer": "",
+      "id": 75
     }
   ]
 }

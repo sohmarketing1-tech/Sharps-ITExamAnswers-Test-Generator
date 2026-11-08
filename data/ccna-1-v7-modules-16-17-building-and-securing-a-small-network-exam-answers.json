@@ -238,12 +238,12 @@
     },
     {
       "id": 22,
-      "question": "Which statement is true about Cisco IOS ping indicators?​",
+      "question": "Which statement is true about Cisco IOS ping indicators?",
       "options": [
         "'!' indicates that the ping was unsuccessful and that the device may have issues finding a DNS server.",
         "'U' may indicate that a router along the path did not contain a route to the destination address and that the ping was unsuccessful.",
         "'.' indicates that the ping was successful but the response time was longer than normal.",
-        "A combination of '.' and '!' indicates that a router along the path did not have a route to the destination address and responded with an ICMP unreachable message.​"
+        "A combination of '.' and '!' indicates that a router along the path did not have a route to the destination address and responded with an ICMP unreachable message."
       ],
       "correct_answer": "'U' may indicate that a router along the path did not contain a route to the destination address and that the ping was unsuccessful."
     },
@@ -319,7 +319,7 @@
       "options": [
         "debug all",
         "logging synchronous",
-        "show running-config​",
+        "show running-config",
         "terminal monitor"
       ],
       "correct_answer": "terminal monitor"
@@ -699,16 +699,15 @@
       "id": 63,
       "question": "What is a characteristic of UDP?",
       "options": [
-        "UDP datagrams take the same path and arrive in the correct order at the destination.​",
-        "Applications that use UDP are always considered unreliable.​",
+        "UDP datagrams take the same path and arrive in the correct order at the destination.",
+        "Applications that use UDP are always considered unreliable.",
         "UDP reassembles the received datagrams in the order they were received.",
         "UDP only passes data to the network when the destination is ready to receive the data."
       ],
       "correct_answer": "UDP reassembles the received datagrams in the order they were received."
     },
     {
-      "id": 64,
-      "question": "Match each weakness with an example.",
+      "question": "Match each weakness with an example. (Not all options are used.)",
       "type": "matching",
       "options": [],
       "terms": [
@@ -718,19 +717,19 @@
       ],
       "definitions": [
         "The network administrator did not fully consider the implications of unauthorized users accessing the network.",
-        "When implementing an access list on a router, a network engineer did not filter a type of malicious traffic.",
-        "A network engineer is examining the operating system of a network device for vulnerabilities."
+        "A nework engineer is examining the operating system of a network device for vulnerabilities.",
+        "When implementing an access list on a router, a network engineer did not filter a type of malicous traffic."
       ],
       "correct_pairs": {
         "security policy weakness": "The network administrator did not fully consider the implications of unauthorized users accessing the network.",
-        "configuration weakness": "When implementing an access list on a router, a network engineer did not filter a type of malicious traffic.",
-        "technological weakness": "A network engineer is examining the operating system of a network device for vulnerabilities."
+        "configuration weakness": "When implementing an access list on a router, a network engineer did not filter a type of malicous traffic.",
+        "technological weakness": "A nework engineer is examining the operating system of a network device for vulnerabilities."
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 64
     },
     {
-      "id": 65,
-      "question": "Match the type of information security threat to the scenario.",
+      "question": "Match the type of information security threat to the scenario. (Not all options are used.)",
       "type": "matching",
       "options": [],
       "terms": [
@@ -740,10 +739,10 @@
         "disruption of service"
       ],
       "definitions": [
-        "obtaining trade secret documents illegally",
-        "pretending to be someone else by using stolen personal information to apply for a credit card",
         "installing virus code to destroy surveillance recordings for certain days",
+        "pretending to be someone else by using stolen personal information to apply for a credit card",
         "preventing users from accessing a website by sending a large number of link requests in a short period",
+        "obtaining trade secret documents illegally",
         "cracking the password of an administrator account on a server"
       ],
       "correct_pairs": {
@@ -752,36 +751,36 @@
         "data loss": "installing virus code to destroy surveillance recordings for certain days",
         "disruption of service": "preventing users from accessing a website by sending a large number of link requests in a short period"
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 65
     },
     {
-      "id": 66,
       "question": "Match the description to the type of firewall filtering. (Not all options are used.)",
       "type": "matching",
       "options": [],
       "terms": [
-        "packet filtering",
-        "URL filtering",
         "stateful packet inspection",
-        "application filtering"
+        "URL filtering",
+        "application filtering",
+        "packet filtering"
       ],
       "definitions": [
-        "prevents or allows access based on the IP or MAC addresses of the source and destination",
-        "prevents or allows access based on web addresses or keywords",
-        "prevents or allows access based on whether the traffic is in response to requests from internal hosts",
+        "prevents or allows access based on the operating system of the source or destination device",
         "prevents or allows access based on the port numbers used in the request",
-        "prevents or allows access based on the operating system of the source or destination device"
+        "prevents or allows access based on whether the traffic is in response to requests from internal hosts",
+        "prevents or allows access based on web addresses or keywords",
+        "prevents or allows access based on the IP or MAC addresses of the source and destination"
       ],
       "correct_pairs": {
-        "packet filtering": "prevents or allows access based on the IP or MAC addresses of the source and destination",
-        "URL filtering": "prevents or allows access based on web addresses or keywords",
+        "application filtering": "prevents or allows access based on the port numbers used in the request",
         "stateful packet inspection": "prevents or allows access based on whether the traffic is in response to requests from internal hosts",
-        "application filtering": "prevents or allows access based on the port numbers used in the request"
+        "URL filtering": "prevents or allows access based on web addresses or keywords",
+        "packet filtering": "prevents or allows access based on the IP or MAC addresses of the source and destination"
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 66
     },
     {
-      "id": 67,
       "question": "Identify the steps needed to configure a switch for SSH. The answer order does not matter. (Not all options are used.)",
       "type": "matching",
       "options": [],
@@ -795,16 +794,17 @@
         "Use the transport input ssh command."
       ],
       "definitions": [
-        "Required steps to configure SSH:"
+        "required steps for SSH configuration"
       ],
       "correct_pairs": {
-        "Create a local user.": "Required steps to configure SSH:",
-        "Generate RSA keys.": "Required steps to configure SSH:",
-        "Configure a domain name.": "Required steps to configure SSH:",
-        "Use the login local command.": "Required steps to configure SSH:",
-        "Use the transport input ssh command.": "Required steps to configure SSH:"
+        "Create a local user.": "required steps for SSH configuration",
+        "Generate RSA keys.": "required steps for SSH configuration",
+        "Configure a domain name.": "required steps for SSH configuration",
+        "Use the login local command.": "required steps for SSH configuration",
+        "Use the transport input ssh command.": "required steps for SSH configuration"
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 67
     }
   ]
 }

@@ -1,0 +1,209 @@
+[
+ {
+  "exam": "ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers",
+  "page_number": 5,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-03-08_181549.jpg",
+  "exhibit": null,
+  "question": "Match the requirements of a reliable network with the supporting network architecture. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "fault tolerance",
+   "scalability",
+   "security"
+  ],
+  "definitions": [
+   "Protect the network from unauthorized access.",
+   "Provide redundant links and devices.",
+   "Match the type of communication with a specific priority.",
+   "Expand the network without degrading the service for existing users.",
+   "Ensure that streaming data is provided over high speed links."
+  ],
+  "correct_pairs": {
+   "security": "Protect the network from unauthorized access.",
+   "fault tolerance": "Provide redundant links and devices.",
+   "scalability": "Expand the network without degrading the service for existing users."
+  },
+  "correct_answer": "",
+  "notes": "Picture shows arrows drawn from the items to the boxes rather than filled slots. The unused options are two of the boxes ('Match the type of communication with a specific priority.' and 'Ensure that streaming data is provided over high speed links.'), not leftover items; they are kept in definitions with nothing mapped to them."
+ },
+ {
+  "exam": "ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers",
+  "page_number": 9,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-11-19_094041.jpg",
+  "exhibit": null,
+  "question": "Match each characteristic to its corresponding Internet connectivity type. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "cable",
+   "satellite",
+   "DSL",
+   "dialup telephone"
+  ],
+  "definitions": [
+   "uses coaxial cable as a medium",
+   "not suited for heavily wooded areas",
+   "typically has very low bandwidth",
+   "high bandwidth connection that runs over telephone line"
+  ],
+  "correct_pairs": {
+   "cable": "uses coaxial cable as a medium",
+   "satellite": "not suited for heavily wooded areas",
+   "dialup telephone": "typically has very low bandwidth",
+   "DSL": "high bandwidth connection that runs over telephone line"
+  },
+  "correct_answer": "",
+  "notes": "Line-style picture with 'Categories:' (left) and 'Options:' (right) headers; categories used as definitions. All four options are used in the picture although the question says not all options are used (no leftover shown)."
+ },
+ {
+  "exam": "ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers",
+  "page_number": 24,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_085553.jpg",
+  "exhibit": null,
+  "question": "An administrator is configuring a switch console port with a password. In what order will the administrator travel through the IOS modes of operation in order to reach the mode in which the configuration commands will be entered? (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "privileged EXEC mode",
+   "line configuration mode",
+   "global configuration mode",
+   "user EXEC mode"
+  ],
+  "definitions": [
+   "first mode",
+   "final mode",
+   "third mode",
+   "second mode"
+  ],
+  "correct_pairs": {
+   "user EXEC mode": "first mode",
+   "line configuration mode": "final mode",
+   "global configuration mode": "third mode",
+   "privileged EXEC mode": "second mode"
+  },
+  "correct_answer": "",
+  "notes": "Ordering question; the picture labels the slots 'first mode', 'second mode', 'third mode', 'final mode', so those labels are used (listed in the picture's top-to-bottom order). Line-style picture; no leftover option is shown although the question says not all options are used."
+ },
+ {
+  "exam": "ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers",
+  "page_number": 27,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-03-08_184953.jpg",
+  "exhibit": null,
+  "question": "Match the description with the associated IOS mode. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "changes made affect the operation of the device as a whole",
+   "accessed by entering the enable command",
+   "identified by a prompt ending with the # character",
+   "limited number of basic monitoring commands",
+   "accessed by entering the configure terminal command",
+   "the first entrance into the CLI of an IOS device",
+   "used to enable the password for vty lines"
+  ],
+  "definitions": [
+   "user EXEC mode",
+   "privileged EXEC mode",
+   "global configuration mode"
+  ],
+  "correct_pairs": {
+   "limited number of basic monitoring commands": "user EXEC mode",
+   "the first entrance into the CLI of an IOS device": "user EXEC mode",
+   "accessed by entering the enable command": "privileged EXEC mode",
+   "identified by a prompt ending with the # character": "privileged EXEC mode",
+   "changes made affect the operation of the device as a whole": "global configuration mode",
+   "accessed by entering the configure terminal command": "global configuration mode"
+  },
+  "correct_answer": "",
+  "notes": "The left column in this picture lists all 7 items (placed ones too); 'used to enable the password for vty lines' is the leftover. Words 'enable' and 'configure terminal' are bold in the picture; written as plain text. Terms kept in left-column order."
+ },
+ {
+  "exam": "ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers",
+  "page_number": 28,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_092502.jpg",
+  "exhibit": null,
+  "question": "Match the definitions to their respective CLI hot keys and shortcuts. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Ctrl-Shift-6",
+   "Tab",
+   "Up Arrow",
+   "?",
+   "Space bar"
+  ],
+  "definitions": [
+   "scrolls backwards through previously entered commands",
+   "provides context-sensitive help",
+   "aborts commands such as trace and ping",
+   "displays the next screen",
+   "completes abbreviated commands and parameters"
+  ],
+  "correct_pairs": {
+   "Up Arrow": "scrolls backwards through previously entered commands",
+   "?": "provides context-sensitive help",
+   "Ctrl-Shift-6": "aborts commands such as trace and ping",
+   "Space bar": "displays the next screen",
+   "Tab": "completes abbreviated commands and parameters"
+  },
+  "correct_answer": "",
+  "notes": "Line-style answer picture (no boxes): following the picture's own convention seen in the 1-3 Q9 picture ('Categories' left = targets, 'Options' right = items), the left column is used as definitions and the right column as terms. Question wording ('Match the definitions to ... hot keys') could suggest the opposite orientation. All five options are used; no leftover shown although the question says not all options are used."
+ },
+ {
+  "exam": "ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers",
+  "page_number": 36,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-04-23_200939.jpg",
+  "exhibit": null,
+  "question": "Match the description to the organization. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "This organization is responsible for overseeing and managing IP address allocation, domain name management, and protocol identifiers.",
+   "This organization is the largest developer of international standards in the world for a wide variety of products and services. It is known for its Open Systems Interconnection (OSI) reference model.",
+   "This organization promotes the open development, evolution, and use of the Internet throughout the world."
+  ],
+  "definitions": [
+   "ISOC",
+   "ISO",
+   "EIA",
+   "IANA"
+  ],
+  "correct_pairs": {
+   "This organization promotes the open development, evolution, and use of the Internet throughout the world.": "ISOC",
+   "This organization is the largest developer of international standards in the world for a wide variety of products and services. It is known for its Open Systems Interconnection (OSI) reference model.": "ISO",
+   "This organization is responsible for overseeing and managing IP address allocation, domain name management, and protocol identifiers.": "IANA"
+  },
+  "correct_answer": "",
+  "notes": "The unused option is a box: EIA has an empty slot, so nothing maps to it. The left column lists all three (placed) items; no leftover items."
+ },
+ {
+  "exam": "ccna-1-v7-modules-1-3-basic-network-connectivity-and-communications-exam-answers",
+  "page_number": 41,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_084235.jpg",
+  "exhibit": null,
+  "question": "For the TCP/IP protocol suite, what is the correct order of events when a Telnet message is being prepared to be sent over the network?",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "The Ethernet header is added.",
+   "The TCP header is added.",
+   "The IP header is added.",
+   "The Telnet-formatted data is provided to the next layer."
+  ],
+  "definitions": [
+   "Third",
+   "Fourth",
+   "First",
+   "Second"
+  ],
+  "correct_pairs": {
+   "The Ethernet header is added.": "Fourth",
+   "The TCP header is added.": "Second",
+   "The IP header is added.": "Third",
+   "The Telnet-formatted data is provided to the next layer.": "First"
+  },
+  "correct_answer": "",
+  "notes": "Ordering question; the picture labels the slots 'First', 'Second', 'Third', 'Fourth' (right column), so those are the definitions, listed in the picture's top-to-bottom order."
+ }
+]

@@ -1,0 +1,183 @@
+[
+ {
+  "exam": "ccna-1-v7-modules-8-10-communicating-between-networks-exam-answers",
+  "page_number": 15,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_144248.jpg",
+  "exhibit": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA-v7-Modul-8-10_Qns-15-Exten-exhibit-1594760765.9811.png",
+  "question": "Refer to the exhibit. Match the packets with their destination IP address to the exiting interfaces on the router. (Not all targets are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "FastEthernet0/1",
+   "FastEthernet1/0",
+   "FastEthernet0/0",
+   "FastEthernet1/1",
+   "Serial0/0/0"
+  ],
+  "definitions": [
+   "packets with destination of 172.17.6.15",
+   "packets with destination of 172.17.14.8",
+   "packets with destination of 172.17.8.20",
+   "packets with destination of 172.17.10.5",
+   "packets with destination of 172.17.12.10"
+  ],
+  "correct_pairs": {
+   "FastEthernet0/0": "packets with destination of 172.17.6.15",
+   "FastEthernet0/1": "packets with destination of 172.17.14.8",
+   "Serial0/0/0": "packets with destination of 172.17.8.20",
+   "FastEthernet1/1": "packets with destination of 172.17.10.5",
+   "FastEthernet1/0": "packets with destination of 172.17.12.10"
+  },
+  "correct_answer": "",
+  "notes": "Line-style answer picture (no boxes): following the picture's own convention seen in the 1-3 Q9 picture ('Categories' left = targets, 'Options' right = items), the left column is used as definitions and the right column as terms. Question wording ('Match the packets ... to the exiting interfaces') could suggest interfaces are the targets. All five pairs used; no unused target shown although the question says not all targets are used. Pairs agree with the exhibit routing table and the page explanation."
+ },
+ {
+  "exam": "ccna-1-v7-modules-8-10-communicating-between-networks-exam-answers",
+  "page_number": 31,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_144554.jpg",
+  "exhibit": null,
+  "question": "Match the commands to the correct actions. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Router(config-line)# password class",
+   "Router(config)# banner motd #",
+   "Router(config)# hostname CL1"
+  ],
+  "definitions": [
+   "provides security on the console",
+   "configures a name on the router",
+   "displays a message after accessing the router"
+  ],
+  "correct_pairs": {
+   "Router(config-line)# password class": "provides security on the console",
+   "Router(config)# hostname CL1": "configures a name on the router",
+   "Router(config)# banner motd #": "displays a message after accessing the router"
+  },
+  "correct_answer": "",
+  "notes": "Line-style answer picture (no boxes): following the picture's own convention seen in the 1-3 Q9 picture ('Categories' left = targets, 'Options' right = items), the left column is used as definitions and the right column as terms. The command part after the prompt is bold in the picture; written as plain text. No leftover shown although the question says not all options are used."
+ },
+ {
+  "exam": "ccna-1-v7-modules-8-10-communicating-between-networks-exam-answers",
+  "page_number": 33,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_155949.jpg",
+  "exhibit": null,
+  "question": "A network administrator requires access to manage routers and switches locally and remotely. Match the description to the access method. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "console",
+   "Telnet",
+   "AUX",
+   "SSH"
+  ],
+  "definitions": [
+   "unsecure remote access",
+   "remote access method that uses encryption",
+   "remote access via a dialup connection",
+   "preferred out-of-band access method"
+  ],
+  "correct_pairs": {
+   "Telnet": "unsecure remote access",
+   "SSH": "remote access method that uses encryption",
+   "AUX": "remote access via a dialup connection",
+   "console": "preferred out-of-band access method"
+  },
+  "correct_answer": "",
+  "notes": "Line-style answer picture (no boxes): following the picture's own convention seen in the 1-3 Q9 picture ('Categories' left = targets, 'Options' right = items), the left column is used as definitions and the right column as terms. No leftover shown although the question says not all options are used."
+ },
+ {
+  "exam": "ccna-1-v7-modules-8-10-communicating-between-networks-exam-answers",
+  "page_number": 34,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_145029.jpg",
+  "exhibit": null,
+  "question": "Match the phases to the functions during the boot up process of a Cisco router. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "perform the POST and load the bootstrap program",
+   "locate and load the startup configuration file",
+   "locate and load the Cisco IOS software"
+  ],
+  "definitions": [
+   "phase 1",
+   "phase 3",
+   "phase 2"
+  ],
+  "correct_pairs": {
+   "perform the POST and load the bootstrap program": "phase 1",
+   "locate and load the startup configuration file": "phase 3",
+   "locate and load the Cisco IOS software": "phase 2"
+  },
+  "correct_answer": "",
+  "notes": "Line-style picture; phases (left) used as definitions, in the picture's top-to-bottom order. No leftover shown although the question says not all options are used."
+ },
+ {
+  "exam": "ccna-1-v7-modules-8-10-communicating-between-networks-exam-answers",
+  "page_number": 35,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_145429.jpg",
+  "exhibit": null,
+  "question": "Match the command with the device mode at which the command is entered. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "R1#",
+   "R1(config-if)#",
+   "R1(config)#",
+   "R1(config-line)#",
+   "R1>"
+  ],
+  "definitions": [
+   "ip address 192.168.4.4 255.255.255.0",
+   "login",
+   "service password-encryption",
+   "enable",
+   "copy running-config startup-config"
+  ],
+  "correct_pairs": {
+   "R1(config-if)#": "ip address 192.168.4.4 255.255.255.0",
+   "R1(config-line)#": "login",
+   "R1(config)#": "service password-encryption",
+   "R1>": "enable",
+   "R1#": "copy running-config startup-config"
+  },
+  "correct_answer": "",
+  "notes": "Line-style answer picture (no boxes): following the picture's own convention seen in the 1-3 Q9 picture ('Categories' left = targets, 'Options' right = items), the left column is used as definitions and the right column as terms. Question wording ('Match the command with the device mode') could suggest modes are the targets. Lines cross near the centre but each letter pair (A-E) is labelled on both sides, so the pairs are certain. No leftover shown although the question says not all options are used."
+ },
+ {
+  "exam": "ccna-1-v7-modules-8-10-communicating-between-networks-exam-answers",
+  "page_number": 41,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-09-17_145611.jpg",
+  "exhibit": null,
+  "question": "Match the configuration mode with the command that is available in that mode. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "interface fastethernet 0/0",
+   "login",
+   "copy running-config startup-config",
+   "enable"
+  ],
+  "definitions": [
+   "R1>",
+   "R1(config-line)#",
+   "R1#",
+   "R1(config)#"
+  ],
+  "correct_pairs": {
+   "enable": "R1>",
+   "login": "R1(config-line)#",
+   "copy running-config startup-config": "R1#",
+   "interface fastethernet 0/0": "R1(config)#"
+  },
+  "correct_answer": "",
+  "notes": "Line-style picture; modes (left) used as definitions, commands (right, bold in picture, written as plain text) as terms, which also fits the question wording. No leftover shown although the question says not all options are used."
+ },
+ {
+  "exam": "ccna-1-v7-modules-8-10-communicating-between-networks-exam-answers",
+  "page_number": 48,
+  "type": "unknown",
+  "question": "Open the PT activity. Perform the tasks in the activity instructions and then answer the question.",
+  "notes": "Packet Tracer question. The picture is only the PT activity screenshot (R1/R2 topology plus instructions: 'Which interfaces in each router are active and operational?'), not an answer. Page text gives options 'R1: G0/0 and S0/0/0 R2: G0/0 and S0/0/0' / 'R1: G0/1 and S0/0/1 R2: G0/0 and S0/0/1' / 'R1: G0/0 and S0/0/0 R2: G0/1 and S0/0/0' / 'R1: G0/0 and S0/0/1 R2: G0/1 and S0/0/1', and the explanation says the answer is R1: G0/0 and S0/0/0, R2: G0/1 and S0/0/0. Could be rebuilt as multiple choice with the real question text if wanted."
+ }
+]

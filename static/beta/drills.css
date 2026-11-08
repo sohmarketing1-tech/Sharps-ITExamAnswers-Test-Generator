@@ -1,0 +1,119 @@
+/* AnswrIT drills & mini-games. Loaded after app.css; everything is scoped under .drill. */
+
+.drill { display: flex; flex-direction: column; gap: 14px; }
+.drill-intro { margin: 0; font-size: 15px; }
+
+/* Setup toggles (difficulty, direction, process) */
+.drill-setup { padding: 14px 16px; gap: 8px; }
+.drill-toggle { display: flex; flex-direction: column; gap: 8px; }
+.drill-toggle-label { font-size: 13px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--muted); }
+.drill .segmented button { min-height: 44px; padding: 4px 6px; line-height: 1.2; }
+.drill .segmented.drill-seg-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.drill .segmented.drill-seg-3 button { font-size: 14px; }
+
+/* Question card */
+.drill-card { gap: 14px; }
+.drill-label { margin: 0; font-size: 14px; font-weight: 600; color: var(--muted); text-align: center; }
+.drill-q {
+    font-family: var(--display); font-size: 34px; font-weight: 700; line-height: 1.2;
+    text-align: center; color: var(--ink); overflow-wrap: anywhere;
+}
+.drill-q.long { font-size: 26px; }
+.drill-q.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 22px; font-weight: 600; }
+.drill-q.visual { display: flex; justify-content: center; }
+.drill-big { font-size: 52px; line-height: 1; }
+
+/* Answer choices: reuse .option from app.css */
+.drill-choices { display: flex; flex-direction: column; gap: 10px; }
+.drill-choices.short { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.drill .drill-choice { align-items: center; justify-content: space-between; min-height: 52px; font-size: 15px; }
+.drill-choices.short .drill-choice { justify-content: center; text-align: center; font-weight: 600; font-size: 16px; position: relative; }
+.drill-choice-mark { width: 20px; height: 20px; flex: none; display: inline-flex; }
+.drill-choices.short .drill-choice-mark { position: absolute; top: 6px; right: 6px; width: 16px; height: 16px; }
+.drill-choice-mark:empty { display: none; }
+.drill-choice-mark svg { width: 100%; height: 100%; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.drill .drill-choice.is-correct .drill-choice-mark svg { stroke: var(--green); }
+.drill .drill-choice.is-wrong .drill-choice-mark svg { stroke: var(--red); }
+
+/* Feedback line */
+.drill-msg { margin: 0; min-height: 22px; text-align: center; font-size: 15px; font-weight: 600; }
+.drill-msg:empty { min-height: 0; }
+.drill-msg.good { color: var(--green); }
+.drill-msg.bad { color: var(--red); }
+
+/* Stats */
+.drill-stats .stat { text-align: center; align-items: center; }
+.drill-stats .stat span { line-height: 1.3; }
+
+/* Pictures */
+.drill-img { max-width: 100%; max-height: 220px; border-radius: 12px; object-fit: contain; background: var(--bg); }
+.drill-topology { width: 100%; max-width: 320px; }
+.drill-topology svg { width: 100%; height: auto; display: block; }
+.drill-topology .topology-line, .drill-topology .topology-ring { stroke: var(--subtle); stroke-width: 2.5; fill: none; }
+.drill-topology .topology-line-thick { stroke-width: 4; }
+.drill-topology .topology-node { fill: var(--primary); stroke: var(--surface); stroke-width: 2; }
+.drill-topology .topology-node-center { fill: var(--primary-ink); }
+
+/* Binary switches */
+.drill-bits { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
+.drill-bit {
+    min-height: 64px; border-radius: 12px; border: 2px solid var(--line-strong);
+    background: var(--surface); color: var(--ink);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 0;
+    transition: background 0.12s, border-color 0.12s;
+}
+.drill-bit-value { font-family: var(--display); font-size: 24px; font-weight: 700; line-height: 1; }
+.drill-bit-place { font-size: 11px; color: var(--subtle); font-weight: 600; }
+.drill-bit.on { background: var(--primary); border-color: var(--primary); color: #FFFFFF; }
+.drill-bit.on .drill-bit-place { color: var(--primary-soft); }
+.drill-current { margin: 0; text-align: center; color: var(--muted); }
+.drill-current strong { color: var(--ink); font-family: var(--display); font-size: 18px; }
+
+/* Subnetting */
+.drill-fields { display: flex; flex-direction: column; gap: 12px; }
+.drill .input.is-right { border-color: var(--green); background: #F0FDF4; }
+.drill .input.is-wrong { border-color: var(--red); background: #FEF2F2; }
+.drill-breakdown { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+.drill-breakdown h3 { font-size: 16px; }
+.drill-bd-row { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+.drill-bd-row span { color: var(--muted); font-weight: 600; }
+.drill-bd-row code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px;
+    background: var(--bg); border-radius: 8px; padding: 6px 8px; overflow-wrap: anywhere;
+}
+
+/* Tap-in-order chips */
+.drill-chips { display: flex; flex-direction: column; gap: 8px; }
+.drill-chip {
+    display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; text-align: left;
+    background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px;
+    font-size: 16px; font-weight: 600; color: var(--ink);
+    transition: border-color 0.12s, background 0.12s;
+}
+.drill-chip:hover:not([disabled]) { border-color: var(--line-strong); }
+.drill-chip-num {
+    width: 28px; height: 28px; flex: none; border-radius: 50%;
+    border: 2px dashed var(--line-strong); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+}
+.drill-chip.placed { border-color: var(--green); background: #F0FDF4; cursor: default; }
+.drill-chip.placed .drill-chip-num { border: none; background: var(--green); color: #FFFFFF; }
+.drill-chip.shake { animation: drill-shake 0.35s; border-color: var(--red); }
+@keyframes drill-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+@media (prefers-reduced-motion: reduce) { .drill-chip.shake { animation: none; } }
+.drill-mnemonic { margin: 0; }
+
+/* Flip-card decks */
+.drill-counter { margin: 0; text-align: center; font-size: 14px; font-weight: 600; }
+.drill .drill-flash { min-height: 260px; align-items: center; text-align: center; cursor: pointer; }
+.drill-flash-front { margin: 0; font-family: var(--display); font-size: 36px; font-weight: 700; line-height: 1.15; overflow-wrap: anywhere; }
+.drill-flash-desc { margin: 0; font-size: 15px; color: var(--muted); line-height: 1.5; }
+.drill .drill-flash .tap-hint { margin-top: 8px; }
+.drill-deck-btns .btn { flex: 1 1 0; padding: 0 10px; }
+
+/* Ohm's law */
+.drill-ohms-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }

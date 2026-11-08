@@ -1,0 +1,267 @@
+[
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 19,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/349.jpg",
+  "exhibit": null,
+  "question": "Order the DHCP message types as they would occur between a DHCP client and a DHCP server.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "DHCPACK",
+   "DHCPOFFER",
+   "DHCPDISCOVER",
+   "DHCPREQUEST"
+  ],
+  "definitions": [
+   "Step 1",
+   "Step 2",
+   "Step 3",
+   "Step 4"
+  ],
+  "correct_pairs": {
+   "DHCPDISCOVER": "Step 1",
+   "DHCPOFFER": "Step 2",
+   "DHCPREQUEST": "Step 3",
+   "DHCPACK": "Step 4"
+  },
+  "correct_answer": "",
+  "notes": "The site's picture only shows the unanswered question (four messages and four empty slots). Answer taken from the site's explanation and the standard DHCPv4 order: DISCOVER, OFFER, REQUEST, ACK (same as Q42)."
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 37,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-20_231506.jpg",
+  "exhibit": null,
+  "question": "Match each DHCP message type with its description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "DHCPACK",
+   "DHCPREQUEST",
+   "DHCPNACK",
+   "DHCPDISCOVER",
+   "DHCPOFFER"
+  ],
+  "definitions": [
+   "a client initiating a message to find a DHCP server",
+   "a DHCP server responding to the initial request by a client",
+   "the client accepting the IP address provided by the DHCP server",
+   "the DHCP server confirming that the address lease has been accepted"
+  ],
+  "correct_pairs": {
+   "DHCPDISCOVER": "a client initiating a message to find a DHCP server",
+   "DHCPOFFER": "a DHCP server responding to the initial request by a client",
+   "DHCPREQUEST": "the client accepting the IP address provided by the DHCP server",
+   "DHCPACK": "the DHCP server confirming that the address lease has been accepted"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture; DHCPNACK is the leftover. The explanation's text says 'the lease has been accepted'; the picture says 'the address lease has been accepted' (picture kept)."
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 38,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/1905334006.webp",
+  "exhibit": null,
+  "question": "Match the purpose with its DHCP message type. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "DHCPREQUEST",
+   "DHCPNAK",
+   "DHCPOFFER",
+   "DHCPDISCOVER",
+   "DHCPACK"
+  ],
+  "definitions": [
+   "A message that is used to locate any available DHCP server on a network",
+   "A message is used by a server to finalize a successful lease with a client",
+   "A message that is used to acknowledge that the lease is successful",
+   "A message that is used to identify the explicit server and lease offer to accept",
+   "A message that is used to suggest a lease to a client"
+  ],
+  "correct_pairs": {
+   "DHCPDISCOVER": "A message that is used to locate any available DHCP server on a network",
+   "DHCPOFFER": "A message that is used to suggest a lease to a client",
+   "DHCPREQUEST": "A message that is used to identify the explicit server and lease offer to accept",
+   "DHCPACK": "A message is used by a server to finalize a successful lease with a client"
+  },
+  "correct_answer": "",
+  "notes": "DECIDED BY CLAUDE, the site's answer is wrong. The site's picture (and its text table) pairs DHCPREQUEST with 'locate any available DHCP server', DHCPDISCOVER with 'identify the explicit server and lease offer to accept' and DHCPNAK with 'acknowledge that the lease is successful'. That contradicts Cisco's definitions and the site's own explanation for CCNA 2 Modules 7-9 Q19 ('DHCPDISCOVER ... identify any DHCP servers', 'DHCPREQUEST ... identify both the specific DHCP server and the lease that the client is accepting', 'DHCPACK ... used by a server to finalize a successful lease with a client'). Used those: DISCOVER/OFFER/REQUEST/ACK as above; DHCPNAK and 'acknowledge that the lease is successful' are the unused options. The picture's OFFER and ACK pairs agree with this."
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 39,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-10-08_154259.jpg",
+  "exhibit": null,
+  "question": "Match the DHCP message types to the order of the stateful DHCPv6 process when a client first connects to an IPv6 network. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Step 2",
+   "Step 4",
+   "Step 3",
+   "Step 1"
+  ],
+  "definitions": [
+   "DHCPv6 REQUEST",
+   "DHCPv6 REPLY",
+   "DHCPv6 SOLICIT",
+   "DHCPv6 ADVERTISE"
+  ],
+  "correct_pairs": {
+   "Step 1": "DHCPv6 SOLICIT",
+   "Step 2": "DHCPv6 ADVERTISE",
+   "Step 3": "DHCPv6 REQUEST",
+   "Step 4": "DHCPv6 REPLY"
+  },
+  "correct_answer": "",
+  "notes": "Letter-style picture; the page's text table agrees."
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 40,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-10-08_154407.jpg",
+  "exhibit": null,
+  "question": "Match the step number to the sequence of stages that occur during the HSRP failover process. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Step 3",
+   "Step 4",
+   "Step 2",
+   "Step 1"
+  ],
+  "definitions": [
+   "The standby router assumes the role of the forwarding router.",
+   "The new forwarding router assumes both the IP and MAC addresses of the virtual router.",
+   "The standby router stops seeing hello messages from the forwarding router.",
+   "The forwarding router fails."
+  ],
+  "correct_pairs": {
+   "Step 1": "The forwarding router fails.",
+   "Step 2": "The standby router stops seeing hello messages from the forwarding router.",
+   "Step 3": "The standby router assumes the role of the forwarding router.",
+   "Step 4": "The new forwarding router assumes both the IP and MAC addresses of the virtual router."
+  },
+  "correct_answer": "",
+  "notes": "Letter-style picture; the page's text table agrees. (The Final's version of this question, Q116, has 3 steps and different wording.)"
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 41,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/19053340033.webp",
+  "exhibit": null,
+  "question": "Match the FHRP protocols to the appropriate description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "HSRP",
+   "VRRP",
+   "GLBP"
+  ],
+  "definitions": [
+   "An open standard FHRP that provides redundancy through use of a virtual routers master and one or more backups",
+   "A Cisco proprietary FHRP that provides redundancy through use of an active device and standby device",
+   "A Cisco proprietary FHRP that provides load sharing in addition to redundancy"
+  ],
+  "correct_pairs": {
+   "HSRP": "A Cisco proprietary FHRP that provides redundancy through use of an active device and standby device",
+   "VRRP": "An open standard FHRP that provides redundancy through use of a virtual routers master and one or more backups",
+   "GLBP": "A Cisco proprietary FHRP that provides load sharing in addition to redundancy"
+  },
+  "correct_answer": "",
+  "notes": "Letter-style picture; the page's text table agrees (it uses lowercase 'a Cisco…'; picture kept)."
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 42,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-10-08_153922.jpg",
+  "exhibit": null,
+  "question": "Match the DHCP message types to the order of the DHCPv4 process. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Step 2",
+   "Step 4",
+   "Step 3",
+   "Step 1"
+  ],
+  "definitions": [
+   "DHCPACK",
+   "DHCPREQUEST",
+   "DHCPOFFER",
+   "DHCPDISCOVER"
+  ],
+  "correct_pairs": {
+   "Step 1": "DHCPDISCOVER",
+   "Step 2": "DHCPOFFER",
+   "Step 3": "DHCPREQUEST",
+   "Step 4": "DHCPACK"
+  },
+  "correct_answer": "",
+  "notes": "Letter-style picture; the page's text table agrees. This version has no unused options (the Final's Q108 adds DHCPREPLY and DHCPINFORMATION-REQUEST)."
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 49,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-22_235504.jpg",
+  "exhibit": null,
+  "question": "Match the descriptions to the corresponding DHCPv6 server type. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "enabled in RA messages with the ipv6 nd other-config-flag command",
+   "clients communicate with the DHCPv6 server by the use of RA messages",
+   "the M flag is set to 1 in RA messages",
+   "uses the address command to create a pool of addresses for clients",
+   "clients send only DHCPv6 INFORMATION REQUEST messages to the server",
+   "enabled on the client with the ipv6 address dhcp command",
+   "enabled on the client with the ipv6 address autoconfig command"
+  ],
+  "definitions": [
+   "Stateless DHCPv6",
+   "Stateful DHCPv6"
+  ],
+  "correct_pairs": {
+   "enabled in RA messages with the ipv6 nd other-config-flag command": "Stateless DHCPv6",
+   "clients send only DHCPv6 INFORMATION REQUEST messages to the server": "Stateless DHCPv6",
+   "enabled on the client with the ipv6 address autoconfig command": "Stateless DHCPv6",
+   "the M flag is set to 1 in RA messages": "Stateful DHCPv6",
+   "uses the address command to create a pool of addresses for clients": "Stateful DHCPv6",
+   "enabled on the client with the ipv6 address dhcp command": "Stateful DHCPv6"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture, 3 items per box; 'clients communicate with the DHCPv6 server by the use of RA messages' is the leftover. 'DHCPv6 INFORMATION REQUEST' wraps at a line end in the picture with no hyphen visible, so it's written with a space."
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 52,
+  "answer_picture": null,
+  "exhibit": null,
+  "question": "Which set of commands will configure a router as a DHCP server that will assign IPv4 addresses to the 192.168.100.0/23 LAN while reserving the first 10 and the last addresses for static assignment?\nip dhcp excluded-address 192.168.100.1 192.168.100.9\nip dhcp excluded-address 192.168.101.254\nip dhcp pool LAN-POOL-100\nip network 192.168.100.0 255.255.254.0\nip default-gateway 192.168.100.1\ndhcp pool LAN-POOL-100\nip dhcp excluded-address 192.168.100.1 192.168.100.9\nip dhcp excluded-address 192.168.100.254\nnetwork 192.168.100.0 255.255.254.0\ndefault-router 192.168.101.1\nip dhcp excluded-address 192.168.100.1 192.168.100.10\nip dhcp excluded-address 192.168.100.254\nip dhcp pool LAN-POOL-100\nnetwork 192.168.100.0 255.255.255.0\nip default-gateway 192.168.100.1\nip dhcp excluded-address 192.168.100.1 192.168.100.10\nip dhcp excluded-address 192.168.101.254\nip dhcp pool LAN-POOL-100\nnetwork 192.168.100.0 255.255.254.0\ndefault-router 192.168.100.1",
+  "options": [
+   "ip dhcp excluded-address 192.168.100.1 192.168.100.9\nip dhcp excluded-address 192.168.101.254\nip dhcp pool LAN-POOL-100\nip network 192.168.100.0 255.255.254.0\nip default-gateway 192.168.100.1",
+   "dhcp pool LAN-POOL-100\nip dhcp excluded-address 192.168.100.1 192.168.100.9\nip dhcp excluded-address 192.168.100.254\nnetwork 192.168.100.0 255.255.254.0\ndefault-router 192.168.101.1",
+   "ip dhcp excluded-address 192.168.100.1 192.168.100.10\nip dhcp excluded-address 192.168.100.254\nip dhcp pool LAN-POOL-100\nnetwork 192.168.100.0 255.255.255.0\nip default-gateway 192.168.100.1",
+   "ip dhcp excluded-address 192.168.100.1 192.168.100.10\nip dhcp excluded-address 192.168.101.254\nip dhcp pool LAN-POOL-100\nnetwork 192.168.100.0 255.255.254.0\ndefault-router 192.168.100.1"
+  ],
+  "correct_answer": "ip dhcp excluded-address 192.168.100.1 192.168.100.10\nip dhcp excluded-address 192.168.101.254\nip dhcp pool LAN-POOL-100\nnetwork 192.168.100.0 255.255.254.0\ndefault-router 192.168.100.1",
+  "notes": "Choices are paragraphs of commands; the red one is correct. Line breaks kept as \\n."
+ },
+ {
+  "exam": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers",
+  "page_number": 54,
+  "answer_picture": null,
+  "exhibit": null,
+  "question": "A company uses the method SLAAC to configure IPv6 addresses for the workstations of the employees. A network administrator configured the IPv6 address on the LAN interface of the router. The interface status is UP. However, the workstations on the LAN segment did not obtain the correct prefix and prefix length. What else should be configured on the router that is attached to the LAN segment for the workstations to obtain the information?​\nR1(config)# ipv6 dhcp pool\nR1(config-if)# ipv6 enable\nR1(config)# ipv6 unicast-routing\nR1(config-if)# ipv6 nd other-config-flag",
+  "options": [
+   "R1(config)# ipv6 dhcp pool",
+   "R1(config-if)# ipv6 enable",
+   "R1(config)# ipv6 unicast-routing",
+   "R1(config-if)# ipv6 nd other-config-flag"
+  ],
+  "correct_answer": "R1(config)# ipv6 unicast-routing",
+  "notes": "Choices are lines of one paragraph; the red one is correct."
+ }
+]

@@ -68,22 +68,46 @@
       "display_name": "CCNA 1 v7 Final Exam"
     },
     {
-      "title": "Comms Test 1",
-      "url": "",
-      "filename": "naval-messaging.json",
-      "count": 83,
-      "display_name": "Comms Test 1",
-      "study_guide": "/study-guides/Naval_Messaging_Complete_Study_Guide.pdf"
+      "title": "CCNA 2 v7 Modules 1 - 4: Switching Concepts, VLANs, and InterVLAN Routing Exam Answers",
+      "url": "https://itexamanswers.net/ccna-2-v7-modules-1-4-switching-concepts-vlans-and-intervlan-routing-exam-answers.html",
+      "filename": "ccna-2-v7-modules-1-4-switching-concepts-vlans-and-intervlan-routing-exam-answers.json",
+      "count": 76,
+      "display_name": "CCNA 2 v7 Modules 1-4"
     },
     {
-      "title": "Comms Test 2",
-      "url": "",
-      "filename": "naval-comms-exam-v3.json",
-      "count": 100,
-      "display_name": "Comms Test 2",
-      "study_guide": "/study-guides/Naval_Communications_and_Telecommunications_Operations_Manual.pdf",
-      "flashcard_file": "master-recall-flashcards.json",
-      "flashcard_count": 50
+      "title": "CCNA 2 v7 Modules 5 - 6: Redundant Networks Exam Answers",
+      "url": "https://itexamanswers.net/ccna-2-v7-modules-5-6-redundant-networks-exam-answers.html",
+      "filename": "ccna-2-v7-modules-5-6-redundant-networks-exam-answers.json",
+      "count": 54,
+      "display_name": "CCNA 2 v7 Modules 5-6"
+    },
+    {
+      "title": "CCNA 2 v7 Modules 7 - 9: Available and Reliable Networks Exam Answers",
+      "url": "https://itexamanswers.net/ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers.html",
+      "filename": "ccna-2-v7-modules-7-9-available-and-reliable-networks-exam-answers.json",
+      "count": 64,
+      "display_name": "CCNA 2 v7 Modules 7-9"
+    },
+    {
+      "title": "CCNA 2 v7 Modules 10 - 13: L2 Security and WLANs Exam Answers",
+      "url": "https://itexamanswers.net/ccna-2-v7-modules-10-13-l2-security-and-wlans-exam-answers.html",
+      "filename": "ccna-2-v7-modules-10-13-l2-security-and-wlans-exam-answers.json",
+      "count": 79,
+      "display_name": "CCNA 2 v7 Modules 10-13"
+    },
+    {
+      "title": "CCNA 2 v7 Modules 14 - 16: Routing Concepts and Configuration Exam Answers",
+      "url": "https://itexamanswers.net/ccna-2-v7-modules-14-16-routing-concepts-and-configuration-exam-answers.html",
+      "filename": "ccna-2-v7-modules-14-16-routing-concepts-and-configuration-exam-answers.json",
+      "count": 61,
+      "display_name": "CCNA 2 v7 Modules 14-16"
+    },
+    {
+      "title": "CCNA 2 v7.0 Final Exam Answers Full - Switching, Routing and Wireless Essentials",
+      "url": "https://itexamanswers.net/ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials.html",
+      "filename": "ccna-2-v7-0-final-exam-answers-full-switching-routing-and-wireless-essentials.json",
+      "count": 179,
+      "display_name": "CCNA 2 v7 Final Exam"
     }
   ]
 }

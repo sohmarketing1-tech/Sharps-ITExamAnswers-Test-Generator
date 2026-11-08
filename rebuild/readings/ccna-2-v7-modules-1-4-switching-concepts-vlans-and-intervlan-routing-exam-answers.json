@@ -1,0 +1,117 @@
+[
+ {
+  "exam": "ccna-2-v7-modules-1-4-switching-concepts-vlans-and-intervlan-routing-exam-answers",
+  "page_number": 20,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-20_230521.jpg",
+  "exhibit": "https://itexamanswers.net/wp-content/uploads/2019/12/Modules-1-4-Switching-Concepts-VLANs-and-InterVLAN-Routing-Exam.png",
+  "question": "Refer to the exhibit. A switch receives a Layer 2 frame that contains a source MAC address of 000b.a023.c501 and a destination MAC address of 0050.0fae.75aa. Place the switch steps in the order they occur. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "occurs first",
+   "occurs second"
+  ],
+  "definitions": [
+   "The switch drops the frame.",
+   "The switch adds the source MAC address to the MAC address table.",
+   "The switch adds the destination MAC address to the MAC address table.",
+   "Because the destination is not known, the switch forwards the frame out all ports except the port through which the frame arrived.",
+   "Because the source MAC address is not known, the switch broadcasts the frame out all ports except the port through which the frame arrived."
+  ],
+  "correct_pairs": {
+   "occurs first": "The switch adds the source MAC address to the MAC address table.",
+   "occurs second": "Because the destination is not known, the switch forwards the frame out all ports except the port through which the frame arrived."
+  },
+  "correct_answer": "",
+  "notes": "Two pictures: the exhibit (MAC address table, kept as the question picture) and the answer. Checked against the exhibit: neither 000b.a023.c501 nor 0050.0fae.75aa is in the table, so the switch learns the source and floods. Agrees with the explanation."
+ },
+ {
+  "exam": "ccna-2-v7-modules-1-4-switching-concepts-vlans-and-intervlan-routing-exam-answers",
+  "page_number": 31,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/CCNA2-v7-Modules-1-4-Switching-Concepts-VLANs-and-InterVLAN-Routing-Exam-Answers-31.png",
+  "exhibit": null,
+  "question": "Match the IEEE 802.1Q standard VLAN tag field with the description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Type",
+   "VLAN ID",
+   "User Priority",
+   "Canonical Format Identifier"
+  ],
+  "definitions": [
+   "a value that supports level or service implementation",
+   "a value for the tag protocol ID value",
+   "an identifier that enables Token Ring frames to be carried across Ethernet links",
+   "a value for the application protocol of the user data in the frame",
+   "a VLAN number"
+  ],
+  "correct_pairs": {
+   "Type": "a value for the tag protocol ID value",
+   "VLAN ID": "a VLAN number",
+   "User Priority": "a value that supports level or service implementation",
+   "Canonical Format Identifier": "an identifier that enables Token Ring frames to be carried across Ethernet links"
+  },
+  "correct_answer": "",
+  "notes": "Hand-drawn-line picture; 'a value for the application protocol of the user data in the frame' is the unused box. Agrees with the explanation."
+ },
+ {
+  "exam": "ccna-2-v7-modules-1-4-switching-concepts-vlans-and-intervlan-routing-exam-answers",
+  "page_number": 33,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-10-08_141221.jpg",
+  "exhibit": null,
+  "question": "Match the DTP mode with its function. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Nonegotiate",
+   "Dynamic desirable",
+   "Trunk",
+   "Dynamic auto"
+  ],
+  "definitions": [
+   "Passively waits for the neighbor to initiate trunking",
+   "Requires manual configuration of trunking or nontrunking",
+   "Permanent trunking mode",
+   "Actively attempts to convert the link to a trunk"
+  ],
+  "correct_pairs": {
+   "Nonegotiate": "Requires manual configuration of trunking or nontrunking",
+   "Dynamic desirable": "Actively attempts to convert the link to a trunk",
+   "Trunk": "Permanent trunking mode",
+   "Dynamic auto": "Passively waits for the neighbor to initiate trunking"
+  },
+  "correct_answer": "",
+  "notes": "Letter-style picture (A-A, B-B…). All four used even though the question says not all options are used. Agrees with the explanation."
+ },
+ {
+  "exam": "ccna-2-v7-modules-1-4-switching-concepts-vlans-and-intervlan-routing-exam-answers",
+  "page_number": 78,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-20_225135.jpg",
+  "exhibit": null,
+  "question": "Match each DHCP message type with its description. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "DHCPACK",
+   "DHCPREQUEST",
+   "DHCPNACK",
+   "DHCPDISCOVER",
+   "DHCPOFFER"
+  ],
+  "definitions": [
+   "a client initiating a message to find a DHCP server",
+   "a DHCP server responding to the initial request by a client",
+   "the client accepting the IP address provided by the DHCP server",
+   "the DHCP server confirming that the address lease has been accepted"
+  ],
+  "correct_pairs": {
+   "DHCPDISCOVER": "a client initiating a message to find a DHCP server",
+   "DHCPOFFER": "a DHCP server responding to the initial request by a client",
+   "DHCPREQUEST": "the client accepting the IP address provided by the DHCP server",
+   "DHCPACK": "the DHCP server confirming that the address lease has been accepted"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture; DHCPNACK is the leftover. The explanation's text says 'the lease has been accepted'; the picture says 'the address lease has been accepted' (picture kept). Same picture as the Final's Q97."
+ }
+]

@@ -1449,7 +1449,6 @@
       "correct_answer": "file sharing"
     },
     {
-      "id": 128,
       "question": "Place the six stages of the troubleshooting process in the correct order.",
       "type": "matching",
       "options": [],
@@ -1477,10 +1476,10 @@
         "Verify full system functionality and if applicable, implement preventive measures.": "Step 5",
         "Document findings, actions, and outcomes.": "Step 6"
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 128
     },
     {
-      "id": 129,
       "question": "Match the memory type to the feature. (Not all options are used.)",
       "type": "matching",
       "options": [],
@@ -1503,10 +1502,10 @@
         "DDR3 SDRAM": "It's connector has 240 pins and consumes 1.5 Volts of power.",
         "DDR2 SDRAM": "It's connector has 240 pins and consumes 1.8 Volts of power."
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 129
     },
     {
-      "id": 130,
       "question": "Match the problem to the possible solution. (Not all options are used.)",
       "type": "matching",
       "options": [],
@@ -1529,7 +1528,8 @@
         "After upgrading the single core CPU to a dual core CPU only one CPU graph is seen in the task manager.": "Update the BIOS firmware.",
         "The computer does not display any video after installing a new PCIe video card.": "Connect the auxillary power cable for the adapter card."
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 130
     }
   ]
 }

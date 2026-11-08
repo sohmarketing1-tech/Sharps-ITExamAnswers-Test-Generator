@@ -1,0 +1,61 @@
+[
+ {
+  "exam": "ccna-2-v7-modules-14-16-routing-concepts-and-configuration-exam-answers",
+  "page_number": 38,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2020-01-22_110729.jpg",
+  "exhibit": null,
+  "question": "Match the routing table entry to the corresponding function. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "administrative distance",
+   "metric",
+   "route source",
+   "destination network"
+  ],
+  "definitions": [
+   "identifies how a route was learned",
+   "identifies the address of the remote network",
+   "identifies the value assigned to reach a remote network",
+   "identifies the trustworthiness of a route source",
+   "identifies the exit interface used to route a packet to a destination"
+  ],
+  "correct_pairs": {
+   "route source": "identifies how a route was learned",
+   "destination network": "identifies the address of the remote network",
+   "metric": "identifies the value assigned to reach a remote network",
+   "administrative distance": "identifies the trustworthiness of a route source"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture; 'identifies the exit interface used to route a packet to a destination' is the unused box."
+ },
+ {
+  "exam": "ccna-2-v7-modules-14-16-routing-concepts-and-configuration-exam-answers",
+  "page_number": 62,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2025/01/1735862479.0922.jpg",
+  "exhibit": null,
+  "question": "Match the characteristic to the corresponding type of routing. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Typically used on stub networks",
+   "Less routing overhead",
+   "New networks are added automatically to the routing table",
+   "Best choice for large networks",
+   "Not suitable for topologies where more than one router is required"
+  ],
+  "definitions": [
+   "Static routing",
+   "Dynamic routing"
+  ],
+  "correct_pairs": {
+   "Typically used on stub networks": "Static routing",
+   "Less routing overhead": "Static routing",
+   "New networks are added automatically to the routing table": "Dynamic routing",
+   "Best choice for large networks": "Dynamic routing",
+   "Not suitable for topologies where more than one router is required": "Static routing"
+  },
+  "correct_answer": "",
+  "notes": "UNCERTAIN. The picture shows each characteristic as a heading with Static/Dynamic routing placed under it (all with green checks), so it's written as a categorize question with the two routing types as boxes. The picture puts 'Not suitable for topologies where more than one router is required' under Static routing, but the site's explanation says 'Both static and dynamic routing could be used when more than one router is involved', which suggests that item should be unused. Followed the picture (the brief's rule); worth the owner double-checking."
+ }
+]

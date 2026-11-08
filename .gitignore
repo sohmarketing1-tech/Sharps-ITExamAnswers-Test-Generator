@@ -37,3 +37,12 @@ chat.json
 *.bak
 *.lock
 *.tmp
+# Server cleanup records
+history_cleanup.json
+history_cleanup.log
+
+# Local-only files (not part of the site)
+.devin/
+*.mov
+*.pka
+Naval_Messaging_Complete_Study_Guide.pdf

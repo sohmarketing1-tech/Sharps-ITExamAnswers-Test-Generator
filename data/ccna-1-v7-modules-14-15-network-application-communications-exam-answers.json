@@ -164,8 +164,8 @@
       "id": 15,
       "question": "What is a characteristic of UDP?",
       "options": [
-        "UDP datagrams take the same path and arrive in the correct order at the destination.​",
-        "Applications that use UDP are always considered unreliable.​",
+        "UDP datagrams take the same path and arrive in the correct order at the destination.",
+        "Applications that use UDP are always considered unreliable.",
         "UDP reassembles the received datagrams in the order they were received.",
         "UDP only passes data to the network when the destination is ready to receive the data."
       ],
@@ -443,14 +443,14 @@
     },
     {
       "id": 39,
-      "question": "What is an advantage of SMB over FTP?​",
+      "question": "What is an advantage of SMB over FTP?",
       "options": [
         "Only with SMB can data transfers occur in both directions.",
-        "Only SMB establishes two simultaneous connections with the client, making the data transfer faster.​",
-        "SMB is more reliable than FTP because SMB uses TCP and FTP uses UDP.​",
-        "SMB clients can establish a long-term connection to the server.​"
+        "Only SMB establishes two simultaneous connections with the client, making the data transfer faster.",
+        "SMB is more reliable than FTP because SMB uses TCP and FTP uses UDP.",
+        "SMB clients can establish a long-term connection to the server."
       ],
-      "correct_answer": "SMB clients can establish a long-term connection to the server.​"
+      "correct_answer": "SMB clients can establish a long-term connection to the server."
     },
     {
       "id": 40,
@@ -693,6 +693,33 @@
         "80"
       ],
       "correct_answer": "443"
+    },
+    {
+      "question": "A client application needs to terminate a TCP communication session with a server. Place the termination process steps in the order that they will occur. (Not all options are used.)",
+      "type": "matching",
+      "options": [],
+      "terms": [
+        "step 1",
+        "step 2",
+        "step 3",
+        "step 4"
+      ],
+      "definitions": [
+        "client sends ACK",
+        "client sends FIN",
+        "client sends SYN",
+        "server sends ACK",
+        "server sends FIN",
+        "server sends SYN"
+      ],
+      "correct_pairs": {
+        "step 4": "client sends ACK",
+        "step 1": "client sends FIN",
+        "step 2": "server sends ACK",
+        "step 3": "server sends FIN"
+      },
+      "correct_answer": "",
+      "id": 61
     }
   ]
 }

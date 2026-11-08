@@ -1,9 +1,12 @@
+import copy
 import datetime
 import fcntl
 import json
 import os
 import random
 import secrets
+import threading
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -92,9 +95,16 @@ def build_exam_links_html() -> str:
     return f'<ul class="exam-links">{ "".join(items) }</ul>' if items else ""
 
 
+# The redesigned site (Nov 2026) serves every page. The classic page
+# (static/index.html) is retired; add a path to CLASSIC_PATHS to serve it again.
+NEW_INDEX = BASE_DIR / "static" / "beta" / "index.html"
+CLASSIC_INDEX = BASE_DIR / "static" / "index.html"
+CLASSIC_PATHS: set = set()
+
+
 def render_index_html(page_title: str, page_description: str, canonical_url: str,
-                      h1_text: str, seo_intro: str, exam_filename: str = "") -> Response:
-    index_path = BASE_DIR / "static" / "index.html"
+                      h1_text: str, seo_intro: str, exam_filename: str = "",
+                      index_path: Path = NEW_INDEX) -> Response:
     html = index_path.read_text(encoding="utf-8")
     replacements = {
         "$PAGE_TITLE$": page_title,
@@ -237,12 +247,56 @@ def _load_json_file(file: Path, name: str) -> dict:
     return data
 
 
+# ── In-memory copies of the JSON data files ────────────────────────────────
+# user_data.json is tens of MB; parsing it took ~0.4 s on every request. We keep the
+# parsed dict in memory and only re-read when the file's mtime/size changes (for example
+# after a restore). All writes go through _write_json_file, which refreshes the cache.
+# Readers never get the cached objects themselves: they get deep copies (of one user's
+# record for user_data), so nothing a request changes can leak into the shared copy.
+_JSON_CACHE: dict = {}
+_JSON_CACHE_LOCK = threading.RLock()
+
+
+def _file_key(file: Path):
+    try:
+        st = file.stat()
+    except FileNotFoundError:
+        return None
+    return (st.st_mtime_ns, st.st_size)
+
+
+def _cache_store(file: Path, data: dict) -> None:
+    with _JSON_CACHE_LOCK:
+        _JSON_CACHE[str(file)] = (_file_key(file), data)
+
+
+def _cache_drop(file: Path) -> None:
+    with _JSON_CACHE_LOCK:
+        _JSON_CACHE.pop(str(file), None)
+
+
+def _load_json_cached(file: Path, name: str) -> dict:
+    """Return the shared parsed copy of a JSON file. Callers must not modify it."""
+    key = _file_key(file)
+    if key is None:
+        return {}
+    with _JSON_CACHE_LOCK:
+        hit = _JSON_CACHE.get(str(file))
+        if hit and hit[0] == key:
+            return hit[1]
+    data = _load_json_file(file, name)
+    with _JSON_CACHE_LOCK:
+        _JSON_CACHE[str(file)] = (key, data)
+    return data
+
+
 def _write_json_file(data: dict, temp_file: Path, target_file: Path) -> None:
     """Write data to a temp file and atomically replace the live file."""
     with open(temp_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+        json.dump(data, f, separators=(",", ":"), ensure_ascii=False)
         f.flush()
     os.replace(temp_file, target_file)
+    _cache_store(target_file, data)
 
 
 def _save_json_file(data: dict, file: Path) -> None:
@@ -283,13 +337,23 @@ def _modify_json_file(file: Path, callback) -> None:
         with open(lock_file, "a", encoding="utf-8") as lock:
             fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
             try:
-                data = _load_json_file(file, file.name)
-                result = callback(data)
+                with _JSON_CACHE_LOCK:
+                    data = _load_json_cached(file, file.name)
+                    try:
+                        result = callback(data)
+                    except Exception:
+                        _cache_drop(file)
+                        raise
                 if result is False:
+                    _cache_drop(file)
                     return False
                 if file.exists():
                     backup_file.write_bytes(file.read_bytes())
-                _write_json_file(data, temp_file, file)
+                try:
+                    _write_json_file(data, temp_file, file)
+                except Exception:
+                    _cache_drop(file)
+                    raise
                 return result
             finally:
                 fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
@@ -304,8 +368,9 @@ def _modify_json_file(file: Path, callback) -> None:
 
 
 def load_users() -> dict:
-    """Load the small auth/profile file."""
-    return _load_json_file(USERS_FILE, "users.json")
+    """Load the small auth/profile file (a private copy of the in-memory version)."""
+    with _JSON_CACHE_LOCK:
+        return copy.deepcopy(_load_json_cached(USERS_FILE, "users.json"))
 
 
 def save_users(users: dict) -> None:
@@ -319,8 +384,20 @@ def modify_users(callback) -> None:
 
 
 def load_user_data() -> dict:
-    """Load the large per-user exam/progress file."""
-    return _load_json_file(USER_DATA_FILE, "user_data.json")
+    """Load the whole large per-user exam/progress file (slow; prefer load_user_record)."""
+    with _JSON_CACHE_LOCK:
+        return copy.deepcopy(_load_json_cached(USER_DATA_FILE, "user_data.json"))
+
+
+def load_user_record(username: str) -> dict:
+    """Return {username: <private copy of that user's record>} from the in-memory progress data.
+
+    Shaped like user_data so existing helpers (user_data.get(user), _get_mastery_for_user)
+    work unchanged, but only one user's record is copied (milliseconds, not 0.4 s+).
+    """
+    with _JSON_CACHE_LOCK:
+        data = _load_json_cached(USER_DATA_FILE, "user_data.json")
+        return {username: copy.deepcopy(data[username])} if username in data else {}
 
 
 def save_user_data(data: dict) -> None:
@@ -331,6 +408,94 @@ def save_user_data(data: dict) -> None:
 def modify_user_data(callback) -> None:
     """Load, modify, and save user_data.json atomically."""
     return _modify_json_file(USER_DATA_FILE, callback)
+
+
+# ── Daily test-history cleanup ─────────────────────────────────────────────
+# Each saved test keeps a full copy of every question and answer, which made up half of
+# user_data.json. Once a day, tests older than HISTORY_DETAIL_DAYS keep only their summary
+# (date, exam, score, time) and lose the question-by-question details. Mastery, flashcards
+# and accounts are never touched. Each run is recorded in history_cleanup.json and
+# history_cleanup.log next to this file (and in the service log).
+HISTORY_DETAIL_DAYS = 30
+HISTORY_DETAIL_FIELDS = ("quiz", "answers", "results")
+CLEANUP_STATE_FILE = BASE_DIR / "history_cleanup.json"
+CLEANUP_LOG_FILE = BASE_DIR / "history_cleanup.log"
+
+
+def _parse_utc(value):
+    try:
+        dt = datetime.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return None
+    return dt if dt.tzinfo else dt.replace(tzinfo=datetime.timezone.utc)
+
+
+def slim_old_history(days: int = HISTORY_DETAIL_DAYS, now=None) -> int:
+    """Strip question-by-question details from tests older than `days`. Returns how many."""
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    cutoff = now - datetime.timedelta(days=days)
+    slimmed = 0
+
+    def _slim(user_data: dict):
+        nonlocal slimmed
+        for record in user_data.values():
+            if not isinstance(record, dict):
+                continue
+            for attempt in record.get("test_history") or []:
+                if not isinstance(attempt, dict) or attempt.get("slimmed"):
+                    continue
+                done = _parse_utc(attempt.get("completed_at"))
+                if done is None or done >= cutoff:
+                    continue
+                if not any(k in attempt for k in HISTORY_DETAIL_FIELDS):
+                    continue
+                for k in HISTORY_DETAIL_FIELDS:
+                    attempt.pop(k, None)
+                attempt["slimmed"] = True
+                slimmed += 1
+        return True if slimmed else False
+
+    modify_user_data(_slim)
+    return slimmed
+
+
+def run_history_cleanup_if_due() -> Optional[int]:
+    """Run the cleanup if it hasn't run in the last 23 hours. Returns the count, or None if not due."""
+    now = datetime.datetime.now(datetime.timezone.utc)
+    try:
+        state = json.loads(CLEANUP_STATE_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        state = {}
+    last = _parse_utc(state.get("last_run"))
+    if last and now - last < datetime.timedelta(hours=23):
+        return None
+    count = slim_old_history(now=now)
+    state = {
+        "last_run": now.isoformat(),
+        "last_slimmed": count,
+        "total_slimmed": int(state.get("total_slimmed", 0)) + count,
+        "keep_details_days": HISTORY_DETAIL_DAYS,
+    }
+    CLEANUP_STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
+    line = f"{now.isoformat()} slimmed {count} test(s) older than {HISTORY_DETAIL_DAYS} days\n"
+    with open(CLEANUP_LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(line)
+    app.logger.warning("History cleanup: %s", line.strip())
+    return count
+
+
+def _history_cleanup_loop() -> None:
+    time.sleep(120)  # let the server finish starting
+    while True:
+        try:
+            run_history_cleanup_if_due()
+        except Exception:  # never let the cleanup take the site down
+            app.logger.exception("History cleanup failed")
+        time.sleep(3600)  # check hourly; it only runs once every ~24 hours
+
+
+if os.environ.get("ANSWRIT_DISABLE_CLEANUP") != "1":
+    threading.Thread(target=_history_cleanup_loop, name="history-cleanup", daemon=True).start()
 
 
 def current_user() -> str:
@@ -625,7 +790,7 @@ def _compute_mastery_summary(exam: dict, questions: list) -> dict:
 
 def get_mastery_summary(username: str, filename: str, questions: list) -> dict:
     """Return mastery stats for a user and exam."""
-    user_data = load_user_data()
+    user_data = load_user_record(username)
     exam = _get_mastery_for_user(user_data, username, filename)
     return _compute_mastery_summary(exam, questions)
 
@@ -656,9 +821,9 @@ SPA_PAGE_SEO = {
     },
     "/apps": {
         "title": "Interactive Study Games & Arcade — AnswrIT",
-        "description": "Play interactive study games and drills for CCNA, ITE, and Naval Communications. GENSER sequence, signal matching, subnetting, CLI, and more.",
-        "h1": "Interactive Study Games for CCNA, ITE & Naval Communications",
-        "intro": "Reinforce what you have learned with arcade-style study games. GENSER sequence ordering, signal matching, subnetting, CLI commands, and more.",
+        "description": "Play quick study games and drills for CCNA and IT Essentials: subnetting, binary, port numbers, OSI layers, CLI commands, and more.",
+        "h1": "Study Games & Drills for CCNA and IT Essentials",
+        "intro": "Reinforce what you have learned with quick study games: subnetting, binary, port numbers, OSI layers, CLI commands, cables, and more.",
     },
     "/history": {
         "title": "Progress & Mastery Tracking — AnswrIT",
@@ -697,6 +862,7 @@ def spa_pages():
         canonical_url=canonical,
         h1_text=seo["h1"],
         seo_intro=seo["intro"],
+        index_path=CLASSIC_INDEX if path in CLASSIC_PATHS else NEW_INDEX,
     )
 
 
@@ -944,6 +1110,8 @@ def generate_test():
             item["correct_pairs"] = q["correct_pairs"]
         if q.get("image"):
             item["image"] = q["image"]
+        if q.get("option_images"):
+            item["option_images"] = q["option_images"]
         quiz.append(item)
     return jsonify({
         "title": get_current_title() if not filename else None,
@@ -1046,7 +1214,7 @@ def get_recent_activity():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Not logged in."}), 401
-    user_data = load_user_data()
+    user_data = load_user_record(user)
     record = user_data.get(user, {})
     activity = record.get("recent_activity")
     return jsonify({"ok": True, "activity": activity})
@@ -1092,7 +1260,7 @@ def get_history():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to view test history."}), 401
-    user_data = load_user_data()
+    user_data = load_user_record(user)
     record = user_data.get(user, {})
     attempts = record.get("test_history", [])
     tests_taken = record.get("tests_taken", len(attempts))
@@ -1341,7 +1509,7 @@ def flashcard_reviews():
     filename = request.args.get("filename", "").strip()
     if not filename:
         return jsonify({"ok": False, "error": "No filename provided."}), 400
-    user_data = load_user_data()
+    user_data = load_user_record(user)
     reviews = _get_flashcard_reviews_for_user(user_data, user, filename)
     return jsonify({"ok": True, "reviews": sorted(reviews, key=lambda x: int(x) if x.isdigit() else x)})
 
@@ -1370,7 +1538,7 @@ def get_flashcard_session():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "session": None}), 200
-    user_data = load_user_data()
+    user_data = load_user_record(user)
     record = user_data.get(user, {})
     saved = record.get("flashcard_session")
     return jsonify({"ok": True, "session": saved})
@@ -1423,7 +1591,7 @@ def get_my_flashcards():
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to use My Flashcards."}), 401
-    user_data = load_user_data()
+    user_data = load_user_record(user)
     record = user_data.get(user, {})
     decks = record.get("my_flashcards", [])
     return jsonify({"ok": True, "decks": decks})
@@ -1462,7 +1630,7 @@ def get_mastery():
     questions = get_questions_for_test(filename)
     if not questions:
         return jsonify({"ok": False, "error": "No questions found."}), 503
-    user_data = load_user_data()
+    user_data = load_user_record(user)
     mastery = _get_mastery_for_user(user_data, user, filename)
     summary = _compute_mastery_summary(mastery, questions)
     return jsonify({"ok": True, "summary": summary, "mastery": mastery})
@@ -1528,6 +1696,8 @@ def mastery_batch():
             item["correct_pairs"] = q["correct_pairs"]
         if q.get("image"):
             item["image"] = q["image"]
+        if q.get("option_images"):
+            item["option_images"] = q["option_images"]
         quiz.append(item)
 
     summary = _compute_mastery_summary(exam, questions)
@@ -1589,7 +1759,7 @@ def mastery_debug():
     if not questions:
         return jsonify({"ok": False, "error": "No questions found."}), 503
 
-    user_data = load_user_data()
+    user_data = load_user_record(user)
     exam = _get_mastery_for_user(user_data, user, filename)
     working_set = exam.get("working_set", [])
 

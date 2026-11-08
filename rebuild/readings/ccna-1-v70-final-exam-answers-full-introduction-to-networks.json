@@ -1,0 +1,511 @@
+[
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 12,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2020-03-26_171754.png",
+  "exhibit": null,
+  "question": "Match the description to the IPv6 addressing component. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "This part of the address is used by an organization to identify subnets.",
+   "This network portion of the address is assigned by the provider.",
+   "This part of the address is the equivalent to the host portion of an IPv4 address."
+  ],
+  "definitions": [
+   "global routing prefix",
+   "subnet mask",
+   "subnet ID",
+   "interface ID"
+  ],
+  "correct_pairs": {
+   "This network portion of the address is assigned by the provider.": "global routing prefix",
+   "This part of the address is used by an organization to identify subnets.": "subnet ID",
+   "This part of the address is the equivalent to the host portion of an IPv4 address.": "interface ID"
+  },
+  "correct_answer": "",
+  "notes": "Picture uses arrows from descriptions to headings (not filled slots). The unused option is the heading 'subnet mask' (no leftover descriptions). Page text says 'global routing'; picture heading reads 'global routing prefix'."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 14,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/28.png",
+  "exhibit": null,
+  "question": "Match the characteristic to the forwarding method. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "does not forward broadcasts",
+   "has low latency",
+   "may forward runt frames",
+   "begins forwarding when the destination address is received",
+   "always stores the entire frame",
+   "checks the CRC before forwarding",
+   "checks the frame length before forwarding"
+  ],
+  "definitions": [
+   "cut-through",
+   "store-and-forward"
+  ],
+  "correct_pairs": {
+   "has low latency": "cut-through",
+   "may forward runt frames": "cut-through",
+   "begins forwarding when the destination address is received": "cut-through",
+   "always stores the entire frame": "store-and-forward",
+   "checks the CRC before forwarding": "store-and-forward",
+   "checks the frame length before forwarding": "store-and-forward"
+  },
+  "correct_answer": "",
+  "notes": "Picture uses arrows to empty 'Target' slots, read by arrow. Leftover: 'does not forward broadcasts'. Picture says 'has low latency' where page text says 'low latency'; headings are lowercase 'cut-through'/'store-and-forward' in picture."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 17,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/CCNA1-v7-ITN-IP-Addressing-Exam-Answers-003.png",
+  "exhibit": "https://itexamanswers.net/wp-content/uploads/2020/01/i304956v6n1_207918.png",
+  "question": "Refer to the exhibit. Match the network with the correct IP address and prefix that will satisfy the usable host addressing requirements for each network.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Network A",
+   "Network B",
+   "Network C",
+   "Network D"
+  ],
+  "definitions": [
+   "192.168.0.96 /27",
+   "192.168.0.128 /25",
+   "192.168.0.80 /30",
+   "192.168.0.0 /26"
+  ],
+  "correct_pairs": {
+   "Network A": "192.168.0.128 /25",
+   "Network B": "192.168.0.0 /26",
+   "Network C": "192.168.0.96 /27",
+   "Network D": "192.168.0.80 /30"
+  },
+  "correct_answer": "",
+  "notes": "Answer picture uses hand-drawn colored lines, read by line; matches the page explanation. Exhibit: A=100, B=50, C=25, D=2 hosts."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 28,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2021-11-07_115520.jpg",
+  "exhibit": "https://itexamanswers.net/wp-content/uploads/2016/03/i207918v1n1_207918-1-1.jpg",
+  "question": "Refer to the exhibit. Match the network with the correct IP address and prefix that will satisfy the usable host addressing requirements for each network. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Network C",
+   "Network A",
+   "Network D",
+   "Network B"
+  ],
+  "definitions": [
+   "192.168.0.0 /24",
+   "192.168.0.192 /27",
+   "192.168.0.228 /32",
+   "192.168.0.0 /25",
+   "192.168.0.224 /30",
+   "192.168.0.128 /26"
+  ],
+  "correct_pairs": {
+   "Network C": "192.168.0.192 /27",
+   "Network A": "192.168.0.0 /25",
+   "Network D": "192.168.0.224 /30",
+   "Network B": "192.168.0.128 /26"
+  },
+  "correct_answer": "",
+  "notes": "Left column still lists Network A-D, but all four are placed (it is the source list, not leftovers). Unused options are the headings '192.168.0.0 /24' and '192.168.0.228 /32'."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 30,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2023-04-11_151037.jpg",
+  "exhibit": null,
+  "question": "Match the application protocols to the correct transport protocols.",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "FTP",
+   "HTTP",
+   "SMTP",
+   "DHCP",
+   "TFTP"
+  ],
+  "definitions": [
+   "TCP",
+   "UDP"
+  ],
+  "correct_pairs": {
+   "FTP": "TCP",
+   "HTTP": "TCP",
+   "SMTP": "TCP",
+   "DHCP": "UDP",
+   "TFTP": "UDP"
+  },
+  "correct_answer": "",
+  "notes": "Left column repeats all five protocols, but all five are placed, so no leftovers."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 33,
+  "answer_picture": null,
+  "exhibit": "https://itexamanswers.net/wp-content/uploads/2020/01/i204796v11n1_204796-TOPOLOGY-ARP.png",
+  "question": "Refer to the exhibit. Host B on subnet Teachers transmits a packet to host D on subnet Students. Which Layer 2 and Layer 3 addresses are contained in the PDUs that are transmitted from host B to the router?",
+  "options": [
+   "Layer 2 destination address = 00-00-0c-94-36-ab Layer 2 source address = 00-00-0c-94-36-bb Layer 3 destination address = 172.16.20.200 Layer 3 source address = 172.16.10.200",
+   "Layer 2 destination address = 00-00-0c-94-36-dd Layer 2 source address = 00-00-0c-94-36-bb Layer 3 destination address = 172.16.20.200 Layer 3 source address = 172.16.10.200",
+   "Layer 2 destination address = 00-00-0c-94-36-cd Layer 2 source address = 00-00-0c-94-36-bb Layer 3 destination address = 172.16.20.99 Layer 3 source address = 172.16.10.200",
+   "Layer 2 destination address = 00-00-0c-94-36-ab Layer 2 source address = 00-00-0c-94-36-bb Layer 3 destination address = 172.16.20.200 Layer 3 source address = 172.16.100.200"
+  ],
+  "correct_answer": "Layer 2 destination address = 00-00-0c-94-36-ab Layer 2 source address = 00-00-0c-94-36-bb Layer 3 destination address = 172.16.20.200 Layer 3 source address = 172.16.10.200",
+  "notes": "The only picture is the exhibit (topology), not an answer picture; answer_picture set to null. Page text does not mark the correct choice. Correct answer derived from the exhibit: B (172.16.10.200, MAC ...36-bb) sends to router Fa0 MAC 00-00-0c-94-36-ab, L3 destination host D 172.16.20.200. Each option is four lines (L2 dst, L2 src, L3 dst, L3 src) flattened into one string; consider adding line breaks or commas. The page's explanation (about port numbers) is unrelated to this question."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 58,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-11-19_103653.jpg",
+  "exhibit": null,
+  "question": "Match the type of threat with the cause. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "electrical threats",
+   "hardware threats",
+   "environmental threats",
+   "maintenance threats"
+  ],
+  "definitions": [
+   "temperature extremes (too hot or too cold) or humidity extremes (too wet or too dry)",
+   "poor handling of key electrical components (electrostatic discharge), lack of critical spare parts, poor cabling, and poor labeling",
+   "voltage spikes, insufficient supply voltage (brownouts), unconditioned power (noise), and total power loss",
+   "physical damage to servers, routers, switches, cabling plant, and workstations"
+  ],
+  "correct_pairs": {
+   "electrical threats": "voltage spikes, insufficient supply voltage (brownouts), unconditioned power (noise), and total power loss",
+   "hardware threats": "physical damage to servers, routers, switches, cabling plant, and workstations",
+   "environmental threats": "temperature extremes (too hot or too cold) or humidity extremes (too wet or too dry)",
+   "maintenance threats": "poor handling of key electrical components (electrostatic discharge), lack of critical spare parts, poor cabling, and poor labeling"
+  },
+  "correct_answer": "",
+  "notes": "Picture is a two-column lettered line-matching (A-D circles), not drag-and-drop boxes; left column (threat types) used as terms, right column (causes) as definitions in top-to-bottom order. All four are used despite '(Not all options are used.)'; watermark overlaps the 'maintenance' cause text but it matches the page text."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 96,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2022-05-12_101113.jpg",
+  "exhibit": null,
+  "question": "Match a statement to the related network model. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "devices can only function in one role at a time",
+   "no dedicated server is required",
+   "client and server roles are set on a per request basis",
+   "requires a specific user interface",
+   "a background service is required"
+  ],
+  "definitions": [
+   "peer-to-peer network",
+   "peer-to-peer application"
+  ],
+  "correct_pairs": {
+   "no dedicated server is required": "peer-to-peer network",
+   "client and server roles are set on a per request basis": "peer-to-peer network",
+   "requires a specific user interface": "peer-to-peer application",
+   "a background service is required": "peer-to-peer application"
+  },
+  "correct_answer": "",
+  "notes": "Left column repeats placed items; the only unplaced (shaded) leftover is 'devices can only function in one role at a time'. Page text spells 'peer-to-peer aplication'; picture reads 'peer-to-peer application' (picture used)."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 99,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/11.jpg",
+  "exhibit": null,
+  "question": "Match each type of frame field to its function. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "addressing",
+   "error detection",
+   "type",
+   "frame start"
+  ],
+  "definitions": [
+   "This field checks if the frame has been damaged during the transfer.",
+   "This field identifies special flow control services.",
+   "This field helps to direct the frame toward its destination.",
+   "This field identifies the beginning of a frame.",
+   "This field is used by the LLC to identify the Layer 3 protocol."
+  ],
+  "correct_pairs": {
+   "addressing": "This field helps to direct the frame toward its destination.",
+   "error detection": "This field checks if the frame has been damaged during the transfer.",
+   "type": "This field is used by the LLC to identify the Layer 3 protocol.",
+   "frame start": "This field identifies the beginning of a frame."
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture. Unused option is the heading 'This field identifies special flow control services.'"
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 101,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/18.jpg",
+  "exhibit": null,
+  "question": "Match the firewall function to the type of threat protection it provides to the network. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "prevents access by port number",
+   "prevents access based on IP or MAC address",
+   "prevents unsolicited incoming sessions",
+   "prevents access to websites"
+  ],
+  "definitions": [
+   "packet filtering",
+   "URL filtering",
+   "network address translator",
+   "stateful packet inspection",
+   "application filtering"
+  ],
+  "correct_pairs": {
+   "prevents access by port number": "application filtering",
+   "prevents access based on IP or MAC address": "packet filtering",
+   "prevents unsolicited incoming sessions": "stateful packet inspection",
+   "prevents access to websites": "URL filtering"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture. Unused option is the heading 'network address translator'."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 110,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/38.jpg",
+  "exhibit": null,
+  "question": "Match the characteristic to the category. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "64 bits",
+   "contained in the Layer 3 header",
+   "separated into a network portion and a unique identifier",
+   "32 or 128 bits",
+   "contained in the Layer 2 header",
+   "separated into OUI and a unique identifier",
+   "48 bits"
+  ],
+  "definitions": [
+   "IP address",
+   "MAC address"
+  ],
+  "correct_pairs": {
+   "contained in the Layer 3 header": "IP address",
+   "separated into a network portion and a unique identifier": "IP address",
+   "32 or 128 bits": "IP address",
+   "contained in the Layer 2 header": "MAC address",
+   "separated into OUI and a unique identifier": "MAC address",
+   "48 bits": "MAC address"
+  },
+  "correct_answer": "",
+  "notes": "page_text_around_question does not belong to this question (it is text from other questions: port 110/POP3, ipconfig, printer sharing), so nothing to cross-check; read entirely from the arrow-style picture. Leftover: '64 bits'. 'MAC address' heading is partly covered by an arrow but legible."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 120,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2022-05-12_101113.jpg",
+  "exhibit": null,
+  "question": "Match a statement to the related network model. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "devices can only function in one role at a time",
+   "no dedicated server is required",
+   "client and server roles are set on a per request basis",
+   "requires a specific user interface",
+   "a background service is required"
+  ],
+  "definitions": [
+   "peer-to-peer network",
+   "peer-to-peer application"
+  ],
+  "correct_pairs": {
+   "no dedicated server is required": "peer-to-peer network",
+   "client and server roles are set on a per request basis": "peer-to-peer network",
+   "requires a specific user interface": "peer-to-peer application",
+   "a background service is required": "peer-to-peer application"
+  },
+  "correct_answer": "",
+  "notes": "Same picture as ccna-1-v70-final-exam-answers-full-introduction-to-networks Q96; reading reused. Left column repeats placed items; the only unplaced (shaded) leftover is 'devices can only function in one role at a time'. Page text spells 'peer-to-peer aplication'; picture reads 'peer-to-peer application' (picture used)."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 122,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/06/i192179v1n1_RJ-45.png",
+  "exhibit": null,
+  "question": "Which connector is used with twisted-pair cabling in an Ethernet LAN?",
+  "options": [
+   "LC conector",
+   "SC conector",
+   "BNC",
+   "RJ 11",
+   "RJ 45"
+  ],
+  "correct_answer": "RJ 45",
+  "option_images": {
+   "LC conector": "https://itexamanswers.net/wp-content/uploads/2020/06/i192179v1n1_LC-connector.png",
+   "SC conector": "https://itexamanswers.net/wp-content/uploads/2020/06/i192179v1n1_SC-connector.png",
+   "BNC": "https://itexamanswers.net/wp-content/uploads/2020/06/i192179v1n1_BNC.png",
+   "RJ 11": "https://itexamanswers.net/wp-content/uploads/2020/06/i192179v1n1_RJ-11-2.png",
+   "RJ 45": "https://itexamanswers.net/wp-content/uploads/2020/06/i192179v1n1_RJ-45.png"
+  },
+  "notes": "Choices are connector photos with no text; labels taken from page text (keeps the site's typo 'conector'). Photos match: LC duplex fiber, SC duplex fiber, BNC coax, RJ-11 (4-pin), RJ-45 (8-pin). Page marks RJ 45 as true answer. No separate answer picture; answer_picture set to the RJ-45 image."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 126,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/2020-03-26_173114.png",
+  "exhibit": null,
+  "question": "Match the header field with the appropriate layer of the OSI model. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "Destination Options",
+   "802.2 header",
+   "FCS (Frame Check Sequence)",
+   "Destination MAC Address",
+   "TTL",
+   "Source IP Address",
+   "Acknowledgment Number",
+   "Destination Port Number"
+  ],
+  "definitions": [
+   "Layer 2",
+   "Layer 3",
+   "Layer 4"
+  ],
+  "correct_pairs": {
+   "802.2 header": "Layer 2",
+   "FCS (Frame Check Sequence)": "Layer 2",
+   "Destination MAC Address": "Layer 2",
+   "TTL": "Layer 3",
+   "Source IP Address": "Layer 3",
+   "Acknowledgment Number": "Layer 4",
+   "Destination Port Number": "Layer 4"
+  },
+  "correct_answer": "",
+  "notes": "Left column repeats placed items; only shaded leftover is 'Destination Options'. Picture capitalization/spelling differs from page text (e.g. 'Acknowledgment Number' vs 'Acknowledgement number', 'Source IP Address' vs 'source IP address'); picture wording used."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 145,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-11-19_102334.jpg",
+  "exhibit": null,
+  "question": "Match each description to its corresponding term. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "message encapsulation",
+   "message sizing",
+   "message encoding"
+  ],
+  "definitions": [
+   "the process of placing one message format inside another message format",
+   "the process of breaking up a long message into individual pieces before being sent over the network",
+   "the process of converting information from one format into another acceptable for transmission"
+  ],
+  "correct_pairs": {
+   "message encapsulation": "the process of placing one message format inside another message format",
+   "message sizing": "the process of breaking up a long message into individual pieces before being sent over the network",
+   "message encoding": "the process of converting information from one format into another acceptable for transmission"
+  },
+  "correct_answer": "",
+  "notes": "Picture is a two-column lettered line-matching (A-C), not drag-and-drop; left terms used as terms, right descriptions as definitions. Picture shows no unused options despite '(Not all options are used.)'."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 149,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/20.jpg",
+  "exhibit": null,
+  "question": "Match each description with the corresponding TCP mechanism. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "number of bytes a destination device can accept and process at one time",
+   "used to identify missing segments of data",
+   "method of managing segments of data loss",
+   "received by a sender before transmitting more segments in a session"
+  ],
+  "definitions": [
+   "acknowledgment",
+   "retransmission",
+   "FCS",
+   "sequence numbers",
+   "window size"
+  ],
+  "correct_pairs": {
+   "number of bytes a destination device can accept and process at one time": "window size",
+   "used to identify missing segments of data": "sequence numbers",
+   "method of managing segments of data loss": "retransmission",
+   "received by a sender before transmitting more segments in a session": "acknowledgment"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture. Unused option is the heading 'FCS'."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 152,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2020/01/24.jpg",
+  "exhibit": null,
+  "question": "Match each item to the type of topology diagram on which it is typically identified. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "USB port on a desktop PC in a classroom",
+   "location of a desktop PC in a classroom",
+   "path of cables that connect rooms to wiring closets",
+   "IP address of a server"
+  ],
+  "definitions": [
+   "physical topology diagram",
+   "logical topology diagram"
+  ],
+  "correct_pairs": {
+   "location of a desktop PC in a classroom": "physical topology diagram",
+   "path of cables that connect rooms to wiring closets": "physical topology diagram",
+   "IP address of a server": "logical topology diagram"
+  },
+  "correct_answer": "",
+  "notes": "Arrow-style picture. Leftover: 'USB port on a desktop PC in a classroom'."
+ },
+ {
+  "exam": "ccna-1-v70-final-exam-answers-full-introduction-to-networks",
+  "page_number": 157,
+  "answer_picture": "https://itexamanswers.net/wp-content/uploads/2019/12/2024-11-19_104050.jpg",
+  "exhibit": null,
+  "question": "Match each description with an appropriate IP address. (Not all options are used.)",
+  "type": "matching",
+  "options": [],
+  "terms": [
+   "an experimental address",
+   "a link-local address",
+   "a public address",
+   "a loopback address"
+  ],
+  "definitions": [
+   "198.133.219.2",
+   "127.0.0.1",
+   "169.254.1.5",
+   "240.2.6.255"
+  ],
+  "correct_pairs": {
+   "an experimental address": "240.2.6.255",
+   "a link-local address": "169.254.1.5",
+   "a public address": "198.133.219.2",
+   "a loopback address": "127.0.0.1"
+  },
+  "correct_answer": "",
+  "notes": "Picture is a two-column lettered line-matching (A-D), not drag-and-drop; left descriptions used as terms, right addresses as definitions in top-to-bottom order. All four used despite '(Not all options are used.)'."
+ }
+]

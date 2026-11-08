@@ -1275,11 +1275,11 @@
       "question": "A gamer is booting a desktop that has Windows 10 installed on dynamic drives. The boot process is currently working on the following step: WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers. What is the next step that will happen in the boot process?",
       "options": [
         "WinLoad reads the registry files, chooses a hardware profile, and loads the device drivers.",
-        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.*",
-        "The Windows kernel takes over the boot process. *",
+        "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.",
+        "The Windows kernel takes over the boot process.",
         "Winload uses the path specified in BOOTMGR to find the boot partition."
       ],
-      "correct_answer": "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL.* | The Windows kernel takes over the boot process. *"
+      "correct_answer": "WinLoad loads two files that make up the core of Windows: NTOSKRNL.EXE and HAL.DLL. | The Windows kernel takes over the boot process."
     },
     {
       "id": 115,
@@ -1332,9 +1332,9 @@
         "Ensure that Bluetooth is not activated.",
         "Check the screen refresh rate.",
         "Check the display settings.",
-        "Clean with compressed air. *"
+        "Clean with compressed air."
       ],
-      "correct_answer": "Clean with compressed air. *"
+      "correct_answer": "Clean with compressed air."
     },
     {
       "id": 120,
@@ -1593,7 +1593,7 @@
     },
     {
       "id": 144,
-      "question": "A system administrator has been asked to protect the sensitive data on Windows 10 computers of all management employees. Which Windows 10 feature can be used to selectively encrypt individual files within the user accounts of each manager?​",
+      "question": "A system administrator has been asked to protect the sensitive data on Windows 10 computers of all management employees. Which Windows 10 feature can be used to selectively encrypt individual files within the user accounts of each manager?",
       "options": [
         "EFS",
         "BitLocker",
@@ -1671,42 +1671,41 @@
       "correct_answer": "Google Chrome does not automatically save web credentials."
     },
     {
-      "id": 151,
-      "question": "Match the Windows 10 boot sequence after the boot manager (bootmgr.exe) loads.",
+      "question": "Match the Windows 10 boot sequence after the boot manager (bootmgr.exe) loads. NEW (Version 8.0): Place the options in the following order:",
       "type": "matching",
       "options": [],
       "terms": [
-        "winload.exe is loaded",
-        "ntoskrnl.exe and hal.dll are loaded",
         "the Windows boot loader winload.exe loads",
-        "winlogon.exe is loaded and executes the logon process",
-        "ntoskrnl.exe loads and executes"
+        "ntoskrnl.exe and hal.dll are loaded",
+        "winload.exeis loaded",
+        "ntoskrnl.exe loads and executes",
+        "winlogon.exe is loaded and executes the logon process"
       ],
       "definitions": [
-        "Step 1",
-        "Step 2",
-        "Step 3",
-        "Step 4",
-        "Step 5"
+        "Step one",
+        "Step two",
+        "Step three",
+        "Step four",
+        "Step five"
       ],
       "correct_pairs": {
-        "winload.exe is loaded": "Step 1",
-        "ntoskrnl.exe and hal.dll are loaded": "Step 2",
-        "the Windows boot loader winload.exe loads": "Step 3",
-        "winlogon.exe is loaded and executes the logon process": "Step 4",
-        "ntoskrnl.exe loads and executes": "Step 5"
+        "the Windows boot loader winload.exe loads": "Step one",
+        "ntoskrnl.exe and hal.dll are loaded": "Step two",
+        "winload.exeis loaded": "Step three",
+        "ntoskrnl.exe loads and executes": "Step four",
+        "winlogon.exe is loaded and executes the logon process": "Step five"
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 151
     },
     {
-      "id": 152,
       "question": "Match the correct API with its function within the Windows 10 environment.",
       "type": "matching",
       "options": [],
       "terms": [
-        "Windows APIs",
-        "DirectX",
         "Open Graphics Library (OpenGL)",
+        "DirectX",
+        "Windows APIs",
         "Java APIs"
       ],
       "definitions": [
@@ -1721,10 +1720,10 @@
         "Windows APIs": "This allows applications from older versions of Windows to operate on newer versions.",
         "Java APIs": "This is a collection of APIs related to the development of Java programming."
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 152
     },
     {
-      "id": 153,
       "question": "Match the tabs of the Windows 10 Task Manager to their functions. (Not all options are used.)",
       "type": "matching",
       "options": [],
@@ -1732,6 +1731,7 @@
         "Performance",
         "Startup",
         "Services",
+        "Users",
         "Details"
       ],
       "definitions": [
@@ -1746,10 +1746,10 @@
         "Startup": "Allows programs that are running on system startup to be disabled.",
         "Services": "Allows for a start, stop or restart of a particular service."
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 153
     },
     {
-      "id": 154,
       "question": "Match the drive status indicators in the Disk Management utility with their description. (Not all options are used.)",
       "type": "matching",
       "options": [],
@@ -1775,10 +1775,10 @@
         "Online": "a basic or dynamic disk that is accessible and shows no problems",
         "Offline": "a dynamic disk that is corrupted or unavailable"
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 154
     },
     {
-      "id": 155,
       "question": "Match the wireless security settings to the description. (Not all options are used.)",
       "type": "matching",
       "options": [],
@@ -1798,10 +1798,10 @@
         "WPA2-Enterprise": "Authentication is passed from the access point to a centralized authentication RADIUS server.",
         "Open": "Data is sent unencrypted with no authentication."
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 155
     },
     {
-      "id": 156,
       "question": "Match the individual languages with their corresponding classification.",
       "type": "matching",
       "options": [],
@@ -1825,10 +1825,10 @@
         "Java": "Compiled Languages",
         "C#": "Compiled Languages"
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 156
     },
     {
-      "id": 157,
       "question": "Match the file system with the respective description.",
       "type": "matching",
       "options": [],
@@ -1840,48 +1840,48 @@
         "NFS"
       ],
       "definitions": [
-        "Supports partition sizes up to 16 exabyte and incorporates file system security features and extended attributes.",
+        "Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.",
         "Usually used on flash drives as it can support files larger than 4GB.",
         "Supports partition sizes up to 2TB or 2,048GB.",
         "Created specifically for optical disk media.",
         "A network-based file system that allows file access over the network."
       ],
       "correct_pairs": {
-        "NTFS": "Supports partition sizes up to 16 exabyte and incorporates file system security features and extended attributes.",
+        "NTFS": "Supports partition sizes up to 16 exabytes and incorporates file system security features and extended attributes.",
         "ExFAT": "Usually used on flash drives as it can support files larger than 4GB.",
         "FAT32": "Supports partition sizes up to 2TB or 2,048GB.",
         "CDFS": "Created specifically for optical disk media.",
         "NFS": "A network-based file system that allows file access over the network."
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 157
     },
     {
-      "id": 158,
       "question": "Match the steps that will lead to the loading of bootmgr.exe in a 32 bit Windows 10 environment.",
       "type": "matching",
       "options": [],
       "terms": [
+        "Step 2",
+        "Step 3",
+        "Step 4",
+        "Step 1"
+      ],
+      "definitions": [
         "CMOS configuration settings loaded",
         "MBR",
         "VBR",
         "POST executed"
       ],
-      "definitions": [
-        "Step 1",
-        "Step 2",
-        "Step 3",
-        "Step 4"
-      ],
       "correct_pairs": {
-        "POST executed": "Step 1",
-        "CMOS configuration settings loaded": "Step 2",
-        "MBR": "Step 3",
-        "VBR": "Step 4"
+        "Step 2": "CMOS configuration settings loaded",
+        "Step 3": "MBR",
+        "Step 4": "VBR",
+        "Step 1": "POST executed"
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 158
     },
     {
-      "id": 159,
       "question": "Select the Windows 10 version that best meets the described use.",
       "type": "matching",
       "options": [],
@@ -1903,7 +1903,8 @@
         "Windows 10 Pro": "Used in small business environments with built-in security, productivity, and management features.",
         "Windows 10 Enterprise": "Used in large to mid-size business environments requiring advanced security and management features."
       },
-      "correct_answer": ""
+      "correct_answer": "",
+      "id": 159
     }
   ]
 }
