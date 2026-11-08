@@ -634,48 +634,130 @@ def get_online_users(minutes: int = 15) -> list:
     return online
 
 
+# ── Chat ───────────────────────────────────────────────────────────────────
+# chat.json: {"messages": [...], "pins": {room: message_id}, "reports": [...]}.
+# A message: {id, room, username, message, timestamp, reply_to?, quote?, reactions?}.
+# Older messages (before rooms) have no id/room; they are treated as Lounge messages.
+CHAT_ROOMS = [
+    {"id": "announcements", "name": "Announcements", "desc": "News and updates from AnswrIT", "admin_only": True},
+    {"id": "lounge", "name": "Lounge", "desc": "Hang out and talk about anything"},
+    {"id": "ite", "name": "IT Essentials", "desc": "Questions about the IT Essentials exams"},
+    {"id": "ccna1", "name": "CCNA 1", "desc": "Questions about the CCNA 1 exams"},
+    {"id": "ccna2", "name": "CCNA 2", "desc": "Questions about the CCNA 2 exams"},
+    {"id": "comms", "name": "Comms", "desc": "Study together for Comms"},
+]
+CHAT_ROOM_IDS = {r["id"] for r in CHAT_ROOMS}
+CHAT_REACTIONS = ["👍", "❤️", "😂", "🙏"]
+CHAT_ROOM_LIMIT = 300            # messages kept per room
+CHAT_MIN_SECONDS = 2.0           # simple flood control per user
+# Admin accounts can post announcements, delete any message, pin, and see reports.
+ADMIN_USERS = {"answrit"}
+ADMIN_DISPLAY = {"answrit": "AnswrIT"}
+# Nobody can sign up with these (so no one can pose as the admin).
+RESERVED_USERNAMES = {"admin", "administrator", "moderator", "mod", "staff", "support", "official",
+                      "answrit team", "answritteam", "answrit_team", "answrit-team", "answrit.team",
+                      "answrit admin", "answritadmin", "answrit_admin", "answrit-admin"}
+_last_post: dict = {}
+
+
+def is_admin(username: str) -> bool:
+    return bool(username) and username in ADMIN_USERS
+
+
+def _chat_normalize(data: dict) -> dict:
+    """Give older messages an id and a room (in place)."""
+    msgs = data.setdefault("messages", [])
+    for i, m in enumerate(msgs):
+        if not m.get("id"):
+            m["id"] = f"old{i}"
+        if m.get("room") not in CHAT_ROOM_IDS:
+            m["room"] = "lounge"
+        m.pop("avatar_image", None)
+    data.setdefault("pins", {})
+    data.setdefault("reports", [])
+    return data
+
+
 def load_chat() -> dict:
-    """Load chat messages from disk."""
-    if not CHAT_FILE.exists():
-        return {"messages": []}
-    try:
-        with open(CHAT_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, IOError):
-        return {"messages": []}
+    """Return the shared in-memory chat data (read-only for callers)."""
+    with _JSON_CACHE_LOCK:
+        data = _load_json_cached(CHAT_FILE, "chat.json")
+        if data.get("_normalized") is not True:
+            _chat_normalize(data)
+            data["_normalized"] = True
+        return data
+
+
+def modify_chat(callback):
+    def _cb(data):
+        _chat_normalize(data)
+        data["_normalized"] = True
+        return callback(data)
+    return _modify_json_file(CHAT_FILE, _cb)
 
 
 def save_chat(data: dict) -> None:
-    """Persist chat messages to disk."""
-    with open(CHAT_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+    """Kept for older code paths: save the whole chat file."""
+    _save_json_file(data, CHAT_FILE)
 
 
-def add_chat_message(username: str, message: str) -> dict:
-    """Add a new chat message and return the message entry."""
-    from datetime import datetime, timezone
-    users = load_users()
-    user_data = users.get(username, {})
-    profile = user_data.get("profile", {})
-    data = load_chat()
-    messages = data.setdefault("messages", [])
+def _public_message(m: dict, viewer: str) -> dict:
+    out = {k: m[k] for k in ("id", "room", "username", "message", "timestamp", "reply_to", "quote") if k in m}
+    out["display"] = ADMIN_DISPLAY.get(m.get("username"), m.get("username"))
+    out["admin"] = is_admin(m.get("username"))
+    out["mine"] = bool(viewer) and m.get("username") == viewer
+    reactions = m.get("reactions") or {}
+    out["reactions"] = [{"emoji": e, "count": len(reactions.get(e, [])), "mine": viewer in reactions.get(e, [])}
+                        for e in CHAT_REACTIONS if reactions.get(e)]
+    return out
+
+
+def add_chat_message(username: str, message: str, room: str = "lounge", reply_to: str = "", quote: Optional[dict] = None) -> dict:
+    """Add a message to a room and return it."""
     entry = {
+        "id": secrets.token_urlsafe(8),
+        "room": room,
         "username": username,
         "message": message.strip()[:500],
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "avatar_image": profile.get("avatar_image", ""),
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
-    messages.append(entry)
-    data["messages"] = messages[-500:]
-    save_chat(data)
+    if quote:
+        entry["quote"] = quote
+
+    def _add(data: dict):
+        if reply_to:
+            target = next((m for m in data["messages"] if m.get("id") == reply_to and m.get("room") == room), None)
+            if target:
+                entry["reply_to"] = {"id": target["id"], "username": ADMIN_DISPLAY.get(target["username"], target["username"]),
+                                     "message": (target.get("message") or (target.get("quote") or {}).get("question", ""))[:120]}
+        data["messages"].append(entry)
+        in_room = [m for m in data["messages"] if m.get("room") == room]
+        if len(in_room) > CHAT_ROOM_LIMIT:
+            drop = {m["id"] for m in in_room[: len(in_room) - CHAT_ROOM_LIMIT]}
+            data["messages"] = [m for m in data["messages"] if m.get("id") not in drop]
+        return True
+
+    modify_chat(_add)
     return entry
 
 
-def get_chat_messages(limit: int = 100) -> list:
-    """Return the most recent chat messages."""
-    data = load_chat()
-    messages = data.get("messages", [])
-    return messages[-limit:]
+def get_chat_messages(limit: int = 100, room: str = "lounge") -> list:
+    """Return the most recent messages in a room."""
+    msgs = [m for m in load_chat().get("messages", []) if m.get("room") == room]
+    return copy.deepcopy(msgs[-limit:])
+
+
+def _course_room_for(filename: str) -> str:
+    f = filename or ""
+    if f.startswith("it-essentials"):
+        return "ite"
+    if f.startswith("ccna-2"):
+        return "ccna2"
+    if f.startswith("ccna"):
+        return "ccna1"
+    if f.startswith("naval") or "comms" in f or "mrts" in f:
+        return "comms"
+    return "lounge"
 
 
 def _get_mastery_for_user(user_data: dict, username: str, filename: str) -> dict:
@@ -1329,6 +1411,8 @@ def register():
         return jsonify({"ok": False, "error": "Username must be 3-30 characters."}), 400
     if len(password) < 4:
         return jsonify({"ok": False, "error": "Password must be at least 4 characters."}), 400
+    if username in RESERVED_USERNAMES:
+        return jsonify({"ok": False, "error": "That username is reserved. Please pick another."}), 409
     def _register(users: dict):
         if username in users:
             return False
@@ -1376,7 +1460,8 @@ def me():
     track_user_activity(user)
     users = load_users()
     profile = users.get(user, {}).get("profile", {})
-    return jsonify({"ok": True, "user": user, "profile": profile})
+    return jsonify({"ok": True, "user": user, "profile": profile, "is_admin": is_admin(user),
+                    "display": ADMIN_DISPLAY.get(user, user)})
 
 
 @app.route("/api/profile", methods=["GET", "POST"])
@@ -1406,13 +1491,6 @@ def profile():
 
     if not modify_users(_update_profile):
         return jsonify({"ok": False, "error": "User record not found."}), 404
-
-    # Update this user's existing chat messages to the new avatar
-    chat_data = load_chat()
-    for msg in chat_data.get("messages", []):
-        if msg.get("username") == user:
-            msg["avatar_image"] = updated_profile.get("avatar_image", "")
-    save_chat(chat_data)
 
     return jsonify({"ok": True, "profile": updated_profile})
 
@@ -1459,41 +1537,214 @@ def active_now():
 # Community chat endpoints
 # ---------------------------------------------------------------------------
 
+@app.route("/api/chat/rooms", methods=["GET"])
+def chat_rooms():
+    """Rooms with a preview of the last message and recent message times (for unread badges)."""
+    user = current_user()
+    data = load_chat()
+    out = []
+    for r in CHAT_ROOMS:
+        msgs = [m for m in data["messages"] if m.get("room") == r["id"]]
+        last = msgs[-1] if msgs else None
+        out.append({**r,
+                    "count": len(msgs),
+                    "last": {"display": ADMIN_DISPLAY.get(last["username"], last["username"]), "message": last.get("message") or "Asked about a question",
+                             "timestamp": last["timestamp"]} if last else None,
+                    "recent": [m["timestamp"] for m in msgs[-60:] if m.get("username") != user]})
+    return jsonify({"ok": True, "rooms": out, "is_admin": is_admin(user), "reactions": CHAT_REACTIONS})
+
+
 @app.route("/api/chat/messages", methods=["GET"])
 def chat_messages():
-    """Return the latest chat messages."""
-    return jsonify({"ok": True, "messages": get_chat_messages(limit=100)})
+    """Latest messages in a room, the pinned message, and senders' pictures."""
+    user = current_user()
+    room = request.args.get("room", "lounge")
+    if room not in CHAT_ROOM_IDS:
+        return jsonify({"ok": False, "error": "Unknown room."}), 404
+    data = load_chat()
+    msgs = [m for m in data["messages"] if m.get("room") == room][-150:]
+    pin_id = data["pins"].get(room)
+    pinned = next((m for m in data["messages"] if m.get("id") == pin_id), None)
+    users = _load_json_cached(USERS_FILE, "users.json")
+    names = {m.get("username") for m in msgs} | ({pinned["username"]} if pinned else set())
+    avatars = {n: (users.get(n, {}).get("profile", {}) or {}).get("avatar_image", "") for n in names if n}
+    return jsonify({"ok": True, "room": room,
+                    "messages": [_public_message(m, user) for m in msgs],
+                    "pinned": _public_message(pinned, user) if pinned else None,
+                    "avatars": avatars, "is_admin": is_admin(user)})
 
 
 @app.route("/api/chat/message", methods=["POST"])
 def chat_message():
-    """Post a new chat message. Requires login."""
+    """Post a message. Body: {room, message, reply_to?, quote?: {filename, qid}}."""
     user = current_user()
     if not user:
         return jsonify({"ok": False, "error": "Log in to chat."}), 401
     data = request.get_json(silent=True) or {}
+    room = data.get("room") or "lounge"
     message = str(data.get("message", "")).strip()
-    if not message:
+    quote = None
+    q = data.get("quote") if isinstance(data.get("quote"), dict) else None
+    if q:
+        filename = str(q.get("filename", ""))
+        qs = get_questions_for_test(filename) or []
+        found = next((x for x in qs if str(x.get("id")) == str(q.get("qid"))), None)
+        if not found:
+            return jsonify({"ok": False, "error": "That question wasn't found."}), 400
+        quote = {"filename": filename, "qid": found["id"], "question": str(found.get("question", ""))[:600],
+                 "exam": next((e.get("display_name") or e.get("title") or filename for e in load_exam_manifest() if e.get("filename") == filename), filename)}
+        if not data.get("room"):
+            room = _course_room_for(filename)
+    if room not in CHAT_ROOM_IDS:
+        return jsonify({"ok": False, "error": "Unknown room."}), 404
+    if any(r.get("admin_only") for r in CHAT_ROOMS if r["id"] == room) and not is_admin(user):
+        return jsonify({"ok": False, "error": "Only AnswrIT can post announcements."}), 403
+    if not message and not quote:
         return jsonify({"ok": False, "error": "Message cannot be empty."}), 400
-    entry = add_chat_message(user, message)
-    return jsonify({"ok": True, "message": entry})
+    now = time.time()
+    if now - _last_post.get(user, 0) < CHAT_MIN_SECONDS:
+        return jsonify({"ok": False, "error": "You're sending messages too fast. Wait a moment."}), 429
+    _last_post[user] = now
+    entry = add_chat_message(user, message, room=room, reply_to=str(data.get("reply_to") or ""), quote=quote)
+    return jsonify({"ok": True, "message": _public_message(entry, user)})
+
+
+@app.route("/api/chat/react", methods=["POST"])
+def chat_react():
+    """Toggle a reaction. Body: {id, emoji}."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to react."}), 401
+    data = request.get_json(silent=True) or {}
+    mid, emoji = str(data.get("id", "")), data.get("emoji")
+    if emoji not in CHAT_REACTIONS:
+        return jsonify({"ok": False, "error": "Unknown reaction."}), 400
+
+    def _react(chat: dict):
+        m = next((x for x in chat["messages"] if x.get("id") == mid), None)
+        if not m:
+            return False
+        who = m.setdefault("reactions", {}).setdefault(emoji, [])
+        if user in who:
+            who.remove(user)
+        else:
+            who.append(user)
+        if not who:
+            m["reactions"].pop(emoji, None)
+        return True
+
+    if not modify_chat(_react):
+        return jsonify({"ok": False, "error": "Message not found."}), 404
+    return jsonify({"ok": True})
+
+
+@app.route("/api/chat/delete", methods=["POST"])
+def chat_delete():
+    """Delete a message: your own, or any message if you're an admin."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    mid = str((request.get_json(silent=True) or {}).get("id", ""))
+
+    def _del(chat: dict):
+        m = next((x for x in chat["messages"] if x.get("id") == mid), None)
+        if not m or not (m.get("username") == user or is_admin(user)):
+            return False
+        chat["messages"] = [x for x in chat["messages"] if x.get("id") != mid]
+        for room, pid in list(chat["pins"].items()):
+            if pid == mid:
+                chat["pins"].pop(room)
+        chat["reports"] = [r for r in chat["reports"] if r.get("id") != mid]
+        return True
+
+    if not modify_chat(_del):
+        return jsonify({"ok": False, "error": "You can't delete that message."}), 403
+    return jsonify({"ok": True})
+
+
+@app.route("/api/chat/pin", methods=["POST"])
+def chat_pin():
+    """Admin: pin a message to the top of its room, or unpin. Body: {room, id|null}."""
+    user = current_user()
+    if not is_admin(user):
+        return jsonify({"ok": False, "error": "Only admins can pin messages."}), 403
+    data = request.get_json(silent=True) or {}
+    room, mid = data.get("room"), data.get("id")
+    if room not in CHAT_ROOM_IDS:
+        return jsonify({"ok": False, "error": "Unknown room."}), 404
+
+    def _pin(chat: dict):
+        if mid:
+            if not any(x.get("id") == mid and x.get("room") == room for x in chat["messages"]):
+                return False
+            chat["pins"][room] = mid
+        else:
+            chat["pins"].pop(room, None)
+        return True
+
+    if not modify_chat(_pin):
+        return jsonify({"ok": False, "error": "Message not found."}), 404
+    return jsonify({"ok": True})
+
+
+@app.route("/api/chat/report", methods=["POST"])
+def chat_report():
+    """Report a message to the admins."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to report."}), 401
+    data = request.get_json(silent=True) or {}
+    mid, reason = str(data.get("id", "")), str(data.get("reason", ""))[:200]
+
+    def _report(chat: dict):
+        m = next((x for x in chat["messages"] if x.get("id") == mid), None)
+        if not m:
+            return False
+        if any(r.get("id") == mid and r.get("by") == user for r in chat["reports"]):
+            return True
+        chat["reports"].append({"id": mid, "room": m.get("room"), "by": user, "reason": reason,
+                                "at": datetime.datetime.now(datetime.timezone.utc).isoformat()})
+        chat["reports"] = chat["reports"][-200:]
+        return True
+
+    if not modify_chat(_report):
+        return jsonify({"ok": False, "error": "Message not found."}), 404
+    return jsonify({"ok": True})
+
+
+@app.route("/api/chat/reports", methods=["GET", "POST"])
+def chat_reports():
+    """Admin: GET reported messages; POST {id} to dismiss the reports for a message."""
+    user = current_user()
+    if not is_admin(user):
+        return jsonify({"ok": False, "error": "Admins only."}), 403
+    if request.method == "POST":
+        mid = str((request.get_json(silent=True) or {}).get("id", ""))
+
+        def _dismiss(chat: dict):
+            chat["reports"] = [r for r in chat["reports"] if r.get("id") != mid]
+            return True
+
+        modify_chat(_dismiss)
+        return jsonify({"ok": True})
+    chat = load_chat()
+    by_id = {m.get("id"): m for m in chat["messages"]}
+    grouped = {}
+    for r in chat["reports"]:
+        g = grouped.setdefault(r["id"], {"id": r["id"], "room": r.get("room"), "count": 0, "reasons": [],
+                                         "message": _public_message(by_id[r["id"]], user) if r["id"] in by_id else None})
+        g["count"] += 1
+        if r.get("reason"):
+            g["reasons"].append(r["reason"])
+    return jsonify({"ok": True, "reports": [g for g in grouped.values() if g["message"]]})
 
 
 @app.route("/api/chat/avatars", methods=["GET"])
 def chat_avatars():
-    """Return the latest avatar info for users with recent chat messages."""
-    messages = get_chat_messages(limit=100)
-    usernames = {m.get("username") for m in messages}
-    users = load_users()
-    avatars = {}
-    for username in usernames:
-        if not username:
-            continue
-        profile = users.get(username, {}).get("profile", {})
-        avatars[username] = {
-            "avatar_image": profile.get("avatar_image", ""),
-        }
-    return jsonify({"ok": True, "avatars": avatars})
+    """Kept for older pages: pictures for recent Lounge senders."""
+    users = _load_json_cached(USERS_FILE, "users.json")
+    names = {m.get("username") for m in get_chat_messages(limit=100)}
+    return jsonify({"ok": True, "avatars": {n: {"avatar_image": (users.get(n, {}).get("profile", {}) or {}).get("avatar_image", "")} for n in names if n}})
 
 
 # ---------------------------------------------------------------------------

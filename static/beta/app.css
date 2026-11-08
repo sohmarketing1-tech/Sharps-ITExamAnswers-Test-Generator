@@ -648,3 +648,74 @@ body.focus-mode .view { padding-top: calc(8px + env(safe-area-inset-top, 0px)); 
 .ans-box-i { padding: 7px 10px; border-top: 1px solid var(--line); font-size: 14px; }
 .ans-unused { margin: 0; font-size: 14px; color: var(--muted); }
 .ans-reveal { align-self: flex-start; }
+
+/* ── Chat rooms ── */
+.tabbar a { position: relative; }
+.tab-badge {
+    position: absolute; top: 4px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 9px; background: var(--red); color: #FFFFFF; font-size: 11px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center; line-height: 1;
+}
+.room-row .row-body { min-width: 0; }
+.room-last { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.room-last b { color: var(--ink); font-weight: 600; }
+.room-end { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex: none; }
+.room-time { font-size: 12px; color: var(--subtle); }
+.unread { min-width: 22px; height: 22px; padding: 0 7px; border-radius: 11px; background: var(--primary); color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.admin-badge { display: inline-block; padding: 1px 6px; border-radius: 6px; font-size: 11px; font-weight: 700; background: var(--orange-soft); color: var(--orange-ink); vertical-align: 1px; }
+.room-head { margin-bottom: -6px; }
+.pinned {
+    width: 100%; display: flex; gap: 10px; align-items: flex-start; text-align: left; padding: 10px 12px;
+    background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--orange); border-radius: 12px; color: var(--ink);
+}
+.pinned svg { width: 18px; height: 18px; flex: none; color: var(--orange); margin-top: 2px; }
+.pinned span { display: flex; flex-direction: column; min-width: 0; font-size: 14px; }
+.pinned span span { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bubble { border: none; font: inherit; text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 6px; }
+.bubble-empty { padding: 4px; }
+.bubble-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.reply-ref { display: flex; gap: 6px; align-items: center; font-size: 12px; opacity: 0.85; border-left: 3px solid currentColor; padding-left: 6px; max-width: 260px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.reply-ref svg { width: 14px; height: 14px; flex: none; }
+.q-card { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); color: var(--ink); text-decoration: none; max-width: 300px; }
+.msg.mine .q-card { color: var(--ink); }
+.q-card-h { display: flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 700; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.3px; }
+.q-card-h svg, .q-card-l svg { width: 14px; height: 14px; }
+.q-card-t { font-size: 14px; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
+.q-card-l { display: flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 600; color: var(--primary); }
+.q-card.static { max-width: none; background: var(--bg); }
+.reacts { display: flex; gap: 6px; flex-wrap: wrap; }
+.react { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 2px 8px; font-size: 13px; min-height: 28px; color: var(--ink); }
+.react.on { border-color: var(--primary); background: var(--primary-soft); }
+.msg.flash .bubble { outline: 3px solid var(--orange); }
+.chat-compose { flex-direction: column; align-items: stretch; gap: 6px; }
+.compose-row { display: flex; gap: 8px; align-items: center; }
+.compose-row .input { flex: 1; min-width: 0; border-radius: 24px; }
+.reply-chip { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding: 0 6px; }
+.reply-chip[hidden] { display: none; }
+.reply-chip svg { width: 16px; height: 16px; }
+.reply-chip span { flex: 1; min-width: 0; }
+.reply-chip button { border: none; background: none; color: var(--muted); padding: 4px; }
+.ask-link { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; border: none; background: none; color: var(--primary); font-weight: 600; font-size: 14px; padding: 6px 0; min-height: 40px; }
+.ask-link svg { width: 18px; height: 18px; }
+.ans-focus { outline: 3px solid var(--primary); }
+.report-card { gap: 8px; }
+
+/* Bottom sheet */
+.sheet-wrap { position: fixed; inset: 0; z-index: 80; background: rgba(15, 23, 42, 0.4); display: flex; align-items: flex-end; justify-content: center; }
+.sheet {
+    width: 100%; max-width: 560px; background: var(--surface); border-radius: 20px 20px 0 0;
+    padding: 18px 16px calc(16px + var(--safe-bottom)); display: flex; flex-direction: column; gap: 12px;
+    box-shadow: 0 -8px 30px rgba(15, 23, 42, 0.2); max-height: 85vh; overflow-y: auto;
+}
+.sheet-title { margin: 0; font-weight: 700; font-size: 16px; overflow-wrap: anywhere; }
+.emoji-row { display: flex; gap: 10px; justify-content: center; }
+.emoji-btn { width: 52px; height: 52px; border-radius: 26px; border: 1px solid var(--line); background: var(--bg); font-size: 24px; }
+.sheet-actions { display: flex; flex-direction: column; gap: 6px; }
+.sheet-btn { display: flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 14px; border-radius: 12px; border: none; background: var(--bg); color: var(--ink); font-weight: 600; font-size: 16px; text-decoration: none; }
+.sheet-btn svg { width: 20px; height: 20px; }
+.sheet-btn.danger { color: var(--red); }
+.sheet-btn.muted-btn { justify-content: center; color: var(--muted); background: none; }
+.msg-meta { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.msg.mine .msg-meta { flex-direction: row-reverse; }
+.msg-more { border: none; background: none; color: var(--muted); font-size: 18px; line-height: 1; min-width: 32px; min-height: 28px; border-radius: 8px; }
+.msg-more:hover { background: var(--line); }

@@ -84,6 +84,11 @@ const ICONS = {
     plus: '<path d="M12 5v14M5 12h14"/>',
     trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
     camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    megaphone: '<path d="M3 11v2a2 2 0 0 0 2 2h1l5 4V5L6 9H5a2 2 0 0 0-2 2zM15 9a3 3 0 0 1 0 6M18 6a7 7 0 0 1 0 12"/>',
+    bubble: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.1A8 8 0 1 1 21 12z"/>',
+    flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+    pin: '<path d="M9 4h6l-1 6 3 3H7l3-3zM12 13v8"/>',
+    reply: '<path d="M10 8L5 12l5 4M5 12h9a5 5 0 0 1 5 5v1"/>',
     list: '<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
     game: '<rect x="2" y="7" width="20" height="10" rx="5"/><path d="M7 10v4M5 12h4M15.5 11h.01M18 13h.01"/>',
 };
@@ -197,8 +202,10 @@ async function loadMe() {
     const r = await api("/api/me");
     state.user = r.data && r.data.user ? r.data.user : null;
     state.profile = (r.data && r.data.profile) || {};
+    state.isAdmin = !!(r.data && r.data.is_admin);
     applyTheme(state.profile.theme);
     renderAccountButton();
+    refreshChatBadge();
 }
 
 function renderAccountButton() {
@@ -241,7 +248,9 @@ const ROUTES = [
     [/^my-flashcards\/(\d+)\/study$/, viewMyDeckStudy, "study"],
     [/^progress$/, viewProgress, "progress"],
     [/^progress\/attempt\/(.+)$/, viewAttempt, "progress"],
-    [/^chat$/, viewChat, "chat"],
+    [/^chat$/, viewChatRooms, "chat"],
+    [/^chat\/([a-z0-9]+)$/, viewChatRoom, "chat"],
+    [/^chat-reports$/, viewChatReports, "chat"],
     [/^login$/, viewLogin, ""],
     [/^account$/, viewAccount, ""],
 ];
@@ -513,7 +522,7 @@ async function viewExam(root, [filename]) {
 }
 
 // ─── All questions & answers ────────────────────────────────────────────────
-async function viewAnswers(root, [filename], _q, alive) {
+async function viewAnswers(root, [filename], query, alive) {
     const meta = examMeta(filename);
     if (!meta) return go("study");
     const enc = encodeURIComponent(filename);
@@ -549,7 +558,7 @@ async function viewAnswers(root, [filename], _q, alive) {
     const cardHtml = ({ q, n }) => {
         const hidden = s.hide && !s.shown.has(n);
         const many = !isMatching(q) && correctList(q).length > 1;
-        return `<article class="card ans-card" id="q-${n}">
+        return `<article class="card ans-card" id="q-${n}" data-qid="${esc(q.id)}">
             <div class="ans-head"><span class="ans-num">Question ${n}</span>${isMatching(q) ? '<span class="ans-tag">Matching</span>' : many ? `<span class="ans-tag">Choose ${correctList(q).length}</span>` : ""}</div>
             <p class="question-text">${esc(q.question)}</p>
             ${q.image ? `<img class="question-img" src="${esc(q.image)}" alt="Exhibit for question ${n}" loading="lazy">` : ""}
@@ -581,6 +590,11 @@ async function viewAnswers(root, [filename], _q, alive) {
     $("#ans-hide", root).onchange = (e) => { s.hide = e.target.checked; s.shown.clear(); renderList(); };
     $("#ans-top", root).onclick = () => { window.scrollTo({ top: 0, behavior: "smooth" }); };
     renderList();
+    const jump = query && query.get("id");
+    if (jump) {
+        const el = $(`.ans-card[data-qid="${CSS.escape(jump)}"]`, root);
+        if (el) { el.classList.add("ans-focus"); setTimeout(() => el.scrollIntoView({ block: "start" }), 50); }
+    }
 }
 
 // ─── Quiz runner (practice & mastery) ───────────────────────────────────────
@@ -683,7 +697,7 @@ function isCorrect(q, sel) {
 
 /** Runs a list of questions one at a time with instant feedback.
  *  Resolves with { answers, durationSeconds } or null if the user quits. */
-function runQuiz(root, { quiz, heading, alive }) {
+function runQuiz(root, { quiz, heading, alive, filename }) {
     return new Promise((resolve) => {
         document.body.classList.add("focus-mode");
         const s = { index: 0, answers: {}, checked: false, started: Date.now(), boards: {} };
@@ -745,9 +759,12 @@ function runQuiz(root, { quiz, heading, alive }) {
                 ${q.image ? `<img class="question-img" src="${esc(q.image)}" alt="Diagram for this question" loading="lazy">` : ""}
                 ${body}
                 ${feedback}
+                ${filename ? `<button type="button" class="ask-link" id="ask-btn">${icon("bubble")}Ask about this question</button>` : ""}
                 <div class="runner-actions">${action}</div>`;
 
             $("#quit-btn", root).onclick = quit;
+            const ask = $("#ask-btn", root);
+            if (ask) ask.onclick = () => askAboutQuestion(filename, q);
             $$(".option", root).forEach((btn) => {
                 btn.onclick = () => {
                     const opt = q.options[Number(btn.dataset.i)];
@@ -834,7 +851,7 @@ async function viewPractice(root, [filename], query, alive) {
     }
     const quiz = shuffleChoices(r.data.quiz, filename);
     const title = examFullName(filename);
-    const outcome = await runQuiz(root, { quiz, heading: `Practice test · ${title}`, alive });
+    const outcome = await runQuiz(root, { quiz, heading: `Practice test · ${title}`, alive, filename });
     if (!outcome) return alive() && go(`exam/${encodeURIComponent(filename)}`);
     root.innerHTML = loading();
     const scored = await api("/api/score", { method: "POST", body: { quiz, answers: outcome.answers, filename, title } });
@@ -916,7 +933,7 @@ async function viewMastery(root, [filename], _q, alive) {
         };
         return;
     }
-    const outcome = await runQuiz(root, { quiz, heading: `Mastery · ${examFullName(filename)}`, alive });
+    const outcome = await runQuiz(root, { quiz, heading: `Mastery · ${examFullName(filename)}`, alive, filename });
     if (!outcome) return alive() && go(`exam/${enc}`);
     root.innerHTML = loading();
     const sub = await api("/api/mastery/submit", { method: "POST", body: { filename, quiz, answers: outcome.answers } });
@@ -1484,49 +1501,228 @@ function stopChatPolling() {
     if (state.chatTimer) { clearInterval(state.chatTimer); state.chatTimer = null; }
 }
 
-async function viewChat(root, _p, _q, alive) {
+const ROOM_ICON = { announcements: ["megaphone", "orange"], lounge: ["bubble", "blue"], ite: ["monitor", "blue"], ccna1: ["network", "green"], ccna2: ["network", "blue"], comms: ["signal", "orange"] };
+const COURSE_ROOM = { ite: "ite", ccna: "ccna1", ccna2: "ccna2", comms: "comms" };
+const CHAT_SEEN_KEY = () => `answrit:chatSeen:${state.user || ""}`;
+
+function chatSeen() {
+    try { return JSON.parse(localStorage.getItem(CHAT_SEEN_KEY()) || "null"); } catch (e) { return null; }
+}
+function markRoomSeen(room, ts) {
+    try {
+        const seen = chatSeen() || {};
+        if (!seen[room] || ts > seen[room]) seen[room] = ts;
+        localStorage.setItem(CHAT_SEEN_KEY(), JSON.stringify(seen));
+    } catch (e) { /* storage unavailable */ }
+}
+function unreadFor(room, seen) {
+    const since = (seen || {})[room.id] || "";
+    return (room.recent || []).filter((t) => t > since).length;
+}
+// First visit on this device: start everything as read, so old messages don't all show as new.
+function ensureSeenStart(rooms) {
+    if (chatSeen()) return;
+    try {
+        const seen = {};
+        rooms.forEach((r) => { seen[r.id] = (r.recent || []).slice(-1)[0] || new Date().toISOString(); });
+        localStorage.setItem(CHAT_SEEN_KEY(), JSON.stringify(seen));
+    } catch (e) { /* storage unavailable */ }
+}
+
+async function refreshChatBadge() {
+    const tab = $('.tabbar a[data-tab="chat"]');
+    if (!tab) return;
+    let total = 0;
+    if (state.user) {
+        const r = await api("/api/chat/rooms");
+        if (r.ok) {
+            ensureSeenStart(r.data.rooms);
+            const seen = chatSeen();
+            total = r.data.rooms.reduce((n, room) => n + unreadFor(room, seen), 0);
+            state.chatRooms = r.data.rooms;
+        }
+    }
+    let badge = $(".tab-badge", tab);
+    if (!total) { if (badge) badge.remove(); return; }
+    if (!badge) { badge = document.createElement("span"); badge.className = "tab-badge"; tab.appendChild(badge); }
+    badge.textContent = total > 99 ? "99+" : String(total);
+    tab.setAttribute("aria-label", `Chat, ${total} unread`);
+}
+if (!window.__chatBadgeTimer) window.__chatBadgeTimer = setInterval(() => { if (document.visibilityState === "visible") refreshChatBadge(); }, 60000);
+
+async function viewChatRooms(root, _p, _q, alive) {
+    const r = await api("/api/chat/rooms");
+    if (!alive()) return;
+    if (!r.ok) { root.innerHTML = `<div class="error-box">Couldn't load the chat. Please try again.</div>`; return; }
+    if (state.user) ensureSeenStart(r.data.rooms);
+    const seen = chatSeen();
+    const row = (room) => {
+        const [ic, tint] = ROOM_ICON[room.id] || ["bubble", "blue"];
+        const n = state.user ? unreadFor(room, seen) : 0;
+        const last = room.last;
+        return `<a class="row room-row" href="#/chat/${room.id}">
+            <span class="icon-tile tint-${tint}">${icon(ic)}</span>
+            <span class="row-body">
+                <span class="row-title">${esc(room.name)}${room.admin_only ? ' <span class="admin-badge">Official</span>' : ""}</span>
+                <span class="row-sub room-last">${last ? `<b>${esc(last.display)}:</b> ${esc(last.message)}` : esc(room.desc)}</span>
+            </span>
+            <span class="room-end">${last ? `<span class="room-time">${esc(relDate(last.timestamp) === "Today" ? timeOf(last.timestamp) : relDate(last.timestamp))}</span>` : ""}${n ? `<span class="unread">${n > 99 ? "99+" : n}</span>` : ""}</span>
+        </a>`;
+    };
+    const rooms = r.data.rooms;
     root.innerHTML = `
         <div class="page-head">
             <h1 class="page-title">Chat</h1>
-            <p>Ask classmates, request an exam, or report a bug.</p>
+            <p>Ask questions, help classmates, and hang out.</p>
         </div>
-        <div class="chat-list" id="chat-list" aria-live="polite">${loading()}</div>
-        ${state.user ? `
-            <form class="chat-compose" id="chat-form">
-                <label class="sr-only" for="chat-input">Message</label>
-                <input class="input" id="chat-input" maxlength="500" autocomplete="off" placeholder="Message your class…" required>
-                <button class="send-btn" type="submit" aria-label="Send message">${icon("send")}</button>
-            </form>` : `<div class="note"><a href="#/login?next=chat">Log in</a> to join the chat.</div>`}`;
+        ${!state.user ? `<div class="note"><a href="#/login?next=chat">Log in</a> to join the conversation. You can read without an account.</div>` : ""}
+        <div class="row-list">${rooms.filter((x) => x.id === "announcements" || x.id === "lounge").map(row).join("")}</div>
+        <section class="section">
+            <div class="section-head"><h2 class="section-title">Course rooms</h2></div>
+            <div class="row-list">${rooms.filter((x) => x.id !== "announcements" && x.id !== "lounge").map(row).join("")}</div>
+        </section>
+        <p class="small muted" style="margin:0">Stuck on a question? Tap <b>Ask about this question</b> during a practice test or Mastery to post it in its course room.</p>
+        ${state.isAdmin ? `<a class="btn btn-secondary btn-block" href="#/chat-reports">${icon("flag")}Reported messages</a>` : ""}`;
+    refreshChatBadge();
+}
 
-    let lastCount = -1;
-    let avatars = {};
-    async function refresh(scroll) {
-        const [r, av] = await Promise.all([
-            api("/api/chat/messages"),
-            lastCount < 0 ? api("/api/chat/avatars") : Promise.resolve(null),
-        ]);
-        if (!alive()) return stopChatPolling();
-        if (av && av.ok) avatars = av.data.avatars || {};
-        const msgs = r.ok ? (r.data.messages || []) : [];
-        if (msgs.length === lastCount && !scroll) return;
-        lastCount = msgs.length;
-        const list = $("#chat-list", root);
-        if (!list) return;
-        list.innerHTML = msgs.length ? msgs.map((m) => {
-            const mine = m.username === state.user;
-            const src = (avatars[m.username] || {}).avatar_image || m.avatar_image;
-            return `<div class="msg ${mine ? "mine" : ""}">
-                ${avatarHtml(m.username, src)}
-                <div class="msg-body">
-                    <span class="msg-meta">${mine ? "You" : `<b>${esc(m.username)}</b>`} · ${esc(relDate(m.timestamp) === "Today" ? timeOf(m.timestamp) : relDate(m.timestamp))}</span>
-                    <div class="bubble">${esc(m.message)}</div>
+function messageHtml(m, avatars, room) {
+    const time = relDate(m.timestamp) === "Today" ? timeOf(m.timestamp) : `${relDate(m.timestamp)} ${timeOf(m.timestamp)}`;
+    const quote = m.quote ? `
+        <a class="q-card" href="#/answers/${encodeURIComponent(m.quote.filename)}?id=${encodeURIComponent(m.quote.qid)}">
+            <span class="q-card-h">${icon("test")}Question · ${esc(m.quote.exam || "")}</span>
+            <span class="q-card-t">${esc(m.quote.question)}</span>
+            <span class="q-card-l">See the answer ${icon("chevron")}</span>
+        </a>` : "";
+    const reply = m.reply_to ? `<span class="reply-ref">${icon("reply")}<b>${esc(m.reply_to.username)}</b> ${esc(m.reply_to.message)}</span>` : "";
+    return `<div class="msg ${m.mine ? "mine" : ""}" data-id="${esc(m.id)}">
+        ${avatarHtml(m.username, (avatars || {})[m.username])}
+        <div class="msg-body">
+            <span class="msg-meta">${m.mine ? "You" : `<b>${esc(m.display)}</b>`}${m.admin ? ' <span class="admin-badge">Admin</span>' : ""} · ${esc(time)}<button type="button" class="msg-more" data-act="${esc(m.id)}" aria-label="Reply, react or more">⋯</button></span>
+            <button type="button" class="bubble ${m.quote && !m.message ? "bubble-empty" : ""}" data-act="${esc(m.id)}" aria-label="Message options">${reply}${quote}${m.message ? `<span class="bubble-text">${esc(m.message)}</span>` : ""}</button>
+            ${m.reactions && m.reactions.length ? `<span class="reacts">${m.reactions.map((x) => `<button type="button" class="react ${x.mine ? "on" : ""}" data-react="${esc(m.id)}" data-emoji="${x.emoji}" aria-pressed="${x.mine}">${x.emoji} ${x.count}</button>`).join("")}</span>` : ""}
+        </div>
+    </div>`;
+}
+
+function openSheet(html, bind) {
+    const old = $("#sheet");
+    if (old) old.remove();
+    const el = document.createElement("div");
+    el.id = "sheet";
+    el.className = "sheet-wrap";
+    el.innerHTML = `<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;
+    document.body.appendChild(el);
+    const close = () => { el.remove(); document.removeEventListener("keydown", onKey); };
+    const onKey = (e) => { if (e.key === "Escape") close(); };
+    document.addEventListener("keydown", onKey);
+    el.addEventListener("click", (e) => { if (e.target === el) close(); });
+    bind(el, close);
+    return close;
+}
+
+async function viewChatRoom(root, [roomId], _q, alive) {
+    const rooms = (await api("/api/chat/rooms")).data.rooms || [];
+    const room = rooms.find((r) => r.id === roomId);
+    if (!room || !alive()) return go("chat");
+    const canPost = state.user && (!room.admin_only || state.isAdmin);
+    const s = { reply: null, sig: "", data: null };
+    root.innerHTML = `
+        <a class="back-link" href="#/chat">${icon("back")}Chat</a>
+        <div class="page-head room-head"><h1 class="page-title">${esc(room.name)}</h1><p>${esc(room.desc)}</p></div>
+        <div id="pinned"></div>
+        <div class="chat-list" id="chat-list" aria-live="polite">${loading()}</div>
+        ${canPost ? `
+            <form class="chat-compose" id="chat-form">
+                <div class="reply-chip" id="reply-chip" hidden></div>
+                <div class="compose-row">
+                    <label class="sr-only" for="chat-input">Message</label>
+                    <input class="input" id="chat-input" maxlength="500" autocomplete="off" placeholder="${room.admin_only ? "Post an announcement…" : `Message ${esc(room.name)}…`}">
+                    <button class="send-btn" type="submit" aria-label="Send message">${icon("send")}</button>
                 </div>
-            </div>`;
-        }).join("") : `<div class="empty">No messages yet. Say hi!</div>`;
-        if (scroll) window.scrollTo(0, document.body.scrollHeight);
+            </form>` : state.user
+                ? `<div class="note">Only AnswrIT posts here. React with 👍 to show you've seen it.</div>`
+                : `<div class="note"><a href="#/login?next=${encodeURIComponent("chat/" + roomId)}">Log in</a> to join the conversation.</div>`}`;
+
+    function nearBottom() { return window.innerHeight + window.scrollY >= document.body.scrollHeight - 160; }
+    async function refresh(scroll) {
+        const r = await api(`/api/chat/messages?room=${roomId}`);
+        if (!alive()) return stopChatPolling();
+        if (!r.ok) return;
+        const d = r.data;
+        const sig = JSON.stringify([d.messages.map((m) => [m.id, m.reactions]), d.pinned && d.pinned.id]);
+        const wasBottom = nearBottom();
+        s.data = d;
+        if (d.messages.length) markRoomSeen(roomId, d.messages[d.messages.length - 1].timestamp);
+        if (sig === s.sig && !scroll) return;
+        s.sig = sig;
+        $("#pinned", root).innerHTML = d.pinned ? `
+            <button type="button" class="pinned" data-goto="${esc(d.pinned.id)}">${icon("pin")}<span><b>Pinned · ${esc(d.pinned.display)}</b><span>${esc(d.pinned.message || (d.pinned.quote || {}).question || "")}</span></span></button>` : "";
+        $("#chat-list", root).innerHTML = d.messages.length
+            ? d.messages.map((m) => messageHtml(m, d.avatars, roomId)).join("")
+            : `<div class="card empty"><p class="muted" style="margin:0">${room.admin_only ? "No announcements yet." : "No messages yet. Start the conversation!"}</p></div>`;
+        bind();
+        if (scroll || wasBottom) window.scrollTo(0, document.body.scrollHeight);
+        refreshChatBadge();
+    }
+    function bind() {
+        $$("[data-act]", root).forEach((b) => { b.onclick = (e) => { if (e.target.closest(".q-card")) return; actions(b.dataset.act); }; });
+        $$("[data-react]", root).forEach((b) => { b.onclick = () => react(b.dataset.react, b.dataset.emoji); });
+        const pin = $("[data-goto]", root);
+        if (pin) pin.onclick = () => { const el = $(`.msg[data-id="${CSS.escape(pin.dataset.goto)}"]`, root); if (el) { el.scrollIntoView({ block: "center" }); el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1200); } };
+    }
+    async function react(id, emoji) {
+        if (!state.user) return go(`login?next=${encodeURIComponent("chat/" + roomId)}`);
+        await api("/api/chat/react", { method: "POST", body: { id, emoji } });
+        refresh(false);
+    }
+    function actions(id) {
+        const m = (s.data.messages || []).find((x) => x.id === id) || (s.data.pinned && s.data.pinned.id === id ? s.data.pinned : null);
+        if (!m) return;
+        const isPinned = s.data.pinned && s.data.pinned.id === id;
+        const emojis = ["👍", "❤️", "😂", "🙏"];
+        openSheet(`
+            <p class="sheet-title">${esc(m.display)}: ${esc((m.message || (m.quote || {}).question || "").slice(0, 80))}</p>
+            ${state.user ? `<div class="emoji-row">${emojis.map((e) => `<button type="button" class="emoji-btn" data-e="${e}" aria-label="React ${e}">${e}</button>`).join("")}</div>` : ""}
+            <div class="sheet-actions">
+                ${canPost ? `<button type="button" class="sheet-btn" data-a="reply">${icon("reply")}Reply</button>` : ""}
+                ${state.isAdmin ? `<button type="button" class="sheet-btn" data-a="pin">${icon("pin")}${isPinned ? "Unpin" : "Pin to top"}</button>` : ""}
+                ${state.user && !m.mine ? `<button type="button" class="sheet-btn" data-a="report">${icon("flag")}Report</button>` : ""}
+                ${m.mine || state.isAdmin ? `<button type="button" class="sheet-btn danger" data-a="delete">${icon("trash")}Delete</button>` : ""}
+                ${!state.user ? `<a class="sheet-btn" href="#/login?next=${encodeURIComponent("chat/" + roomId)}">Log in to reply or react</a>` : ""}
+                <button type="button" class="sheet-btn muted-btn" data-a="cancel">Cancel</button>
+            </div>`, (el, close) => {
+            $$("[data-e]", el).forEach((b) => { b.onclick = () => { close(); react(id, b.dataset.e); }; });
+            $$("[data-a]", el).forEach((b) => {
+                b.onclick = async () => {
+                    const a = b.dataset.a;
+                    close();
+                    if (a === "reply") {
+                        s.reply = m;
+                        const chip = $("#reply-chip", root);
+                        chip.hidden = false;
+                        chip.innerHTML = `${icon("reply")}<span>Replying to <b>${esc(m.display)}</b></span><button type="button" aria-label="Cancel reply">${icon("close")}</button>`;
+                        $("button", chip).onclick = () => { s.reply = null; chip.hidden = true; };
+                        $("#chat-input", root).focus();
+                    } else if (a === "pin") {
+                        await api("/api/chat/pin", { method: "POST", body: { room: roomId, id: isPinned ? null : id } });
+                        refresh(true);
+                    } else if (a === "report") {
+                        const reason = prompt("Why are you reporting this message? (optional)") ;
+                        if (reason === null) return;
+                        const r = await api("/api/chat/report", { method: "POST", body: { id, reason } });
+                        alert(r.ok ? "Thanks. The AnswrIT team will take a look." : (r.data.error || "Couldn't send the report."));
+                    } else if (a === "delete") {
+                        if (!confirm("Delete this message?")) return;
+                        await api("/api/chat/delete", { method: "POST", body: { id } });
+                        refresh(true);
+                    }
+                };
+            });
+        });
     }
     await refresh(true);
-    state.chatTimer = setInterval(() => refresh(false), 8000);
+    state.chatTimer = setInterval(() => refresh(false), 6000);
 
     const form = $("#chat-form", root);
     if (form) form.onsubmit = async (e) => {
@@ -1535,11 +1731,72 @@ async function viewChat(root, _p, _q, alive) {
         const message = input.value.trim();
         if (!message) return;
         input.value = "";
-        const r = await api("/api/chat/message", { method: "POST", body: { message } });
+        const body = { room: roomId, message };
+        if (s.reply) body.reply_to = s.reply.id;
+        const r = await api("/api/chat/message", { method: "POST", body });
         if (!r.ok) { input.value = message; alert(r.data.error || "Couldn't send your message."); return; }
+        s.reply = null;
+        const chip = $("#reply-chip", root);
+        if (chip) chip.hidden = true;
         await refresh(true);
         input.focus();
     };
+}
+
+// "Ask about this question" from a practice test or Mastery: posts the question to its course room.
+function askAboutQuestion(filename, q) {
+    const course = courseOf(filename);
+    const roomId = COURSE_ROOM[course ? course.id : ""] || "lounge";
+    const roomName = course ? course.name : "Lounge";
+    if (!state.user) {
+        openSheet(`<p class="sheet-title">Ask about this question</p><p class="muted" style="margin:0">Log in to ask classmates in the ${esc(roomName)} room. Your answers so far stay right here.</p>
+            <div class="sheet-actions"><button type="button" class="sheet-btn muted-btn" data-a="cancel">OK</button></div>`, (el, close) => { $("[data-a]", el).onclick = close; });
+        return;
+    }
+    openSheet(`
+        <p class="sheet-title">Ask the ${esc(roomName)} room</p>
+        <div class="q-card static"><span class="q-card-t">${esc(q.question)}</span></div>
+        <label class="field"><span class="small muted">What's confusing you? (optional)</span>
+            <textarea class="input" id="ask-text" rows="3" maxlength="500" placeholder="e.g. Why isn't it the other one?"></textarea></label>
+        <p class="small muted" id="ask-msg" style="margin:0"></p>
+        <div class="sheet-actions">
+            <button type="button" class="btn btn-primary btn-block" id="ask-send">Post question</button>
+            <button type="button" class="sheet-btn muted-btn" data-a="cancel">Cancel</button>
+        </div>`, (el, close) => {
+        $("[data-a]", el).onclick = close;
+        $("#ask-send", el).onclick = async () => {
+            const btn = $("#ask-send", el);
+            btn.disabled = true;
+            const r = await api("/api/chat/message", { method: "POST", body: { room: roomId, message: $("#ask-text", el).value.trim(), quote: { filename, qid: q.id } } });
+            if (!r.ok) { btn.disabled = false; $("#ask-msg", el).textContent = r.data.error || "Couldn't post it."; return; }
+            $(".sheet", el).innerHTML = `<p class="sheet-title">Posted in ${esc(roomName)} ✓</p><p class="muted" style="margin:0">You'll see replies in Chat. Keep going with your questions here.</p>
+                <div class="sheet-actions"><button type="button" class="btn btn-primary btn-block" id="ask-ok">Back to the question</button></div>`;
+            $("#ask-ok", el).onclick = close;
+        };
+        setTimeout(() => $("#ask-text", el)?.focus(), 50);
+    });
+}
+
+async function viewChatReports(root, _p, _q, alive) {
+    if (!state.isAdmin) return go("chat");
+    const r = await api("/api/chat/reports");
+    if (!alive()) return;
+    const list = r.ok ? r.data.reports : [];
+    const roomName = (id) => ((state.chatRooms || []).find((x) => x.id === id) || {}).name || id;
+    root.innerHTML = `
+        <a class="back-link" href="#/chat">${icon("back")}Chat</a>
+        <div class="page-head"><h1 class="page-title">Reported messages</h1><p>${list.length ? `${list.length} message${list.length === 1 ? "" : "s"} reported` : "Nothing reported. All clear!"}</p></div>
+        <div class="row-list">${list.map((g) => `
+            <div class="card report-card">
+                <span class="small muted">${esc(roomName(g.room))} · reported ${g.count} time${g.count === 1 ? "" : "s"}${g.reasons.length ? ` · “${esc(g.reasons.join("”, “"))}”` : ""}</span>
+                <p style="margin:0"><b>${esc(g.message.display)}:</b> ${esc(g.message.message || (g.message.quote || {}).question || "")}</p>
+                <div class="btn-row">
+                    <button type="button" class="btn btn-danger" data-del="${esc(g.id)}">Delete message</button>
+                    <button type="button" class="btn btn-secondary" data-ok="${esc(g.id)}">Keep it</button>
+                </div>
+            </div>`).join("")}</div>`;
+    $$("[data-del]", root).forEach((b) => { b.onclick = async () => { await api("/api/chat/delete", { method: "POST", body: { id: b.dataset.del } }); router(); }; });
+    $$("[data-ok]", root).forEach((b) => { b.onclick = async () => { await api("/api/chat/reports", { method: "POST", body: { id: b.dataset.ok } }); router(); }; });
 }
 
 // ─── Login & account ────────────────────────────────────────────────────────
@@ -1578,7 +1835,9 @@ async function viewLogin(root, _p, query) {
             if (!r.ok) return render(r.data.error || "Something went wrong. Try again.");
             state.user = r.data.user;
             state.profile = r.data.profile || {};
+            state.isAdmin = false;
             state.myDecks = null;
+            loadMe();
             applyTheme(state.profile.theme);
             renderAccountButton();
             go(query.get("next") || "");
