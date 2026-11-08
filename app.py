@@ -37,6 +37,7 @@ QUESTIONS_FILE = BASE_DIR / DEFAULT_OUTPUT
 USERS_FILE = BASE_DIR / "users.json"
 USER_DATA_FILE = BASE_DIR / "user_data.json"
 CHAT_FILE = BASE_DIR / "chat.json"
+DM_FILE = BASE_DIR / "dms.json"  # private conversations (DMs and group chats)
 SECRET_FILE = BASE_DIR / ".flask_secret"
 
 if SECRET_FILE.exists():
@@ -1745,6 +1746,359 @@ def chat_avatars():
     users = _load_json_cached(USERS_FILE, "users.json")
     names = {m.get("username") for m in get_chat_messages(limit=100)}
     return jsonify({"ok": True, "avatars": {n: {"avatar_image": (users.get(n, {}).get("profile", {}) or {}).get("avatar_image", "")} for n in names if n}})
+
+
+# ---------------------------------------------------------------------------
+# Direct messages and group chats
+# ---------------------------------------------------------------------------
+# dms.json: {"convos": {id: {id, type: "dm"|"group", name, owner, members: [...], created,
+#            messages: [...]}}, "reports": [...]}
+# Conversations are private: only members can read them. A report saves a copy of the
+# reported message and a few around it, which is all the admin can see.
+DM_GROUP_MAX = 25
+DM_MESSAGE_LIMIT = 500
+
+
+def load_dms() -> dict:
+    with _JSON_CACHE_LOCK:
+        data = _load_json_cached(DM_FILE, "dms.json")
+        data.setdefault("convos", {})
+        data.setdefault("reports", [])
+        return data
+
+
+def modify_dms(callback):
+    def _cb(data):
+        data.setdefault("convos", {})
+        data.setdefault("reports", [])
+        return callback(data)
+    return _modify_json_file(DM_FILE, _cb)
+
+
+def _display(username: str) -> str:
+    return ADMIN_DISPLAY.get(username, username)
+
+
+def _user_exists(username: str) -> bool:
+    return username in _load_json_cached(USERS_FILE, "users.json")
+
+
+def _convo_for(user: str, cid: str):
+    c = load_dms()["convos"].get(cid)
+    return c if c and user in c.get("members", []) else None
+
+
+def _convo_summary(c: dict, user: str) -> dict:
+    others = [m for m in c["members"] if m != user]
+    last = c["messages"][-1] if c["messages"] else None
+    if c["type"] == "dm":
+        name = _display(others[0]) if others else "Just you"
+    else:
+        name = c.get("name") or ", ".join(_display(m) for m in others[:3])
+    return {
+        "id": c["id"], "type": c["type"], "name": name, "owner": c.get("owner"),
+        "members": [{"username": m, "display": _display(m), "admin": is_admin(m)} for m in c["members"]],
+        "with": others[0] if c["type"] == "dm" and others else None,
+        "last": {"display": "You" if last["username"] == user else _display(last["username"]), "message": last.get("message", ""),
+                 "timestamp": last["timestamp"]} if last else None,
+        "updated": last["timestamp"] if last else c.get("created"),
+        "recent": [m["timestamp"] for m in c["messages"][-60:] if m.get("username") != user],
+    }
+
+
+@app.route("/api/users/search", methods=["GET"])
+def users_search():
+    """Find people to message by username (logged-in users only)."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    q = request.args.get("q", "").strip().lower()
+    if not q:
+        return jsonify({"ok": True, "users": []})
+    names = [n for n in _load_json_cached(USERS_FILE, "users.json") if n != user]
+    starts = sorted(n for n in names if n.startswith(q) or _display(n).lower().startswith(q))
+    contains = sorted(n for n in names if q in n and n not in starts)
+    return jsonify({"ok": True, "users": [{"username": n, "display": _display(n), "admin": is_admin(n)} for n in (starts + contains)[:12]]})
+
+
+@app.route("/api/dm/list", methods=["GET"])
+def dm_list():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to see your messages."}), 401
+    convos = [_convo_summary(c, user) for c in load_dms()["convos"].values() if user in c.get("members", [])]
+    convos.sort(key=lambda c: c["updated"] or "", reverse=True)
+    admin_name = next(iter(ADMIN_USERS), "")
+    return jsonify({"ok": True, "convos": convos, "admin": {"username": admin_name, "display": _display(admin_name)} if admin_name and admin_name != user else None})
+
+
+@app.route("/api/dm/start", methods=["POST"])
+def dm_start():
+    """Open (or create) a one-on-one conversation. Body: {username}."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to send messages."}), 401
+    other = str((request.get_json(silent=True) or {}).get("username", "")).strip().lower()
+    if not other or other == user or not _user_exists(other):
+        return jsonify({"ok": False, "error": "That user wasn't found."}), 404
+    cid = "dm-" + "-".join(sorted([user, other]))
+
+    def _start(data):
+        if cid not in data["convos"]:
+            data["convos"][cid] = {"id": cid, "type": "dm", "members": sorted([user, other]), "owner": None,
+                                   "created": datetime.datetime.now(datetime.timezone.utc).isoformat(), "messages": []}
+        return True
+
+    modify_dms(_start)
+    return jsonify({"ok": True, "id": cid})
+
+
+@app.route("/api/dm/group", methods=["POST"])
+def dm_group():
+    """Create a group chat. Body: {name, members: [usernames]}."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to create a group."}), 401
+    data = request.get_json(silent=True) or {}
+    name = str(data.get("name", "")).strip()[:60]
+    members = [str(m).strip().lower() for m in (data.get("members") or []) if str(m).strip()]
+    members = list(dict.fromkeys([user] + [m for m in members if m != user]))
+    if not name:
+        return jsonify({"ok": False, "error": "Give the group a name."}), 400
+    if len(members) < 2:
+        return jsonify({"ok": False, "error": "Add at least one person."}), 400
+    if len(members) > DM_GROUP_MAX:
+        return jsonify({"ok": False, "error": f"Groups can have up to {DM_GROUP_MAX} people."}), 400
+    missing = [m for m in members if not _user_exists(m)]
+    if missing:
+        return jsonify({"ok": False, "error": f"Not found: {', '.join(missing)}"}), 404
+    cid = "grp-" + secrets.token_urlsafe(8)
+
+    def _create(d):
+        d["convos"][cid] = {"id": cid, "type": "group", "name": name, "owner": user, "members": members,
+                            "created": datetime.datetime.now(datetime.timezone.utc).isoformat(), "messages": []}
+        return True
+
+    modify_dms(_create)
+    return jsonify({"ok": True, "id": cid})
+
+
+@app.route("/api/dm/messages", methods=["GET"])
+def dm_messages():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    c = _convo_for(user, request.args.get("id", ""))
+    if not c:
+        return jsonify({"ok": False, "error": "Conversation not found."}), 404
+    users = _load_json_cached(USERS_FILE, "users.json")
+    avatars = {n: (users.get(n, {}).get("profile", {}) or {}).get("avatar_image", "") for n in c["members"]}
+    msgs = c["messages"][-200:]
+    return jsonify({"ok": True, "convo": _convo_summary(c, user), "messages": [_public_message(m, user) for m in msgs], "avatars": avatars})
+
+
+def _dm_change(user: str, cid: str, fn):
+    """Run fn(convo, data) on a conversation the user belongs to, under the file lock."""
+    result = {}
+
+    def _cb(data):
+        c = data["convos"].get(cid)
+        if not c or user not in c.get("members", []):
+            result["error"] = ("Conversation not found.", 404)
+            return False
+        out = fn(c, data)
+        if isinstance(out, tuple):
+            result["error"] = out
+            return False
+        result["value"] = out
+        return True
+
+    modify_dms(_cb)
+    return result
+
+
+@app.route("/api/dm/message", methods=["POST"])
+def dm_message():
+    """Send a message. Body: {id, message, reply_to?}."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    data = request.get_json(silent=True) or {}
+    message = str(data.get("message", "")).strip()[:1000]
+    if not message:
+        return jsonify({"ok": False, "error": "Message cannot be empty."}), 400
+    now = time.time()
+    if now - _last_post.get(user, 0) < CHAT_MIN_SECONDS / 2:
+        return jsonify({"ok": False, "error": "You're sending messages too fast. Wait a moment."}), 429
+    _last_post[user] = now
+    entry = {"id": secrets.token_urlsafe(8), "username": user, "message": message,
+             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()}
+
+    def _send(c, _d):
+        rid = str(data.get("reply_to") or "")
+        target = next((m for m in c["messages"] if m.get("id") == rid), None) if rid else None
+        if target:
+            entry["reply_to"] = {"id": target["id"], "username": _display(target["username"]), "message": target.get("message", "")[:120]}
+        c["messages"].append(entry)
+        c["messages"] = c["messages"][-DM_MESSAGE_LIMIT:]
+        return True
+
+    r = _dm_change(user, str(data.get("id", "")), _send)
+    if "error" in r:
+        return jsonify({"ok": False, "error": r["error"][0]}), r["error"][1]
+    return jsonify({"ok": True, "message": _public_message(entry, user)})
+
+
+@app.route("/api/dm/react", methods=["POST"])
+def dm_react():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    data = request.get_json(silent=True) or {}
+    mid, emoji = str(data.get("mid", "")), data.get("emoji")
+    if emoji not in CHAT_REACTIONS:
+        return jsonify({"ok": False, "error": "Unknown reaction."}), 400
+
+    def _react(c, _d):
+        m = next((x for x in c["messages"] if x.get("id") == mid), None)
+        if not m:
+            return ("Message not found.", 404)
+        who = m.setdefault("reactions", {}).setdefault(emoji, [])
+        who.remove(user) if user in who else who.append(user)
+        if not who:
+            m["reactions"].pop(emoji, None)
+        return True
+
+    r = _dm_change(user, str(data.get("id", "")), _react)
+    return (jsonify({"ok": False, "error": r["error"][0]}), r["error"][1]) if "error" in r else jsonify({"ok": True})
+
+
+@app.route("/api/dm/delete", methods=["POST"])
+def dm_delete():
+    """Delete one of your own messages."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    data = request.get_json(silent=True) or {}
+    mid = str(data.get("mid", ""))
+
+    def _del(c, _d):
+        m = next((x for x in c["messages"] if x.get("id") == mid), None)
+        if not m or m.get("username") != user:
+            return ("You can only delete your own messages.", 403)
+        c["messages"] = [x for x in c["messages"] if x.get("id") != mid]
+        return True
+
+    r = _dm_change(user, str(data.get("id", "")), _del)
+    return (jsonify({"ok": False, "error": r["error"][0]}), r["error"][1]) if "error" in r else jsonify({"ok": True})
+
+
+@app.route("/api/dm/members", methods=["POST"])
+def dm_members():
+    """Group owner: add/remove people or rename. Body: {id, add?: [], remove?: [], name?}."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    data = request.get_json(silent=True) or {}
+    add = [str(m).strip().lower() for m in (data.get("add") or []) if str(m).strip()]
+    remove = [str(m).strip().lower() for m in (data.get("remove") or [])]
+    missing = [m for m in add if not _user_exists(m)]
+    if missing:
+        return jsonify({"ok": False, "error": f"Not found: {', '.join(missing)}"}), 404
+
+    def _edit(c, _d):
+        if c["type"] != "group":
+            return ("Only group chats have members to manage.", 400)
+        if c.get("owner") != user:
+            return ("Only the group's creator can change it.", 403)
+        members = [m for m in c["members"] if m not in remove or m == user]
+        members += [m for m in add if m not in members]
+        if len(members) > DM_GROUP_MAX:
+            return (f"Groups can have up to {DM_GROUP_MAX} people.", 400)
+        c["members"] = members
+        if data.get("name"):
+            c["name"] = str(data["name"]).strip()[:60]
+        return True
+
+    r = _dm_change(user, str(data.get("id", "")), _edit)
+    return (jsonify({"ok": False, "error": r["error"][0]}), r["error"][1]) if "error" in r else jsonify({"ok": True})
+
+
+@app.route("/api/dm/leave", methods=["POST"])
+def dm_leave():
+    """Leave a group. If the creator leaves, the next member takes over; empty groups are removed."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    cid = str((request.get_json(silent=True) or {}).get("id", ""))
+
+    def _leave(c, d):
+        if c["type"] != "group":
+            return ("You can't leave a direct message.", 400)
+        c["members"] = [m for m in c["members"] if m != user]
+        if not c["members"]:
+            d["convos"].pop(c["id"], None)
+        elif c.get("owner") == user:
+            c["owner"] = c["members"][0]
+        return True
+
+    r = _dm_change(user, cid, _leave)
+    return (jsonify({"ok": False, "error": r["error"][0]}), r["error"][1]) if "error" in r else jsonify({"ok": True})
+
+
+@app.route("/api/dm/report", methods=["POST"])
+def dm_report():
+    """Report a private message. Saves a copy of it and up to 3 messages before and after."""
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in first."}), 401
+    data = request.get_json(silent=True) or {}
+    mid, reason = str(data.get("mid", "")), str(data.get("reason", ""))[:200]
+
+    def _report(c, d):
+        idx = next((i for i, x in enumerate(c["messages"]) if x.get("id") == mid), None)
+        if idx is None:
+            return ("Message not found.", 404)
+        around = c["messages"][max(0, idx - 3): idx + 4]
+        d["reports"].append({
+            "rid": secrets.token_urlsafe(6), "convo": c["id"], "mid": mid, "by": user, "reason": reason,
+            "at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "where": "Direct message" if c["type"] == "dm" else f"Group: {c.get('name', '')}",
+            "context": [{"id": x["id"], "display": _display(x["username"]), "message": x.get("message", ""),
+                         "timestamp": x["timestamp"], "reported": x["id"] == mid} for x in around],
+        })
+        d["reports"] = d["reports"][-200:]
+        return True
+
+    r = _dm_change(user, str(data.get("id", "")), _report)
+    return (jsonify({"ok": False, "error": r["error"][0]}), r["error"][1]) if "error" in r else jsonify({"ok": True})
+
+
+@app.route("/api/dm/reports", methods=["GET", "POST"])
+def dm_reports():
+    """Admin: GET reported private messages (only the saved copies); POST {rid, action: keep|delete}."""
+    user = current_user()
+    if not is_admin(user):
+        return jsonify({"ok": False, "error": "Admins only."}), 403
+    if request.method == "GET":
+        return jsonify({"ok": True, "reports": list(reversed(load_dms()["reports"]))})
+    data = request.get_json(silent=True) or {}
+    rid, action = str(data.get("rid", "")), data.get("action")
+
+    def _handle(d):
+        rep = next((r for r in d["reports"] if r.get("rid") == rid), None)
+        if not rep:
+            return False
+        if action == "delete":
+            c = d["convos"].get(rep["convo"])
+            if c:
+                c["messages"] = [x for x in c["messages"] if x.get("id") != rep["mid"]]
+        d["reports"] = [r for r in d["reports"] if r.get("mid") != rep["mid"]]
+        return True
+
+    if not modify_dms(_handle):
+        return jsonify({"ok": False, "error": "Report not found."}), 404
+    return jsonify({"ok": True})
 
 
 # ---------------------------------------------------------------------------

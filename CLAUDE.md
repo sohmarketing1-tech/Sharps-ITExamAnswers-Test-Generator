@@ -11,7 +11,7 @@ Add a dated line to its Log section each time. The owner relies on this file to 
 
 ## About the site
 - answrit.net is a Flask app (`app.py`). Static files in `static/` are served from the site root (e.g. `/beta/app.js`). The exam data is in `data/`; see EXAM-REBUILD.md for how exams are rebuilt.
-- User accounts, progress and chat live in `users.json`, `user_data.json` and `chat.json` on the server. They are gitignored and must never be committed or overwritten with older copies.
+- User accounts, progress, chat and private messages live in `users.json`, `user_data.json`, `chat.json` and `dms.json` on the server. They are gitignored and must never be committed or overwritten with older copies.
 - **The main site is the redesign** in `static/beta/` (index.html, app.js, app.css; it was named "beta" while it was a preview).
   - `app.py`'s `render_index_html` serves it for `/`, `/study`, `/flashcards`, `/history` and `/exams/<slug>/`.
   - The **classic** design (`static/index.html` + `static/app.js` + `static/style.css`) is retired (since Nov 8, 2026): games are in `static/beta/drills.js`, and Packet Tracer, My Flashcards and Account are in `static/beta/app.js`. See MIGRATION.md.

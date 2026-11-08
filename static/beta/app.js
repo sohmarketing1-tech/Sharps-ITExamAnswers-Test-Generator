@@ -84,6 +84,8 @@ const ICONS = {
     plus: '<path d="M12 5v14M5 12h14"/>',
     trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
     camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    people: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>',
+    pencil: '<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>',
     megaphone: '<path d="M3 11v2a2 2 0 0 0 2 2h1l5 4V5L6 9H5a2 2 0 0 0-2 2zM15 9a3 3 0 0 1 0 6M18 6a7 7 0 0 1 0 12"/>',
     bubble: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.1A8 8 0 1 1 21 12z"/>',
     flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
@@ -251,6 +253,8 @@ const ROUTES = [
     [/^chat$/, viewChatRooms, "chat"],
     [/^chat\/([a-z0-9]+)$/, viewChatRoom, "chat"],
     [/^chat-reports$/, viewChatReports, "chat"],
+    [/^messages$/, viewMessages, "chat"],
+    [/^messages\/([A-Za-z0-9_-]+)$/, viewConvo, "chat"],
     [/^login$/, viewLogin, ""],
     [/^account$/, viewAccount, ""],
 ];
@@ -1541,6 +1545,11 @@ async function refreshChatBadge() {
             total = r.data.rooms.reduce((n, room) => n + unreadFor(room, seen), 0);
             state.chatRooms = r.data.rooms;
         }
+        const d = await api("/api/dm/list");
+        if (d.ok) {
+            state.dmUnread = d.data.convos.reduce((n, c) => n + unreadFor({ id: "dm:" + c.id, recent: c.recent }, chatSeen()), 0);
+            total += state.dmUnread;
+        }
     }
     let badge = $(".tab-badge", tab);
     if (!total) { if (badge) badge.remove(); return; }
@@ -1550,8 +1559,17 @@ async function refreshChatBadge() {
 }
 if (!window.__chatBadgeTimer) window.__chatBadgeTimer = setInterval(() => { if (document.visibilityState === "visible") refreshChatBadge(); }, 60000);
 
+function chatTabs(active) {
+    const dm = state.dmUnread || 0;
+    return state.user ? `<div class="segmented chat-tabs" role="tablist">
+        <a role="tab" href="#/chat" aria-selected="${active === "rooms"}">Rooms</a>
+        <a role="tab" href="#/messages" aria-selected="${active === "messages"}">Messages${dm ? ` <span class="unread sm">${dm > 99 ? "99+" : dm}</span>` : ""}</a>
+    </div>` : "";
+}
+
 async function viewChatRooms(root, _p, _q, alive) {
     const r = await api("/api/chat/rooms");
+    if (state.user) await refreshChatBadge();
     if (!alive()) return;
     if (!r.ok) { root.innerHTML = `<div class="error-box">Couldn't load the chat. Please try again.</div>`; return; }
     if (state.user) ensureSeenStart(r.data.rooms);
@@ -1575,7 +1593,8 @@ async function viewChatRooms(root, _p, _q, alive) {
             <h1 class="page-title">Chat</h1>
             <p>Ask questions, help classmates, and hang out.</p>
         </div>
-        ${!state.user ? `<div class="note"><a href="#/login?next=chat">Log in</a> to join the conversation. You can read without an account.</div>` : ""}
+        ${chatTabs("rooms")}
+        ${!state.user ? `<div class="note"><a href="#/login?next=chat">Log in</a> to join the conversation and message people. You can read the rooms without an account.</div>` : ""}
         <div class="row-list">${rooms.filter((x) => x.id === "announcements" || x.id === "lounge").map(row).join("")}</div>
         <section class="section">
             <div class="section-head"><h2 class="section-title">Course rooms</h2></div>
@@ -1777,15 +1796,286 @@ function askAboutQuestion(filename, q) {
     });
 }
 
+// ─── Direct messages and group chats ────────────────────────────────────────
+function convoAvatar(c) {
+    if (c.type === "group") return `<span class="icon-tile tint-green">${icon("people")}</span>`;
+    return avatarHtml(c.with || c.name, (state.dmAvatars || {})[c.with], "avatar avatar-md");
+}
+
+async function viewMessages(root, _p, _q, alive) {
+    if (!state.user) return needLogin(root, "send messages");
+    const r = await api("/api/dm/list");
+    if (!alive()) return;
+    if (!r.ok) { root.innerHTML = `<div class="error-box">${esc(r.data.error || "Couldn't load your messages.")}</div>`; return; }
+    await refreshChatBadge();
+    const seen = chatSeen() || {};
+    const convos = r.data.convos;
+    const admin = r.data.admin;
+    const hasAdminDm = admin && convos.some((c) => c.type === "dm" && c.with === admin.username);
+    root.innerHTML = `
+        <div class="page-head"><h1 class="page-title">Chat</h1><p>Private messages and group chats.</p></div>
+        ${chatTabs("messages")}
+        <div class="dm-actions">
+            <button type="button" class="btn btn-primary" id="new-dm">${icon("pencil")}New message</button>
+            <button type="button" class="btn btn-secondary" id="new-group">${icon("people")}New group</button>
+        </div>
+        ${admin && !hasAdminDm ? `<button type="button" class="row admin-dm" id="dm-admin">
+            <span class="icon-tile tint-orange">${icon("megaphone")}</span>
+            <span class="row-body"><span class="row-title">Message ${esc(admin.display)} <span class="admin-badge">Admin</span></span><span class="row-sub">Questions, problems or ideas for the site</span></span>
+            ${icon("chevron", "row-chevron")}</button>` : ""}
+        ${convos.length ? `<div class="row-list">${convos.map((c) => {
+            const n = unreadFor({ id: "dm:" + c.id, recent: c.recent }, seen);
+            return `<a class="row room-row" href="#/messages/${esc(c.id)}">
+                ${c.type === "group" ? `<span class="icon-tile tint-green">${icon("people")}</span>` : avatarHtml(c.with || c.name, "", "avatar avatar-md")}
+                <span class="row-body">
+                    <span class="row-title">${esc(c.name)}${c.members.some((m) => m.admin && m.username !== state.user) && c.type === "dm" ? ' <span class="admin-badge">Admin</span>' : ""}</span>
+                    <span class="row-sub room-last">${c.last ? `<b>${esc(c.last.display)}:</b> ${esc(c.last.message)}` : c.type === "group" ? `${c.members.length} people` : "No messages yet"}</span>
+                </span>
+                <span class="room-end">${c.last ? `<span class="room-time">${esc(relDate(c.last.timestamp) === "Today" ? timeOf(c.last.timestamp) : relDate(c.last.timestamp))}</span>` : ""}${n ? `<span class="unread">${n > 99 ? "99+" : n}</span>` : ""}</span>
+            </a>`;
+        }).join("")}</div>` : `<div class="card empty"><p class="muted" style="margin:0">No conversations yet. Start one with <b>New message</b>, or make a group for your class.</p></div>`}`;
+    $("#new-dm", root).onclick = () => pickPeople({ title: "New message", multi: false, onDone: async ([u]) => {
+        const s = await api("/api/dm/start", { method: "POST", body: { username: u } });
+        if (s.ok) go(`messages/${s.data.id}`); else alert(s.data.error || "Couldn't start the conversation.");
+    } });
+    $("#new-group", root).onclick = () => pickPeople({ title: "New group", multi: true, max: 24, askName: true, onDone: async (users, name) => {
+        const g = await api("/api/dm/group", { method: "POST", body: { name, members: users } });
+        if (g.ok) go(`messages/${g.data.id}`); else alert(g.data.error || "Couldn't create the group.");
+    } });
+    const ad = $("#dm-admin", root);
+    if (ad) ad.onclick = async () => {
+        const s = await api("/api/dm/start", { method: "POST", body: { username: admin.username } });
+        if (s.ok) go(`messages/${s.data.id}`);
+    };
+}
+
+// Search for people by username. multi: pick several (for groups).
+function pickPeople({ title, multi, max = 24, askName, exclude = [], onDone }) {
+    const picked = [];
+    openSheet(`
+        <p class="sheet-title">${esc(title)}</p>
+        ${askName ? `<label class="field"><span class="small muted">Group name</span><input class="input" id="pp-name" maxlength="60" placeholder="e.g. Class 531 study group" autocomplete="off"></label>` : ""}
+        <label class="field"><span class="small muted">${multi ? `Add people (up to ${max})` : "To"}</span>
+            <input class="input" id="pp-q" placeholder="Search by username" autocomplete="off" autocapitalize="none" spellcheck="false"></label>
+        ${multi ? `<div class="pp-chips" id="pp-chips"></div>` : ""}
+        <div class="pp-results" id="pp-results"><p class="small muted" style="margin:0">Type a username to search.</p></div>
+        <p class="small" id="pp-msg" style="margin:0;color:var(--red)"></p>
+        <div class="sheet-actions">
+            ${multi ? `<button type="button" class="btn btn-primary btn-block" id="pp-done">${askName ? "Create group" : "Add"}</button>` : ""}
+            <button type="button" class="sheet-btn muted-btn" data-a="cancel">Cancel</button>
+        </div>`, (el, close) => {
+        $("[data-a]", el).onclick = close;
+        const drawChips = () => {
+            const c = $("#pp-chips", el);
+            if (!c) return;
+            c.innerHTML = picked.map((u) => `<button type="button" class="chip" data-rm="${esc(u.username)}">${esc(u.display)} ✕</button>`).join("");
+            $$("[data-rm]", c).forEach((b) => { b.onclick = () => { picked.splice(picked.findIndex((x) => x.username === b.dataset.rm), 1); drawChips(); }; });
+        };
+        let t = null;
+        $("#pp-q", el).oninput = (e) => {
+            clearTimeout(t);
+            t = setTimeout(async () => {
+                const q = e.target.value.trim();
+                const box = $("#pp-results", el);
+                if (!q) { box.innerHTML = '<p class="small muted" style="margin:0">Type a username to search.</p>'; return; }
+                const r = await api(`/api/users/search?q=${encodeURIComponent(q)}`);
+                const users = (r.ok ? r.data.users : []).filter((u) => !exclude.includes(u.username));
+                box.innerHTML = users.length ? users.map((u) => `<button type="button" class="pp-user" data-u="${esc(u.username)}" data-d="${esc(u.display)}">${avatarHtml(u.username, "")}<span>${esc(u.display)}${u.admin ? ' <span class="admin-badge">Admin</span>' : ""}</span></button>`).join("")
+                    : '<p class="small muted" style="margin:0">No one found with that name.</p>';
+                $$(".pp-user", box).forEach((b) => {
+                    b.onclick = () => {
+                        if (!multi) { close(); onDone([b.dataset.u]); return; }
+                        if (picked.some((x) => x.username === b.dataset.u)) return;
+                        if (picked.length >= max) { $("#pp-msg", el).textContent = `You can add up to ${max} people.`; return; }
+                        picked.push({ username: b.dataset.u, display: b.dataset.d });
+                        drawChips();
+                        $("#pp-q", el).value = ""; $("#pp-q", el).focus();
+                    };
+                });
+            }, 200);
+        };
+        const done = $("#pp-done", el);
+        if (done) done.onclick = () => {
+            const name = askName ? $("#pp-name", el).value.trim() : "";
+            if (askName && !name) { $("#pp-msg", el).textContent = "Give the group a name."; return; }
+            if (!picked.length) { $("#pp-msg", el).textContent = "Add at least one person."; return; }
+            close();
+            onDone(picked.map((x) => x.username), name);
+        };
+        setTimeout(() => ($("#pp-name", el) || $("#pp-q", el)).focus(), 50);
+    });
+}
+
+async function viewConvo(root, [cid], _q, alive) {
+    if (!state.user) return needLogin(root, "send messages");
+    const s = { reply: null, sig: "", data: null };
+    root.innerHTML = loading();
+    const first = await api(`/api/dm/messages?id=${encodeURIComponent(cid)}`);
+    if (!alive()) return;
+    if (!first.ok) { root.innerHTML = `<a class="back-link" href="#/messages">${icon("back")}Messages</a><div class="error-box">${esc(first.data.error || "Conversation not found.")}</div>`; return; }
+    const c0 = first.data.convo;
+    root.innerHTML = `
+        <a class="back-link" href="#/messages">${icon("back")}Messages</a>
+        <div class="page-head room-head convo-head">
+            <div><h1 class="page-title" id="convo-title"></h1><p id="convo-sub"></p></div>
+            ${c0.type === "group" ? `<button type="button" class="btn btn-secondary" id="members-btn">${icon("people")}Members</button>` : ""}
+        </div>
+        <div class="chat-list" id="chat-list" aria-live="polite"></div>
+        <form class="chat-compose" id="chat-form">
+            <div class="reply-chip" id="reply-chip" hidden></div>
+            <div class="compose-row">
+                <label class="sr-only" for="chat-input">Message</label>
+                <input class="input" id="chat-input" maxlength="1000" autocomplete="off" placeholder="Message…">
+                <button class="send-btn" type="submit" aria-label="Send message">${icon("send")}</button>
+            </div>
+        </form>`;
+    const nearBottom = () => window.innerHeight + window.scrollY >= document.body.scrollHeight - 160;
+    function draw(d, scroll) {
+        const sig = JSON.stringify([d.messages.map((m) => [m.id, m.reactions]), d.convo.members.length, d.convo.name]);
+        const wasBottom = nearBottom();
+        s.data = d;
+        if (d.messages.length) markRoomSeen("dm:" + cid, d.messages[d.messages.length - 1].timestamp);
+        if (sig === s.sig && !scroll) return;
+        s.sig = sig;
+        const c = d.convo;
+        $("#convo-title", root).textContent = c.name;
+        $("#convo-sub", root).innerHTML = c.type === "group" ? `${c.members.length} people · ${esc(c.members.map((m) => m.display).slice(0, 4).join(", "))}${c.members.length > 4 ? "…" : ""}`
+            : (c.members.find((m) => m.username !== state.user) || {}).admin ? 'Private message · <span class="admin-badge">Admin</span>' : "Private message";
+        $("#chat-list", root).innerHTML = d.messages.length ? d.messages.map((m) => messageHtml(m, d.avatars)).join("")
+            : `<div class="card empty"><p class="muted" style="margin:0">Say hi! Only the people in this conversation can see it.</p></div>`;
+        $$("[data-act]", root).forEach((b) => { b.onclick = (e) => { if (e.target.closest(".q-card")) return; actions(b.dataset.act); }; });
+        $$("[data-react]", root).forEach((b) => { b.onclick = () => react(b.dataset.react, b.dataset.emoji); });
+        if (scroll || wasBottom) window.scrollTo(0, document.body.scrollHeight);
+        refreshChatBadge();
+    }
+    async function refresh(scroll) {
+        const r = await api(`/api/dm/messages?id=${encodeURIComponent(cid)}`);
+        if (!alive()) return stopChatPolling();
+        if (r.ok) draw(r.data, scroll);
+        else if (r.status === 404) go("messages");
+    }
+    async function react(mid, emoji) {
+        await api("/api/dm/react", { method: "POST", body: { id: cid, mid, emoji } });
+        refresh(false);
+    }
+    function actions(mid) {
+        const m = s.data.messages.find((x) => x.id === mid);
+        if (!m) return;
+        openSheet(`
+            <p class="sheet-title">${esc(m.display)}: ${esc((m.message || "").slice(0, 80))}</p>
+            <div class="emoji-row">${["👍", "❤️", "😂", "🙏"].map((e) => `<button type="button" class="emoji-btn" data-e="${e}" aria-label="React ${e}">${e}</button>`).join("")}</div>
+            <div class="sheet-actions">
+                <button type="button" class="sheet-btn" data-a="reply">${icon("reply")}Reply</button>
+                ${!m.mine ? `<button type="button" class="sheet-btn" data-a="report">${icon("flag")}Report to AnswrIT</button>` : ""}
+                ${m.mine ? `<button type="button" class="sheet-btn danger" data-a="delete">${icon("trash")}Delete</button>` : ""}
+                <button type="button" class="sheet-btn muted-btn" data-a="cancel">Cancel</button>
+            </div>`, (el, close) => {
+            $$("[data-e]", el).forEach((b) => { b.onclick = () => { close(); react(mid, b.dataset.e); }; });
+            $$("[data-a]", el).forEach((b) => {
+                b.onclick = async () => {
+                    const a = b.dataset.a;
+                    close();
+                    if (a === "reply") {
+                        s.reply = m;
+                        const chip = $("#reply-chip", root);
+                        chip.hidden = false;
+                        chip.innerHTML = `${icon("reply")}<span>Replying to <b>${esc(m.display)}</b></span><button type="button" aria-label="Cancel reply">${icon("close")}</button>`;
+                        $("button", chip).onclick = () => { s.reply = null; chip.hidden = true; };
+                        $("#chat-input", root).focus();
+                    } else if (a === "report") {
+                        const reason = prompt("Why are you reporting this? The AnswrIT admin will see this message and a few around it.");
+                        if (reason === null) return;
+                        const r = await api("/api/dm/report", { method: "POST", body: { id: cid, mid, reason } });
+                        alert(r.ok ? "Thanks. The AnswrIT team will take a look." : (r.data.error || "Couldn't send the report."));
+                    } else if (a === "delete") {
+                        if (!confirm("Delete this message?")) return;
+                        await api("/api/dm/delete", { method: "POST", body: { id: cid, mid } });
+                        refresh(true);
+                    }
+                };
+            });
+        });
+    }
+    function members() {
+        const c = s.data.convo;
+        const owner = c.owner === state.user;
+        openSheet(`
+            <p class="sheet-title">${esc(c.name)} · ${c.members.length} of 25</p>
+            <div class="pp-results">${c.members.map((m) => `<div class="pp-user static">${avatarHtml(m.username, (s.data.avatars || {})[m.username])}<span>${esc(m.display)}${m.username === c.owner ? ' <span class="admin-badge">Creator</span>' : ""}${m.username === state.user ? " (you)" : ""}</span>
+                ${owner && m.username !== state.user ? `<button type="button" class="pp-remove" data-rm="${esc(m.username)}" aria-label="Remove ${esc(m.display)}">${icon("close")}</button>` : ""}</div>`).join("")}</div>
+            <div class="sheet-actions">
+                ${owner ? `<button type="button" class="sheet-btn" data-a="add">${icon("people")}Add people</button><button type="button" class="sheet-btn" data-a="rename">${icon("pencil")}Rename group</button>` : ""}
+                <button type="button" class="sheet-btn danger" data-a="leave">Leave group</button>
+                <button type="button" class="sheet-btn muted-btn" data-a="cancel">Close</button>
+            </div>`, (el, close) => {
+            $$("[data-rm]", el).forEach((b) => { b.onclick = async () => {
+                if (!confirm("Remove this person from the group?")) return;
+                await api("/api/dm/members", { method: "POST", body: { id: cid, remove: [b.dataset.rm] } });
+                close(); await refresh(true); members();
+            }; });
+            $$("[data-a]", el).forEach((b) => { b.onclick = async () => {
+                const a = b.dataset.a;
+                close();
+                if (a === "add") {
+                    pickPeople({ title: "Add people", multi: true, max: 25 - c.members.length, exclude: c.members.map((m) => m.username), onDone: async (users) => {
+                        const r = await api("/api/dm/members", { method: "POST", body: { id: cid, add: users } });
+                        if (!r.ok) alert(r.data.error || "Couldn't add them.");
+                        refresh(true);
+                    } });
+                } else if (a === "rename") {
+                    const name = prompt("New group name:", c.name);
+                    if (name && name.trim()) { await api("/api/dm/members", { method: "POST", body: { id: cid, name: name.trim() } }); refresh(true); }
+                } else if (a === "leave") {
+                    if (!confirm("Leave this group? You won't see its messages anymore.")) return;
+                    await api("/api/dm/leave", { method: "POST", body: { id: cid } });
+                    go("messages");
+                }
+            }; });
+        });
+    }
+    draw(first.data, true);
+    const mb = $("#members-btn", root);
+    if (mb) mb.onclick = members;
+    state.chatTimer = setInterval(() => refresh(false), 5000);
+    $("#chat-form", root).onsubmit = async (e) => {
+        e.preventDefault();
+        const input = $("#chat-input", root);
+        const message = input.value.trim();
+        if (!message) return;
+        input.value = "";
+        const body = { id: cid, message };
+        if (s.reply) body.reply_to = s.reply.id;
+        const r = await api("/api/dm/message", { method: "POST", body });
+        if (!r.ok) { input.value = message; alert(r.data.error || "Couldn't send your message."); return; }
+        s.reply = null;
+        $("#reply-chip", root).hidden = true;
+        await refresh(true);
+        input.focus();
+    };
+}
+
 async function viewChatReports(root, _p, _q, alive) {
     if (!state.isAdmin) return go("chat");
-    const r = await api("/api/chat/reports");
+    const [r, dr] = await Promise.all([api("/api/chat/reports"), api("/api/dm/reports")]);
     if (!alive()) return;
     const list = r.ok ? r.data.reports : [];
+    const dms = dr.ok ? dr.data.reports : [];
     const roomName = (id) => ((state.chatRooms || []).find((x) => x.id === id) || {}).name || id;
     root.innerHTML = `
         <a class="back-link" href="#/chat">${icon("back")}Chat</a>
-        <div class="page-head"><h1 class="page-title">Reported messages</h1><p>${list.length ? `${list.length} message${list.length === 1 ? "" : "s"} reported` : "Nothing reported. All clear!"}</p></div>
+        <div class="page-head"><h1 class="page-title">Reported messages</h1><p>${list.length + dms.length ? `${list.length + dms.length} report${list.length + dms.length === 1 ? "" : "s"}` : "Nothing reported. All clear!"}</p></div>
+        ${dms.length ? `<section class="section"><div class="section-head"><h2 class="section-title">Private messages</h2></div>
+            <p class="small muted" style="margin:0">You only see the reported message and a few around it, saved when it was reported.</p>
+            <div class="row-list">${dms.map((g) => `
+            <div class="card report-card">
+                <span class="small muted">${esc(g.where)} · reported by ${esc(g.by)} · ${esc(relDate(g.at))}${g.reason ? ` · “${esc(g.reason)}”` : ""}</span>
+                <div class="report-context">${g.context.map((x) => `<p class="${x.reported ? "reported" : ""}"><b>${esc(x.display)}:</b> ${esc(x.message)}</p>`).join("")}</div>
+                <div class="btn-row">
+                    <button type="button" class="btn btn-danger" data-dmdel="${esc(g.rid)}">Delete message</button>
+                    <button type="button" class="btn btn-secondary" data-dmok="${esc(g.rid)}">Keep it</button>
+                </div>
+            </div>`).join("")}</div></section>
+            ${list.length ? '<div class="section-head"><h2 class="section-title">Chat rooms</h2></div>' : ""}` : ""}
         <div class="row-list">${list.map((g) => `
             <div class="card report-card">
                 <span class="small muted">${esc(roomName(g.room))} · reported ${g.count} time${g.count === 1 ? "" : "s"}${g.reasons.length ? ` · “${esc(g.reasons.join("”, “"))}”` : ""}</span>
@@ -1797,6 +2087,8 @@ async function viewChatReports(root, _p, _q, alive) {
             </div>`).join("")}</div>`;
     $$("[data-del]", root).forEach((b) => { b.onclick = async () => { await api("/api/chat/delete", { method: "POST", body: { id: b.dataset.del } }); router(); }; });
     $$("[data-ok]", root).forEach((b) => { b.onclick = async () => { await api("/api/chat/reports", { method: "POST", body: { id: b.dataset.ok } }); router(); }; });
+    $$("[data-dmdel]", root).forEach((b) => { b.onclick = async () => { await api("/api/dm/reports", { method: "POST", body: { rid: b.dataset.dmdel, action: "delete" } }); router(); }; });
+    $$("[data-dmok]", root).forEach((b) => { b.onclick = async () => { await api("/api/dm/reports", { method: "POST", body: { rid: b.dataset.dmok, action: "keep" } }); router(); }; });
 }
 
 // ─── Login & account ────────────────────────────────────────────────────────
