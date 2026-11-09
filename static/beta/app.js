@@ -752,6 +752,13 @@ function runQuiz(root, { quiz, heading, alive, filename }) {
             const action = s.checked
                 ? `<button type="button" class="btn btn-primary btn-block" id="next-btn">${last ? "See results" : "Next question"}</button>`
                 : `<button type="button" class="btn btn-primary btn-block" id="check-btn" ${isAnswered(q, sel) ? "" : "disabled"}>Check answer</button>`;
+            // Redrawing the question used to reload its pictures. For a moment they had no height,
+            // the page got shorter and the browser jumped to the top. Keep the loaded pictures
+            // and the scroll position across redraws of the same question.
+            const sameQuestion = s.shownId === q.id;
+            const keepY = window.scrollY;
+            const oldImgs = sameQuestion ? $$("img", root) : [];
+            s.shownId = q.id;
             root.innerHTML = `
                 <div class="runner-head">
                     <button type="button" class="icon-btn" id="quit-btn" aria-label="Leave ${esc(heading)}">${icon("close")}</button>
@@ -766,6 +773,14 @@ function runQuiz(root, { quiz, heading, alive, filename }) {
                 ${feedback}
                 ${filename ? `<button type="button" class="ask-link" id="ask-btn">${icon("bubble")}Ask about this question</button>` : ""}
                 <div class="runner-actions">${action}</div>`;
+            if (sameQuestion) {
+                const spare = oldImgs.slice();
+                $$("img", root).forEach((img) => {
+                    const at = spare.findIndex((o) => o.getAttribute("src") === img.getAttribute("src") && o.className === img.className);
+                    if (at >= 0) { img.replaceWith(spare[at]); spare.splice(at, 1); }
+                });
+                window.scrollTo(0, keepY);
+            }
 
             $("#quit-btn", root).onclick = quit;
             const ask = $("#ask-btn", root);
