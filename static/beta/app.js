@@ -700,12 +700,54 @@ function isCorrect(q, sel) {
     return want.size === got.size && [...want].every((x) => got.has(x));
 }
 
+// ─── Memory hints (preview) ─────────────────────────────────────────────────
+// Each hint links a clue in the question to a key word in the right answer. A key marked
+// "unique" appears in no other answer choice in the whole exam. Hints are only shown on a
+// device that opened answrit.net/?hintpreview=1 (turn off with ?hintpreview=0).
+const HINT_PREVIEW_KEY = "answrit:hintsPreview";
+(function hintPreviewSwitch() {
+    const v = new URLSearchParams(location.search).get("hintpreview");
+    try {
+        if (v === "1") localStorage.setItem(HINT_PREVIEW_KEY, "1");
+        if (v === "0") localStorage.removeItem(HINT_PREVIEW_KEY);
+    } catch (e) { /* storage blocked */ }
+    if (v !== null) history.replaceState(null, "", location.pathname + location.hash);
+})();
+function hintPreviewOn() { try { return localStorage.getItem(HINT_PREVIEW_KEY) === "1"; } catch (e) { return false; } }
+async function loadHints(filename) {
+    if (!hintPreviewOn()) return null;
+    try {
+        const res = await fetch(`/beta/hints/${encodeURIComponent(filename)}?v=1`);
+        return res.ok ? await res.json() : null;
+    } catch (e) { return null; }
+}
+function hintCardHtml(h, open) {
+    const keys = h.keys.map((k) => `<span class="hint-key">${esc(k.k)}${k.unique ? '<span class="hint-star" title="No other answer in this exam has this">★</span>' : ""}</span>`).join('<span class="hint-plus">+</span>');
+    const anyUnique = h.keys.some((k) => k.unique);
+    return `<div class="hint-card ${open ? "after" : ""}" role="note">
+        <div class="hint-title">${icon("star")}Memory hook</div>
+        <div class="hint-link"><span class="hint-cue">${esc(h.cue)}</span><span class="hint-arrow" aria-label="goes with">→</span>${keys}</div>
+        <p class="hint-tip">${esc(h.tip)}</p>
+        ${anyUnique ? `<p class="hint-legend">★ No other answer in this exam has this word</p>` : ""}
+    </div>`;
+}
+/** Wraps the hint's key words inside an answer's text (already escaped) in <mark>. */
+function markKeys(escaped, h) {
+    if (!h) return escaped;
+    let out = escaped;
+    for (const k of h.keys) {
+        const e = esc(k.k).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        out = out.replace(new RegExp(`(^|[^A-Za-z0-9])(${e})(?![A-Za-z0-9])`, "i"), "$1<mark class=\"hint-mark\">$2</mark>");
+    }
+    return out;
+}
+
 /** Runs a list of questions one at a time with instant feedback.
  *  Resolves with { answers, durationSeconds } or null if the user quits. */
-function runQuiz(root, { quiz, heading, alive, filename }) {
+function runQuiz(root, { quiz, heading, alive, filename, hints }) {
     return new Promise((resolve) => {
         document.body.classList.add("focus-mode");
-        const s = { index: 0, answers: {}, checked: false, started: Date.now(), boards: {} };
+        const s = { index: 0, answers: {}, checked: false, started: Date.now(), boards: {}, hintOpen: {} };
         const board = (q) => s.boards[q.id] || (s.boards[q.id] = { placed: {}, selected: null, order: (q.terms || []).slice() });
 
         const quit = () => {
@@ -719,6 +761,7 @@ function runQuiz(root, { quiz, heading, alive, filename }) {
             const q = quiz[s.index];
             const multi = !isMatching(q) && correctList(q).length > 1;
             const sel = s.answers[q.id];
+            const hint = hints ? hints[String(q.id)] : null;
             const total = quiz.length;
             const done = Math.round((s.index / total) * 100);
             let body = "";
@@ -737,7 +780,7 @@ function runQuiz(root, { quiz, heading, alive, filename }) {
                     return `<button type="button" class="option ${cls}" data-i="${i}" aria-pressed="${picked}" ${s.checked ? "disabled" : ""}>
                         <span class="mark">${icon(s.checked && !right.includes(opt.trim()) && picked ? "close" : "check")}</span>
                         ${q.option_images && q.option_images[opt] ? `<img class="option-img" src="${esc(q.option_images[opt])}" alt="" loading="lazy">` : ""}
-                        <span class="option-text">${esc(opt)}</span>
+                        <span class="option-text">${s.checked && right.includes(opt.trim()) ? markKeys(esc(opt), hint) : esc(opt)}</span>
                     </button>`;
                 }).join("")}</div>`;
             }
@@ -771,6 +814,7 @@ function runQuiz(root, { quiz, heading, alive, filename }) {
                 ${q.image ? `<img class="question-img" src="${esc(q.image)}" alt="Diagram for this question" loading="lazy">` : ""}
                 ${body}
                 ${feedback}
+                ${hint ? (s.checked || s.hintOpen[q.id] ? hintCardHtml(hint, s.checked) : `<button type="button" class="hint-btn" id="hint-btn">${icon("star")}Show memory hint</button>`) : ""}
                 ${filename ? `<button type="button" class="ask-link" id="ask-btn">${icon("bubble")}Ask about this question</button>` : ""}
                 <div class="runner-actions">${action}</div>`;
             if (sameQuestion) {
@@ -783,6 +827,8 @@ function runQuiz(root, { quiz, heading, alive, filename }) {
             }
 
             $("#quit-btn", root).onclick = quit;
+            const hb = $("#hint-btn", root);
+            if (hb) hb.onclick = () => { s.hintOpen[q.id] = true; render(); };
             const ask = $("#ask-btn", root);
             if (ask) ask.onclick = () => askAboutQuestion(filename, q);
             $$(".option", root).forEach((btn) => {
@@ -883,7 +929,8 @@ async function viewPractice(root, [filename], query, alive) {
     // A retake uses the same questions, mixed into a new order
     const quiz = shuffleChoices(ids ? shuffle(r.data.quiz) : r.data.quiz, filename);
     const title = examFullName(filename);
-    const outcome = await runQuiz(root, { quiz, heading: `Practice test · ${title}`, alive, filename });
+    const hints = await loadHints(filename);
+    const outcome = await runQuiz(root, { quiz, heading: `Practice test · ${title}`, alive, filename, hints });
     if (!outcome) return alive() && go(`exam/${encodeURIComponent(filename)}`);
     root.innerHTML = loading();
     const scored = await api("/api/score", { method: "POST", body: { quiz, answers: outcome.answers, filename, title } });
@@ -967,7 +1014,8 @@ async function viewMastery(root, [filename], _q, alive) {
         };
         return;
     }
-    const outcome = await runQuiz(root, { quiz, heading: `Mastery · ${examFullName(filename)}`, alive, filename });
+    const hints = await loadHints(filename);
+    const outcome = await runQuiz(root, { quiz, heading: `Mastery · ${examFullName(filename)}`, alive, filename, hints });
     if (!outcome) return alive() && go(`exam/${enc}`);
     root.innerHTML = loading();
     const sub = await api("/api/mastery/submit", { method: "POST", body: { filename, quiz, answers: outcome.answers } });
