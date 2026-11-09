@@ -1173,8 +1173,16 @@ def generate_test():
     questions = get_questions_for_test(filename)
     if not questions:
         return jsonify({"error": "No questions loaded. Paste an itexamanswers.net URL and click Scrape."}), 503
-    count = max(1, min(n, len(questions)))
-    selected = random.sample(questions, count)
+    ids = [x for x in request.args.get("ids", "").split(",") if x.strip()]
+    if ids:
+        # "Retake same test": the same questions, in the same order as last time.
+        by_id = {str(q["id"]): q for q in questions}
+        selected = [by_id[i.strip()] for i in ids if i.strip() in by_id]
+        if not selected:
+            return jsonify({"error": "Those questions aren't in this exam anymore."}), 404
+    else:
+        count = max(1, min(n, len(questions)))
+        selected = random.sample(questions, count)
     quiz = []
     for q in selected:
         item = {

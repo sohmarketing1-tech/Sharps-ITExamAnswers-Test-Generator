@@ -73,6 +73,7 @@ const ICONS = {
     close: '<path d="M6 6l12 12M18 6L6 18"/>',
     star: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
     check: '<path d="M20 6L9 17l-5-5"/>',
+    refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/>',
     test: '<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
     cards: '<rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 6V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/>',
     flame: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.2 1.2-3.6 2.4-4.6.3 1.6 1.1 2.6 2.1 3.1C11 9 11.2 5.6 12 3z"/>',
@@ -848,7 +849,8 @@ async function viewPractice(root, [filename], query, alive) {
     const meta = examMeta(filename);
     if (!meta) return go("study");
     const n = Math.max(1, Math.min(Number(query.get("n")) || 10, meta.count));
-    const r = await api(`/api/test?n=${n}&filename=${encodeURIComponent(filename)}`);
+    const ids = (query.get("ids") || "").trim();
+    const r = await api(`/api/test?n=${n}&filename=${encodeURIComponent(filename)}${ids ? `&ids=${encodeURIComponent(ids)}` : ""}`);
     if (!r.ok || !(r.data.quiz || []).length) {
         root.innerHTML = `<div class="error-box">${esc(r.data.error || "Couldn't load questions.")}</div>`;
         return;
@@ -879,6 +881,7 @@ async function viewPractice(root, [filename], query, alive) {
 
 function resultsHtml(result, { backHref, retakeHref }) {
     const wrong = result.results.filter((x) => !x.is_correct);
+    const sameIds = result.results.length && result.results.every((x) => x.id != null) ? result.results.map((x) => encodeURIComponent(x.id)).join(",") : "";
     const fmt = (v) => Array.isArray(v) ? v.join(" · ") : (v && typeof v === "object") ? Object.entries(v).map(([k, val]) => `${k} → ${val}`).join("; ") : String(v || "");
     return `
         <div class="card result-hero">
@@ -886,7 +889,8 @@ function resultsHtml(result, { backHref, retakeHref }) {
             <div class="result-score">${pct(result.score)}%</div>
             <p class="muted" style="margin:0">${result.correct} of ${result.total} correct</p>
             <div class="btn-row" style="width:100%">
-                ${retakeHref ? `<a class="btn btn-primary" href="${retakeHref}">Try again</a>` : ""}
+                ${retakeHref && sameIds ? `<a class="btn btn-primary btn-wide" href="${retakeHref.split("?")[0]}?ids=${sameIds}">${icon("refresh")}Retake same test</a>` : ""}
+                ${retakeHref ? `<a class="btn ${sameIds ? "btn-secondary" : "btn-primary"}" href="${retakeHref}">New questions</a>` : ""}
                 <a class="btn btn-secondary" href="${backHref}">Done</a>
             </div>
         </div>

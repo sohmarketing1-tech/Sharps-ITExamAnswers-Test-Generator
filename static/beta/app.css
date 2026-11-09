@@ -756,3 +756,5 @@ button.pp-user:hover { background: var(--bg); }
 .profile-stats div { background: var(--bg); border-radius: 14px; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
 .profile-stats strong { font-family: var(--display); font-size: 22px; }
 .profile-stats span { font-size: 13px; color: var(--muted); }
+
+.btn-row .btn.btn-wide { flex-basis: 100%; }
