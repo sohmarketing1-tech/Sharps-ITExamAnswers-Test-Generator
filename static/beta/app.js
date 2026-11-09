@@ -855,7 +855,8 @@ async function viewPractice(root, [filename], query, alive) {
         root.innerHTML = `<div class="error-box">${esc(r.data.error || "Couldn't load questions.")}</div>`;
         return;
     }
-    const quiz = shuffleChoices(r.data.quiz, filename);
+    // A retake uses the same questions, mixed into a new order
+    const quiz = shuffleChoices(ids ? shuffle(r.data.quiz) : r.data.quiz, filename);
     const title = examFullName(filename);
     const outcome = await runQuiz(root, { quiz, heading: `Practice test · ${title}`, alive, filename });
     if (!outcome) return alive() && go(`exam/${encodeURIComponent(filename)}`);
