@@ -638,8 +638,8 @@ function makeVlanLab(ver) {
     };
 
     return {
-        title: "Skills Practice: VLANs & Inter-VLAN Routing",
-        sub: "Router-on-a-stick, trunks, native/management VLAN, SSH and IPv6",
+        title: "CCNA 2 Skills PT 1",
+        sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6",
         course: "CCNA 2",
         file: ver === 1 ? "progress_check_1_practice.pka" : `progress_check_1_practice_v${ver}.pka`,
         ver, P, wide: true, countUp: true,
@@ -2496,9 +2496,9 @@ function mount(root, labId, { alive } = {}) {
 }
 
 window.AnswritPtLab = {
+    // Only the CCNA 2 labs are listed. (The CCNA 1 final-practice lab still works at its own link.)
     list: [
-        ...Object.entries(LABS).map(([id, l]) => ({ id, title: l.title, sub: l.sub, course: l.course })),
-        { id: VLAN_LAB, title: "Skills Practice: VLANs & Inter-VLAN Routing", sub: "Router-on-a-stick, trunks, native VLAN, SSH and IPv6, in several versions", course: "CCNA 2" },
+        { id: VLAN_LAB, title: "CCNA 2 Skills PT 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6, in several versions", course: "CCNA 2" },
     ],
     get: (id) => getLab(id),
     mount,

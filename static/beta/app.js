@@ -1222,10 +1222,10 @@ function loadPtLab() {
     if (!ptLabLoading) {
         ptLabLoading = new Promise((resolve) => {
             const css = document.createElement("link");
-            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=9";
+            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=10";
             document.head.appendChild(css);
             const js = document.createElement("script");
-            js.src = "/beta/ptlab.js?v=9";
+            js.src = "/beta/ptlab.js?v=10";
             js.onload = () => resolve(true);
             js.onerror = () => { ptLabLoading = null; resolve(false); };
             document.head.appendChild(js);
@@ -1244,9 +1244,9 @@ async function viewPacketTracer(root, _p, _q, alive) {
     root.innerHTML = `
         <a class="back-link" href="#/study">${icon("back")}Study</a>
         <div class="page-head">
-            <span class="eyebrow">${preview ? "CCNA 1 &amp; CCNA 2" : "CCNA 1"}</span>
+            <span class="eyebrow">${preview ? "CCNA 2" : "CCNA 1"}</span>
             <h1 class="page-title">Packet Tracer practice</h1>
-            <p>${preview ? "Practice labs that look and grade like Packet Tracer, plus subnetting and a CLI simulator." : "Practice the subnetting and CLI commands you need for the PT final."}</p>
+            <p>${preview ? "Skills labs that look and grade like the real Packet Tracer, plus subnetting and a CLI simulator." : "Practice the subnetting and CLI commands you need for the PT final."}</p>
         </div>
         ${preview ? `<div class="note">Preview: only this device sees the labs. <a href="/?ptpreview=0#/packet-tracer">Turn off</a></div>` : ""}
         <div class="row-list">
