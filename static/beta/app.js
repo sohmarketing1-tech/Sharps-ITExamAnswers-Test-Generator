@@ -706,7 +706,7 @@ function runQuiz(root, { quiz, heading, alive, filename }) {
     return new Promise((resolve) => {
         document.body.classList.add("focus-mode");
         const s = { index: 0, answers: {}, checked: false, started: Date.now(), boards: {} };
-        const board = (q) => s.boards[q.id] || (s.boards[q.id] = { placed: {}, selected: null, order: shuffle(q.terms || []) });
+        const board = (q) => s.boards[q.id] || (s.boards[q.id] = { placed: {}, selected: null, order: (q.terms || []).slice() });
 
         const quit = () => {
             const answered = Object.keys(s.answers).length;
@@ -840,21 +840,31 @@ function saveChoiceOrders(map) {
 }
 function shuffleChoices(quiz, filename) {
     const orders = loadChoiceOrders();
-    const out = quiz.map((q) => {
-        const opts = q.options || [];
-        if (isMatching(q) || opts.length < 2) return q;
-        const sorted = opts.slice().sort();
-        const key = `${filename}|${q.id}`;
+    // Shuffle one list so it never comes out in the same order as last time.
+    const fresh = (list, key) => {
+        if (list.length < 2) return list.slice();
+        const sorted = list.slice().sort();
         const last = orders[key];
         let next, sig;
         for (let tries = 0; tries < 12; tries++) {
-            next = shuffle(opts);
+            next = shuffle(list);
             sig = next.map((o) => sorted.indexOf(o)).join(",");
             if (sig !== last) break;
         }
         delete orders[key];
         orders[key] = sig;
-        return { ...q, options: next };
+        return next;
+    };
+    const out = quiz.map((q) => {
+        const key = `${filename}|${q.id}`;
+        if (isMatching(q)) {
+            // Both sides of the board: the items on the left and the answer boxes on the right.
+            const boxes = matchTargets(q).map((tg) => tg.label);
+            return { ...q, terms: fresh(q.terms || [], `${key}|L`), definitions: fresh(boxes, `${key}|R`) };
+        }
+        const opts = q.options || [];
+        if (opts.length < 2) return q;
+        return { ...q, options: fresh(opts, key) };
     });
     saveChoiceOrders(orders);
     return out;
