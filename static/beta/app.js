@@ -700,22 +700,15 @@ function isCorrect(q, sel) {
     return want.size === got.size && [...want].every((x) => got.has(x));
 }
 
-// ─── Memory hints (preview) ─────────────────────────────────────────────────
+// ─── Memory hints ───────────────────────────────────────────────────────────
 // Each hint links a clue in the question to a key word in the right answer. A key marked
-// "unique" appears in no other answer choice in the whole exam. Hints are only shown on a
-// device that opened answrit.net/?hintpreview=1 (turn off with ?hintpreview=0).
-const HINT_PREVIEW_KEY = "answrit:hintsPreview";
-(function hintPreviewSwitch() {
-    const v = new URLSearchParams(location.search).get("hintpreview");
-    try {
-        if (v === "1") localStorage.setItem(HINT_PREVIEW_KEY, "1");
-        if (v === "0") localStorage.removeItem(HINT_PREVIEW_KEY);
-    } catch (e) { /* storage blocked */ }
-    if (v !== null) history.replaceState(null, "", location.pathname + location.hash);
-})();
-function hintPreviewOn() { try { return localStorage.getItem(HINT_PREVIEW_KEY) === "1"; } catch (e) { return false; } }
+// "unique" appears in no other answer choice in the whole exam. Hint files live in
+// static/beta/hints/<exam>.json; add an exam's file name here when its hints are written.
+const HINT_EXAMS = new Set([
+    "ccna-2-v7-modules-1-4-switching-concepts-vlans-and-intervlan-routing-exam-answers.json",
+]);
 async function loadHints(filename) {
-    if (!hintPreviewOn()) return null;
+    if (!HINT_EXAMS.has(filename)) return null;
     try {
         const res = await fetch(`/beta/hints/${encodeURIComponent(filename)}?v=1`);
         return res.ok ? await res.json() : null;
