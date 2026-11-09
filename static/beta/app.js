@@ -1203,19 +1203,57 @@ const PT_CLI_TASKS = [
         { prompt: "Router(config-line)#", expect: "login", response: "", nextPrompt: "Router(config-line)#" }] },
 ];
 
-async function viewPacketTracer(root) {
+// ─── Packet Tracer labs (preview) ───────────────────────────────────────────
+// The full Packet Tracer-style labs are only shown on devices that opened answrit.net/?ptpreview=1
+// (turn off with ?ptpreview=0). Their files (ptlab.js/css) load on demand for those devices only.
+const PT_PREVIEW_KEY = "answrit:ptPreview";
+(function ptPreviewSwitch() {
+    const v = new URLSearchParams(location.search).get("ptpreview");
+    try {
+        if (v === "1") localStorage.setItem(PT_PREVIEW_KEY, "1");
+        if (v === "0") localStorage.removeItem(PT_PREVIEW_KEY);
+    } catch (e) { /* storage blocked */ }
+    if (v !== null) history.replaceState(null, "", location.pathname + location.hash);
+})();
+function ptPreviewOn() { try { return localStorage.getItem(PT_PREVIEW_KEY) === "1"; } catch (e) { return false; } }
+let ptLabLoading = null;
+function loadPtLab() {
+    if (window.AnswritPtLab) return Promise.resolve(true);
+    if (!ptLabLoading) {
+        ptLabLoading = new Promise((resolve) => {
+            const css = document.createElement("link");
+            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=9";
+            document.head.appendChild(css);
+            const js = document.createElement("script");
+            js.src = "/beta/ptlab.js?v=9";
+            js.onload = () => resolve(true);
+            js.onerror = () => { ptLabLoading = null; resolve(false); };
+            document.head.appendChild(js);
+        });
+    }
+    return ptLabLoading;
+}
+
+async function viewPacketTracer(root, _p, _q, alive) {
+    const preview = ptPreviewOn();
+    if (preview) {
+        root.innerHTML = loading();
+        await loadPtLab();
+        if (alive && !alive()) return;
+    }
     root.innerHTML = `
         <a class="back-link" href="#/study">${icon("back")}Study</a>
         <div class="page-head">
-            <span class="eyebrow">CCNA 1</span>
+            <span class="eyebrow">${preview ? "CCNA 1 &amp; CCNA 2" : "CCNA 1"}</span>
             <h1 class="page-title">Packet Tracer practice</h1>
-            <p>Practice the subnetting and CLI commands you need for the PT final.</p>
+            <p>${preview ? "Practice labs that look and grade like Packet Tracer, plus subnetting and a CLI simulator." : "Practice the subnetting and CLI commands you need for the PT final."}</p>
         </div>
+        ${preview ? `<div class="note">Preview: only this device sees the labs. <a href="/?ptpreview=0#/packet-tracer">Turn off</a></div>` : ""}
         <div class="row-list">
-            ${((window.AnswritPtLab && window.AnswritPtLab.list) || []).map((l) => `
+            ${((preview && window.AnswritPtLab && window.AnswritPtLab.list) || []).map((l) => `
             <a class="row" href="#/packet-tracer/lab/${esc(l.id)}">
                 <span class="icon-tile tint-orange">${icon("network")}</span>
-                <span class="row-body"><span class="row-title">${esc(l.title)} <span class="badge-new">Lab</span></span><span class="row-sub">${esc(l.sub)}. A full practice lab with a CLI on every device.</span></span>
+                <span class="row-body"><span class="row-title">${esc(l.title)} <span class="badge-new">${esc(l.course || "Lab")}</span></span><span class="row-sub">${esc(l.sub)}. A full practice lab with a CLI on every device.</span></span>
                 ${icon("chevron", "row-chevron")}
             </a>`).join("")}
             <a class="row" href="#/packet-tracer/subnet">
@@ -1232,7 +1270,11 @@ async function viewPacketTracer(root) {
 }
 
 async function viewPtLab(root, [id], _q, alive) {
-    const lab = ((window.AnswritPtLab && window.AnswritPtLab.list) || []).find((l) => l.id === id);
+    if (!ptPreviewOn()) return go("packet-tracer");
+    root.innerHTML = loading();
+    if (!(await loadPtLab())) { root.innerHTML = `<div class="error-box">Couldn't load the lab. Check your connection.</div>`; return; }
+    if (alive && !alive()) return;
+    const lab = window.AnswritPtLab && (window.AnswritPtLab.get ? window.AnswritPtLab.get(id) : window.AnswritPtLab.list.find((l) => l.id === id));
     if (!lab) return go("packet-tracer");
     document.body.classList.add("focus-mode", "lab-mode");
     root.innerHTML = "";

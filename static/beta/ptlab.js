@@ -378,12 +378,296 @@ end`],
     },
 };
 
+// ─── CCNA 2 skills lab: VLANs, trunks, router-on-a-stick, SSH ───────────────
+// Version 1 is the class's practice file (packet-tracer-ccna2-1.pka, verified 48/48 in Packet
+// Tracer, see ptlabs/ccna2-1-answer-key.md). Every other version keeps the same steps and the same
+// 48 graded items but changes names, VLANs, networks, ports and passwords, like the real exam.
+// House rules (not written in the lab): the router takes the LAST usable address of each network,
+// "1st/2nd/3rd" labels mean the first/second/third usable address, the server's IPv6 address is ::1.
+function rng(seed) {
+    let a = seed >>> 0;
+    return () => { a = (a + 0x6D2B79F5) >>> 0; let x = a; x = Math.imul(x ^ (x >>> 15), x | 1); x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
+}
+const NAME_SETS = [
+    ["ZEUS", "HERA", "ATHENA", "APOLLO"], ["DENALI", "SHASTA", "RAINIER", "HOOD"], ["MERCURY", "VENUS", "EARTH", "MARS"],
+    ["FALCON", "EAGLE", "HAWK", "OSPREY"], ["TEXAS", "OHIO", "MAINE", "IDAHO"], ["OAK", "PINE", "CEDAR", "MAPLE"],
+    ["ORION", "VEGA", "SIRIUS", "RIGEL"], ["TITAN", "ATLAS", "HYPERION", "RHEA"], ["COBALT", "COPPER", "NICKEL", "ZINC"],
+];
+const VLAN_NAME_SETS = [["SALES", "HR"], ["FACULTY", "STUDENTS"], ["RED", "BLUE"], ["ADMIN", "GUEST"], ["LAB", "OFFICE"], ["NORTH", "SOUTH"], ["TOM", "JERRY"], ["ALPHA", "BRAVO"], ["ENGINEERING", "ACCOUNTING"]];
+const NATIVE_NAMES = ["Native/Management", "Native/Management", "Native", "Management", "NATIVE_MGMT"];
+const USER_VLANS = [10, 20, 30, 40, 50, 60, 70, 75, 80, 90, 110, 120, 150, 200, 210, 300];
+const NATIVE_VLANS = [99, 100, 250, 333, 500, 777, 999];
+const DOMAINS = ["cisco.com", "netacad.com", "ccna.net", "ccna2.lab", "netlab.com"];
+const SSH_USERS = [["admin", "cisco"], ["admin", "class"], ["netadmin", "cisco123"], ["sshuser", "ccna"]];
+const BANNERS = ["Keep Out!", "Authorized Access Only!", "No Trespassing!", "Authorized Users Only!", "Stay Out!"];
+const ORD = ["1st", "2nd", "3rd"];
+
+function vlanLabParams(ver) {
+    if (ver === 1) {
+        return {
+            names: ["ARIEL", "SNOW", "BELLE", "WHITE"], server: "DNS SVR",
+            A: 50, B: 75, N: 500, nameA: "SCOOBY", nameB: "SCRAPPY", nameN: "Native/Management",
+            netA: "192.168.10.0", pA: 27, netB: "192.168.10.32", pB: 27, netN: "192.168.10.64", pN: 29,
+            link: "10.40.50.0", v6show: "2021:0200:000F:A::", v6: "2021:200:f:a::", rid: "9", ll: "FE80::1",
+            swOrd: [0, 1, 2], hostOrd1: 0, hostOrd3: 1,
+            routerTrunk: "GigabitEthernet0/0/0", routerSrv: "GigabitEthernet0/0/1", centerUp: "GigabitEthernet0/1",
+            t1: 9, t2: 10, acc1: [1, 2], acc3: [1, 2], pc1First: true, pc3First: true,
+            domain: "cisco.com", user: "admin", pw: "cisco", banner: "Keep Out!",
+        };
+    }
+    const r = rng(ver * 7919 + 13);
+    const pick = (a) => a[Math.floor(r() * a.length)];
+    const shuffle = (a) => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+    const names = pick(NAME_SETS);
+    const [A, B] = shuffle(USER_VLANS).slice(0, 2).sort((x, y) => x - y);
+    const N = pick(NATIVE_VLANS.filter((v) => v !== A && v !== B));
+    const [nameA, nameB] = pick(VLAN_NAME_SETS);
+    const pA = pick([26, 27, 27, 28]), pN = pick([28, 29, 29]);
+    const blk = 2 ** (32 - pA), mblk = 2 ** (32 - pN);
+    const starts = []; for (let s = 0; s + 2 * blk + mblk <= 256; s += blk) starts.push(s);
+    const start = pick(starts);
+    const fam = r();
+    const pre = fam < 0.5 ? `192.168.${1 + Math.floor(r() * 254)}` : fam < 0.8 ? `172.${16 + Math.floor(r() * 16)}.${Math.floor(r() * 256)}` : `10.${1 + Math.floor(r() * 254)}.${Math.floor(r() * 256)}`;
+    const netA = `${pre}.${start}`, netB = `${pre}.${start + blk}`, netN = `${pre}.${start + 2 * blk}`;
+    const link = r() < 0.6 ? `10.${1 + Math.floor(r() * 254)}.${Math.floor(r() * 256)}.${4 * Math.floor(r() * 63)}` : `172.${16 + Math.floor(r() * 16)}.${Math.floor(r() * 256)}.${4 * Math.floor(r() * 63)}`;
+    const hex = (n) => Math.floor(r() * 16 ** n).toString(16).toUpperCase().padStart(n, "0");
+    const g = [pick(["2001", "2021", "2002", "2010", "2019", "2026"]), `0${hex(3)}`, `00${hex(2)}`, pick("123456789ABCDEF".split(""))];
+    const v6show = `${g.join(":")}::`;
+    const rid = pick(["2", "3", "5", "7", "9", "a", "b", "c", "e", "f"]);
+    const ll = pick(["FE80::1", "FE80::1", `FE80::${rid.toUpperCase()}`, "FE80::A"]);
+    const tPair = pick([[9, 10], [11, 12], [21, 22], [23, 24], [7, 8]]);
+    const accPairs = [[1, 2], [3, 4], [5, 6], [13, 14], [17, 18], [19, 20]].filter((p) => !p.includes(tPair[0]) && !p.includes(tPair[1]));
+    const [user, pw] = pick(SSH_USERS);
+    const srvFirst = r() < 0.5;
+    return {
+        names: names, server: pick(["DNS SVR", "DNS SVR", "DNS-SERVER", "SRV1"]),
+        A, B, N, nameA, nameB, nameN: pick(NATIVE_NAMES),
+        netA, pA, netB, pB: pA, netN, pN,
+        link, v6show, v6: v6show.toLowerCase(), rid, ll,
+        swOrd: shuffle([0, 1, 2]), hostOrd1: r() < 0.7 ? 0 : 1, hostOrd3: 0,
+        routerTrunk: srvFirst ? "GigabitEthernet0/0/1" : "GigabitEthernet0/0/0", routerSrv: srvFirst ? "GigabitEthernet0/0/0" : pick(["GigabitEthernet0/0/1", "GigabitEthernet0/0/2"]),
+        centerUp: pick(["GigabitEthernet0/1", "GigabitEthernet0/2"]),
+        t1: tPair[0], t2: tPair[1], acc1: pick(accPairs), acc3: pick(accPairs), pc1First: r() < 0.6, pc3First: r() < 0.4,
+        domain: pick(DOMAINS), user, pw, banner: pick(BANNERS),
+    };
+}
+
+function makeVlanLab(ver) {
+    const P = vlanLabParams(ver);
+    if (ver !== 1) P.hostOrd3 = 1 - P.hostOrd1; // the two hosts in a VLAN get 1st and 2nd
+    const [RN, S1, SC, S3] = P.names;
+    const n2 = (s) => ip2n(s);
+    const add = (ip, k) => n2ip((n2(ip) + k) >>> 0);
+    const maskOf = (p) => n2ip(p === 0 ? 0 : (0xFFFFFFFF << (32 - p)) >>> 0);
+    const last = (net, p) => add(net, 2 ** (32 - p) - 2);
+    const mA = maskOf(P.pA), mB = maskOf(P.pB), mN = maskOf(P.pN), mL = "255.255.255.252";
+    const gwA = last(P.netA, P.pA), gwB = last(P.netB, P.pB), gwN = last(P.netN, P.pN);
+    const srvIp = add(P.link, 1), rLink = add(P.link, 2);
+    const v6pre = P.v6.replace(/::$/, "");
+    const rV6 = v6(`${v6pre}::${P.rid}`), srvV6 = v6(`${v6pre}::1`), llV6 = v6(P.ll);
+    // switch ordinal k -> management address (k = 0,1,2)
+    const swIp = (k) => add(P.netN, k + 1);
+    const ordOf = { S1: P.swOrd[0], SC: P.swOrd[1], S3: P.swOrd[2] };
+    // Hosts: on S1, PC0 (VLAN A) and Laptop0 (VLAN B) share one ordinal; on S3 the other one.
+    const o1 = P.hostOrd1, o3 = P.hostOrd3;
+    const hosts = {
+        PC0: { vlan: "A", sw: "S1", ord: o1 }, L0: { vlan: "B", sw: "S1", ord: o1 },
+        L1: { vlan: "B", sw: "S3", ord: o3 }, PC1: { vlan: "A", sw: "S3", ord: o3 },
+    };
+    const hostIp = (h) => add(h.vlan === "A" ? P.netA : P.netB, h.ord + 1);
+    const fa = (n) => `FastEthernet0/${n}`;
+    const [pc0Port, l0Port] = P.pc1First ? P.acc1 : [P.acc1[1], P.acc1[0]];
+    const [pc1Port, l1Port] = P.pc3First ? P.acc3 : [P.acc3[1], P.acc3[0]];
+    const devices = {
+        PC0: { kind: "pc", label: "PC0", model: "PC-PT", x: 142, y: 112 },
+        L0: { kind: "pc", art: "laptop", label: "Laptop0", model: "Laptop-PT", x: 104, y: 214 },
+        S1: { kind: "switch", label: S1, model: "2960-24TT", x: 292, y: 174 },
+        SC: { kind: "switch", label: SC, model: "2960-24TT", x: 434, y: 246 },
+        R: { kind: "router", label: RN, model: "4331", modelLabel: "ISR4331", x: 613, y: 246 },
+        SV: { kind: "server", label: P.server, model: "Server-PT", x: 608, y: 62 },
+        S3: { kind: "switch", label: S3, model: "2960-24TT", x: 292, y: 340 },
+        L1: { kind: "pc", art: "laptop", label: "Laptop1", model: "Laptop-PT", x: 84, y: 334 },
+        PC1: { kind: "pc", label: "PC1", model: "PC-PT", x: 128, y: 420 },
+    };
+    const links = [
+        ["PC0", "FastEthernet0", "S1", fa(pc0Port)],
+        ["L0", "FastEthernet0", "S1", fa(l0Port)],
+        ["S1", fa(P.t1), "SC", fa(P.t1), "dash"],
+        ["S3", fa(P.t2), "SC", fa(P.t2), "dash"],
+        ["L1", "FastEthernet0", "S3", fa(l1Port)],
+        ["PC1", "FastEthernet0", "S3", fa(pc1Port)],
+        ["SC", P.centerUp, "R", P.routerTrunk],
+        ["R", P.routerSrv, "SV", "FastEthernet0"],
+    ];
+    const swOrdLabel = (k) => ORD[k].toUpperCase();
+    const reqs = [
+        "Requirements:",
+        "- Hostname on router",
+        "- encrypted enable/con/vty passwords on router",
+        `- motd "${P.banner}" on router`,
+        "- Configure VLANs and Inter-VLAN routing to include management and Native VLANs",
+        "- Address end devices/router/SVI's and IPv6",
+        `- SSH on ${SC} (domain name - ${P.domain}, 1024 bits, username ${P.user}`,
+        `  ecrypted password - ${P.pw}. Place on all VTY lines`,
+        "- Switches default gateway",
+        "- Tell end devices where to locate the DNS server (IPv4)",
+    ];
+    const vlanBox = [
+        `VLAN ${P.A} - ${P.nameA} - ${P.netA}/${P.pA}`,
+        `VLAN ${P.B} - ${P.nameB} - ${P.netB}/${P.pB}`,
+        `VLAN ${P.N} - ${P.nameN} - ${P.netN}/${P.pN}`,
+    ];
+    const notes = [
+        { x: 120, y: 116, t: `VLAN ${P.A}`, a: "end" }, { x: 145, y: 82, t: ORD[o1] },
+        { x: 80, y: 208, t: `VLAN ${P.B}`, a: "end" }, { x: 66, y: 246, t: ORD[o1] },
+        { x: 308, y: 148, t: swOrdLabel(ordOf.S1) }, { x: 452, y: 218, t: swOrdLabel(ordOf.SC) }, { x: 296, y: 309, t: swOrdLabel(ordOf.S3) },
+        { x: 58, y: 326, t: `VLAN ${P.B}`, a: "end" }, { x: 44, y: 362, t: ORD[o3] },
+        { x: 104, y: 426, t: `VLAN ${P.A}`, a: "end" }, { x: 90, y: 456, t: ORD[o3] },
+        { x: 612, y: 16, t: "1st" },
+        { x: 672, y: 34, box: [`${P.link}/30`, "", `${P.v6show}/64`] },
+        { x: 650, y: 196, box: [`::${P.rid}`, P.ll] },
+        { x: 254, y: 452, box: vlanBox },
+        { x: 572, y: 318, box: reqs },
+    ];
+
+    // ── The 48 graded items (same tree as Packet Tracer's Assessment Items)
+    const C = (st, id) => st.devs[id].cfg;
+    const I = (st, id, n) => C(st, id).ifaces[n] || {};
+    const ipIs = (f, ip, mask) => f.ip === ip && f.mask === mask;
+    const items = [];
+    const it = (dev, path, test) => items.push({ dev, label: `${devices[dev].label}: ${path}`, item: path, test });
+    const sub = (v) => `${P.routerTrunk}.${v}`;
+    // Router
+    it("R", "Banner MOTD", (st) => (C(st, "R").banner || "").trim() === P.banner);
+    it("R", "Console Line › Password", (st) => C(st, "R").lines.con.pw === "cisco");
+    it("R", "Host Name", (st) => C(st, "R").hostname === RN);
+    [P.A, P.N, P.B].map(String).sort().map(Number).forEach((v) => {
+        const native = v === P.N, gw = v === P.A ? gwA : v === P.B ? gwB : gwN, m = v === P.A ? mA : v === P.B ? mB : mN;
+        it("R", `Ports › ${sub(v)} › 802.1Q › ${native ? "Native VLAN" : "VLAN ID"}`, (st) => { const q = I(st, "R", sub(v)).dot1q; return !!q && q.vlan === v && q.native === native; });
+        it("R", `Ports › ${sub(v)} › IP Address`, (st) => ipIs(I(st, "R", sub(v)), gw, m));
+    });
+    it("R", `Ports › ${P.routerSrv} › IP Address`, (st) => ipIs(I(st, "R", P.routerSrv), rLink, mL));
+    it("R", `Ports › ${P.routerSrv} › IPv6 Address › IP Address`, (st) => (I(st, "R", P.routerSrv).v6 || []).some((x) => x.addr === rV6));
+    it("R", `Ports › ${P.routerSrv} › IPv6 Address › Prefix Length`, (st) => (I(st, "R", P.routerSrv).v6 || []).some((x) => x.addr === rV6 && x.len === 64));
+    it("R", `Ports › ${P.routerSrv} › Link Local`, (st) => I(st, "R", P.routerSrv).ll === llV6);
+    it("R", "VTY Lines › VTY Line 1 › Password", (st) => C(st, "R").lines.vty.pw === "cisco");
+    // Center switch (SSH)
+    const vty2 = (st) => C(st, "SC").lines.vty2 || {};
+    it("SC", "IP Domain Name", (st) => (C(st, "SC").domain || "").toLowerCase() === P.domain.toLowerCase());
+    [fa(P.t2), fa(P.t1), P.centerUp].sort().forEach((p) => it("SC", `Ports › ${p} › Native VLAN`, (st) => I(st, "SC", p).native === P.N));
+    it("SC", `Ports › Vlan${P.N} › IP Address`, (st) => I(st, "SC", `Vlan${P.N}`).ip === swIp(ordOf.SC));
+    it("SC", "Security › Modulus Bits", (st) => C(st, "SC").rsa === 1024);
+    it("SC", `VLANS › VLAN ${P.A} › VLAN Name`, (st) => (C(st, "SC").vlans || {})[P.A] === P.nameA);
+    it("SC", "VTY Lines › VTY Line 11 › Login", (st) => vty2(st).login === "local");
+    it("SC", "VTY Lines › VTY Line 11 › Transport Input", (st) => vty2(st).transport === "ssh");
+    it("SC", "VTY Lines › VTY Line 4 › Login", (st) => C(st, "SC").lines.vty.login === "local");
+    it("SC", "VTY Lines › VTY Line 4 › Transport Input", (st) => C(st, "SC").lines.vty.transport === "ssh");
+    // Server
+    it("SV", "Ports › FastEthernet0 › IP Address", (st) => C(st, "SV").ip === srvIp);
+    it("SV", "Ports › FastEthernet0 › IPv6 Address › IP Address", (st) => C(st, "SV").v6 === srvV6);
+    it("SV", "Ports › FastEthernet0 › IPv6 Address › Prefix Length", (st) => C(st, "SV").v6 === srvV6 && C(st, "SV").v6len === 64);
+    it("SV", "Ports › FastEthernet0 › Subnet Mask", (st) => C(st, "SV").mask === mL);
+    // Graded hosts: Laptop1 and PC0
+    const hostItems = (id, h) => {
+        const gw = h.vlan === "A" ? gwA : gwB, m = h.vlan === "A" ? mA : mB;
+        it(id, "Default Gateway", (st) => C(st, id).gw === gw);
+        it(id, "DNS Server IP", (st) => C(st, id).dns === srvIp);
+        it(id, "Ports › FastEthernet0 › IP Address", (st) => C(st, id).ip === hostIp(h));
+        it(id, "Ports › FastEthernet0 › Subnet Mask", (st) => C(st, id).mask === m);
+    };
+    hostItems("L1", hosts.L1);
+    hostItems("PC0", hosts.PC0);
+    // Switch 1
+    [fa(pc0Port), fa(l0Port)].sort().forEach((p) => it("S1", `Ports › ${p} › Access VLAN`, (st) => I(st, "S1", p).access === (p === fa(pc0Port) ? P.A : P.B)));
+    it("S1", `Ports › ${fa(P.t1)} › Native VLAN`, (st) => I(st, "S1", fa(P.t1)).native === P.N);
+    it("S1", `Ports › Vlan${P.N} › Subnet Mask`, (st) => I(st, "S1", `Vlan${P.N}`).mask === mN);
+    it("S1", `VLANS › VLAN ${P.B} › VLAN Name`, (st) => (C(st, "S1").vlans || {})[P.B] === P.nameB);
+    // Switch 3
+    [fa(pc1Port), fa(l1Port), fa(P.t2)].sort().forEach((p) => {
+        if (p === fa(P.t2)) it("S3", `Ports › ${p} › Native VLAN`, (st) => I(st, "S3", p).native === P.N);
+        else it("S3", `Ports › ${p} › Access VLAN`, (st) => I(st, "S3", p).access === (p === fa(pc1Port) ? P.A : P.B));
+    });
+    it("S3", `Ports › Vlan${P.N} › IP Address`, (st) => I(st, "S3", `Vlan${P.N}`).ip === swIp(ordOf.S3));
+    it("S3", `Ports › Vlan${P.N} › Subnet Mask`, (st) => I(st, "S3", `Vlan${P.N}`).mask === mN);
+    it("S3", `VLANS › VLAN ${P.N} › VLAN Name`, (st) => (C(st, "S3").vlans || {})[P.N] === P.nameN);
+    // Tree order: devices alphabetically by name, like Packet Tracer.
+    const order = Object.keys(devices).sort((a, b) => devices[a].label.localeCompare(devices[b].label));
+    items.sort((x, y) => order.indexOf(x.dev) - order.indexOf(y.dev));
+
+    // ── Answers (AnswrIT help)
+    const swCmds = (id, k, accessPorts, trunks) => [
+        "enable", "configure terminal", `hostname ${devices[id].label}`,
+        `vlan ${P.A}`, ` name ${P.nameA}`, `vlan ${P.B}`, ` name ${P.nameB}`, `vlan ${P.N}`, ` name ${P.nameN}`, " exit",
+        ...accessPorts.flatMap(([p, v]) => [`interface ${p}`, " switchport mode access", ` switchport access vlan ${v}`]),
+        ...(trunks.length ? [`interface ${trunks.length > 1 ? `range ${trunks.join(" , ")}` : trunks[0]}`, " switchport mode trunk", ` switchport trunk native vlan ${P.N}`] : []),
+        `interface vlan ${P.N}`, ` ip address ${swIp(k)} ${mN}`, " no shutdown", " exit",
+        `ip default-gateway ${gwN}`,
+    ];
+    const answer = {
+        plan: [
+            [`${RN} ${P.routerTrunk}.${P.A}`, gwA, mA, `VLAN ${P.A}, last usable`],
+            [`${RN} ${P.routerTrunk}.${P.B}`, gwB, mB, `VLAN ${P.B}, last usable`],
+            [`${RN} ${P.routerTrunk}.${P.N} (native)`, gwN, mN, `VLAN ${P.N}, last usable`],
+            [`${RN} ${P.routerSrv}`, rLink, mL, `${v6short(rV6)}/64, link-local ${P.ll}`],
+            [`${S1} Vlan${P.N}`, swIp(ordOf.S1), mN, `gateway ${gwN}`],
+            [`${SC} Vlan${P.N}`, swIp(ordOf.SC), mN, `gateway ${gwN}`],
+            [`${S3} Vlan${P.N}`, swIp(ordOf.S3), mN, `gateway ${gwN}`],
+            [`PC0 (VLAN ${P.A})`, hostIp(hosts.PC0), mA, `gateway ${gwA}, DNS ${srvIp}`],
+            [`Laptop0 (VLAN ${P.B})`, hostIp(hosts.L0), mB, `gateway ${gwB}, DNS ${srvIp}`],
+            [`Laptop1 (VLAN ${P.B})`, hostIp(hosts.L1), mB, `gateway ${gwB}, DNS ${srvIp}`],
+            [`PC1 (VLAN ${P.A})`, hostIp(hosts.PC1), mA, `gateway ${gwA}, DNS ${srvIp}`],
+            [P.server, srvIp, mL, `gateway ${rLink}; IPv6 ${v6short(srvV6)}/64, gateway ${P.ll}`],
+        ],
+        help: [
+            [`${RN} (router)`, [
+                "enable", "configure terminal", `hostname ${RN}`, "enable secret class",
+                "line console 0", " password cisco", " login", "line vty 0 4", " password cisco", " login", " exit",
+                "service password-encryption", `banner motd #${P.banner}#`,
+                `interface ${P.routerTrunk}`, " no shutdown",
+                ...[[P.A, gwA, mA, ""], [P.B, gwB, mB, ""], [P.N, gwN, mN, " native"]].flatMap(([v, ip, m, nat]) => [`interface ${P.routerTrunk}.${v}`, ` encapsulation dot1Q ${v}${nat}`, ` ip address ${ip} ${m}`]),
+                `interface ${P.routerSrv}`, ` ip address ${rLink} ${mL}`, ` ipv6 address ${v6short(rV6)}/64`, ` ipv6 address ${P.ll} link-local`, " no shutdown", " end",
+            ].join("\n")],
+            [`${SC} (center switch, SSH)`, [
+                ...swCmds("SC", ordOf.SC, [], [fa(P.t1), fa(P.t2), P.centerUp].map(shortIf).map((x) => x.replace("Gig", "g").replace("Fa", "f"))),
+                `ip domain-name ${P.domain}`, `username ${P.user} secret ${P.pw}`, "crypto key generate rsa general-keys modulus 1024", "ip ssh version 2",
+                "line vty 0 15", " login local", " transport input ssh", " end",
+            ].join("\n")],
+            [`${S1}`, [...swCmds("S1", ordOf.S1, [[fa(pc0Port), P.A], [fa(l0Port), P.B]], [fa(P.t1)]), "end"].join("\n")],
+            [`${S3}`, [...swCmds("S3", ordOf.S3, [[fa(pc1Port), P.A], [fa(l1Port), P.B]], [fa(P.t2)]), "end"].join("\n")],
+        ],
+    };
+
+    return {
+        title: "Skills Practice: VLANs & Inter-VLAN Routing",
+        sub: "Router-on-a-stick, trunks, native/management VLAN, SSH and IPv6",
+        course: "CCNA 2",
+        file: ver === 1 ? "progress_check_1_practice.pka" : `progress_check_1_practice_v${ver}.pka`,
+        ver, P, wide: true, countUp: true,
+        devices, links, notes, reqs, vlanBox, answer, hosts,
+        checks: () => items,
+        conn: [["PC0", "PC1"], ["PC0", "L1"], ["L0", "L1"], ["PC1", "SV"], ["L0", "SV"]],
+    };
+}
+
+const VLAN_LAB = "ccna2-vlan";
+const VLAN_VERSIONS = 6;
+// "ccna2-vlan" (version 1) or "ccna2-vlan-7"
+function getLab(id) {
+    if (LABS[id]) return LABS[id];
+    const m = new RegExp(`^${VLAN_LAB}(?:-(\\d{1,5}))?$`).exec(id);
+    if (!m) return null;
+    const ver = Math.max(1, +(m[1] || 1));
+    return LABS[`${VLAN_LAB}-${ver}`] || (LABS[`${VLAN_LAB}-${ver}`] = makeVlanLab(ver));
+}
+
 // ─── Devices ────────────────────────────────────────────────────────────────
-function newIface(shut) { return { ip: "", mask: "", v6: [], ll: "", desc: "", shut, v6on: false }; }
-function newNetDevice(kind) {
+// mode: "" = dynamic auto (the 2960 default), "access", "trunk", "desirable". dot1q: router subinterface tag.
+function newIface(shut) { return { ip: "", mask: "", v6: [], ll: "", desc: "", shut, v6on: false, mode: "", access: 1, native: 1, dot1q: null }; }
+function newNetDevice(kind, model) {
     const ifaces = {};
     if (kind === "router") {
-        ["GigabitEthernet0/0", "GigabitEthernet0/1", "GigabitEthernet0/2"].forEach((n) => { ifaces[n] = newIface(true); });
+        const names = model === "4331" ? ["GigabitEthernet0/0/0", "GigabitEthernet0/0/1", "GigabitEthernet0/0/2"] : ["GigabitEthernet0/0", "GigabitEthernet0/1", "GigabitEthernet0/2"];
+        names.forEach((n) => { ifaces[n] = newIface(true); });
     } else {
         for (let i = 1; i <= 24; i++) ifaces[`FastEthernet0/${i}`] = newIface(false);
         ifaces["GigabitEthernet0/1"] = newIface(false);
@@ -395,30 +679,111 @@ function newNetDevice(kind) {
             hostname: kind === "router" ? "Router" : "Switch",
             enableSecret: "", enablePassword: "", spe: false, banner: "", minLen: 0, block: null,
             lookup: true, domain: "", users: {}, rsa: 0, v6routing: false, gw: "",
-            lines: { con: { pw: "", login: "", timeout: "" }, vty: { pw: "", login: "", timeout: "", transport: "" } },
+            // vty = lines 0-4, vty2 = lines 5-15
+            lines: { con: { pw: "", login: "", timeout: "" }, vty: { pw: "", login: "", timeout: "", transport: "" }, vty2: { pw: "", login: "", timeout: "", transport: "" } },
+            vlans: kind === "switch" ? { 1: "default" } : undefined,
             ifaces,
         },
         startup: null,
     };
 }
-function newHost() { return { cfg: { ip: "", mask: "", gw: "", v6: "", v6len: 64, v6gw: "", files: [] } }; }
+function newHost() { return { cfg: { ip: "", mask: "", gw: "", dns: "", v6: "", v6len: 64, v6gw: "", files: [] } }; }
 function freshState(lab) {
     const devs = {};
-    for (const [id, d] of Object.entries(lab.devices)) devs[id] = d.kind === "router" || d.kind === "switch" ? newNetDevice(d.kind) : newHost();
+    for (const [id, d] of Object.entries(lab.devices)) devs[id] = d.kind === "router" || d.kind === "switch" ? newNetDevice(d.kind, d.model) : newHost();
     return { devs, sheet: {} };
+}
+// Fill in fields that older saved labs don't have.
+function upgradeState(st) {
+    for (const d of Object.values(st.devs)) {
+        const c = d.cfg;
+        if (!c.lines) continue;
+        if (!c.lines.vty2) c.lines.vty2 = { pw: "", login: "", timeout: "", transport: "" };
+        for (const f of Object.values(c.ifaces)) {
+            if (f.mode === undefined) Object.assign(f, { mode: "", access: 1, native: 1, dot1q: null });
+        }
+    }
+    return st;
 }
 
 // ─── Reachability (ping) ────────────────────────────────────────────────────
-function segOf(lab, id, port) {
-    if (lab.devices[id].kind === "switch") return id;
-    const l = lab.links.find(([a, ap, b, bp]) => (a === id && ap === port) || (b === id && bp === port));
+// The other end of the cable plugged into dev/port.
+function peerOf(lab, dev, port) {
+    const l = lab.links.find(([a, ap, b, bp]) => (a === dev && ap === port) || (b === dev && bp === port));
     if (!l) return null;
-    const other = l[0] === id ? l[2] : l[0];
-    return lab.devices[other].kind === "switch" ? other : null;
+    return l[0] === dev && l[1] === port ? { dev: l[2], port: l[3] } : { dev: l[0], port: l[1] };
 }
 function hostPort(lab, id) {
     const l = lab.links.find(([a, , b]) => a === id || b === id);
     return l ? (l[0] === id ? l[1] : l[3]) : "FastEthernet0";
+}
+const vlansOf = (st, sw) => st.devs[sw].cfg.vlans || { 1: "default" };
+function swPort(st, sw, port) {
+    const f = st.devs[sw].cfg.ifaces[port] || {};
+    return { mode: f.mode || "", access: +f.access || 1, native: +f.native || 1, shut: !!f.shut };
+}
+// Is this switch port trunking? Routers don't negotiate (DTP), so a switch port facing a router
+// trunks only when it's set to "switchport mode trunk".
+function isTrunk(lab, st, sw, port) {
+    const p = swPort(st, sw, port);
+    if (p.mode === "trunk") return true;
+    if (p.mode === "access") return false;
+    const o = peerOf(lab, sw, port);
+    if (!o || lab.devices[o.dev].kind !== "switch") return false;
+    const q = swPort(st, o.dev, o.port);
+    return q.mode === "trunk" || q.mode === "desirable" || (p.mode === "desirable" && q.mode !== "access");
+}
+// Layer 2: which (switch, VLAN) pairs and point-to-point cables form one broadcast domain.
+function l2Map(lab, st) {
+    const parent = {};
+    const find = (x) => { while (parent[x] && parent[x] !== x) x = parent[x]; return x; };
+    const union = (a, b) => { if (!a || !b) return; parent[a] = parent[a] || a; parent[b] = parent[b] || b; const ra = find(a), rb = find(b); if (ra !== rb) parent[ra] = rb; };
+    const node = (sw, v) => (vlansOf(st, sw)[v] !== undefined ? `${sw}|${v}` : null);
+    const kind = (id) => lab.devices[id].kind;
+    for (const [a, ap, b, bp] of lab.links) {
+        if (kind(a) === "switch" && kind(b) === "switch") {
+            const A = swPort(st, a, ap), B = swPort(st, b, bp);
+            if (A.shut || B.shut) continue;
+            const ta = isTrunk(lab, st, a, ap), tb = isTrunk(lab, st, b, bp);
+            if (ta && tb) {
+                for (const v of Object.keys(vlansOf(st, a))) {
+                    if (+v !== A.native && +v !== B.native && vlansOf(st, b)[v] !== undefined) union(node(a, v), node(b, v));
+                }
+            }
+            union(node(a, ta ? A.native : A.access), node(b, tb ? B.native : B.access));
+        } else if (kind(a) !== "switch" && kind(b) !== "switch") {
+            union(`P|${a}|${ap}`, `P|${b}|${bp}`);
+        }
+    }
+    const seg = (x) => (x ? find(x) : null);
+    return {
+        // A host's (or a router port's) untagged frames, entering at dev/port.
+        untagged(dev, port) {
+            const o = peerOf(lab, dev, port);
+            if (!o) return null;
+            if (kind(o.dev) !== "switch") return seg(`P|${dev}|${port}`) || `P|${dev}|${port}`;
+            const p = swPort(st, o.dev, o.port);
+            if (p.shut) return null;
+            const t = kind(dev) === "router" ? p.mode === "trunk" : isTrunk(lab, st, o.dev, o.port);
+            return seg(node(o.dev, t ? p.native : p.access));
+        },
+        // A router subinterface's frames tagged with VLAN v.
+        tagged(dev, port, v) {
+            const o = peerOf(lab, dev, port);
+            if (!o || kind(o.dev) !== "switch") return null;
+            const p = swPort(st, o.dev, o.port);
+            if (p.shut || p.mode !== "trunk") return null;
+            return seg(node(o.dev, v));
+        },
+        svi: (sw, v) => seg(node(sw, v)),
+    };
+}
+function routerIfSeg(L, st, id, name) {
+    const [base, sub] = name.split(".");
+    if (!sub) return L.untagged(id, base);
+    const q = st.devs[id].cfg.ifaces[name].dot1q;
+    if (!q) return null;
+    return q.native ? L.untagged(id, base) : L.tagged(id, base, q.vlan);
 }
 function autoLL(id, n) {
     const a = (id.charCodeAt(0) % 256).toString(16).padStart(2, "0");
@@ -429,12 +794,15 @@ function autoLL(id, n) {
 // Every place a device has an address: { dev, seg, addrs, inNet(a), gw, up, router }
 function stacks(lab, st, fam) {
     const out = [];
+    const L = l2Map(lab, st);
     for (const [id, def] of Object.entries(lab.devices)) {
         const d = st.devs[id];
         if (def.kind === "router") {
-            Object.entries(d.cfg.ifaces).forEach(([name, f], i) => {
-                const seg = segOf(lab, id, name);
+            Object.entries(d.cfg.ifaces).forEach(([name, f0], i) => {
+                const seg = routerIfSeg(L, st, id, name);
                 if (!seg) return;
+                const parentIf = d.cfg.ifaces[name.split(".")[0]];
+                const f = { ...f0, shut: f0.shut || parentIf.shut };
                 if (fam === 4 && f.ip) out.push({ dev: id, seg, addrs: [f.ip], inNet: (a) => sameNet(a, f.ip, f.mask), up: !f.shut, router: true });
                 if (fam === 6 && (f.v6.length || f.ll || f.v6on)) {
                     const ll = f.ll || autoLL(id, i);
@@ -442,10 +810,14 @@ function stacks(lab, st, fam) {
                 }
             });
         } else if (def.kind === "switch") {
-            const f = d.cfg.ifaces.Vlan1;
-            if (fam === 4 && f.ip) out.push({ dev: id, seg: id, addrs: [f.ip], inNet: (a) => sameNet(a, f.ip, f.mask), gw: d.cfg.gw, up: !f.shut });
+            for (const [name, f] of Object.entries(d.cfg.ifaces)) {
+                if (!name.startsWith("Vlan") || !f.ip || fam !== 4) continue;
+                const seg = L.svi(id, +name.slice(4));
+                if (seg) out.push({ dev: id, seg, addrs: [f.ip], inNet: (a) => sameNet(a, f.ip, f.mask), gw: d.cfg.gw, up: !f.shut });
+            }
         } else {
-            const c = d.cfg, seg = segOf(lab, id, hostPort(lab, id));
+            const c = d.cfg, seg = L.untagged(id, hostPort(lab, id));
+            if (!seg) continue;
             if (fam === 4 && c.ip && c.mask) out.push({ dev: id, seg, addrs: [c.ip], inNet: (a) => sameNet(a, c.ip, c.mask), gw: c.gw, up: true });
             if (fam === 6 && c.v6) out.push({ dev: id, seg, addrs: [c.v6, autoLL(id, 9)], inNet: (a) => isLL(a) || samePfx(a, c.v6, c.v6len), gw: c.v6gw, up: true });
         }
@@ -488,8 +860,10 @@ function ping(lab, st, srcDev, target, fam) {
 }
 
 // ─── IOS command line ───────────────────────────────────────────────────────
-const MODE_SUFFIX = { user: ">", priv: "#", config: "(config)#", if: "(config-if)#", line: "(config-line)#", range: "(config-if-range)#" };
-const CFG_MODES = ["config", "if", "line", "range"];
+const MODE_SUFFIX = { user: ">", priv: "#", config: "(config)#", if: "(config-if)#", subif: "(config-subif)#", line: "(config-line)#", range: "(config-if-range)#", vlan: "(config-vlan)#" };
+const CFG_MODES = ["config", "if", "subif", "line", "range", "vlan"];
+// Interface and range modes accept the same commands as interface mode.
+const cmdMode = (m) => (m === "range" || m === "subif" ? "if" : m);
 
 function normIf(raw, d, kind) {
     const s = String(raw).replace(/\s+/g, "").toLowerCase();
@@ -504,7 +878,30 @@ function normIf(raw, d, kind) {
         d.cfg.ifaces[name] = newIface(true);
         return name;
     }
+    // Router subinterface, e.g. g0/0/0.50
+    const sub = /^(.+)\.(\d+)$/.exec(name);
+    if (sub && kind === "router" && d.cfg.ifaces[sub[1]] && !sub[1].includes(".") && +sub[2] >= 1 && +sub[2] <= 4294967295) {
+        d.cfg.ifaces[name] = newIface(false);
+        return name;
+    }
     return null;
+}
+// "f0/9 - 10", "fa0/1-2, g0/1" -> list of interface names (or null if any part is wrong)
+function rangeIfs(raw, d, kind) {
+    const out = [];
+    for (const part of String(raw).split(",")) {
+        const s = part.replace(/\s+/g, "").toLowerCase();
+        const m = /^([a-z-]+)(\d+\/(?:\d+\/)?)(\d+)(?:-(\d+))?$/.exec(s);
+        if (!m || kind !== "switch") return null;
+        const a = +m[3], b = m[4] === undefined ? a : +m[4];
+        if (b < a) return null;
+        for (let n = a; n <= b; n++) {
+            const name = normIf(`${m[1]}${m[2]}${n}`, d, kind);
+            if (!name) return null;
+            out.push(name);
+        }
+    }
+    return out.length ? out : null;
 }
 
 const VALID = {
@@ -525,7 +922,14 @@ function pwOk(ctx, pw) {
     return true;
 }
 function curIf(ctx) { return ctx.d.cfg.ifaces[ctx.s.ifc]; }
-function curLine(ctx) { return ctx.d.cfg.lines[ctx.s.line]; }
+// The line(s) being configured: "line vty 0 15" covers both vty groups.
+function curLines(ctx) {
+    const c = ctx.d.cfg.lines;
+    if (!c.vty2) c.vty2 = { pw: "", login: "", timeout: "", transport: "" };
+    return [].concat(ctx.s.line).map((k) => c[k]);
+}
+const isVtyLine = (ctx) => [].concat(ctx.s.line).every((k) => k === "vty" || k === "vty2");
+const isSwitchPort = (ctx) => ctx.kind === "switch" && !String(ctx.s.ifc).startsWith("Vlan");
 
 // Exec
 cmd("user", "enable", (ctx) => {
@@ -550,9 +954,14 @@ cmd("priv", "show startup-config", (ctx) => {
     ctx.print(`Using ${text.length} bytes\n${text}`);
 });
 cmd("user priv", "show ip interface brief", (ctx) => ctx.print(ipBrief(ctx)));
+cmd("user priv", "show vlan brief", (ctx) => ctx.print(vlanBrief(ctx, false)), "switch");
+cmd("user priv", "show vlan", (ctx) => ctx.print(vlanBrief(ctx, true)), "switch");
+cmd("user priv", "show interfaces trunk", (ctx) => ctx.print(trunkShow(ctx)), "switch");
 cmd("user priv", "show ipv6 interface brief", (ctx) => ctx.print(ipv6Brief(ctx)), "router");
 cmd("user priv", "show ip route", (ctx) => ctx.print(ipRoute(ctx)), "router");
-cmd("user priv", "show version", (ctx) => ctx.print(ctx.kind === "router"
+cmd("user priv", "show version", (ctx) => ctx.print(ctx.kind === "router" && ctx.d.cfg.ifaces["GigabitEthernet0/0/0"]
+    ? "Cisco IOS XE Software, Version 03.16.05.S - Extended Support Release\nCisco IOS Software, ISR Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 15.5(3)S5\ncisco ISR4331/K9 (1RU) processor with 1795999K/6147K bytes of memory.\n3 Gigabit Ethernet interfaces\n32768K bytes of non-volatile configuration memory."
+    : ctx.kind === "router"
     ? "Cisco IOS Software, C2900 Software (C2900-UNIVERSALK9-M), Version 15.1(4)M5\ncisco CISCO2911/K9 (revision 1.0) with 491520K/32768K bytes of memory.\n3 Gigabit Ethernet interfaces\n255K bytes of non-volatile configuration memory."
     : "Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4\ncisco WS-C2960-24TT-L (PowerPC405) processor with 65536K bytes of memory.\n24 FastEthernet interfaces\n2 Gigabit Ethernet interfaces"));
 cmd("priv", "show clock", (ctx) => ctx.print(`*${new Date().toUTCString().slice(17, 25)}.123 UTC Mon Mar 1 1993`));
@@ -627,20 +1036,61 @@ cmd("config", "ip ssh version <n>", (ctx, [n]) => {
 cmd("config", "ipv6 unicast-routing", (ctx) => { ctx.d.cfg.v6routing = true; }, "router");
 cmd("config", "no ipv6 unicast-routing", (ctx) => { ctx.d.cfg.v6routing = false; }, "router");
 cmd("config", "ip default-gateway <ip>", (ctx, [g]) => { ctx.d.cfg.gw = normIp(g); }, "switch");
-cmd("config", "interface <if>", (ctx, [n]) => { ctx.s.mode = "if"; ctx.s.ifc = n; });
-cmd("config", "interface range <rest>", (ctx) => { ctx.s.mode = "range"; ctx.s.ifc = null; });
-cmd("config", "line console <n>", (ctx, [n]) => { if (n !== "0") return ctx.invalid(); ctx.s.mode = "line"; ctx.s.line = "con"; });
-cmd("config", "line vty <n> <n>", (ctx, [a, b]) => {
-    if (+a > +b || +b > 15) return ctx.invalid();
-    ctx.s.mode = "line"; ctx.s.line = "vty";
+cmd("config", "interface <if>", (ctx, [n]) => {
+    ctx.s.mode = n.includes(".") ? "subif" : "if"; ctx.s.ifc = n; ctx.s.range = null;
+    if (n.includes(".") && !ctx.s.pinged[`sub:${n}`]) {
+        ctx.s.pinged[`sub:${n}`] = true;
+        ctx.print(`%LINK-5-CHANGED: Interface ${n}, changed state to up\n\n%LINEPROTO-5-UPDOWN: Line protocol on Interface ${n}, changed state to up`);
+    }
 });
+cmd("config", "interface range <rest>", (ctx, [rest]) => {
+    const list = rangeIfs(rest, ctx.d, ctx.kind);
+    if (!list) return ctx.invalid();
+    ctx.s.mode = "range"; ctx.s.range = list; ctx.s.ifc = list[0];
+});
+cmd("config", "line console <n>", (ctx, [n]) => { if (n !== "0") return ctx.invalid(); ctx.s.mode = "line"; ctx.s.line = "con"; });
+const vtyRange = (ctx, a, b) => {
+    if (+a > +b || +b > 15) return ctx.invalid();
+    const groups = [];
+    if (+a <= 4) groups.push("vty");
+    if (+b >= 5) groups.push("vty2");
+    ctx.s.mode = "line"; ctx.s.line = groups.length === 1 ? groups[0] : groups;
+};
+cmd("config", "line vty <n> <n>", (ctx, [a, b]) => vtyRange(ctx, a, b));
+cmd("config", "line vty <n>", (ctx, [a]) => vtyRange(ctx, a, a));
 cmd("config", "exit", (ctx) => { ctx.s.mode = "priv"; });
-cmd("config if line range", "end", (ctx) => { ctx.s.mode = "priv"; ctx.print("%SYS-5-CONFIG_I: Configured from console by console"); });
+cmd("config if line vlan", "end", (ctx) => { ctx.s.mode = "priv"; ctx.s.range = null; ctx.print("%SYS-5-CONFIG_I: Configured from console by console"); });
 cmd("config", "do <rest>", (ctx, [rest]) => ctx.run(rest, "priv"));
-cmd("if line range", "do <rest>", (ctx, [rest]) => ctx.run(rest, "priv"));
+cmd("if line vlan", "do <rest>", (ctx, [rest]) => ctx.run(rest, "priv"));
+
+// VLANs (switch)
+const vlanName = (n) => `VLAN${String(n).padStart(4, "0")}`;
+cmd("config", "vlan <n>", (ctx, [n]) => {
+    const v = +n;
+    if (v < 1 || v > 4094) return ctx.invalid();
+    const vl = ctx.d.cfg.vlans || (ctx.d.cfg.vlans = { 1: "default" });
+    if (vl[v] === undefined) vl[v] = vlanName(v);
+    ctx.s.mode = "vlan"; ctx.s.vlan = v;
+}, "switch");
+cmd("config", "no vlan <n>", (ctx, [n]) => {
+    const v = +n, vl = ctx.d.cfg.vlans || {};
+    if (v === 1) return ctx.print("%Default VLAN 1 may not be deleted.");
+    delete vl[v];
+}, "switch");
+cmd("vlan", "name <w>", (ctx, [name]) => {
+    if (ctx.s.vlan === 1) return ctx.print("%Default VLAN 1 may not have its name changed.");
+    ctx.d.cfg.vlans[ctx.s.vlan] = name.slice(0, 32);
+});
+cmd("vlan", "no name", (ctx) => { if (ctx.s.vlan !== 1) ctx.d.cfg.vlans[ctx.s.vlan] = vlanName(ctx.s.vlan); });
+cmd("vlan", "exit", (ctx) => { ctx.s.mode = "config"; ctx.s.vlan = null; });
+cmd("vlan", "vlan <n>", (ctx, [n]) => ctx.run(`vlan ${n}`, "config"));
 
 // Interface
 cmd("if", "ip address <ip> <ip>", (ctx, [a, m]) => {
+    if (isSwitchPort(ctx)) return ctx.invalid();
+    if (ctx.s.ifc.includes(".") && !curIf(ctx).dot1q) {
+        return ctx.print("% Configuring IP routing on a LAN subinterface is only allowed if that\nsubinterface is already configured as part of an IEEE 802.10, IEEE 802.1Q,\nor ISL vLAN.");
+    }
     const ip = normIp(a), mask = normIp(m);
     if (maskBits(mask) === null) return ctx.print(`Bad mask 0x${ip2n(mask).toString(16).toUpperCase()} for address ${ip}`);
     if (!usable(ip, mask)) return ctx.print(`Bad mask /${maskBits(mask)} for address ${ip}`);
@@ -679,32 +1129,69 @@ cmd("if", "no shutdown", (ctx) => {
 });
 cmd("if", "duplex <w>", () => {});
 cmd("if", "speed <w>", () => {});
-cmd("if range", "switchport mode <w>", () => {}, "switch");
-cmd("if range", "switchport access vlan <n>", () => {}, "switch");
-cmd("range", "shutdown", () => {});
-cmd("range", "no shutdown", () => {});
-cmd("range", "description <rest>", () => {});
-cmd("if line range", "exit", (ctx) => { ctx.s.mode = "config"; ctx.s.ifc = null; ctx.s.line = null; });
+cmd("if", "exit", (ctx) => { ctx.s.mode = "config"; ctx.s.ifc = null; ctx.s.range = null; });
+cmd("line", "exit", (ctx) => { ctx.s.mode = "config"; ctx.s.line = null; });
+
+// Switch ports
+const portCmd = (fn) => (ctx, args) => { if (!isSwitchPort(ctx)) return ctx.invalid(); fn(curIf(ctx), ctx, args); };
+const linkFlap = (ctx) => {
+    if (!ctx.linked(ctx.s.ifc) || curIf(ctx).shut) return;
+    ctx.print(`\n%LINEPROTO-5-UPDOWN: Line protocol on Interface ${ctx.s.ifc}, changed state to down\n\n%LINEPROTO-5-UPDOWN: Line protocol on Interface ${ctx.s.ifc}, changed state to up`);
+};
+cmd("if", "switchport mode access", portCmd((f) => { f.mode = "access"; }), "switch");
+cmd("if", "switchport mode trunk", portCmd((f, ctx) => { const was = f.mode; f.mode = "trunk"; if (was !== "trunk") linkFlap(ctx); }), "switch");
+cmd("if", "switchport mode dynamic auto", portCmd((f) => { f.mode = ""; }), "switch");
+cmd("if", "switchport mode dynamic desirable", portCmd((f) => { f.mode = "desirable"; }), "switch");
+cmd("if", "switchport access vlan <n>", portCmd((f, ctx, [n]) => {
+    const v = +n;
+    if (v < 1 || v > 4094) return ctx.invalid();
+    const vl = ctx.d.cfg.vlans || (ctx.d.cfg.vlans = { 1: "default" });
+    if (vl[v] === undefined) {
+        if (!ctx.s.range || ctx.s.ifc === ctx.s.range[0]) ctx.print(`% Access VLAN does not exist. Creating vlan ${v}`);
+        vl[v] = vlanName(v);
+    }
+    f.access = v;
+}), "switch");
+cmd("if", "no switchport access vlan", portCmd((f) => { f.access = 1; }), "switch");
+cmd("if", "switchport trunk native vlan <n>", portCmd((f, ctx, [n]) => { if (+n < 1 || +n > 4094) return ctx.invalid(); f.native = +n; }), "switch");
+cmd("if", "no switchport trunk native vlan", portCmd((f) => { f.native = 1; }), "switch");
+cmd("if", "switchport trunk allowed vlan <rest>", portCmd(() => {}), "switch");
+cmd("if", "switchport trunk encapsulation dot1q", portCmd(() => {}), "switch");
+cmd("if", "switchport nonegotiate", portCmd(() => {}), "switch");
+cmd("if", "switchport voice vlan <n>", portCmd(() => {}), "switch");
+cmd("if", "spanning-tree portfast", portCmd(() => {}), "switch");
+
+// Router subinterfaces (router-on-a-stick)
+const encap = (native) => (ctx, [n]) => {
+    if (!ctx.s.ifc.includes(".")) return ctx.invalid();
+    const v = +n;
+    if (v < 1 || v > 4094) return ctx.invalid();
+    curIf(ctx).dot1q = { vlan: v, native };
+};
+cmd("if", "encapsulation dot1q <n>", encap(false), "router");
+cmd("if", "encapsulation dot1q <n> native", encap(true), "router");
+cmd("if", "no encapsulation dot1q", (ctx) => { curIf(ctx).dot1q = null; }, "router");
 
 // Lines
-cmd("line", "password <w>", (ctx, [p]) => { if (pwOk(ctx, p)) curLine(ctx).pw = p; });
-cmd("line", "no password", (ctx) => { curLine(ctx).pw = ""; });
+const eachLine = (fn) => (ctx, args) => curLines(ctx).forEach((l) => fn(l, ctx, args));
+cmd("line", "password <w>", (ctx, [p]) => { if (pwOk(ctx, p)) curLines(ctx).forEach((l) => { l.pw = p; }); });
+cmd("line", "no password", eachLine((l) => { l.pw = ""; }));
 cmd("line", "login", (ctx) => {
-    curLine(ctx).login = "login";
-    if (!curLine(ctx).pw) ctx.print("% Login disabled on line, until 'password' is set");
+    curLines(ctx).forEach((l) => { l.login = "login"; });
+    if (curLines(ctx).some((l) => !l.pw)) ctx.print("% Login disabled on line, until 'password' is set");
 });
-cmd("line", "login local", (ctx) => { curLine(ctx).login = "local"; });
-cmd("line", "no login", (ctx) => { curLine(ctx).login = ""; });
-cmd("line", "exec-timeout <n>", (ctx, [m]) => { curLine(ctx).timeout = `${+m} 0`; });
-cmd("line", "exec-timeout <n> <n>", (ctx, [m, s]) => { curLine(ctx).timeout = `${+m} ${+s}`; });
+cmd("line", "login local", eachLine((l) => { l.login = "local"; }));
+cmd("line", "no login", eachLine((l) => { l.login = ""; }));
+cmd("line", "exec-timeout <n>", eachLine((l, ctx, [m]) => { l.timeout = `${+m} 0`; }));
+cmd("line", "exec-timeout <n> <n>", eachLine((l, ctx, [m, s]) => { l.timeout = `${+m} ${+s}`; }));
 cmd("line", "logging synchronous", () => {});
 cmd("line", "transport input <rest>", (ctx, [rest]) => {
-    if (ctx.s.line !== "vty") return ctx.invalid();
+    if (!isVtyLine(ctx)) return ctx.invalid();
     const words = rest.toLowerCase().split(/\s+/).filter(Boolean);
     const ok = ["ssh", "telnet", "all", "none"];
     const full = words.map((w) => ok.find((k) => k.startsWith(w)));
     if (!full.length || full.some((w) => !w)) return ctx.invalid();
-    curLine(ctx).transport = [...new Set(full)].sort().join(" ");
+    curLines(ctx).forEach((l) => { l.transport = [...new Set(full)].sort().join(" "); });
 });
 
 // ─── IOS output builders ────────────────────────────────────────────────────
@@ -736,9 +1223,17 @@ function runningConfig(d, kind, c, current) {
     for (const [name, f] of Object.entries(c.ifaces)) {
         body.push(`interface ${name}`);
         if (f.desc) body.push(` description ${f.desc}`);
+        if (f.dot1q) body.push(` encapsulation dot1Q ${f.dot1q.vlan}${f.dot1q.native ? " native" : ""}`);
+        if (kind === "switch" && !name.startsWith("Vlan")) {
+            if (f.access > 1) body.push(` switchport access vlan ${f.access}`);
+            if (f.native > 1) body.push(` switchport trunk native vlan ${f.native}`);
+            if (f.mode === "access") body.push(" switchport mode access");
+            if (f.mode === "trunk") body.push(" switchport mode trunk");
+            if (f.mode === "desirable") body.push(" switchport mode dynamic desirable");
+        }
         if (f.ip) body.push(` ip address ${f.ip} ${f.mask}`);
-        else if (kind === "router" || name.startsWith("Vlan")) body.push(" no ip address");
-        if (kind === "router") body.push(" duplex auto", " speed auto");
+        else if ((kind === "router" && !name.includes(".")) || name.startsWith("Vlan")) body.push(" no ip address");
+        if (kind === "router" && !name.includes(".")) body.push(" duplex auto", " speed auto");
         if (f.ll) body.push(` ipv6 address ${v6short(f.ll)} link-local`);
         f.v6.forEach((x) => body.push(` ipv6 address ${v6short(x.addr)}/${x.len}`));
         if (f.v6on) body.push(" ipv6 enable");
@@ -759,8 +1254,9 @@ function runningConfig(d, kind, c, current) {
     };
     line("line con 0", c.lines.con);
     if (kind === "router") body.push("line aux 0", "!");
-    line(kind === "router" ? "line vty 0 4" : "line vty 0 4", c.lines.vty);
-    if (kind === "switch") line("line vty 5 15", c.lines.vty);
+    line("line vty 0 4", c.lines.vty);
+    const v2 = c.lines.vty2 || c.lines.vty;
+    if (kind === "switch" || v2.pw || v2.login || v2.transport) line("line vty 5 15", v2);
     body.push("!", "!", "end");
     const text = body.join("\n");
     if (current) L.push(`Current configuration : ${text.length} bytes`);
@@ -769,14 +1265,53 @@ function runningConfig(d, kind, c, current) {
 }
 function ifStatus(ctx, name, f) {
     if (f.shut) return ["administratively down", "down"];
-    if (name.startsWith("Vlan")) return ["up", "up"];
+    const parent = ctx.d.cfg.ifaces[name.split(".")[0]];
+    if (name.includes(".") && parent.shut) return ["administratively down", "down"];
+    if (name.startsWith("Vlan")) return (ctx.d.cfg.vlans || { 1: 1 })[+name.slice(4)] !== undefined ? ["up", "up"] : ["down", "down"];
     return ctx.linked(name) ? ["up", "up"] : ["down", "down"];
+}
+const shortIf = (n) => n.replace("GigabitEthernet", "Gig").replace("FastEthernet", "Fa");
+function vlanBrief(ctx, full) {
+    const c = ctx.d.cfg, vl = c.vlans || { 1: "default" };
+    const ports = {};
+    for (const [name, f] of Object.entries(c.ifaces)) {
+        if (name.startsWith("Vlan") || f.mode === "trunk") continue;
+        if (f.mode !== "access" && ctx.trunking(name)) continue;
+        (ports[f.access || 1] = ports[f.access || 1] || []).push(shortIf(name));
+    }
+    const rows = ["VLAN Name                             Status    Ports", "---- -------------------------------- --------- -------------------------------"];
+    const all = { ...vl, 1002: "fddi-default", 1003: "token-ring-default", 1004: "fddinet-default", 1005: "trnet-default" };
+    for (const v of Object.keys(all).map(Number).sort((a, b) => a - b)) {
+        const list = ports[v] || [];
+        const chunks = [];
+        for (let i = 0; i < list.length; i += 4) chunks.push(list.slice(i, i + 4).join(", ") + (i + 4 < list.length ? "," : ""));
+        rows.push(`${String(v).padEnd(5)}${all[v].padEnd(33)}${(v >= 1002 ? "act/unsup" : "active").padEnd(10)}${chunks[0] || ""}`);
+        chunks.slice(1).forEach((ch) => rows.push(`${" ".repeat(48)}${ch}`));
+    }
+    if (full) rows.push("", "VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2", "---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------",
+        ...Object.keys(vl).map(Number).sort((a, b) => a - b).map((v) => `${String(v).padEnd(5)}enet  ${String(100000 + v).padEnd(11)}1500  -      -      -        -    -        0      0`));
+    return rows.join("\n");
+}
+function trunkShow(ctx) {
+    const c = ctx.d.cfg;
+    const list = Object.entries(c.ifaces).filter(([name, f]) => !name.startsWith("Vlan") && !f.shut && ctx.linked(name) && ctx.trunking(name));
+    if (!list.length) return "";
+    const vl = Object.keys(c.vlans || { 1: 1 }).map(Number).sort((a, b) => a - b).join(",");
+    const rows = ["Port        Mode         Encapsulation  Status        Native vlan"];
+    list.forEach(([n, f]) => rows.push(`${shortIf(n).padEnd(12)}${(f.mode === "trunk" ? "on" : f.mode === "desirable" ? "desirable" : "auto").padEnd(13)}802.1q         trunking      ${f.native || 1}`));
+    rows.push("", "Port        Vlans allowed on trunk");
+    list.forEach(([n]) => rows.push(`${shortIf(n).padEnd(12)}1-1005`));
+    rows.push("", "Port        Vlans allowed and active in management domain");
+    list.forEach(([n]) => rows.push(`${shortIf(n).padEnd(12)}${vl}`));
+    rows.push("", "Port        Vlans in spanning tree forwarding state and not pruned");
+    list.forEach(([n]) => rows.push(`${shortIf(n).padEnd(12)}${vl}`));
+    return rows.join("\n");
 }
 function ipBrief(ctx) {
     const rows = ["Interface              IP-Address      OK? Method Status                Protocol "];
     for (const [name, f] of Object.entries(ctx.d.cfg.ifaces)) {
         const [s, p] = ifStatus(ctx, name, f);
-        rows.push(`${name.padEnd(23)}${(f.ip || "unassigned").padEnd(16)}YES ${(f.ip ? "manual" : "unset").padEnd(7)}${s.padEnd(22)}${p} `);
+        rows.push(`${name.length >= 23 ? name + " " : name.padEnd(23)}${(f.ip || "unassigned").padEnd(16)}YES ${(f.ip ? "manual" : "unset").padEnd(7)}${s.padEnd(22)}${p} `);
     }
     return rows.join("\n");
 }
@@ -814,7 +1349,7 @@ function tokenize(line) {
 // Match tokens to a command. Returns { cmd, args } or { error, at }.
 function match(line, mode, kind) {
     const toks = tokenize(line);
-    let cands = CMDS.filter((c) => c.modes.includes(mode) && (!c.only || c.only === kind)).map((c) => ({ c, args: [], done: false }));
+    let cands = CMDS.filter((c) => c.modes.includes(cmdMode(mode)) && (!c.only || c.only === kind)).map((c) => ({ c, args: [], done: false }));
     for (let i = 0; i < toks.length; i++) {
         const tok = toks[i].t, low = tok.toLowerCase();
         const finished = cands.filter((x) => x.done);
@@ -850,7 +1385,7 @@ function helpFor(line, mode, kind) {
     const toks = tokenize(line);
     const done = endsSpace ? toks : toks.slice(0, -1);
     const partial = endsSpace ? "" : toks[toks.length - 1].t.toLowerCase();
-    let cands = CMDS.filter((c) => c.modes.includes(mode) && (!c.only || c.only === kind));
+    let cands = CMDS.filter((c) => c.modes.includes(cmdMode(mode)) && (!c.only || c.only === kind));
     for (let i = 0; i < done.length; i++) {
         const low = done[i].t.toLowerCase();
         let lit = cands.filter((c) => c.words.length > i && !c.words[i].startsWith("<") && c.words[i].startsWith(low));
@@ -881,7 +1416,8 @@ function makeCtx(app, id) {
         print: (...ts) => { ts.forEach((t) => String(t).split("\n").forEach((l) => s.out.push(l))); },
         invalid: () => ctx.print("% Invalid input detected at '^' marker."),
         ask: (prompt, secret, fn, tries = 0) => { s.pend = { prompt, secret, fn, tries }; },
-        linked: (port) => app.lab.links.some(([a, ap, b, bp]) => (a === id && ap === port) || (b === id && bp === port)),
+        linked: (port) => { const p = String(port).split(".")[0]; return app.lab.links.some(([a, ap, b, bp]) => (a === id && ap === p) || (b === id && bp === p)); },
+        trunking: (port) => isTrunk(app.lab, app.st, id, port),
         logout: () => {
             s.mode = "user"; s.connected = false;
             ctx.print("", `${d.cfg.hostname} con0 is now available`, "", "", "", "", "", "Press RETURN to get started.");
@@ -947,15 +1483,26 @@ function execLine(ctx, line, nested) {
             if (!name) { ctx.invalid(); return false; }
             res.args[0] = name;
         }
+        // interface range: run the command once per port
+        if (s.mode === "range" && s.range && !["exit", "end", "do"].includes(res.cmd.words[0])) {
+            const list = s.range;
+            for (const name of list) {
+                s.ifc = name;
+                res.cmd.run(ctx, res.args);
+                if (s.mode !== "range") break;
+            }
+            if (s.mode === "range") s.ifc = list[0];
+            return true;
+        }
         res.cmd.run(ctx, res.args);
         return true;
     }
     // Global commands also work from interface/line mode (IOS drops back to global config).
-    if (["if", "line", "range"].includes(s.mode) && res.error !== "ambiguous") {
+    if (["if", "subif", "line", "range", "vlan"].includes(s.mode) && res.error !== "ambiguous") {
         const g = match(line, "config", ctx.kind);
         if (g.cmd && !["exit", "end"].includes(g.cmd.words[0])) {
-            const before = { mode: s.mode, ifc: s.ifc, line: s.line };
-            s.mode = "config"; s.ifc = null; s.line = null;
+            const before = { mode: s.mode, ifc: s.ifc, line: s.line, range: s.range, vlan: s.vlan };
+            s.mode = "config"; s.ifc = null; s.line = null; s.range = null; s.vlan = null;
             if (g.isIf) {
                 const name = normIf(g.args[0], ctx.d, ctx.kind);
                 if (!name) { Object.assign(s, before); ctx.invalid(); return false; }
@@ -1081,7 +1628,7 @@ function load(id, lab) {
         const raw = localStorage.getItem(KEY(id));
         if (raw) {
             const st = JSON.parse(raw);
-            if (st && st.devs && Object.keys(lab.devices).every((k) => st.devs[k])) return st;
+            if (st && st.devs && Object.keys(lab.devices).every((k) => st.devs[k])) return upgradeState(st);
         }
     } catch (e) { /* storage unavailable */ }
     return freshState(lab);
@@ -1102,6 +1649,8 @@ const DEV_ART = {
     pc: `<rect x="-12" y="-15" width="24" height="18" rx="1.5" fill="#d8dde3" stroke="#7d8790" stroke-width=".7"/>
         <rect x="-9.5" y="-12.5" width="19" height="12.5" fill="#5aa9d6"/>
         <path d="M-4 3h8l2 4h-12z" fill="#b9c1c9"/><rect x="-13" y="7" width="26" height="4" rx="1" fill="#c9d0d7" stroke="#7d8790" stroke-width=".5"/>`,
+    laptop: `<path d="M-13 -12h26v15h-26z" fill="#d8dde3" stroke="#7d8790" stroke-width=".7"/><rect x="-11" y="-10.5" width="22" height="12" fill="#5aa9d6"/>
+        <path d="M-16 3h32l-3 6h-26z" fill="#c9d0d7" stroke="#7d8790" stroke-width=".6"/><path d="M-9 5.5h18" stroke="#9aa4ad" stroke-width="1"/>`,
     server: `<defs><linearGradient id="gV" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3aa3c6"/><stop offset="1" stop-color="#1f6f8f"/></linearGradient></defs>
         <rect x="-9" y="-17" width="18" height="32" rx="1.5" fill="url(#gV)" stroke="#185a74" stroke-width=".6"/>
         <path d="M-6 -12h12M-6 -8h12M-6 -4h12" stroke="#cdeef8" stroke-width="1.2"/><circle cx="0" cy="8" r="1.6" fill="#9ff0a6"/>`,
@@ -1132,6 +1681,7 @@ function linkUp(app, l) {
 }
 function ptWorkspace(app) {
     const L = app.lab;
+    if (L.wide) return ptWorkspaceWide(app);
     const lines = L.links.map((l) => {
         const a = L.devices[l[0]], b = L.devices[l[2]];
         const tri = (from, to, port, dev) => {
@@ -1151,22 +1701,54 @@ function ptWorkspace(app) {
         </g>`).join("");
     return `<svg viewBox="0 0 360 236" class="pt-topo" aria-label="Logical workspace. Tap a device to open it.">${lines}${devs}</svg>`;
 }
+// Bigger canvas (scrolls on phones, like Packet Tracer) with the lab's notes and port labels.
+function ptWorkspaceWide(app) {
+    const L = app.lab, SC = 1.25;
+    const on = (dev, port) => { const k = L.devices[dev].kind; return k === "router" || k === "switch" ? !app.st.devs[dev].cfg.ifaces[port].shut : true; };
+    const lines = L.links.map((l) => {
+        const a = L.devices[l[0]], b = L.devices[l[2]];
+        const end = (from, to, port, dev) => {
+            const dx = to.x - from.x, dy = to.y - from.y, len = Math.hypot(dx, dy) || 1;
+            const tx = from.x + (dx / len) * 34, ty = from.y + (dy / len) * 34;
+            const far = L.devices[dev].kind === "server" ? 66 : 46;
+            const lx = from.x + (dx / len) * far + (dy / len) * 12, ly = from.y + (dy / len) * far - (dx / len) * 12;
+            const up = on(dev, port) && on(l[0] === dev ? l[2] : l[0], l[0] === dev ? l[3] : l[1]);
+            const tri = up ? `<path d="M${tx - 5} ${ty + 4}L${tx} ${ty - 5}L${tx + 5} ${ty + 4}Z" fill="#26c43b"/>` : `<path d="M${tx - 5} ${ty - 4}L${tx} ${ty + 5}L${tx + 5} ${ty - 4}Z" fill="#e5172b"/>`;
+            return `${tri}<text x="${lx}" y="${ly + 3}" class="pt-port">${esc(shortIf(port).replace("Gig", "Gig").replace("FastEthernet0", "Fa0"))}</text>`;
+        };
+        return `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#111" stroke-width="2.4" ${l[4] === "dash" ? 'stroke-dasharray="9 6"' : ""}/>${end(a, b, l[1], l[0])}${end(b, a, l[3], l[2])}`;
+    }).join("");
+    const notes = (L.notes || []).map((n) => {
+        if (!n.box) return `<text x="${n.x}" y="${n.y}" class="pt-note-t" text-anchor="${n.a || "middle"}">${esc(n.t)}</text>`;
+        const w = Math.max(...n.box.map((s) => s.length)) * 6.1 + 12, h = n.box.length * 12.5 + 8;
+        return `<rect x="${n.x - 6}" y="${n.y - 13}" width="${w}" height="${h}" fill="#F4F6FB"/>` + n.box.map((s, i) => `<text x="${n.x}" y="${n.y + i * 12.5}" class="pt-note-t" text-anchor="start" xml:space="preserve">${esc(s)}</text>`).join("");
+    }).join("");
+    const devs = Object.entries(L.devices).map(([id, d]) => `
+        <g class="pt-node" data-dev="${id}" transform="translate(${d.x} ${d.y})" role="button" tabindex="0" aria-label="${esc(d.label)}">
+            <g transform="scale(${SC})"><rect x="-22" y="-20" width="44" height="40" fill="transparent"/>${DEV_ART[d.art || d.kind]}</g>
+            <text y="${d.kind === "server" ? 33 : 29}" class="pt-node-l big">${esc(d.modelLabel || d.model || MODEL_LABEL[d.kind])}</text>
+            <text y="${d.kind === "server" ? 45 : 41}" class="pt-node-l big">${esc(d.label)}</text>
+        </g>`).join("");
+    return `<svg viewBox="0 0 1010 490" class="pt-topo wide" aria-label="Logical workspace. Tap a device to open it.">${notes}${lines}${devs}</svg>`;
+}
 const hms = (s) => [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((n) => String(n).padStart(2, "0")).join(":");
 const TB_ICONS = ["M4 3h11l5 5v13H4z", "M3 7h7l2 2h9v10H3z", "M5 4h12l2 2v14H5zM8 4v5h7V4", "M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z", "M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM12 8v.5M12 11v6", "M5 19l14-14M8 5H5v3M16 19h3v-3", "M9 4l-5 5 5 5M4 9h11a5 5 0 0 1 0 10h-3", "M15 4l5 5-5 5M20 9H9a5 5 0 0 0 0 10h3", "M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM14.5 14.5L20 20M7 10h6M10 7v6", "M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM14.5 14.5L20 20", "M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM14.5 14.5L20 20M7 10h6", "M3 5h18v12H3zM8 21h8"];
 
 // ─── Mounting a lab ─────────────────────────────────────────────────────────
 function mount(root, labId, { alive } = {}) {
-    const lab = LABS[labId];
+    const lab = getLab(labId);
     if (!lab) { root.innerHTML = '<div class="error-box">This lab wasn\'t found.</div>'; return () => {}; }
     const app = { lab, st: load(labId, lab), sess: {}, open: null, tab: {}, desk: {}, page: {}, act: false, res: null, sug: true };
     if (typeof app.st.elapsed !== "number") app.st.elapsed = 0;
     Object.keys(lab.devices).forEach((k) => { app.sess[k] = Session(); app.sess[k].out.push("Press RETURN to get started!"); });
     const checks = lab.checks();
     const LIMIT = 4.5 * 3600;
+    const timeText = () => (lab.countUp ? hms(app.st.elapsed) : hms(Math.max(0, LIMIT - app.st.elapsed)));
+    const timeWord = lab.countUp ? "Time Elapsed" : "Time Left";
     let saveTimer = null;
     const save = () => { clearTimeout(saveTimer); saveTimer = setTimeout(() => store(labId, app.st), 200); };
     const W = lab.worksheet;
-    const short = (label) => label.replace(/^(Router|ITA|ITC|Host \d|Server): /, "");
+    const short = (label) => label.replace(/^[^:]+: /, "");
     const score = () => {
         const res = checks.map((c) => ({ ...c, ok: !!c.test(app.st, lab) }));
         return { res, pct: Math.round((res.filter((r) => r.ok).length / res.length) * 100) };
@@ -1177,7 +1759,7 @@ function mount(root, labId, { alive } = {}) {
             <div class="pt-titlebar">
                 <a class="pt-exit" href="#/packet-tracer" aria-label="Leave the lab">✕</a>
                 <span class="pt-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                <span class="pt-wtitle">Cisco Packet Tracer - final_practice_27_oct_2020.pka</span>
+                <span class="pt-wtitle">Cisco Packet Tracer - ${esc(lab.file || "final_practice_27_oct_2020.pka")}</span>
             </div>
             <div class="pt-menu" aria-hidden="true">${["File", "Edit", "Options", "View", "Tools", "Extensions", "Window", "Help"].map((m) => `<span>${m}</span>`).join("")}</div>
             <div class="pt-tools" aria-hidden="true">${TB_ICONS.map((d) => `<svg viewBox="0 0 24 24"><path d="${d}"/></svg>`).join("")}<span class="pt-q">?</span></div>
@@ -1227,21 +1809,21 @@ function mount(root, labId, { alive } = {}) {
         if (alive && !alive()) return;
         app.st.elapsed += 1;
         const t = $c("#pt-time"); if (t) t.textContent = hms(app.st.elapsed);
-        $$("[data-left]", root).forEach((el) => { el.textContent = hms(Math.max(0, LIMIT - app.st.elapsed)); });
+        $$("[data-left]", root).forEach((el) => { el.textContent = timeText(); });
         if (app.st.elapsed % 10 === 0) save();
     }, 1000);
 
     // ── PT Activity window (instructions)
     function renderAct() {
         const { pct } = score();
-        const left = hms(Math.max(0, LIMIT - app.st.elapsed));
+        const left = timeText();
         actEl.className = `pt-act ${app.act ? "open" : ""}`;
         actEl.innerHTML = app.act ? `
             <div class="pt-win act-win" role="dialog" aria-label="PT Activity">
                 <div class="pt-wbar"><button type="button" class="pt-wdot red" id="act-min" aria-label="Minimize"></button><i class="pt-wdot yel"></i><i class="pt-wdot grn"></i><span>PT Activity: <span data-left>${left}</span></span></div>
                 <div class="act-doc">${actDoc()}</div>
                 <div class="act-foot">
-                    <div class="act-row"><span>Time Left: <span data-left>${left}</span></span><span>Completion: <b>${pct}%</b></span></div>
+                    <div class="act-row"><span>${timeWord}: <span data-left>${left}</span></span><span>Completion: <b>${pct}%</b></span></div>
                     <div class="act-row">
                         <label class="pt-chk"><input type="checkbox" disabled> Top</label>
                         <label class="pt-chk"><input type="checkbox" checked disabled> Dock</label>
@@ -1252,7 +1834,7 @@ function mount(root, labId, { alive } = {}) {
                 </div>
             </div>` : `
             <button type="button" class="act-mini" id="act-open">
-                <span class="act-mini-t">PT Activity <small>Time Left: <span data-left>${left}</span></small></span>
+                <span class="act-mini-t">PT Activity <small>${timeWord}: <span data-left>${left}</span></small></span>
                 <span class="act-mini-c">Completion: <b>${pct}%</b></span>
                 <span class="pt-navy small" id="act-check2">Check Results</span>
                 <span class="act-mini-up" aria-hidden="true">▲</span>
@@ -1267,6 +1849,7 @@ function mount(root, labId, { alive } = {}) {
     }
 
     function actDoc() {
+        if (lab.ver) return vlanDoc();
         const sh = app.st.sheet || (app.st.sheet = {});
         const cell = (r, k) => {
             if (r.given === k) return `<b>${esc(r[k])}</b>`;
@@ -1365,8 +1948,65 @@ function mount(root, labId, { alive } = {}) {
                 <p><b>Full address plan</b></p><pre>${esc(W.design.map(([who, ip, mask, gw, six]) => `${who}: ${ip} ${mask}${gw ? `  gw ${gw}` : ""}${six ? `  ${six}` : ""}`).join("\n"))}</pre>
             </details>`;
     }
+    function vlanDoc() {
+        const P = lab.P, A = lab.answer;
+        const vers = Array.from({ length: VLAN_VERSIONS }, (_, i) => i + 1);
+        const reqs = lab.reqs.slice(1).join("\n").replace(/\n {2}/g, " ").split("\n");
+        return `
+            <div class="doc-ver">
+                <b>Version:</b>
+                ${vers.map((v) => `<button type="button" class="doc-vbtn ${lab.ver === v ? "on" : ""}" data-ver="${v}">${v}${v === 1 ? " · class" : ""}</button>`).join("")}
+                <button type="button" class="doc-vbtn ${lab.ver > VLAN_VERSIONS ? "on" : ""}" data-ver="new">${lab.ver > VLAN_VERSIONS ? `#${lab.ver} · ` : ""}New random</button>
+            </div>
+            <p class="doc-hint">Every version has the same steps and the same 48 graded items as the real activity. Only the names, VLANs, networks, ports and passwords change. Version 1 is the practice file from class.</p>
+            <p>In the real activity this window is empty: everything is written on the map. Here is the same information in one place.</p>
+            <p><b>Requirements</b></p>
+            <ul class="doc-dots">${reqs.map((r) => `<li>${esc(r.replace(/^- /, ""))}</li>`).join("")}</ul>
+            <p><b>VLANs</b></p>
+            <div class="doc-scroll"><table class="doc-t"><tr><th>VLAN</th><th>Name</th><th>Network</th></tr>
+                ${[[P.A, P.nameA, P.netA, P.pA], [P.B, P.nameB, P.netB, P.pB], [P.N, P.nameN, P.netN, P.pN]].map(([v, n, net, pf]) => `<tr><td>${v}</td><td>${esc(n)}</td><td>${net}/${pf}</td></tr>`).join("")}
+            </table></div>
+            <p><b>Also on the map</b></p>
+            <ul class="doc-dots">
+                <li>Server link (${esc(lab.devices.R.label)} to ${esc(P.server)}): <b>${P.link}/30</b> and <b>${esc(P.v6show)}/64</b>. The server is labeled <b>1st</b>.</li>
+                <li>Next to ${esc(lab.devices.R.label)}: <b>::${esc(P.rid)}</b> (its IPv6 host part) and link-local <b>${esc(P.ll)}</b>.</li>
+                <li>Switches are labeled 1ST / 2ND / 3RD, PCs and laptops 1st / 2nd. Port names are shown on every cable.</li>
+            </ul>
+            <p><b>Rules the lab doesn't write down</b></p>
+            <ul class="doc-dots">
+                <li>The router gets the <b>last usable</b> address in every network (each VLAN and the server link).</li>
+                <li>"1st", "2nd", "3rd" mean the first, second and third <b>usable</b> address of that device's network. Switches use the ${esc(P.nameN)} VLAN (${P.N}).</li>
+                <li>The server's IPv6 address is the first one: <b>${esc(P.v6show)}1/64</b>. Its IPv6 gateway is the router's link-local address.</li>
+                <li>Router console and VTY password: <b>cisco</b>. Enable secret: <b>class</b>.</li>
+                <li>Native VLAN on every trunk, including the link to the router. The router uses one subinterface per VLAN, numbered like the VLAN.</li>
+            </ul>
+            <p class="doc-tools"><button type="button" class="pt-navy small" id="doc-reset">Start this version over</button></p>
+            <details class="doc-help"><summary>AnswrIT help: show the answers</summary>
+                <p><b>Address plan</b></p>
+                <div class="doc-scroll"><table class="doc-t"><tr><th>Device</th><th>IPv4</th><th>Mask</th><th>Other</th></tr>
+                    ${A.plan.map((r) => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</table></div>
+                ${A.help.map(([title, code]) => `<p><b>${esc(title)}</b></p><pre>${esc(code)}</pre>`).join("")}
+                <p class="doc-hint">PCs, laptops and the server: Desktop, then IP Configuration (IPv4 address, mask, gateway and DNS server).</p>
+            </details>`;
+    }
     const normCell = (k, v) => k === "range" ? String(v).split(/\s*(?:-|–|to)\s*/).map(normIp).join("-") : normIp(v);
     function bindDoc() {
+        if (lab.ver) {
+            $$("[data-ver]", actEl).forEach((b) => {
+                b.onclick = () => {
+                    const v = b.dataset.ver === "new" ? VLAN_VERSIONS + 1 + Math.floor(Math.random() * 9000) : +b.dataset.ver;
+                    store(labId, app.st);
+                    location.hash = `#/packet-tracer/lab/${v === 1 ? VLAN_LAB : `${VLAN_LAB}-${v}`}`;
+                };
+            });
+            $("#doc-reset", actEl).onclick = () => {
+                if (!window.confirm("Start this version over? Everything you configured in it will be erased.")) return;
+                app.st = freshState(lab); app.st.elapsed = 0;
+                Object.keys(lab.devices).forEach((k) => { app.sess[k] = Session(); app.sess[k].out.push("Press RETURN to get started!"); });
+                closeDevice(); store(labId, app.st); update(); renderAct();
+            };
+            return;
+        }
         const sh = app.st.sheet;
         $$(".doc-in", actEl).forEach((inp) => { inp.oninput = () => { sh[inp.dataset.key] = inp.value; inp.classList.remove("ok", "no"); save(); }; });
         const keepScroll = (fn) => { const d = $(".act-doc", actEl), top = d.scrollTop; fn(); renderAct(); $(".act-doc", actEl).scrollTop = top; };
@@ -1383,11 +2023,9 @@ function mount(root, labId, { alive } = {}) {
     function renderResults() {
         const { res, pct } = score();
         const tab = app.res;
-        const hosts = ["H0", "H1", "H2", "SV"];
         const tests = [];
-        hosts.forEach((a, i) => hosts.slice(i + 1).forEach((b) => {
-            tests.push({ a, b, ok: !!app.st.devs[b].cfg.ip && ping(lab, app.st, a, app.st.devs[b].cfg.ip, 4).ok });
-        }));
+        const pairs = lab.conn || ["H0", "H1", "H2", "SV"].flatMap((a, i, h) => h.slice(i + 1).map((b) => [a, b]));
+        pairs.forEach(([a, b]) => tests.push({ a, b, ok: !!app.st.devs[b].cfg.ip && ping(lab, app.st, a, app.st.devs[b].cfg.ip, 4).ok }));
         const groups = [];
         res.forEach((r) => {
             const name = lab.devices[r.dev].label;
@@ -1412,6 +2050,7 @@ function mount(root, labId, { alive } = {}) {
                             ${groups.map((g) => `<tr class="grp"><td colspan="2">&nbsp;&nbsp;▾ ${esc(g.name)}</td></tr>
                                 ${g.items.map((r) => `<tr><td class="it">${esc(short(r.label))}</td><td class="${r.ok ? "ok" : "no"}">${r.ok ? "Correct" : "Incorrect"}</td></tr>`).join("")}`).join("")}
                         </table>` : `
+                        ${lab.conn ? `<p class="res-note">This activity has no connectivity tests in Packet Tracer either. AnswrIT extra: these pings show whether your VLANs and routing work. They don't count toward the score.</p>` : ""}
                         <table class="res-t"><tr><th>Connectivity Tests</th><th>Status</th></tr>
                             ${tests.map((t) => `<tr><td class="it">Ping ${esc(lab.devices[t.a].label)} → ${esc(lab.devices[t.b].label)}</td><td class="${t.ok ? "ok" : "no"}">${t.ok ? "Correct" : "Incorrect"}</td></tr>`).join("")}
                         </table>`}
@@ -1563,7 +2202,7 @@ function mount(root, labId, { alive } = {}) {
                 if (e) e.preventDefault();
                 if (CFG_MODES.includes(s.mode)) {
                     s.out.push(prompt(ctx()) + "^Z");
-                    s.mode = "priv"; s.ifc = null; s.line = null;
+                    s.mode = "priv"; s.ifc = null; s.line = null; s.range = null;
                     s.out.push("%SYS-5-CONFIG_I: Configured from console by console");
                     paint();
                 }
@@ -1612,7 +2251,7 @@ function mount(root, labId, { alive } = {}) {
                     <div class="ipc-row"><label>IPv4 Address</label>${f("ip", c.ip)}</div>
                     <div class="ipc-row"><label>Subnet Mask</label>${f("mask", c.mask)}</div>
                     <div class="ipc-row"><label>Default Gateway</label>${f("gw", c.gw || "0.0.0.0")}</div>
-                    <div class="ipc-row"><label>DNS Server</label><input class="ipc-in" value="0.0.0.0" disabled></div>
+                    <div class="ipc-row"><label>DNS Server</label>${f("dns", c.dns || "0.0.0.0")}</div>
                 </fieldset>
                 <fieldset><legend>IPv6 Configuration</legend>
                     <div class="ipc-radio"><label><input type="radio" disabled> Automatic</label><label><input type="radio" checked> Static</label></div>
@@ -1633,10 +2272,10 @@ function mount(root, labId, { alive } = {}) {
                 inp.oninput = () => {
                     const k = inp.dataset.k, v = inp.value.trim();
                     let bad = "";
-                    if (k === "ip" || k === "mask" || k === "gw") {
+                    if (k === "ip" || k === "mask" || k === "gw" || k === "dns") {
                         if (v && ip2n(v) === null) bad = "Invalid IP address.";
                         else if (k === "mask" && v && maskBits(v) === null) bad = "Invalid subnet mask.";
-                        else c[k] = v && !(k === "gw" && v === "0.0.0.0") ? normIp(v) : "";
+                        else c[k] = v && !((k === "gw" || k === "dns") && v === "0.0.0.0") ? normIp(v) : "";
                     } else if (k === "v6" || k === "v6gw") {
                         if (v && !v6(v)) bad = "Invalid IPv6 address.";
                         else c[k] = v ? v6(v) : "";
@@ -1705,7 +2344,7 @@ function mount(root, labId, { alive } = {}) {
         const isNet = def.kind === "router" || def.kind === "switch";
         const nav = isNet
             ? [["GLOBAL"], ["Settings"], ["Algorithm Settings"], ...(def.kind === "router" ? [["ROUTING"], ["Static"], ["RIP"]] : []), ["SWITCHING"], ["VLAN Database"], ["INTERFACE"],
-                ...(def.kind === "router" ? ["GigabitEthernet0/0", "GigabitEthernet0/1", "GigabitEthernet0/2"] : ["Vlan1", "FastEthernet0/1", "FastEthernet0/2", "GigabitEthernet0/1"]).map((n) => [n])]
+                ...Object.keys(d.cfg.ifaces).sort((x, y) => x.startsWith("Vlan") === y.startsWith("Vlan") ? 0 : x.startsWith("Vlan") ? -1 : 1).map((n) => [n])]
             : [["GLOBAL"], ["Settings"], ["Algorithm Settings"], ["INTERFACE"], ["FastEthernet0"], ["Bluetooth"]];
         const heads = ["GLOBAL", "ROUTING", "SWITCHING", "INTERFACE"];
         const page = app.page[id] || "Settings";
@@ -1769,7 +2408,7 @@ function mount(root, labId, { alive } = {}) {
                 <fieldset><legend>Gateway/DNS IPv4</legend>
                     <div class="ipc-radio"><label><input type="radio" disabled> DHCP</label><label><input type="radio" checked> Static</label></div>
                     <div class="cfg-row"><label>Default Gateway</label><input data-k="gw" value="${esc(c.gw)}" inputmode="decimal" autocomplete="off"></div>
-                    <div class="cfg-row"><label>DNS Server</label><input disabled></div></fieldset>
+                    <div class="cfg-row"><label>DNS Server</label><input data-k="dns" value="${esc(c.dns || "")}" inputmode="decimal" autocomplete="off"></div></fieldset>
                 <fieldset><legend>Gateway/DNS IPv6</legend>
                     <div class="ipc-radio"><label><input type="radio" disabled> Automatic</label><label><input type="radio" checked> Static</label></div>
                     <div class="cfg-row"><label>Default Gateway</label><input data-k="v6gw" value="${esc(c.v6gw ? v6short(c.v6gw) : "")}" autocomplete="off" autocapitalize="none"></div>
@@ -1857,9 +2496,13 @@ function mount(root, labId, { alive } = {}) {
 }
 
 window.AnswritPtLab = {
-    list: Object.entries(LABS).map(([id, l]) => ({ id, title: l.title, sub: l.sub, course: l.course })),
+    list: [
+        ...Object.entries(LABS).map(([id, l]) => ({ id, title: l.title, sub: l.sub, course: l.course })),
+        { id: VLAN_LAB, title: "Skills Practice: VLANs & Inter-VLAN Routing", sub: "Router-on-a-stick, trunks, native VLAN, SSH and IPv6, in several versions", course: "CCNA 2" },
+    ],
+    get: (id) => getLab(id),
     mount,
     // For tests.
-    _internal: { LABS, freshState, submit, Session, makeCtx, ping, hostCommand, mount },
+    _internal: { LABS, getLab, makeVlanLab, v6, freshState, submit, Session, makeCtx, ping, hostCommand, mount },
 };
 })();

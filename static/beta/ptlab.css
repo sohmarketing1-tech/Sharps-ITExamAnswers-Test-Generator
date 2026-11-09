@@ -262,3 +262,14 @@ button.pt-wdot.red::after { content: ""; position: absolute; inset: -14px; }
     .pt-tabs button { padding: 7px 8px 5px; }
 }
 .pt-exit { top: calc(50% + env(safe-area-inset-top, 0px) / 2); }
+
+/* ── Wide labs (CCNA 2 skills lab): big canvas that scrolls on phones, notes and port labels ── */
+.pt-canvas:has(.pt-topo.wide) { justify-content: flex-start; }
+.pt-topo.wide { width: 1010px; min-width: 1010px; max-width: none; margin: 0 auto; }
+.pt-port { font: 10px Arial, sans-serif; fill: #111111; text-anchor: middle; }
+.pt-note-t { font: 11px Arial, sans-serif; fill: #111111; }
+.pt-node-l.big { font-size: 10.5px; }
+.doc-ver { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 2px 0 8px; }
+.doc-vbtn { border: 1px solid #9aa7b6; background: #FFFFFF; color: #1d2b3a; border-radius: 4px; padding: 5px 9px; font: 13px Arial, sans-serif; cursor: pointer; min-height: 32px; }
+.doc-vbtn.on { background: #1d3a6e; border-color: #1d3a6e; color: #FFFFFF; }
+.res-note { margin: 0 0 8px; font-size: 13px; color: #44515f; }
