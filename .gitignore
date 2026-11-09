@@ -48,3 +48,6 @@ history_cleanup.log
 Naval_Messaging_Complete_Study_Guide.pdf
 dms.json
 bug*.MP4
+
+# Packet Tracer answer keys and screenshots from class files (private)
+ptlabs/

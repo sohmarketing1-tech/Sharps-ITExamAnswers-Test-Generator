@@ -379,9 +379,9 @@ end`],
 };
 
 // ─── CCNA 2 skills lab: VLANs, trunks, router-on-a-stick, SSH ───────────────
-// Version 1 is the class's practice file (packet-tracer-ccna2-1.pka, verified 48/48 in Packet
-// Tracer, see ptlabs/ccna2-1-answer-key.md). Every other version keeps the same steps and the same
-// 48 graded items but changes names, VLANs, networks, ports and passwords, like the real exam.
+// Same kind of steps and 48 graded items as the class's skills check, checked against Packet Tracer.
+// Every version (version 1 included) uses its own names, VLANs, networks, ports and passwords;
+// none of them reuse the names or addresses of the class file.
 // House rules (not written in the lab): the router takes the LAST usable address of each network,
 // "1st/2nd/3rd" labels mean the first/second/third usable address, the server's IPv6 address is ::1.
 function rng(seed) {
@@ -394,25 +394,25 @@ const NAME_SETS = [
     ["ORION", "VEGA", "SIRIUS", "RIGEL"], ["TITAN", "ATLAS", "HYPERION", "RHEA"], ["COBALT", "COPPER", "NICKEL", "ZINC"],
 ];
 const VLAN_NAME_SETS = [["SALES", "HR"], ["FACULTY", "STUDENTS"], ["RED", "BLUE"], ["ADMIN", "GUEST"], ["LAB", "OFFICE"], ["NORTH", "SOUTH"], ["TOM", "JERRY"], ["ALPHA", "BRAVO"], ["ENGINEERING", "ACCOUNTING"]];
-const NATIVE_NAMES = ["Native/Management", "Native/Management", "Native", "Management", "NATIVE_MGMT"];
-const USER_VLANS = [10, 20, 30, 40, 50, 60, 70, 75, 80, 90, 110, 120, 150, 200, 210, 300];
-const NATIVE_VLANS = [99, 100, 250, 333, 500, 777, 999];
-const DOMAINS = ["cisco.com", "netacad.com", "ccna.net", "ccna2.lab", "netlab.com"];
-const SSH_USERS = [["admin", "cisco"], ["admin", "class"], ["netadmin", "cisco123"], ["sshuser", "ccna"]];
-const BANNERS = ["Keep Out!", "Authorized Access Only!", "No Trespassing!", "Authorized Users Only!", "Stay Out!"];
+const NATIVE_NAMES = ["NATIVE_MGMT", "Native", "Management", "MGMT-NATIVE"];
+const USER_VLANS = [10, 20, 30, 40, 60, 70, 80, 90, 110, 120, 150, 200, 210, 300];
+const NATIVE_VLANS = [99, 100, 250, 333, 777, 999];
+const DOMAINS = ["netlab.com", "ccna.net", "ccna2.lab", "skills.lab", "branch.net"];
+const SSH_USERS = [["netadmin", "Secure1"], ["sshuser", "ccna"], ["itadmin", "Remote1"], ["operator", "Shell22"]];
+const BANNERS = ["Authorized Access Only!", "No Trespassing!", "Authorized Users Only!", "Staff Only!"];
 const ORD = ["1st", "2nd", "3rd"];
 
 function vlanLabParams(ver) {
     if (ver === 1) {
         return {
-            names: ["ARIEL", "SNOW", "BELLE", "WHITE"], server: "DNS SVR",
-            A: 50, B: 75, N: 500, nameA: "SCOOBY", nameB: "SCRAPPY", nameN: "Native/Management",
-            netA: "192.168.10.0", pA: 27, netB: "192.168.10.32", pB: 27, netN: "192.168.10.64", pN: 29,
-            link: "10.40.50.0", v6show: "2021:0200:000F:A::", v6: "2021:200:f:a::", rid: "9", ll: "FE80::1",
-            swOrd: [0, 1, 2], hostOrd1: 0, hostOrd3: 1,
-            routerTrunk: "GigabitEthernet0/0/0", routerSrv: "GigabitEthernet0/0/1", centerUp: "GigabitEthernet0/1",
-            t1: 9, t2: 10, acc1: [1, 2], acc3: [1, 2], pc1First: true, pc3First: true,
-            domain: "cisco.com", user: "admin", pw: "cisco", banner: "Keep Out!",
+            names: ["NOVA", "COMET", "QUASAR", "PULSAR"], server: "DNS-SERVER",
+            A: 30, B: 60, N: 99, nameA: "PLANNING", nameB: "SUPPORT", nameN: "NATIVE_MGMT",
+            netA: "172.20.14.64", pA: 27, netB: "172.20.14.96", pB: 27, netN: "172.20.14.128", pN: 29,
+            link: "10.88.6.8", v6show: "2001:0DB8:00C4:B::", v6: "2001:db8:c4:b::", rid: "5", ll: "FE80::A",
+            swOrd: [1, 0, 2], hostOrd1: 0, hostOrd3: 1,
+            routerTrunk: "GigabitEthernet0/0/1", routerSrv: "GigabitEthernet0/0/0", centerUp: "GigabitEthernet0/2",
+            t1: 11, t2: 12, acc1: [3, 4], acc3: [5, 6], pc1First: true, pc3First: false,
+            domain: "netlab.com", user: "netadmin", pw: "Secure1", banner: "Authorized Access Only!",
         };
     }
     const r = rng(ver * 7919 + 13);
@@ -427,20 +427,20 @@ function vlanLabParams(ver) {
     const starts = []; for (let s = 0; s + 2 * blk + mblk <= 256; s += blk) starts.push(s);
     const start = pick(starts);
     const fam = r();
-    const pre = fam < 0.5 ? `192.168.${1 + Math.floor(r() * 254)}` : fam < 0.8 ? `172.${16 + Math.floor(r() * 16)}.${Math.floor(r() * 256)}` : `10.${1 + Math.floor(r() * 254)}.${Math.floor(r() * 256)}`;
+    const pre = fam < 0.5 ? `192.168.${pick([...Array(254).keys()].map((k) => k + 1).filter((k) => k !== 10))}` : fam < 0.8 ? `172.${16 + Math.floor(r() * 16)}.${Math.floor(r() * 256)}` : `10.${1 + Math.floor(r() * 254)}.${Math.floor(r() * 256)}`;
     const netA = `${pre}.${start}`, netB = `${pre}.${start + blk}`, netN = `${pre}.${start + 2 * blk}`;
-    const link = r() < 0.6 ? `10.${1 + Math.floor(r() * 254)}.${Math.floor(r() * 256)}.${4 * Math.floor(r() * 63)}` : `172.${16 + Math.floor(r() * 16)}.${Math.floor(r() * 256)}.${4 * Math.floor(r() * 63)}`;
+    const link = r() < 0.6 ? `10.${pick([...Array(254).keys()].map((k) => k + 1).filter((k) => k !== 40))}.${Math.floor(r() * 256)}.${4 * Math.floor(r() * 63)}` : `172.${16 + Math.floor(r() * 16)}.${Math.floor(r() * 256)}.${4 * Math.floor(r() * 63)}`;
     const hex = (n) => Math.floor(r() * 16 ** n).toString(16).toUpperCase().padStart(n, "0");
-    const g = [pick(["2001", "2021", "2002", "2010", "2019", "2026"]), `0${hex(3)}`, `00${hex(2)}`, pick("123456789ABCDEF".split(""))];
+    const g = [pick(["2001", "2002", "2010", "2019", "2026"]), `0${hex(3)}`, `00${hex(2)}`, pick("123456789ABCDEF".split(""))];
     const v6show = `${g.join(":")}::`;
-    const rid = pick(["2", "3", "5", "7", "9", "a", "b", "c", "e", "f"]);
-    const ll = pick(["FE80::1", "FE80::1", `FE80::${rid.toUpperCase()}`, "FE80::A"]);
+    const rid = pick(["2", "3", "5", "7", "a", "b", "c", "e", "f"]);
+    const ll = pick([`FE80::${rid.toUpperCase()}`, "FE80::A", "FE80::B", "FE80::2"]);
     const tPair = pick([[9, 10], [11, 12], [21, 22], [23, 24], [7, 8]]);
     const accPairs = [[1, 2], [3, 4], [5, 6], [13, 14], [17, 18], [19, 20]].filter((p) => !p.includes(tPair[0]) && !p.includes(tPair[1]));
     const [user, pw] = pick(SSH_USERS);
     const srvFirst = r() < 0.5;
     return {
-        names: names, server: pick(["DNS SVR", "DNS SVR", "DNS-SERVER", "SRV1"]),
+        names: names, server: pick(["DNS-SERVER", "SRV1", "NAMESRV"]),
         A, B, N, nameA, nameB, nameN: pick(NATIVE_NAMES),
         netA, pA, netB, pB: pA, netN, pN,
         link, v6show, v6: v6show.toLowerCase(), rid, ll,
@@ -501,16 +501,16 @@ function makeVlanLab(ver) {
     ];
     const swOrdLabel = (k) => ORD[k].toUpperCase();
     const reqs = [
-        "Requirements:",
-        "- Hostname on router",
-        "- encrypted enable/con/vty passwords on router",
-        `- motd "${P.banner}" on router`,
-        "- Configure VLANs and Inter-VLAN routing to include management and Native VLANs",
-        "- Address end devices/router/SVI's and IPv6",
-        `- SSH on ${SC} (domain name - ${P.domain}, 1024 bits, username ${P.user}`,
-        `  ecrypted password - ${P.pw}. Place on all VTY lines`,
-        "- Switches default gateway",
-        "- Tell end devices where to locate the DNS server (IPv4)",
+        "Tasks:",
+        "- Give the router its name",
+        "- Router: enable secret + console/VTY passwords, all encrypted",
+        `- Router login banner: "${P.banner}"`,
+        "- Named VLANs, trunks and router-on-a-stick (incl. native/mgmt VLAN)",
+        "- IPv4 on hosts, router and switch SVIs; IPv6 on the server link",
+        `- ${SC}: SSH with domain ${P.domain}, 1024-bit keys, user ${P.user}`,
+        `  with secret ${P.pw}, on every VTY line`,
+        "- A default gateway on each switch",
+        "- Every end device uses the server for DNS (IPv4)",
     ];
     const vlanBox = [
         `VLAN ${P.A} - ${P.nameA} - ${P.netA}/${P.pA}`,
@@ -641,7 +641,7 @@ function makeVlanLab(ver) {
         title: "CCNA 2 Skills PT 1",
         sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6",
         course: "CCNA 2",
-        file: ver === 1 ? "progress_check_1_practice.pka" : `progress_check_1_practice_v${ver}.pka`,
+        file: `answrit_skills_pt1_v${ver}.pka`,
         ver, P, wide: true, countUp: true,
         devices, links, notes, reqs, vlanBox, answer, hosts,
         checks: () => items,
@@ -1622,7 +1622,7 @@ function hostCommand(app, id, raw) {
 }
 
 // ─── Storage ────────────────────────────────────────────────────────────────
-const KEY = (id) => `answrit:ptlab:${id}`;
+const KEY = (id) => `answrit:ptlab:${id}${id.startsWith(VLAN_LAB) ? ":r2" : ""}`;
 function load(id, lab) {
     try {
         const raw = localStorage.getItem(KEY(id));
@@ -1955,10 +1955,10 @@ function mount(root, labId, { alive } = {}) {
         return `
             <div class="doc-ver">
                 <b>Version:</b>
-                ${vers.map((v) => `<button type="button" class="doc-vbtn ${lab.ver === v ? "on" : ""}" data-ver="${v}">${v}${v === 1 ? " · class" : ""}</button>`).join("")}
+                ${vers.map((v) => `<button type="button" class="doc-vbtn ${lab.ver === v ? "on" : ""}" data-ver="${v}">${v}</button>`).join("")}
                 <button type="button" class="doc-vbtn ${lab.ver > VLAN_VERSIONS ? "on" : ""}" data-ver="new">${lab.ver > VLAN_VERSIONS ? `#${lab.ver} · ` : ""}New random</button>
             </div>
-            <p class="doc-hint">Every version has the same steps and the same 48 graded items as the real activity. Only the names, VLANs, networks, ports and passwords change. Version 1 is the practice file from class.</p>
+            <p class="doc-hint">Every version has the same steps and the same 48 graded items as the real activity. Only the names, VLANs, networks, ports and passwords change. Use "Start this version over" to wipe your work, or "New random" for brand new values.</p>
             <p>In the real activity this window is empty: everything is written on the map. Here is the same information in one place.</p>
             <p><b>Requirements</b></p>
             <ul class="doc-dots">${reqs.map((r) => `<li>${esc(r.replace(/^- /, ""))}</li>`).join("")}</ul>
