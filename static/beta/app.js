@@ -23,7 +23,10 @@ const COURSES = {
     ccna2: {
         id: "ccna2", name: "CCNA 2", icon: "network", tint: "blue",
         match: (f) => f.startsWith("ccna-2"),
-        labs: [{ id: "ccna2-vlan", title: "Packet Tracer 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6. New names and numbers every version." }],
+        labs: [
+            { href: "packet-tracer/lab/ccna2-vlan", icon: "terminal", tint: "orange", title: "Packet Tracer 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6. New names and numbers every version." },
+            { href: "packet-tracer/commands", icon: "cards", tint: "blue", title: "Packet Tracer 1: Command drill", sub: "Practice every command on your phone. Type it or pick it." },
+        ],
         note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most shipmates score 90–100% this way.",
     },
     comms: {
@@ -247,6 +250,7 @@ const ROUTES = [
     [/^packet-tracer\/subnet$/, viewPtSubnet, "study"],
     [/^packet-tracer\/cli$/, viewPtCli, "study"],
     [/^packet-tracer\/lab\/([a-z0-9-]+)$/, viewPtLab, "study"],
+    [/^packet-tracer\/commands$/, viewPtCmd, "study"],
     [/^my-flashcards$/, viewMyDecks, "study"],
     [/^my-flashcards\/(\d+)$/, viewMyDeck, "study"],
     [/^my-flashcards\/(\d+)\/study$/, viewMyDeckStudy, "study"],
@@ -456,8 +460,8 @@ async function viewCourse(root, [courseId]) {
         <div class="section-head"><h2 class="section-title">Packet Tracer</h2></div>
         <div class="row-list">
             ${course.labs.map((l) => `
-                <a class="row" href="#/packet-tracer/lab/${esc(l.id)}">
-                    <span class="icon-tile tint-orange">${icon("terminal")}</span>
+                <a class="row" href="#/${esc(l.href)}">
+                    <span class="icon-tile tint-${esc(l.tint)}">${icon(l.icon)}</span>
                     <span class="row-body">
                         <span class="row-title">${esc(l.title)}</span>
                         <span class="row-sub">${esc(l.sub)}</span>
@@ -1267,6 +1271,11 @@ async function viewPacketTracer(root, _p, _q, alive) {
                 <span class="row-body"><span class="row-title">${esc(l.title)} <span class="badge-new">${esc(l.course || "Lab")}</span></span><span class="row-sub">${esc(l.sub)}. A full practice lab with a CLI on every device.</span></span>
                 ${icon("chevron", "row-chevron")}
             </a>`).join("")}
+            <a class="row" href="#/packet-tracer/commands">
+                <span class="icon-tile tint-blue">${icon("cards")}</span>
+                <span class="row-body"><span class="row-title">Packet Tracer 1: Command drill</span><span class="row-sub">Practice every command on your phone. Type it or pick it.</span></span>
+                ${icon("chevron", "row-chevron")}
+            </a>
             <a class="row" href="#/packet-tracer/subnet">
                 <span class="icon-tile tint-blue">${icon("network")}</span>
                 <span class="row-body"><span class="row-title">Subnetting practice</span><span class="row-sub">Work out the mask, hosts and subnets for a network</span></span>
@@ -1293,6 +1302,347 @@ async function viewPtLab(root, [id], _q, alive) {
         document.body.classList.remove("lab-mode");
         if (typeof cleanup === "function") cleanup();
     };
+}
+
+// ─── Packet Tracer 1: command drill ─────────────────────────────────────────
+// Phone-friendly practice for every command in Packet Tracer 1, in the same order as the lab's
+// Tasks box. Each round makes up new names and numbers. Type the command (the short forms that
+// work in Packet Tracer count) or pick it from 4.
+const PTC_MODE_KEY = "answrit:ptcMode";
+// Short forms shown after each answer. vlan, username, password, secret and range stay full on purpose.
+const PTC_SHORT = {
+    enable: "en", configure: "conf", terminal: "t", hostname: "host", console: "con", service: "serv",
+    "password-encryption": "pass", banner: "ban", shutdown: "shut", interface: "int", encapsulation: "enc",
+    dot1q: "dot", native: "nat", address: "add", switchport: "sw", mode: "mo", trunk: "tr", access: "acc",
+    "domain-name": "domain-n", crypto: "cry", generate: "gen", local: "loc", transport: "trans", input: "in",
+    "default-gateway": "default-g", version: "ver", "running-config": "run", "startup-config": "start", write: "wr",
+};
+// Fewest letters Packet Tracer accepts for each word (shorter ones are ambiguous there).
+const PTC_MIN = {
+    enable: 2, configure: 4, terminal: 1, hostname: 4, secret: 3, line: 4, console: 3, password: 4, login: 5,
+    vty: 3, service: 4, "password-encryption": 4, banner: 3, motd: 4, no: 2, shutdown: 4, interface: 3,
+    encapsulation: 3, dot1q: 3, native: 3, ip: 2, address: 3, vlan: 2, name: 2, switchport: 2, mode: 2,
+    trunk: 2, access: 2, range: 3, ipv6: 4, "link-local": 4, "domain-name": 8, username: 5, crypto: 3, key: 3,
+    generate: 3, rsa: 3, "general-keys": 3, modulus: 3, ssh: 3, version: 3, local: 3, transport: 4, input: 2,
+    "default-gateway": 9, copy: 4, "running-config": 3, "startup-config": 3, write: 2, memory: 3,
+};
+const PTC_SHOW = { dot1q: "dot1Q" };
+
+function ptcValues() {
+    const rnd = (n) => Math.floor(Math.random() * n);
+    const pick = (a) => a[rnd(a.length)];
+    const two = (a) => { const b = shuffle(a.slice()); return [b[0], b[1]]; };
+    const [sc, sw1] = two(["HAWK", "EAGLE", "OSPREY", "COMET", "PULSAR", "VEGA", "CEDAR", "MAPLE"]);
+    const [nameA, nameB] = pick([["ENGINEERING", "ACCOUNTING"], ["SALES", "HR"], ["FACULTY", "STUDENTS"], ["PLANNING", "SUPPORT"], ["RED", "BLUE"], ["LAB", "OFFICE"]]);
+    const pre = Math.random() < 0.5 ? `172.${16 + rnd(16)}.${rnd(256)}` : `192.168.${pick([1, 2, 5, 20, 33, 50, 77, 100, 150, 200])}`;
+    const k = rnd(5), a0 = k * 32;
+    const ip = (n) => `${pre}.${n}`;
+    const lk = `10.${1 + rnd(254)}.${rnd(256)}`, l0 = 4 * rnd(63);
+    const hex = () => rnd(4096).toString(16).toUpperCase();
+    const v6 = `2001:DB8:${hex()}:${pick("123456789ABCDEF".split(""))}::`;
+    const [t1, t2] = pick([[9, 10], [11, 12], [21, 22], [23, 24]]);
+    const rsw = pick(["g0/0/1", "g0/0/0"]);
+    return {
+        R: pick(["FALCON", "NOVA", "ORION", "TITAN", "ZEUS", "DENALI", "ATLAS"]), SC: sc, SW: sw1,
+        A: pick([10, 20, 30, 40, 60, 70]), B: pick([80, 90, 110, 120, 200, 300]), N: pick([99, 100, 250, 333, 777, 999]),
+        nameA, nameB,
+        netA: ip(a0), netB: ip(a0 + 32), netN: ip(a0 + 64),
+        rA: ip(a0 + 30), rB: ip(a0 + 62), rN: ip(a0 + 70), sw2: ip(a0 + 66), bcB: ip(a0 + 63), nB: ip(a0 + 32),
+        link: `${lk}.${l0}`, rL: `${lk}.${l0 + 2}`, srv: `${lk}.${l0 + 1}`,
+        v6, end: pick(["5", "7", "9", "A", "B", "C", "E"]), ll: pick(["FE80::1", "FE80::A", "FE80::B", "FE80::2"]),
+        rsw, t1, t2, acc: pick([1, 3, 5, 19]),
+        banner: pick(["Authorized Users Only!", "Authorized Access Only!", "Staff Only!", "No Trespassing!"]),
+        domain: pick(["skills.lab", "netlab.com", "ccna.net", "branch.net"]),
+        user: pick(["operator", "netadmin", "itadmin", "sshuser"]), secret: pick(["Shell22", "Secure1", "Remote1", "Key2Go"]),
+    };
+}
+
+function ptcQuestions(v) {
+    const L = [];
+    const add = (task, where, prompt, q, answers, why, extra = {}) => L.push({ task, where, prompt, q, answers, why, ...extra });
+    const R = v.R, S = v.SC;
+    const M27 = "255.255.255.224", M29 = "255.255.255.248", M30 = "255.255.255.252";
+    // Task 1
+    add(1, "Router", "Router>", "Go from user mode to privileged (admin) mode.", [["enable"]], "The prompt changes from > to #.");
+    add(1, "Router", "Router#", "Go into global configuration mode.", [["configure", "terminal"]], "Now you can change settings: the prompt shows (config).");
+    add(1, "Router", "Router(config)#", `Name the router ${R}.`, [["hostname", { v: R }]], "Use the name under the router on the map, not the model (ISR4331).");
+    // Task 2
+    add(2, "Router", `${R}(config)#`, "Set the enable secret to class.", [["enable", "secret", { v: "class" }]], "Type enable (or ena) here: en is refused because it could also mean end.", { min: { enable: 3 }, short: "enable secret class" });
+    add(2, "Router", `${R}(config)#`, "Go to the console line (logging in with a cable).", [["line", "console", { v: "0" }]], "The console line is always 0.");
+    add(2, "Router", `${R}(config-line)#`, "Set this line's password to cisco.", [["password", { v: "cisco" }]], "Lines get cisco, enable gets class (\"cisco class\").");
+    add(2, "Router", `${R}(config-line)#`, "Make this line ask for its password.", [["login"]], "Without login, the password does nothing.");
+    add(2, "Router", `${R}(config)#`, "Go to the router's first 5 remote-login (VTY) lines.", [["line", "vty", { v: "0" }, { v: "4" }]], "On the router, vty 0 4 is what the lab grades.");
+    add(2, "Router", `${R}(config)#`, "Scramble every plain password in the settings.", [["service", "password-encryption"]], "So nobody can read the line passwords in the config.");
+    // Task 3
+    add(3, "Router", `${R}(config)#`, `Set the login banner to: ${v.banner}`, [[{ banner: v.banner }]], "The # marks where the message starts and ends. Copy the text exactly.", { full: `banner motd #${v.banner}#`, short: `ban motd #${v.banner}#` });
+    // Task 4: router
+    add(4, "Router", `${R}(config)#`, `Go to the router's port ${v.rsw}, the cable to the switch.`, [["interface", { iface: v.rsw }]], "Read it off the router's end of the cable on the map.");
+    add(4, "Router", `${R}(config-if)#`, "Turn this port on.", [["no", "shutdown"]], "Router ports start off. This also turns on its virtual ports.");
+    add(4, "Router", `${R}(config)#`, `Create the router's virtual port for VLAN ${v.A} on ${v.rsw}.`, [["interface", { iface: `${v.rsw}.${v.A}` }]], "Add a dot and the VLAN number. It's not on the map: typing it creates it.");
+    add(4, "Router", `${R}(config-subif)#`, `Tell this virtual port it handles VLAN ${v.A}.`, [["encapsulation", "dot1q", { v: String(v.A) }]], "Do this before ip address, or the router refuses the address.");
+    add(4, "Router", `${R}(config-subif)#`, `VLAN ${v.A} is ${v.netA}/27. Give this virtual port the router's address and mask.`, [["ip", "address", { v: v.rA }, { v: M27 }]], "The router takes the last usable address. It's the gateway for that VLAN's PCs.");
+    add(4, "Router", `${R}(config-subif)#`, `Tell this virtual port it handles the native VLAN ${v.N}.`, [["encapsulation", "dot1q", { v: String(v.N) }, "native"]], "Only the native VLAN gets the word native.");
+    // Task 4: switches
+    add(4, "Switch", `${S}(config)#`, `Create VLAN ${v.A}.`, [["vlan", { v: String(v.A) }]], "Create all 3 VLANs on every switch.");
+    add(4, "Switch", `${S}(config-vlan)#`, `Name this VLAN ${v.nameA}.`, [["name", { v: v.nameA }]], "Spell it exactly like the map, capitals too.");
+    add(4, "Switch", `${S}(config)#`, `Select ports Fa0/${v.t1} and Fa0/${v.t2} at the same time.`, [["interface", "range", { range: [`f0/${v.t1}`, `f0/${v.t2}`] }]], "range lets you set several ports at once. f0/9-10 and f0/9, f0/10 both work.", { show: `f0/${v.t1} , f0/${v.t2}` });
+    add(4, "Switch", `${S}(config-if-range)#`, "Make these ports trunks.", [["switchport", "mode", "trunk"]], "A trunk carries every VLAN over one cable. The dashed lines on the map are trunks.");
+    add(4, "Switch", `${S}(config-if-range)#`, `Set the native VLAN on these trunks to ${v.N}.`, [["switchport", "trunk", "native", "vlan", { v: String(v.N) }]], "Same native VLAN on every trunk and on the router.");
+    add(4, "Switch", `${v.SW}(config)#`, `Go to port Fa0/${v.acc}, the cable to a PC.`, [["interface", { iface: `f0/${v.acc}` }]], "Read it off the switch's end of the cable.");
+    add(4, "Switch", `${v.SW}(config-if)#`, "Make this port an access port (for one PC).", [["switchport", "mode", "access"]], "An access port belongs to one VLAN.");
+    add(4, "Switch", `${v.SW}(config-if)#`, `Put this port in VLAN ${v.B}.`, [["switchport", "access", "vlan", { v: String(v.B) }]], "Use the VLAN written next to the PC on the map.");
+    // Task 5
+    add(5, "Switch", `${S}(config)#`, `Go to the switch's management interface (VLAN ${v.N}).`, [["interface", "vlan", { v: String(v.N) }]], "This gives the switch its own address (SVI). It's in the native/management VLAN.");
+    add(5, "Switch", `${S}(config-if)#`, `VLAN ${v.N} is ${v.netN}/29 and this switch is labeled 2ND. Give it its address and mask.`, [["ip", "address", { v: v.sw2 }, { v: M29 }]], "1ST = network + 1, 2ND = + 2, 3RD = + 3.");
+    add(5, "Router", `${R}(config-if)#`, `The server link is ${v.link}/30. Give the router its IPv4 address and mask.`, [["ip", "address", { v: v.rL }, { v: M30 }]], "Router = last usable. The server gets the first one.");
+    add(5, "Router", `${R}(config-if)#`, `The IPv6 network is ${v.v6}/64 and the ending next to the router is ::${v.end}. Give the router its IPv6 address.`, [["ipv6", "address", { v6: `${v.v6}${v.end}`, len: "64" }]], "Swap the network's final :: for the ending, then add /64.", { show: `${v.v6}${v.end}/64` });
+    add(5, "Router", `${R}(config-if)#`, `Set this port's link-local address to ${v.ll}.`, [["ipv6", "address", { v6: v.ll }, "link-local"]], "The FE80 address is in the small box next to the router.", { show: v.ll });
+    // Task 6
+    add(6, "SSH switch", `${S}(config)#`, `Set the domain name to ${v.domain}.`, [["ip", "domain-name", { v: v.domain }]], "Do this first: the keys are refused without a domain name.");
+    add(6, "SSH switch", `${S}(config)#`, `Create user ${v.user} with secret ${v.secret}.`, [["username", { v: v.user }, "secret", { v: v.secret }]], "Passwords are case-sensitive.");
+    add(6, "SSH switch", `${S}(config)#`, "Make 1024-bit RSA keys for SSH.", [["crypto", "key", "generate", "rsa", "general-keys", "modulus", { v: "1024" }], ["crypto", "key", "generate", "rsa"]], "The short way asks \"How many bits in the modulus\": type 1024. Pressing Enter gives 512 and loses the point.");
+    add(6, "SSH switch", `${S}(config)#`, "Turn on SSH version 2.", [["ip", "ssh", "version", { v: "2" }]], "Version 2 is the secure one.");
+    add(6, "SSH switch", `${S}(config)#`, "Go to all 16 remote-login (VTY) lines.", [["line", "vty", { v: "0" }, { v: "15" }]], "\"Every VTY line\" means 0 15, not 0 4.");
+    add(6, "SSH switch", `${S}(config-line)#`, "Make these lines log in with the username you created.", [["login", "local"]], "local = use the switch's own username list.");
+    add(6, "SSH switch", `${S}(config-line)#`, "Allow SSH only on these lines (no Telnet).", [["transport", "input", "ssh"]], "Telnet sends passwords in plain text.");
+    // Task 7
+    add(7, "Switch", `${v.SW}(config)#`, `Set the switch's default gateway to ${v.rN}.`, [["ip", "default-gateway", { v: v.rN }]], "It's the router's address in the native VLAN.");
+    add(7, "Any device", `${v.SW}#`, "Save your work.", [["copy", "running-config", "startup-config"], ["write"], ["write", "memory"]], "Press Enter if it asks for a file name.", { full: "copy running-config startup-config", short: "wr" });
+    // Notebook math (no command, just the answer)
+    add(0, "Notebook", "", `VLAN ${v.B} is ${v.nB}/27. What's the router's address?`, [[{ v: v.rB }]], "Last usable = next block's start − 2. Magic number for /27 is 32.", { distract: [v.bcB, ip1(v.nB), ip1(v.rB)] });
+    add(0, "Notebook", "", "What's the mask for /27?", [[{ v: M27 }]], "Magic number 32. Mask = 256 − 32 = 224.", { distract: [M29, M30, "255.255.255.192"] });
+    add(0, "Notebook", "", "What's the mask for /29?", [[{ v: M29 }]], "Magic number 8. Mask = 256 − 8 = 248.", { distract: [M27, M30, "255.255.255.240"] });
+    add(8, "Notebook", "", `The server link is ${v.link}/30. What goes in each PC's DNS Server box?`, [[{ v: v.srv }]], "The server takes the first usable address on the link; the router takes the last.", { distract: [v.rL, v.link, v.rN] });
+    return L;
+}
+function ip1(addr) { const p = addr.split("."); p[3] = String(Math.max(0, +p[3] - 1)); return p.join("."); }
+
+function ptcIface(s) {
+    const m = /^([a-z]+)([0-9][0-9/.]*)$/.exec(String(s).toLowerCase());
+    if (!m) return null;
+    if ("fastethernet".startsWith(m[1])) return "f" + m[2];
+    if ("gigabitethernet".startsWith(m[1])) return "g" + m[2];
+    return null;
+}
+function ptcV6(s) {
+    s = String(s).toLowerCase();
+    if (!/^[0-9a-f:]+$/.test(s) || (s.match(/::/g) || []).length > 1) return null;
+    const [h, t] = s.split("::");
+    const head = h ? h.split(":") : [], tail = t === undefined ? null : t ? t.split(":") : [];
+    const groups = tail === null ? head : [...head, ...Array(Math.max(0, 8 - head.length - tail.length)).fill("0"), ...tail];
+    if (groups.length !== 8 || groups.some((g) => !g || g.length > 4)) return null;
+    return groups.map((g) => parseInt(g, 16).toString(16)).join(":");
+}
+function ptcRange(rest) {
+    const out = [];
+    let type = "";
+    for (const part of rest.toLowerCase().replace(/\s+/g, "").split(",")) {
+        const m = /^([a-z]*)((?:\d+\/)+)(\d+)(?:-(?:[a-z]*(?:\d+\/)+)?(\d+))?$/.exec(part);
+        if (!m) return null;
+        if (m[1]) type = m[1];
+        const t = ptcIface(type + m[2] + m[3]);
+        if (!t) return null;
+        const base = t.slice(0, t.lastIndexOf("/") + 1);
+        const a = +m[3], b = m[4] ? +m[4] : a;
+        if (b < a || b - a > 24) return null;
+        for (let n = a; n <= b; n++) out.push(base + n);
+    }
+    return [...new Set(out)].sort();
+}
+function ptcMatch(typed, toks, min = {}) {
+    const t = String(typed).trim().replace(/\s+/g, " ");
+    if (!t) return false;
+    const kw = (w, k) => { w = w.toLowerCase(); return k.startsWith(w) && w.length >= Math.min(min[k] || PTC_MIN[k] || k.length, k.length); };
+    if (toks[0] && toks[0].banner !== undefined) {
+        const m = /^(\S+) (\S+) (\S)(.*)\3$/.exec(t);
+        return !!m && kw(m[1], "banner") && kw(m[2], "motd") && m[4] === toks[0].banner;
+    }
+    const words = [];
+    t.split(" ").forEach((w) => {
+        const prev = words[words.length - 1];
+        if (prev && /^\d/.test(w) && /^[a-z]+$/i.test(prev) && ptcIface(prev + w)) words[words.length - 1] = prev + w;
+        else words.push(w);
+    });
+    let i = 0;
+    for (const x of toks) {
+        if (x && x.range) { const got = ptcRange(words.slice(i).join(" ")); return !!got && got.join() === x.range.slice().sort().join(); }
+        const w = words[i++];
+        if (w === undefined) return false;
+        if (typeof x === "string") { if (!kw(w, x)) return false; }
+        else if (x.iface) { if (ptcIface(w) !== x.iface) return false; }
+        else if (x.v6) { const [a, len] = w.split("/"); if (len !== x.len || !ptcV6(a) || ptcV6(a) !== ptcV6(x.v6)) return false; }
+        else if (w !== x.v) return false;
+    }
+    return i === words.length;
+}
+function ptcText(q, short) {
+    if (short && q.short) return q.short;
+    if (!short && q.full) return q.full;
+    return q.answers[0].map((x) => {
+        if (typeof x === "string") return short ? PTC_SHORT[x] || x : PTC_SHOW[x] || x;
+        if (x.range) return q.show;
+        if (x.iface) return x.iface;
+        if (x.v6) return q.show;
+        return x.v;
+    }).join(" ");
+}
+
+async function viewPtCmd(root, _p, _q, alive) {
+    let mode = "type";
+    try { mode = localStorage.getItem(PTC_MODE_KEY) || "type"; } catch (e) { /* storage blocked */ }
+    const TASKS = { 0: "Notebook", 1: "Task 1", 2: "Task 2", 3: "Task 3", 4: "Task 4", 5: "Task 5", 6: "Task 6", 7: "Task 7", 8: "Task 8" };
+
+    function start() {
+        document.body.classList.remove("focus-mode");
+        const total = ptcQuestions(ptcValues()).length;
+        root.innerHTML = `
+            <a class="back-link" href="#/course/ccna2">${icon("back")}CCNA 2</a>
+            <div class="page-head">
+                <span class="eyebrow">Packet Tracer 1</span>
+                <h1 class="page-title">Command drill</h1>
+                <p>Every command from Packet Tracer 1, in the order of the Tasks box. New names and numbers each round.</p>
+            </div>
+            <div class="segmented" role="group" aria-label="How to answer">
+                <button type="button" data-mode="type" aria-pressed="${mode === "type"}">Type it</button>
+                <button type="button" data-mode="pick" aria-pressed="${mode === "pick"}">Pick it</button>
+            </div>
+            <div class="btn-row">
+                <button type="button" class="btn btn-primary btn-block" id="ptc-quick">Quick round (15)</button>
+                <button type="button" class="btn btn-secondary btn-block" id="ptc-all">Full walkthrough (${total}, in task order)</button>
+            </div>
+            <div class="note"><strong>Type it</strong> works best for memorizing. Short forms that work in Packet Tracer count (like <code>int</code> or <code>sw mo tr</code>), and you see the short form after each answer.</div>`;
+        $$("[data-mode]", root).forEach((b) => {
+            b.onclick = () => {
+                mode = b.dataset.mode;
+                try { localStorage.setItem(PTC_MODE_KEY, mode); } catch (e) { /* storage blocked */ }
+                start();
+            };
+        });
+        $("#ptc-quick", root).onclick = () => run(shuffle(ptcQuestions(ptcValues())).slice(0, 15));
+        $("#ptc-all", root).onclick = () => run(ptcQuestions(ptcValues()));
+    }
+
+    function run(list) {
+        document.body.classList.add("focus-mode");
+        const s = { i: 0, checked: false, ok: false, typed: "", picked: null, right: 0, missed: [] };
+        const others = list.map((q) => ptcText(q, false));
+
+        function optionsFor(q) {
+            if (q.opts) return q.opts;
+            const right = ptcText(q, false);
+            let pool = q.distract ? q.distract.slice() : shuffle(list.filter((o) => o !== q && o.where === q.where && !o.distract).map((o) => ptcText(o, false)));
+            if (pool.length < 3) pool = pool.concat(shuffle(others));
+            const opts = [right];
+            for (const o of pool) { if (opts.length >= 4) break; if (!opts.includes(o)) opts.push(o); }
+            q.opts = shuffle(opts);
+            return q.opts;
+        }
+        function check() {
+            const q = list[s.i];
+            if (mode === "pick") s.ok = s.picked === ptcText(q, false);
+            else s.ok = q.answers.some((a) => ptcMatch(s.typed, a, q.min));
+            s.checked = true;
+            if (s.ok) s.right++; else s.missed.push(q);
+            render();
+        }
+        function render() {
+            if (alive && !alive()) return;
+            const q = list[s.i];
+            const done = Math.round((s.i / list.length) * 100);
+            const full = ptcText(q, false), short = ptcText(q, true);
+            let body;
+            if (mode === "pick") {
+                body = `<div class="options" role="group" aria-label="Answer choices">${optionsFor(q).map((o, n) => {
+                    let cls = "";
+                    if (s.checked) { if (o === full) cls = "is-correct"; else if (o === s.picked) cls = "is-wrong"; }
+                    return `<button type="button" class="option ${cls}" data-o="${n}" aria-pressed="${o === s.picked}" ${s.checked ? "disabled" : ""}>
+                        <span class="mark">${icon(s.checked && o === s.picked && o !== full ? "close" : "check")}</span>
+                        <span class="option-text ptc-code">${esc(o)}</span></button>`;
+                }).join("")}</div>`;
+            } else {
+                body = `<form class="ptc-term" id="ptc-form" autocomplete="off">
+                    ${q.prompt ? `<span class="ptc-prompt">${esc(q.prompt)}</span>` : ""}
+                    <input class="ptc-input" id="ptc-in" type="text" value="${esc(s.typed)}" ${s.checked ? "readonly" : ""}
+                        autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"
+                        aria-label="${q.prompt ? "Type the command" : "Type the answer"}" placeholder="${q.prompt ? "type the command" : "type the answer"}">
+                </form>`;
+            }
+            let feedback = "";
+            if (s.checked) {
+                feedback = `<div class="feedback ${s.ok ? "good" : "bad"}" role="status">
+                    <strong>${s.ok ? "Correct!" : "Not quite."}</strong>
+                    <span>${q.prompt ? "Command" : "Answer"}: <code class="ptc-ans">${esc(full)}</code></span>
+                    ${short !== full ? `<span>Short form: <code class="ptc-ans">${esc(short)}</code></span>` : ""}
+                    <span>${esc(q.why)}</span>
+                    ${!s.ok && mode === "type" && s.typed.trim() ? `<button type="button" class="ptc-mine" id="ptc-mine">I typed it right, count it</button>` : ""}
+                </div>`;
+            }
+            const last = s.i === list.length - 1;
+            const action = s.checked
+                ? `<button type="button" class="btn btn-primary btn-block" id="ptc-next">${last ? "See results" : "Next"}</button>`
+                : `<div class="btn-row"><button type="button" class="btn btn-primary btn-block" id="ptc-check" ${mode === "pick" && s.picked === null ? "disabled" : ""}>Check</button>
+                   <button type="button" class="btn btn-ghost btn-block" id="ptc-show">I don't know, show me</button></div>`;
+            root.innerHTML = `
+                <div class="runner-head">
+                    <button type="button" class="icon-btn" id="ptc-quit" aria-label="Leave the command drill">${icon("close")}</button>
+                    <div class="bar" role="progressbar" aria-valuenow="${done}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress"><span style="width:${done}%"></span></div>
+                    <span class="runner-count">${s.i + 1} / ${list.length}</span>
+                </div>
+                <span class="eyebrow">${esc(TASKS[q.task])} · ${esc(q.where)}</span>
+                <h1 class="question-text">${esc(q.q)}</h1>
+                ${body}
+                ${feedback}
+                <div class="runner-actions">${action}</div>`;
+            $("#ptc-quit", root).onclick = () => { if (s.i === 0 || confirm("Leave this round?")) start(); };
+            const inp = $("#ptc-in", root);
+            if (inp) {
+                inp.oninput = () => { s.typed = inp.value; };
+                if (!s.checked) inp.focus({ preventScroll: true });
+                $("#ptc-form", root).onsubmit = (e) => { e.preventDefault(); if (!s.checked) { s.typed = inp.value; check(); } else next(); };
+            }
+            $$("[data-o]", root).forEach((b) => { b.onclick = () => { s.picked = optionsFor(q)[+b.dataset.o]; render(); }; });
+            const ck = $("#ptc-check", root);
+            if (ck) ck.onclick = () => { if (inp) s.typed = inp.value; check(); };
+            const sh = $("#ptc-show", root);
+            if (sh) sh.onclick = () => { if (inp) s.typed = inp.value; s.picked = s.picked ?? "\u0000"; s.checked = true; s.ok = false; s.missed.push(q); render(); };
+            const mine = $("#ptc-mine", root);
+            if (mine) mine.onclick = () => { s.ok = true; s.right++; s.missed = s.missed.filter((m) => m !== q); render(); };
+            const nx = $("#ptc-next", root);
+            if (nx) { nx.onclick = next; nx.focus({ preventScroll: true }); }
+        }
+        function next() {
+            if (s.i === list.length - 1) return results();
+            s.i++; s.checked = false; s.ok = false; s.typed = ""; s.picked = null;
+            render();
+            window.scrollTo(0, 0);
+        }
+        function results() {
+            const score = Math.round((s.right / list.length) * 100);
+            root.innerHTML = `
+                <div class="card result-hero">
+                    <span class="eyebrow">Packet Tracer 1 · Command drill</span>
+                    <div class="result-score">${score}%</div>
+                    <p>${s.right} of ${list.length} right</p>
+                </div>
+                ${s.missed.length ? `
+                <div class="section-head"><h2 class="section-title">Review ${s.missed.length} missed</h2></div>
+                <div class="row-list">${s.missed.map((m) => `
+                    <div class="card review-item"><span class="q">${esc(m.q)}</span><code class="ptc-ans">${esc(ptcText(m, false))}</code>${ptcText(m, true) !== ptcText(m, false) ? `<span class="row-sub">Short: <code class="ptc-ans">${esc(ptcText(m, true))}</code></span>` : ""}</div>`).join("")}
+                </div>` : `<div class="note">Perfect round. Try the full walkthrough, or switch to Type it if you picked.</div>`}
+                <div class="btn-row">
+                    ${s.missed.length ? `<button type="button" class="btn btn-primary btn-block" id="ptc-again-missed">Practice the ${s.missed.length} I missed</button>` : ""}
+                    <button type="button" class="btn ${s.missed.length ? "btn-secondary" : "btn-primary"} btn-block" id="ptc-new">New round</button>
+                    <a class="btn btn-ghost btn-block" href="#/course/ccna2">Done</a>
+                </div>`;
+            document.body.classList.remove("focus-mode");
+            window.scrollTo(0, 0);
+            const again = $("#ptc-again-missed", root);
+            if (again) again.onclick = () => run(s.missed.map((m) => ({ ...m, opts: null })));
+            $("#ptc-new", root).onclick = start;
+        }
+        render();
+    }
+    start();
 }
 
 function ptSubnetProblem() {

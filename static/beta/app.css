@@ -776,3 +776,13 @@ button.pp-user:hover { background: var(--bg); }
 mark.hint-mark { background: #FDE68A; color: inherit; border-radius: 4px; padding: 0 2px; }
 :root[data-theme="midnight"] .hint-card, :root[data-theme="midnight"] .hint-btn { background: rgba(251, 146, 60, 0.12); color: #FDBA74; }
 :root[data-theme="midnight"] mark.hint-mark { background: rgba(253, 230, 138, 0.35); }
+
+/* ── Packet Tracer command drill ────────────────────────────────────────── */
+.ptc-term { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; background: #0F172A; border-radius: 12px; padding: 10px 12px; }
+.ptc-prompt { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #93C5FD; font-size: 15px; white-space: nowrap; }
+.ptc-input { flex: 1; min-width: 150px; min-height: 38px; background: transparent; border: none; outline: none; color: #F8FAFC; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 16px; caret-color: #93C5FD; }
+.ptc-input::placeholder { color: #64748B; }
+.ptc-code, .ptc-ans { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.ptc-ans { background: rgba(15, 23, 42, 0.07); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+.ptc-mine { align-self: flex-start; background: none; border: none; padding: 4px 0; color: inherit; text-decoration: underline; font-size: 14px; }
+:root[data-theme="midnight"] .ptc-ans { background: rgba(255, 255, 255, 0.1); }
