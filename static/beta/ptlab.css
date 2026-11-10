@@ -94,6 +94,15 @@ body.lab-sheet-open { overflow: hidden; }
     .act-win { width: min(96vw, 1100px); height: 94%; margin-bottom: 8px; }
     .res-win { width: min(92vw, 680px); height: min(90%, 600px); }
 }
+@media (min-width: 760px) {
+    /* Floating device window: the map stays usable behind it */
+    #pt-win.free { display: block; background: transparent; pointer-events: none; }
+    #pt-win.free[hidden] { display: none; }
+    #pt-win.free .dev-win { position: absolute; pointer-events: auto; min-width: 420px; min-height: 300px; }
+    #pt-win.free .pt-grip { position: absolute; right: 0; bottom: 0; width: 22px; height: 22px; cursor: nwse-resize; touch-action: none; z-index: 2;
+        background: linear-gradient(135deg, transparent 50%, #9A9A9A 50%, #9A9A9A 58%, transparent 58%, transparent 70%, #9A9A9A 70%, #9A9A9A 78%, transparent 78%); }
+    #pt-win.free .pt-wbar { cursor: move; user-select: none; touch-action: none; }
+}
 .pt-wbar { position: relative; display: flex; align-items: center; justify-content: center; min-height: 34px; background: linear-gradient(#EDEDED, #DADADA); border-bottom: 1px solid #C2C2C2; font-weight: 700; font-size: 14px; color: #333; }
 .pt-wdot { position: absolute; top: 50%; width: 13px; height: 13px; border-radius: 50%; transform: translateY(-50%); border: none; padding: 0; display: block; }
 .pt-wdot.red { left: 12px; background: #FF5F57; }

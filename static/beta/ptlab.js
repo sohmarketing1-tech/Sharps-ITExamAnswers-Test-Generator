@@ -2094,7 +2094,57 @@ function mount(root, labId, { alive } = {}) {
         document.body.classList.add("lab-sheet-open");
         renderWin();
     }
+    // On a computer screen the device window floats: drag it by its title bar, resize it from the
+    // bottom-right corner, and keep clicking devices on the map behind it. Its spot is remembered.
+    function freeWindow(w) {
+        if (app.winRO) { app.winRO.disconnect(); app.winRO = null; }
+        const wide = window.matchMedia("(min-width: 760px)").matches;
+        winEl.classList.toggle("free", wide);
+        if (!wide || !w) return;
+        const area = () => winEl.getBoundingClientRect();
+        const A = area();
+        if (!app.winBox) {
+            // Start on the right so the map stays visible on the left.
+            const width = Math.max(480, Math.min(A.width * 0.58, 820)), height = Math.min(A.height - 24, 720);
+            app.winBox = { left: Math.max(0, A.width - width - 12), top: 12, width, height };
+        }
+        const b = app.winBox;
+        b.width = Math.min(b.width, A.width); b.height = Math.min(b.height, A.height);
+        const clamp = () => {
+            const R = area();
+            b.left = Math.max(80 - b.width, Math.min(b.left, R.width - 80));
+            b.top = Math.max(0, Math.min(b.top, R.height - 40));
+        };
+        const apply = () => { clamp(); Object.assign(w.style, { left: `${b.left}px`, top: `${b.top}px`, width: `${b.width}px`, height: `${b.height}px` }); };
+        apply();
+        const bar = $(".pt-wbar", w);
+        bar.onpointerdown = (e) => {
+            if (e.button !== 0 || e.target.closest("button")) return;
+            e.preventDefault();
+            const sx = e.clientX, sy = e.clientY, sl = b.left, st = b.top;
+            bar.setPointerCapture(e.pointerId);
+            bar.onpointermove = (m) => { b.left = sl + m.clientX - sx; b.top = st + m.clientY - sy; apply(); };
+            bar.onpointerup = bar.onpointercancel = () => { bar.onpointermove = null; };
+        };
+        const grip = document.createElement("div");
+        grip.className = "pt-grip"; grip.title = "Drag to resize"; grip.setAttribute("aria-hidden", "true");
+        w.appendChild(grip);
+        grip.onpointerdown = (e) => {
+            if (e.button !== 0) return;
+            e.preventDefault();
+            const sx = e.clientX, sy = e.clientY, sw = b.width, sh = b.height;
+            grip.setPointerCapture(e.pointerId);
+            grip.onpointermove = (m) => {
+                const R = area();
+                b.width = Math.max(420, Math.min(sw + m.clientX - sx, R.width - Math.max(0, b.left)));
+                b.height = Math.max(300, Math.min(sh + m.clientY - sy, R.height - b.top));
+                apply();
+            };
+            grip.onpointerup = grip.onpointercancel = () => { grip.onpointermove = null; };
+        };
+    }
     function closeDevice() {
+        if (app.winRO) { app.winRO.disconnect(); app.winRO = null; }
         app.open = null;
         winEl.hidden = true;
         winEl.innerHTML = "";
@@ -2118,6 +2168,7 @@ function mount(root, labId, { alive } = {}) {
                 <div class="win-foot"><label class="pt-chk"><input type="checkbox" disabled> Top</label></div>
             </div>`;
         $("#win-x", winEl).onclick = closeDevice;
+        freeWindow($(".dev-win", winEl));
         $$("[data-tab]", winEl).forEach((b) => { b.onclick = () => { app.tab[id] = b.dataset.tab; renderWin(); }; });
         const body = $("#win-body", winEl);
         if (tab === "CLI") cliTab(body, id);
