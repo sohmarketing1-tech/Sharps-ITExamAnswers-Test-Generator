@@ -638,7 +638,7 @@ function makeVlanLab(ver) {
     };
 
     return {
-        title: "CCNA 2 Skills PT 1",
+        title: "Packet Tracer 1",
         sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6",
         course: "CCNA 2",
         file: `answrit_skills_pt1_v${ver}.pka`,
@@ -2565,7 +2565,7 @@ function mount(root, labId, { alive } = {}) {
 window.AnswritPtLab = {
     // Only the CCNA 2 labs are listed. (The CCNA 1 final-practice lab still works at its own link.)
     list: [
-        { id: VLAN_LAB, title: "CCNA 2 Skills PT 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6, in several versions", course: "CCNA 2" },
+        { id: VLAN_LAB, title: "Packet Tracer 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6, in several versions", course: "CCNA 2" },
     ],
     get: (id) => getLab(id),
     mount,

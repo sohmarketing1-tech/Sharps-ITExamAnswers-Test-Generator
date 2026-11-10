@@ -23,6 +23,7 @@ const COURSES = {
     ccna2: {
         id: "ccna2", name: "CCNA 2", icon: "network", tint: "blue",
         match: (f) => f.startsWith("ccna-2"),
+        labs: [{ id: "ccna2-vlan", title: "Packet Tracer 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6. New names and numbers every version." }],
         note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most shipmates score 90–100% this way.",
     },
     comms: {
@@ -334,7 +335,7 @@ function courseSections() {
 function toolRows() {
     const rows = [
         ["drills", "game", "blue", "Drills & games", `${DRILLS().length || 21} quick games: subnetting, ports, OSI, binary and more`],
-        ["packet-tracer", "terminal", "green", "Packet Tracer practice", "Subnetting and a CLI simulator for the PT final"],
+        ["packet-tracer", "terminal", "green", "Packet Tracer practice", "Practice labs, subnetting and a CLI simulator"],
         ["my-flashcards", "cards", "orange", "My Flashcards", "Make your own decks and study them"],
     ];
     return `
@@ -451,6 +452,19 @@ async function viewCourse(root, [courseId]) {
                     ${icon("chevron", "row-chevron")}
                 </a>`).join("")}
         </div>
+        ${(course.labs || []).length ? `
+        <div class="section-head"><h2 class="section-title">Packet Tracer</h2></div>
+        <div class="row-list">
+            ${course.labs.map((l) => `
+                <a class="row" href="#/packet-tracer/lab/${esc(l.id)}">
+                    <span class="icon-tile tint-orange">${icon("terminal")}</span>
+                    <span class="row-body">
+                        <span class="row-title">${esc(l.title)}</span>
+                        <span class="row-sub">${esc(l.sub)}</span>
+                    </span>
+                    ${icon("chevron", "row-chevron")}
+                </a>`).join("")}
+        </div>` : ""}
         ${course.note ? `<div class="note">${course.note}</div>` : ""}`;
 }
 
@@ -1203,9 +1217,9 @@ const PT_CLI_TASKS = [
         { prompt: "Router(config-line)#", expect: "login", response: "", nextPrompt: "Router(config-line)#" }] },
 ];
 
-// ─── Packet Tracer labs (preview) ───────────────────────────────────────────
-// The full Packet Tracer-style labs are only shown on devices that opened answrit.net/?ptpreview=1
-// (turn off with ?ptpreview=0). Their files (ptlab.js/css) load on demand for those devices only.
+// ─── Packet Tracer labs ─────────────────────────────────────────────────────
+// Live for everyone since 2026-11-10 (they were behind ?ptpreview=1 before; that switch is now unused).
+// Their files (ptlab.js/css) load on demand when a lab or the Packet Tracer page opens.
 const PT_PREVIEW_KEY = "answrit:ptPreview";
 (function ptPreviewSwitch() {
     const v = new URLSearchParams(location.search).get("ptpreview");
@@ -1222,10 +1236,10 @@ function loadPtLab() {
     if (!ptLabLoading) {
         ptLabLoading = new Promise((resolve) => {
             const css = document.createElement("link");
-            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=14";
+            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=15";
             document.head.appendChild(css);
             const js = document.createElement("script");
-            js.src = "/beta/ptlab.js?v=14";
+            js.src = "/beta/ptlab.js?v=15";
             js.onload = () => resolve(true);
             js.onerror = () => { ptLabLoading = null; resolve(false); };
             document.head.appendChild(js);
@@ -1235,20 +1249,17 @@ function loadPtLab() {
 }
 
 async function viewPacketTracer(root, _p, _q, alive) {
-    const preview = ptPreviewOn();
-    if (preview) {
-        root.innerHTML = loading();
-        await loadPtLab();
-        if (alive && !alive()) return;
-    }
+    const preview = true; // the labs are live for everyone
+    root.innerHTML = loading();
+    await loadPtLab();
+    if (alive && !alive()) return;
     root.innerHTML = `
         <a class="back-link" href="#/study">${icon("back")}Study</a>
         <div class="page-head">
-            <span class="eyebrow">${preview ? "CCNA 2" : "CCNA 1"}</span>
+            <span class="eyebrow">CCNA 1 &amp; CCNA 2</span>
             <h1 class="page-title">Packet Tracer practice</h1>
             <p>${preview ? "Skills labs that look and grade like the real Packet Tracer, plus subnetting and a CLI simulator." : "Practice the subnetting and CLI commands you need for the PT final."}</p>
         </div>
-        ${preview ? `<div class="note">Preview: only this device sees the labs. <a href="/?ptpreview=0#/packet-tracer">Turn off</a></div>` : ""}
         <div class="row-list">
             ${((preview && window.AnswritPtLab && window.AnswritPtLab.list) || []).map((l) => `
             <a class="row" href="#/packet-tracer/lab/${esc(l.id)}">
@@ -1270,7 +1281,6 @@ async function viewPacketTracer(root, _p, _q, alive) {
 }
 
 async function viewPtLab(root, [id], _q, alive) {
-    if (!ptPreviewOn()) return go("packet-tracer");
     root.innerHTML = loading();
     if (!(await loadPtLab())) { root.innerHTML = `<div class="error-box">Couldn't load the lab. Check your connection.</div>`; return; }
     if (alive && !alive()) return;
