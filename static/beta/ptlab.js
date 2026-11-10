@@ -503,7 +503,7 @@ function makeVlanLab(ver) {
     const reqs = [
         "Tasks:",
         "- Give the router its name",
-        "- Router: enable secret + console/VTY passwords, all encrypted",
+        "- Router: enable secret class, console/VTY password cisco, encrypted",
         `- Router login banner: "${P.banner}"`,
         "- Named VLANs, trunks and router-on-a-stick (incl. native/mgmt VLAN)",
         "- IPv4 on hosts, router and switch SVIs; IPv6 on the server link",
