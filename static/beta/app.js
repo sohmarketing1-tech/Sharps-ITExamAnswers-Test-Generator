@@ -1222,10 +1222,10 @@ function loadPtLab() {
     if (!ptLabLoading) {
         ptLabLoading = new Promise((resolve) => {
             const css = document.createElement("link");
-            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=11";
+            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=12";
             document.head.appendChild(css);
             const js = document.createElement("script");
-            js.src = "/beta/ptlab.js?v=11";
+            js.src = "/beta/ptlab.js?v=12";
             js.onload = () => resolve(true);
             js.onerror = () => { ptLabLoading = null; resolve(false); };
             document.head.appendChild(js);

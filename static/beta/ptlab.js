@@ -1756,6 +1756,16 @@ function mount(root, labId, { alive } = {}) {
 
     root.innerHTML = `
         <div class="pt" id="pt">
+            ${lab.ver ? `<div class="pt-verbar">
+                <label for="pt-ver-sel">Version</label>
+                <select id="pt-ver-sel">
+                    ${Array.from({ length: VLAN_VERSIONS }, (_, i) => i + 1).map((v) => `<option value="${v}" ${lab.ver === v ? "selected" : ""}>${v}</option>`).join("")}
+                    ${lab.ver > VLAN_VERSIONS ? `<option value="${lab.ver}" selected>Random #${lab.ver}</option>` : ""}
+                </select>
+                <button type="button" class="pt-vbtn" id="pt-ver-new">New random</button>
+                <button type="button" class="pt-vbtn" id="pt-ver-reset">Start over</button>
+                <span class="pt-vhint">Same steps, new names and numbers.</span>
+            </div>` : ""}
             <div class="pt-titlebar">
                 <a class="pt-exit" href="#/packet-tracer" aria-label="Leave the lab">✕</a>
                 <span class="pt-dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -1774,7 +1784,7 @@ function mount(root, labId, { alive } = {}) {
             <div class="pt-canvas" id="pt-canvas"></div>
             <div class="pt-timebar">
                 <span class="pt-time">Time: <b id="pt-time">00:00:00</b></span>
-                <span class="pt-round" aria-hidden="true">⟳</span><span class="pt-round" aria-hidden="true">⏩</span>
+                <button type="button" class="pt-round" title="Power Cycle Devices" aria-label="Power Cycle Devices" data-tip="Power Cycle Devices: in Packet Tracer this restarts every device. You don't need it in this practice lab.">⟳</button><button type="button" class="pt-round" title="Fast Forward Time" aria-label="Fast Forward Time" data-tip="Fast Forward Time: in Packet Tracer this skips the wait for links to turn green. Here links come up right away, so you don't need it.">⏩</button>
                 <span class="pt-spacer"></span>
                 <button type="button" class="pt-pill on">Realtime</button>
                 <button type="button" class="pt-pill" data-nope="Simulation mode">Simulation</button>
@@ -1792,8 +1802,9 @@ function mount(root, labId, { alive } = {}) {
     const $c = (sel) => $(sel, root);
     const winEl = $c("#pt-win"), resEl = $c("#pt-res"), actEl = $c("#pt-act"), noteEl = $c("#pt-note");
     let noteTimer = null;
-    const note = (t) => { noteEl.textContent = t; noteEl.classList.add("show"); clearTimeout(noteTimer); noteTimer = setTimeout(() => noteEl.classList.remove("show"), 2200); };
+    const note = (t, ms = 2200) => { noteEl.textContent = t; noteEl.classList.add("show"); clearTimeout(noteTimer); noteTimer = setTimeout(() => noteEl.classList.remove("show"), ms); };
     $$("[data-nope]", root).forEach((b) => { b.onclick = () => note(`${b.dataset.nope} isn't part of this practice lab.`); });
+    $$("[data-tip]", root).forEach((b) => { b.onclick = () => note(b.dataset.tip, 5000); });
 
     function drawCanvas() {
         const c = $c("#pt-canvas");
@@ -1990,21 +2001,26 @@ function mount(root, labId, { alive } = {}) {
             </details>`;
     }
     const normCell = (k, v) => k === "range" ? String(v).split(/\s*(?:-|–|to)\s*/).map(normIp).join("-") : normIp(v);
+    function goVersion(which) {
+        const v = which === "new" ? VLAN_VERSIONS + 1 + Math.floor(Math.random() * 9000) : +which;
+        store(labId, app.st);
+        location.hash = `#/packet-tracer/lab/${v === 1 ? VLAN_LAB : `${VLAN_LAB}-${v}`}`;
+    }
+    function startOver() {
+        if (!window.confirm("Start this version over? Everything you configured in it will be erased.")) return;
+        app.st = freshState(lab); app.st.elapsed = 0;
+        Object.keys(lab.devices).forEach((k) => { app.sess[k] = Session(); app.sess[k].out.push("Press RETURN to get started!"); });
+        closeDevice(); store(labId, app.st); update(); renderAct();
+    }
+    if (lab.ver) {
+        $c("#pt-ver-sel").onchange = (e) => goVersion(e.target.value);
+        $c("#pt-ver-new").onclick = () => goVersion("new");
+        $c("#pt-ver-reset").onclick = startOver;
+    }
     function bindDoc() {
         if (lab.ver) {
-            $$("[data-ver]", actEl).forEach((b) => {
-                b.onclick = () => {
-                    const v = b.dataset.ver === "new" ? VLAN_VERSIONS + 1 + Math.floor(Math.random() * 9000) : +b.dataset.ver;
-                    store(labId, app.st);
-                    location.hash = `#/packet-tracer/lab/${v === 1 ? VLAN_LAB : `${VLAN_LAB}-${v}`}`;
-                };
-            });
-            $("#doc-reset", actEl).onclick = () => {
-                if (!window.confirm("Start this version over? Everything you configured in it will be erased.")) return;
-                app.st = freshState(lab); app.st.elapsed = 0;
-                Object.keys(lab.devices).forEach((k) => { app.sess[k] = Session(); app.sess[k].out.push("Press RETURN to get started!"); });
-                closeDevice(); store(labId, app.st); update(); renderAct();
-            };
+            $$("[data-ver]", actEl).forEach((b) => { b.onclick = () => goVersion(b.dataset.ver); });
+            $("#doc-reset", actEl).onclick = startOver;
             return;
         }
         const sh = app.st.sheet;
