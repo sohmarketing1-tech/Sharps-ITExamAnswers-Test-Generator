@@ -26,6 +26,7 @@ const COURSES = {
         labs: [
             { href: "packet-tracer/lab/ccna2-vlan", icon: "terminal", tint: "orange", title: "Packet Tracer 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6. New names and numbers every version." },
             { href: "packet-tracer/commands", icon: "cards", tint: "blue", title: "Packet Tracer 1: Command drill", sub: "Practice every command on your phone. Type it or pick it." },
+            { href: "packet-tracer/order", icon: "list", tint: "green", title: "Packet Tracer 1: Step order drill", sub: "Learn what comes next on each device. Type it or pick it." },
         ],
         note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most shipmates score 90–100% this way.",
     },
@@ -251,6 +252,7 @@ const ROUTES = [
     [/^packet-tracer\/cli$/, viewPtCli, "study"],
     [/^packet-tracer\/lab\/([a-z0-9-]+)$/, viewPtLab, "study"],
     [/^packet-tracer\/commands$/, viewPtCmd, "study"],
+    [/^packet-tracer\/order$/, viewPtOrder, "study"],
     [/^my-flashcards$/, viewMyDecks, "study"],
     [/^my-flashcards\/(\d+)$/, viewMyDeck, "study"],
     [/^my-flashcards\/(\d+)\/study$/, viewMyDeckStudy, "study"],
@@ -1276,6 +1278,11 @@ async function viewPacketTracer(root, _p, _q, alive) {
                 <span class="row-body"><span class="row-title">Packet Tracer 1: Command drill</span><span class="row-sub">Practice every command on your phone. Type it or pick it.</span></span>
                 ${icon("chevron", "row-chevron")}
             </a>
+            <a class="row" href="#/packet-tracer/order">
+                <span class="icon-tile tint-green">${icon("list")}</span>
+                <span class="row-body"><span class="row-title">Packet Tracer 1: Step order drill</span><span class="row-sub">Learn what comes next on each device. Type it or pick it.</span></span>
+                ${icon("chevron", "row-chevron")}
+            </a>
             <a class="row" href="#/packet-tracer/subnet">
                 <span class="icon-tile tint-blue">${icon("network")}</span>
                 <span class="row-body"><span class="row-title">Subnetting practice</span><span class="row-sub">Work out the mask, hosts and subnets for a network</span></span>
@@ -1324,7 +1331,7 @@ const PTC_MIN = {
     encapsulation: 3, dot1q: 3, native: 3, ip: 2, address: 3, vlan: 2, name: 2, switchport: 2, mode: 2,
     trunk: 2, access: 2, range: 3, ipv6: 4, "link-local": 4, "domain-name": 8, username: 5, crypto: 3, key: 3,
     generate: 3, rsa: 3, "general-keys": 3, modulus: 3, ssh: 3, version: 3, local: 3, transport: 4, input: 2,
-    "default-gateway": 9, copy: 4, "running-config": 3, "startup-config": 3, write: 2, memory: 3,
+    "default-gateway": 9, "unicast-routing": 3, copy: 4, "running-config": 3, "startup-config": 3, write: 2, memory: 3,
 };
 const PTC_SHOW = { dot1q: "dot1Q" };
 
@@ -1639,6 +1646,318 @@ async function viewPtCmd(root, _p, _q, alive) {
             const again = $("#ptc-again-missed", root);
             if (again) again.onclick = () => run(s.missed.map((m) => ({ ...m, opts: null })));
             $("#ptc-new", root).onclick = start;
+        }
+        render();
+    }
+    start();
+}
+
+// ─── Packet Tracer 1: step order drill ──────────────────────────────────────
+// "What's next?" practice for Packet Tracer 1. Each device is a short story of steps:
+// router = Start, Lock, Sign, its 2 cables, Save; switch = Start, Rooms, Cables, Own address, (SSH), Save.
+// Type the first command of the next step, or pick the step from 4. New names and numbers each round.
+const PTO_MODE_KEY = "answrit:ptoMode";
+
+function ptoValues() {
+    const v = ptcValues();
+    const rnd = (n) => Math.floor(Math.random() * n);
+    const pick = (a) => a[rnd(a.length)];
+    const ports = shuffle([[1, 2], [3, 4], [5, 6], [17, 18], [19, 20]].filter((p) => ![v.t1, v.t2].some((t) => p.includes(t))))[0];
+    const swLbl = shuffle(["1ST", "2ND", "3RD"]);
+    const nN = v.netN.split("."), base = +nN[3];
+    const swIp = (lbl) => `${nN.slice(0, 3).join(".")}.${base + ["1ST", "2ND", "3RD"].indexOf(lbl) + 1}`;
+    return {
+        ...v,
+        srvPort: v.rsw === "g0/0/1" ? "g0/0/0" : "g0/0/1",
+        up: pick(["g0/1", "g0/2"]),
+        accA: ports[0], accB: ports[1],
+        lblSC: swLbl[0], lblSW: swLbl[1],
+        ipSC: swIp(swLbl[0]), ipSW: swIp(swLbl[1]),
+        hostLbl: pick(["1st", "2nd"]),
+        nameN: pick(["NATIVE_MGMT", "Native", "Management", "MGMT-NATIVE"]),
+    };
+}
+
+// Every device as an ordered list of steps. `group`: steps with the same group can go in any order.
+// `first`: answers (ptcMatch tokens) for the first command of the step. `foreign`: wrong-device steps used as wrong choices.
+function ptoDevices(v) {
+    const M27 = "255.255.255.224", M29 = "255.255.255.248", M30 = "255.255.255.252";
+    const R = v.R, SC = v.SC, SW = v.SW;
+    const st = (o) => o;
+    const start = (name, prompt) => st({ id: "start", label: "Start: get in and name it", lines: ["en", "conf t", `host ${name}`], first: [["enable"]], after: `${name}(config)#`, prompt, cue: "Every device starts the same way: en, conf t, host." });
+    const save = (name, cue) => st({ id: "save", label: "Save: end, wr", lines: ["end", "wr"], first: [["end"], ["write"], ["copy", "running-config", "startup-config"]], after: `${name}#`, cue });
+    const rooms = (name) => st({ id: "rooms", label: "Rooms: create and name the 3 VLANs", lines: [`vlan ${v.A}`, ` name ${v.nameA}`, `vlan ${v.B}`, ` name ${v.nameB}`, `vlan ${v.N}`, ` name ${v.nameN}`], first: [["vlan", { v: String(v.A) }], ["vlan", { v: String(v.B) }], ["vlan", { v: String(v.N) }]], after: `${name}(config-vlan)#`, cue: "Switch story: Rooms, Cables, then its own address. Every switch gets all 3 VLANs." });
+    const vport = (vl, ip, mask, nat) => st({ id: `vp${vl}`, group: "vp", label: `Virtual port for VLAN ${vl}${nat ? " (native)" : ""}`, lines: [`int ${v.rsw}.${vl}`, ` enc dot ${vl}${nat ? " native" : ""}`, ` ip add ${ip} ${mask}`], first: [["interface", { iface: `${v.rsw}.${vl}` }]], after: `${R}(config-subif)#`, cue: "One virtual port for each VLAN in the box, on the port that goes to the switch. The router takes the last usable." });
+
+    // Wrong-device steps (good wrong choices)
+    const fSSH = { id: "x-ssh", label: "SSH (Dogs Use Keys Very Loudly)", lines: [`ip domain-n ${v.domain}`, `username ${v.user} secret ${v.secret}`, "cry key gen rsa gen mod 1024", "ip ssh ver 2", "line vty 0 15", " login loc", " trans in ssh"], nope: `SSH goes only on the switch named in the SSH line of the Tasks box (${SC}).` };
+    const fVport = { id: "x-vport", label: `Virtual port for VLAN ${v.A}`, lines: [`int ${v.rsw}.${v.A}`, ` enc dot ${v.A}`, ` ip add ${v.rA} ${M27}`], nope: "Virtual ports (port.VLAN) are router only. On a switch a VLAN gets vlan + name." };
+    const fLock = { id: "x-lock", label: "Lock: passwords", lines: ["enable secret class", "line con 0", " password cisco", " login", "line vty 0 4", " password cisco", " login", "serv pass"], nope: "In this lab the Tasks box puts the passwords on the router only." };
+    const fRooms = { id: "x-rooms", label: "Rooms: create and name the 3 VLANs", lines: [`vlan ${v.A}`, ` name ${v.nameA}`, "…"], nope: "The router doesn't create VLANs. It gets one virtual port per VLAN instead." };
+    const fSvi = { id: "x-svi", label: "Own address: SVI + gateway", lines: [`int vlan ${v.N}`, " ip add …", " no shut", "ip default-g …"], nope: "int vlan is a switch command. The router's addresses go on its ports and virtual ports." };
+    const fTrunk = { id: "x-trunk", label: "Cable to a switch: trunk", lines: [`int ${v.rsw}`, " sw mo tr", ` sw tr nat vlan ${v.N}`], nope: "switchport commands are for switches. The router's cable to the switch gets no shut and virtual ports." };
+    const fAccess = { id: "x-acc", label: "Cable to a PC: access port", lines: [`int f0/${v.accA}`, " sw mo acc", ` sw acc vlan ${v.A}`], nope: `No PC plugs into ${SC}. All its cables go to switches or the router, so they're trunks.` };
+
+    return [
+        {
+            key: "lab", name: "The whole lab", title: "Before you start", pickOnly: true,
+            map: ["You have the map, the VLAN box and the Tasks box.", "Router, center switch, 2 edge switches, PCs, laptops and a server."],
+            steps: [
+                { id: "notebook", label: "Notebook: work out every address", lines: ["mask, router (last usable), PCs, switches, server"], cue: "Do all the math first, so you only type later." },
+                { id: "router", label: "Router", lines: ["Start, Lock, Sign, its 2 cables, Save"], cue: "Start with the router: it's the gateway for every VLAN." },
+                { id: "center", label: "Center switch (with SSH)", lines: ["Start, Rooms, Cables, Own address, SSH, Save"], cue: "Then the switch cabled to the router." },
+                { id: "edges", label: "Both edge switches", lines: ["Start, Rooms, Cables, Own address, Save"], cue: "Then the 2 switches the PCs plug into." },
+                { id: "ends", label: "PCs, laptops and the server", lines: ["Desktop → IP Configuration → Static", "IP, mask, gateway, DNS (server: IPv6 too)"], cue: "No commands: just boxes. Fill all 4 at once, DNS included." },
+                { id: "check", label: "Check Results", lines: ["PT Activity → Check Results → Assessment Items"], cue: "Fix anything with a red X." },
+            ],
+            foreign: [],
+        },
+        {
+            key: "R", name: `Router ${R}`, title: R, prompt: "Router>",
+            map: [`${v.rsw} → center switch ${SC}`, `${v.srvPort} → server`, `Small box: ::${v.end} and ${v.ll}`],
+            steps: [
+                start(R, "Router>"),
+                { id: "lock", label: "Lock: passwords", lines: ["enable secret class", "line con 0", " password cisco", " login", "line vty 0 4", " password cisco", " login", "serv pass"], first: [["enable", "secret", { v: "class" }], ["line", "console", { v: "0" }], ["line", "vty", { v: "0" }, { v: "4" }]], min: { enable: 3 }, after: `${R}(config)#`, cue: "Router story: Name, Lock, Sign, then its 2 cables." },
+                { id: "sign", label: "Sign: login banner", lines: [`ban motd #${v.banner}#`], first: [[{ banner: v.banner }]], after: `${R}(config)#`, cue: "After the lock comes the sign. Then the cables." },
+                { id: "server", label: "Cable to the server: address + IPv6", lines: ["ipv6 unicast-routing", `int ${v.srvPort}`, ` ip add ${v.rL} ${M30}`, ` ipv6 add ${v.v6}${v.end}/64`, ` ipv6 add ${v.ll} link-local`, " no shut"], first: [["ipv6", "unicast-routing"], ["interface", { iface: v.srvPort }]], after: `${R}(config-if)#`, cue: "First cable: the one to the server. A normal address on the real port, plus IPv6." },
+                { id: "trunkon", label: "Cable to the switch: turn it on", lines: [`int ${v.rsw}`, " no shut"], first: [["interface", { iface: v.rsw }]], after: `${R}(config-if)#`, cue: "Second cable: the one to the switch. Turn the real port on, then add the virtual ports." },
+                vport(v.A, v.rA, M27, false),
+                vport(v.B, v.rB, M27, false),
+                vport(v.N, v.rN, M29, true),
+                save(R, "Both cables are done, so the router is finished. Save and move on."),
+            ],
+            foreign: [fRooms, fSvi, fTrunk, fSSH],
+        },
+        {
+            key: "SC", name: `Center switch ${SC}`, title: `${SC} (named in the SSH task)`, prompt: "Switch>",
+            map: [`f0/${v.t1} → switch ${SW} (dashed)`, `f0/${v.t2} → the other edge switch (dashed)`, `${v.up} → router ${R}`, `Label: ${v.lblSC}`],
+            steps: [
+                start(SC, "Switch>"),
+                rooms(SC),
+                { id: "trunks", label: "Cables: 3 trunks at once", lines: [`int range f0/${v.t1} , f0/${v.t2} , ${v.up}`, " sw mo tr", ` sw tr nat vlan ${v.N}`], first: [["interface", "range", { range: [`f0/${v.t1}`, `f0/${v.t2}`, v.up] }], ["interface", { iface: `f0/${v.t1}` }], ["interface", { iface: `f0/${v.t2}` }], ["interface", { iface: v.up }]], after: `${SC}(config-if-range)#`, cue: "Every cable on this switch goes to a switch or the router, so all 3 are trunks." },
+                { id: "own", label: "Own address: SVI + gateway", lines: [`int vlan ${v.N}`, ` ip add ${v.ipSC} ${M29}`, " no shut", `ip default-g ${v.rN}`], first: [["interface", "vlan", { v: String(v.N) }]], after: `${SC}(config)#`, cue: `Cables done, so the switch gets its own address in the native VLAN. ${v.lblSC} = network + ${v.lblSC[0]}.` },
+                { id: "ssh", label: "SSH (Dogs Use Keys Very Loudly)", lines: fSSH.lines, first: [["ip", "domain-name", { v: v.domain }]], after: `${SC}(config-line)#`, cue: "This switch is named in the SSH line of the Tasks box. Domain first, or the keys are refused." },
+                save(SC, "SSH was the last chunk for this switch. Save."),
+            ],
+            foreign: [fVport, fLock, fAccess],
+        },
+        {
+            key: "SW", name: `Edge switch ${SW}`, title: SW, prompt: "Switch>",
+            map: [`f0/${v.accA} → PC0 (VLAN ${v.A}, ${v.hostLbl})`, `f0/${v.accB} → Laptop0 (VLAN ${v.B}, ${v.hostLbl})`, `f0/${v.t1} → center switch ${SC} (dashed)`, `Label: ${v.lblSW}`],
+            steps: [
+                start(SW, "Switch>"),
+                rooms(SW),
+                { id: "accA", group: "cables", label: `Cable to PC0: access port, VLAN ${v.A}`, lines: [`int f0/${v.accA}`, " sw mo acc", ` sw acc vlan ${v.A}`], first: [["interface", { iface: `f0/${v.accA}` }]], after: `${SW}(config-if)#`, cue: "Touch each cable. This one goes to a PC, so it's an access port in that PC's VLAN." },
+                { id: "accB", group: "cables", label: `Cable to Laptop0: access port, VLAN ${v.B}`, lines: [`int f0/${v.accB}`, " sw mo acc", ` sw acc vlan ${v.B}`], first: [["interface", { iface: `f0/${v.accB}` }]], after: `${SW}(config-if)#`, cue: "Touch each cable. This one goes to a laptop, so it's an access port in the laptop's VLAN." },
+                { id: "trunk", group: "cables", label: "Cable to the center switch: trunk", lines: [`int f0/${v.t1}`, " sw mo tr", ` sw tr nat vlan ${v.N}`], first: [["interface", { iface: `f0/${v.t1}` }]], after: `${SW}(config-if)#`, cue: "Touch each cable. This one goes to another switch, so it's a trunk." },
+                { id: "own", label: "Own address: SVI + gateway", lines: [`int vlan ${v.N}`, ` ip add ${v.ipSW} ${M29}`, " no shut", `ip default-g ${v.rN}`], first: [["interface", "vlan", { v: String(v.N) }]], after: `${SW}(config)#`, cue: `Every cable is done, so the switch gets its own address. ${v.lblSW} = network + ${v.lblSW[0]}.` },
+                save(SW, "No SSH here: the Tasks box names a different switch. So you're done: save."),
+            ],
+            foreign: [fSSH, fVport, fLock],
+        },
+    ];
+}
+
+// One random order that follows the rules (steps in the same group can swap).
+function ptoOrder(steps) {
+    const out = [];
+    for (let i = 0; i < steps.length;) {
+        const g = steps[i].group;
+        let j = i + 1;
+        while (g && j < steps.length && steps[j].group === g) j++;
+        out.push(...(g ? shuffle(steps.slice(i, j)) : [steps[i]]));
+        i = j;
+    }
+    return out;
+}
+
+// All questions for one round, in walkthrough order.
+function ptoQuestions(v) {
+    const devs = ptoDevices(v);
+    const lab = devs[0];
+    const qs = [];
+    const labAt = (k) => qs.push(ptoMake(lab, lab.steps, k));
+    labAt(0); labAt(1);
+    for (const [n, d] of devs.slice(1).entries()) {
+        const order = ptoOrder(d.steps);
+        order.forEach((_, k) => qs.push(ptoMake(d, order, k)));
+        labAt(n + 2);
+    }
+    labAt(5);
+    return qs;
+}
+
+function ptoMake(dev, order, k) {
+    const done = order.slice(0, k), step = order[k];
+    const valid = step.group ? order.slice(k).filter((s) => s.group === step.group) : [step];
+    const prompt = done.length ? done[done.length - 1].after : dev.prompt;
+    const later = order.slice(k).filter((s) => !valid.includes(s));
+    const wrong = shuffle(later).slice(0, dev.foreign.length ? 2 : 3).concat(shuffle(dev.foreign.slice()));
+    if (wrong.length < 3) wrong.push(...shuffle(done.slice()));
+    const opts = shuffle([step, ...wrong.slice(0, 3)]);
+    return { dev, done, step, valid, prompt, opts, pick: dev.pickOnly || !step.first };
+}
+
+function ptoMatchStep(q, typed) {
+    return q.valid.find((s) => (s.first || []).some((a) => ptcMatch(typed, a, s.min))) || null;
+}
+
+async function viewPtOrder(root, _p, _q, alive) {
+    let mode = "type";
+    try { mode = localStorage.getItem(PTO_MODE_KEY) || "type"; } catch (e) { /* storage blocked */ }
+
+    function start() {
+        document.body.classList.remove("focus-mode");
+        const total = ptoQuestions(ptoValues()).length;
+        root.innerHTML = `
+            <a class="back-link" href="#/course/ccna2">${icon("back")}CCNA 2</a>
+            <div class="page-head">
+                <span class="eyebrow">Packet Tracer 1</span>
+                <h1 class="page-title">Step order drill</h1>
+                <p>Learn what comes next on each device. You see the device, its cables and what you've done so far. New names and numbers each round.</p>
+            </div>
+            <div class="card pto-story">
+                <p><strong>Router:</strong> Start → Lock → Sign → cable to the server → cable to the switch (+ a virtual port per VLAN) → Save</p>
+                <p><strong>Switch:</strong> Start → Rooms → Cables (touch each one) → Own address → SSH if the Tasks box names it → Save</p>
+            </div>
+            <div class="segmented" role="group" aria-label="How to answer">
+                <button type="button" data-mode="type" aria-pressed="${mode === "type"}">Type it</button>
+                <button type="button" data-mode="pick" aria-pressed="${mode === "pick"}">Pick it</button>
+            </div>
+            <div class="btn-row">
+                <button type="button" class="btn btn-primary btn-block" id="pto-all">Full walkthrough (${total}, whole lab in order)</button>
+                <button type="button" class="btn btn-secondary btn-block" id="pto-quick">Quick round (12)</button>
+            </div>
+            <div class="note"><strong>Type it:</strong> type the first command of the next step, like <code>int f0/3</code> or <code>vlan 30</code>. After each answer you see the whole step. The steps about the whole lab are always pick.</div>`;
+        $$("[data-mode]", root).forEach((b) => {
+            b.onclick = () => {
+                mode = b.dataset.mode;
+                try { localStorage.setItem(PTO_MODE_KEY, mode); } catch (e) { /* storage blocked */ }
+                start();
+            };
+        });
+        $("#pto-all", root).onclick = () => run(ptoQuestions(ptoValues()));
+        $("#pto-quick", root).onclick = () => run(shuffle(ptoQuestions(ptoValues())).slice(0, 12));
+    }
+
+    function run(list) {
+        document.body.classList.add("focus-mode");
+        const s = { i: 0, checked: false, ok: false, typed: "", picked: null, got: null, right: 0, missed: [] };
+
+        function check() {
+            const q = list[s.i];
+            if (q.pick || mode === "pick") { s.got = s.picked; s.ok = !!s.picked && q.valid.includes(s.picked); }
+            else { s.got = ptoMatchStep(q, s.typed); s.ok = !!s.got; }
+            s.checked = true;
+            if (s.ok) s.right++; else s.missed.push(q);
+            render();
+        }
+        const stepBlock = (st) => `<pre class="pto-lines">${esc(st.lines.join("\n"))}</pre>`;
+
+        function render() {
+            if (alive && !alive()) return;
+            const q = list[s.i];
+            const pick = q.pick || mode === "pick";
+            const done = Math.round((s.i / list.length) * 100);
+            const map = `<div class="card pto-map">
+                <span class="pto-h">On the map</span>
+                <ul>${q.dev.map.map((m) => `<li${q.dev.pickOnly ? "" : ` class="ptc-code"`}>${esc(m)}</li>`).join("")}</ul>
+                <span class="pto-h">Done so far</span>
+                ${q.done.length ? `<ol class="pto-done">${q.done.map((d) => `<li>${icon("check")}<span>${esc(d.label)}</span></li>`).join("")}</ol>` : `<p class="pto-none">${q.dev.pickOnly ? "Nothing yet." : "Nothing yet. You just opened the CLI."}</p>`}
+            </div>`;
+            let body;
+            if (pick) {
+                body = `<div class="options" role="group" aria-label="Choices">${q.opts.map((o, n) => {
+                    let cls = "";
+                    if (s.checked) { if (q.valid.includes(o)) cls = "is-correct"; else if (o === s.picked) cls = "is-wrong"; }
+                    return `<button type="button" class="option ${cls}" data-o="${n}" aria-pressed="${o === s.picked}" ${s.checked ? "disabled" : ""}>
+                        <span class="mark">${icon(s.checked && o === s.picked && !q.valid.includes(o) ? "close" : "check")}</span>
+                        <span class="option-text"><strong>${esc(o.label)}</strong><span class="pto-sub ptc-code">${esc(o.lines.slice(0, 3).map((l) => l.trim()).join(" · "))}${o.lines.length > 3 ? " …" : ""}</span></span></button>`;
+                }).join("")}</div>`;
+            } else {
+                body = `<form class="ptc-term" id="pto-form" autocomplete="off">
+                    <span class="ptc-prompt">${esc(q.prompt)}</span>
+                    <input class="ptc-input" id="pto-in" type="text" value="${esc(s.typed)}" ${s.checked ? "readonly" : ""}
+                        autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"
+                        aria-label="Type the first command of the next step" placeholder="first command of the next step">
+                </form>`;
+            }
+            let feedback = "";
+            if (s.checked) {
+                const shown = s.ok ? s.got : q.step;
+                const others = q.valid.length > 1 ? `<span>Any of these ${q.valid.length} was right here: ${q.valid.map((x) => esc(x.label)).join(" · ")}. Their order doesn't matter.</span>` : "";
+                const nope = !s.ok && s.picked && s.picked.nope ? `<span>${esc(s.picked.nope)}</span>` : "";
+                feedback = `<div class="feedback ${s.ok ? "good" : "bad"}" role="status">
+                    <strong>${s.ok ? "Correct!" : "Not quite."} Next: ${esc(shown.label)}</strong>
+                    ${stepBlock(shown)}
+                    <span>${esc(shown.cue)}</span>
+                    ${nope}${others}
+                    ${!s.ok && !pick && s.typed.trim() ? `<button type="button" class="ptc-mine" id="pto-mine">I typed it right, count it</button>` : ""}
+                </div>`;
+            }
+            const last = s.i === list.length - 1;
+            const action = s.checked
+                ? `<button type="button" class="btn btn-primary btn-block" id="pto-next">${last ? "See results" : "Next"}</button>`
+                : `<div class="btn-row"><button type="button" class="btn btn-primary btn-block" id="pto-check" ${pick && !s.picked ? "disabled" : ""}>Check</button>
+                   <button type="button" class="btn btn-ghost btn-block" id="pto-show">I don't know, show me</button></div>`;
+            root.innerHTML = `
+                <div class="runner-head">
+                    <button type="button" class="icon-btn" id="pto-quit" aria-label="Leave the step order drill">${icon("close")}</button>
+                    <div class="bar" role="progressbar" aria-valuenow="${done}" aria-valuemin="0" aria-valuemax="100" aria-label="Progress"><span style="width:${done}%"></span></div>
+                    <span class="runner-count">${s.i + 1} / ${list.length}</span>
+                </div>
+                <span class="eyebrow">${esc(q.dev.name)}</span>
+                <h1 class="question-text">${q.dev.pickOnly ? (q.done.length ? "What do you do next?" : "What do you do first?") : pick ? "What's the next step?" : "Type the first command of the next step."}</h1>
+                ${map}
+                ${body}
+                ${feedback}
+                <div class="runner-actions">${action}</div>`;
+            $("#pto-quit", root).onclick = () => { if (s.i === 0 || confirm("Leave this round?")) start(); };
+            const inp = $("#pto-in", root);
+            if (inp) {
+                inp.oninput = () => { s.typed = inp.value; };
+                if (!s.checked) inp.focus({ preventScroll: true });
+                $("#pto-form", root).onsubmit = (e) => { e.preventDefault(); if (!s.checked) { s.typed = inp.value; check(); } else next(); };
+            }
+            $$("[data-o]", root).forEach((b) => { b.onclick = () => { s.picked = q.opts[+b.dataset.o]; render(); }; });
+            const ck = $("#pto-check", root);
+            if (ck) ck.onclick = () => { if (inp) s.typed = inp.value; check(); };
+            const sh = $("#pto-show", root);
+            if (sh) sh.onclick = () => { if (inp) s.typed = inp.value; s.checked = true; s.ok = false; s.got = null; s.missed.push(q); render(); };
+            const mine = $("#pto-mine", root);
+            if (mine) mine.onclick = () => { s.ok = true; s.got = q.step; s.right++; s.missed = s.missed.filter((m) => m !== q); render(); };
+            const nx = $("#pto-next", root);
+            if (nx) { nx.onclick = next; nx.focus({ preventScroll: true }); }
+        }
+        function next() {
+            if (s.i === list.length - 1) return results();
+            s.i++; s.checked = false; s.ok = false; s.typed = ""; s.picked = null; s.got = null;
+            render();
+            window.scrollTo(0, 0);
+        }
+        function results() {
+            const score = Math.round((s.right / list.length) * 100);
+            root.innerHTML = `
+                <div class="card result-hero">
+                    <span class="eyebrow">Packet Tracer 1 · Step order drill</span>
+                    <div class="result-score">${score}%</div>
+                    <p>${s.right} of ${list.length} right</p>
+                </div>
+                ${s.missed.length ? `
+                <div class="section-head"><h2 class="section-title">Review ${s.missed.length} missed</h2></div>
+                <div class="row-list">${s.missed.map((m) => `
+                    <div class="card review-item"><span class="q">${esc(m.dev.name)}: after ${esc(m.done.length ? m.done[m.done.length - 1].label : "nothing")}</span><span>Next: <strong>${esc(m.step.label)}</strong></span><span class="row-sub">${esc(m.step.cue)}</span></div>`).join("")}
+                </div>` : `<div class="note">Perfect round. Now try a full lab and say the steps out loud as you go.</div>`}
+                <div class="btn-row">
+                    ${s.missed.length ? `<button type="button" class="btn btn-primary btn-block" id="pto-again-missed">Practice the ${s.missed.length} I missed</button>` : ""}
+                    <button type="button" class="btn ${s.missed.length ? "btn-secondary" : "btn-primary"} btn-block" id="pto-new">New round</button>
+                    <a class="btn btn-ghost btn-block" href="#/course/ccna2">Done</a>
+                </div>`;
+            document.body.classList.remove("focus-mode");
+            window.scrollTo(0, 0);
+            const again = $("#pto-again-missed", root);
+            if (again) again.onclick = () => run(s.missed.slice());
+            $("#pto-new", root).onclick = start;
         }
         render();
     }

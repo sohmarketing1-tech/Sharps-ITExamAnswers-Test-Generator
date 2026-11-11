@@ -786,3 +786,17 @@ mark.hint-mark { background: #FDE68A; color: inherit; border-radius: 4px; paddin
 .ptc-ans { background: rgba(15, 23, 42, 0.07); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
 .ptc-mine { align-self: flex-start; background: none; border: none; padding: 4px 0; color: inherit; text-decoration: underline; font-size: 14px; }
 :root[data-theme="midnight"] .ptc-ans { background: rgba(255, 255, 255, 0.1); }
+
+/* ── Packet Tracer step order drill ─────────────────────────────────────── */
+.pto-story { display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.pto-story p { margin: 0; }
+.pto-map { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; }
+.pto-map ul, .pto-done { margin: 0 0 6px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.pto-map ul li { font-size: 14px; overflow-wrap: anywhere; }
+.pto-h { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.pto-done li { display: flex; align-items: flex-start; gap: 6px; font-size: 14px; }
+.pto-done svg { width: 16px; height: 16px; flex: none; margin-top: 2px; fill: none; stroke: #16A34A; stroke-width: 3; }
+.pto-none { margin: 0 0 6px; font-size: 14px; }
+.pto-sub { display: block; font-size: 13px; font-weight: 400; opacity: .8; margin-top: 2px; overflow-wrap: anywhere; }
+.pto-lines { margin: 2px 0; padding: 8px 10px; background: rgba(15, 23, 42, 0.07); border-radius: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
+:root[data-theme="midnight"] .pto-lines { background: rgba(255, 255, 255, 0.1); }
