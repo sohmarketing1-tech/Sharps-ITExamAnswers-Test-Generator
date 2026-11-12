@@ -1,0 +1,1210 @@
+{
+ "1": {
+  "cue": "transfer user data and settings",
+  "keys": [
+   "Easy Transfer",
+   "User State Migration"
+  ],
+  "tip": "Moving house: Easy Transfer for one PC, USMT for many. Upgrade Advisor only checks if a PC can upgrade.",
+  "why": "Windows Easy Transfer and the User State Migration Tool (USMT) both copy user files and settings from an old PC to a new one. USMT is the scriptable tool for many PCs."
+ },
+ "2": {
+  "cue": "extend a primary partition",
+  "keys": [
+   "dynamic"
+  ],
+  "tip": "Extend and span? Think dynamic disk: it grows.",
+  "why": "In this course, a disk is converted to dynamic so a volume can grow into free space and be used flexibly. There is no FAT64 file system, so that choice is out."
+ },
+ "3": {
+  "cue": "full format more beneficial than a quick format",
+  "keys": [
+   "analyzing the disk drive for errors"
+  ],
+  "tip": "Full format = full checkup: it deletes AND scans for bad sectors. Quick format just deletes.",
+  "why": "A full format removes the files and also scans the whole disk for bad sectors. A quick format only clears the file table, so it skips the error check."
+ },
+ "4": {
+  "cue": "disaster recovery, different vendors",
+  "keys": [
+   "individual recovery discs"
+  ],
+  "tip": "Different vendors, different drivers: each PC needs its OWN recovery disc.",
+  "why": "Recovery discs from each vendor hold the drivers and settings for that exact model. Since the PCs come from different vendors and run 32-bit or 64-bit Windows, one disc can't fit them all."
+ },
+ "5": {
+  "cue": "remote network installation, unable to communicate",
+  "keys": [
+   "PXE-enabled"
+  ],
+  "tip": "PXE = Pre-boot eXecution Environment: the NIC talks to the network before any OS is loaded.",
+  "why": "A network install starts before any OS is on the disk, so the network card itself must boot from the network. That needs a PXE-enabled NIC to reach the deployment server."
+ },
+ "6": {
+  "cue": "install Windows on a GPT disk",
+  "keys": [
+   "UEFI"
+  ],
+  "tip": "GPT goes with UEFI. MBR goes with old BIOS.",
+  "why": "To boot Windows from a GPT disk, the computer must use UEFI firmware. The 2 TB and 4 primary partition limits are MBR rules, not GPT ones."
+ },
+ "7": {
+  "cue": "create the answer file",
+  "keys": [
+   "Windows SIM"
+  ],
+  "tip": "SIM = System Image Manager: it builds the answer file for unattended installs.",
+  "why": "Windows System Image Manager (SIM) creates the answer file that tells an unattended install which settings, apps and drivers to use."
+ },
+ "8": {
+  "cue": "only installed on a 64-bit Windows",
+  "keys": [
+   "clean installation of 64-bit"
+  ],
+  "tip": "32 to 64 bit? No upgrade path. Always a clean install.",
+  "why": "You can't upgrade a 32-bit Windows to a 64-bit Windows in place. You have to do a clean install of the 64-bit version, then reinstall apps."
+ },
+ "9": {
+  "cue": "restarting continuously",
+  "keys": [
+   "Disable Automatic Restart",
+   "chkdsk /F /R"
+  ],
+  "tip": "Stop the loop, then fix the disk: disable auto restart, then chkdsk /F /R.",
+  "why": "Disabling automatic restart lets you read the error instead of rebooting again. Running chkdsk /F /R fixes file system errors and bad sectors that can stop Windows from loading."
+ },
+ "10": {
+  "cue": "DISM image, network connectivity issues",
+  "keys": [
+   "SID of the original PC is not cleared"
+  ],
+  "tip": "Clone without Sysprep = twin SIDs. Same SID on the network causes trouble.",
+  "why": "Each Windows PC needs a unique security identifier (SID). If the image is not generalized with Sysprep first, every clone has the same SID, which causes network problems."
+ },
+ "11": {
+  "cue": "files cannot be synced while traveling",
+  "keys": [
+   "Microsoft OneDrive"
+  ],
+  "tip": "No company network? Use the cloud: OneDrive bridges the server and the traveler.",
+  "why": "The user can reach the internet but not the company server. Syncing through OneDrive, a cloud service, lets files sync anywhere there is internet."
+ },
+ "12": {
+  "cue": "new internal hard drive",
+  "keys": [
+   "Initialize"
+  ],
+  "tip": "New disk steps: Initialize, then partition, then format.",
+  "why": "A brand new disk has no signature Windows can read. You must initialize it in Disk Management before you can create partitions on it."
+ },
+ "13": {
+  "cue": "PRINT$",
+  "keys": [
+   "printer drivers"
+  ],
+  "tip": "PRINT$ is a hidden ($) share that holds Printer drivers.",
+  "why": "PRINT$ is a hidden administrative share that stores printer drivers, so clients can download the right driver when they connect to a shared printer."
+ },
+ "14": {
+  "cue": "damaged the master boot record",
+  "keys": [
+   "bootrec /fixmbr"
+  ],
+  "tip": "Fix the MBR: bootrec /fixmbr says it right in the name.",
+  "why": "bootrec /fixmbr writes a new master boot record to the disk. sfc fixes system files and chkdsk fixes the file system, not the MBR."
+ },
+ "15": {
+  "cue": "Invalid Boot Disk",
+  "keys": [
+   "MBR/GPT is corrupted"
+  ],
+  "tip": "Right after POST, the PC reads the MBR/GPT. Fails there = Invalid Boot Disk.",
+  "why": "Right after POST, the computer looks for the MBR or GPT to find the OS. If that is corrupted, it can't find a bootable disk. Drivers and services load much later."
+ },
+ "16": {
+  "cue": "VNC",
+  "keys": [
+   "5900"
+  ],
+  "tip": "VNC = 5900. RDP = 3389. SSH = 22. Telnet = 23.",
+  "why": "Virtual Network Computing listens on TCP port 5900. 3389 is Windows Remote Desktop, a different screen sharing protocol."
+ },
+ "17": {
+  "cue": "included with macOS, remote user",
+  "keys": [
+   "Screen Sharing"
+  ],
+  "tip": "Mac = Screen Sharing. Windows = Remote Desktop and Remote Assistance.",
+  "why": "Screen Sharing is the built-in macOS feature that lets a remote user see and control the Mac. Remote Desktop and Remote Assistance are Windows tools."
+ },
+ "18": {
+  "cue": "operations and planning category",
+  "keys": [
+   "inventory management"
+  ],
+  "tip": "Operations and planning = what we own and plan to buy: inventory.",
+  "why": "Operations and planning documents track day-to-day resources, such as inventory of hardware and software. Disaster recovery and diagrams belong to other categories."
+ },
+ "19": {
+  "cue": "illegal content discovered",
+  "keys": [
+   "first responder",
+   "Document"
+  ],
+  "tip": "Found illegal content? Call and Write: contact a first responder, document everything. Don't touch or confront.",
+  "why": "You must not destroy evidence or confront anyone. Contact a first responder and write down as much as you can, so the evidence and the chain of custody stay intact."
+ },
+ "20": {
+  "cue": "level one technician should gather",
+  "keys": [
+   "contact information",
+   "description of the problem",
+   "recent changes"
+  ],
+  "tip": "Level one asks Who, What, What changed. Technical outputs come later.",
+  "why": "A level one tech records who the customer is, what the problem is and what changed recently. Diagnostic output and CMOS settings are gathered by higher-level techs."
+ },
+ "21": {
+  "cue": "assisting customers",
+  "keys": [
+   "finish talking",
+   "ask the customer for permission"
+  ],
+  "tip": "Be polite: let them finish, and ask before you put them on hold.",
+  "why": "Good customer service means listening without interrupting and asking permission before a hold. Interrupting or passing angry callers away right away hurts trust."
+ },
+ "22": {
+  "cue": "angry customer",
+  "keys": [
+   "redirect the conversation",
+   "without interrupting"
+  ],
+  "tip": "Angry caller: Listen, then Lead back to the problem.",
+  "why": "Let the angry customer vent without interruption, then steer the talk back to fixing the problem. Matching their anger or transferring at once makes it worse."
+ },
+ "23": {
+  "cue": "escalated from a level one",
+  "keys": [
+   "complicated",
+   "beyond the scope"
+  ],
+  "tip": "Escalate when it's too long or too hard for level one.",
+  "why": "Level one handles quick, common fixes. Problems that will take a long time or go beyond level one knowledge are passed to level two techs."
+ },
+ "24": {
+  "cue": "unsolicited emails",
+  "keys": [
+   "researched the company policy",
+   "asked the customer"
+  ],
+  "tip": "Before you market: check policy, ask permission.",
+  "why": "Sending unsolicited emails breaks policy and annoys customers. The tech should have checked the company rules and asked the customer if they wanted that information."
+ },
+ "25": {
+  "cue": "Remote Desktop Protocol (RDP)",
+  "keys": [
+   "encrypted session",
+   "3389"
+  ],
+  "tip": "RDP: 3389 and encrypted. Port 22 is SSH.",
+  "why": "RDP uses TCP port 3389 and encrypts the session. Port 22 belongs to SSH, and RDP clients exist for Mac, Linux and mobile too."
+ },
+ "26": {
+  "cue": "collecting and analyzing data, illegal activity",
+  "keys": [
+   "computer forensics"
+  ],
+  "tip": "Forensics = CSI for computers: collect and analyze evidence.",
+  "why": "Computer forensics is the collection and analysis of data from systems and storage for a legal investigation. Cyber law is the set of laws, not the investigation."
+ },
+ "27": {
+  "cue": "volatile data",
+  "keys": [
+   "between RAM and the CPU"
+  ],
+  "tip": "Volatile = vanishes when power goes. RAM is volatile, disks are not.",
+  "why": "Volatile data lives in RAM and CPU caches and is lost when power is removed. Data on magnetic or external drives stays after power off."
+ },
+ "28": {
+  "cue": "file shown in the exhibit must be sent",
+  "keys": [
+   "<password omitted>",
+   "secure means"
+  ],
+  "tip": "Share the file, hide the secrets: omit passwords, send them separately.",
+  "why": "The file contains passwords. You can still share it, but replace the passwords first and give them only through a secure channel if needed."
+ },
+ "29": {
+  "cue": "essential for a level one technician",
+  "keys": [
+   "few succinct sentences"
+  ],
+  "tip": "Level one skill: Summarize. Turn a long story into a short work order.",
+  "why": "Level one techs must turn the customer's description into a short, clear summary in the work order, so the next tech understands it fast."
+ },
+ "30": {
+  "cue": "control illegal use of software and content",
+  "keys": [
+   "digital rights management"
+  ],
+  "tip": "DRM = Digital Rights Management: locks content against piracy.",
+  "why": "Digital rights management uses technology to stop illegal copying and use of software and media. An EULA is just the license agreement text."
+ },
+ "31": {
+  "cue": "level of support",
+  "keys": [
+   "SLA"
+  ],
+  "tip": "SLA = Service Level Agreement: the contract sets the support level.",
+  "why": "A service level agreement is a contract that states how much and what kind of support a customer gets, so it decides the level of help."
+ },
+ "32": {
+  "cue": "backup server computer case open",
+  "keys": [
+   "qualified to collect evidence"
+  ],
+  "tip": "Possible crime scene? Don't touch. Get the evidence expert.",
+  "why": "This may be a crime scene. Touching the drives or cables could destroy evidence, so find someone trained to collect evidence and keep the chain of custody."
+ },
+ "33": {
+  "cue": "scripting language and a compiled language",
+  "keys": [
+   "line by line"
+  ],
+  "tip": "Script = read line by line. Compiled = translated first into an executable.",
+  "why": "Scripts are run by an interpreter one line at a time. Compiled languages must first be turned into executable machine code by a compiler."
+ },
+ "34": {
+  "cue": "multifactor authentication",
+  "keys": [
+   "passwords and fingerprints"
+  ],
+  "tip": "Multifactor = different kinds: something you know + something you are.",
+  "why": "Multifactor uses two or more different factor types. A password is something you know and a fingerprint is something you are."
+ },
+ "35": {
+  "cue": "system files have been renamed",
+  "keys": [
+   "antivirus",
+   "backup"
+  ],
+  "tip": "Renamed system files = virus sign. Scan it, or restore it.",
+  "why": "Renamed system files are a sign of malware. Remove it with antivirus software, or restore the system from a clean backup."
+ },
+ "36": {
+  "cue": "test theories of probable cause",
+  "keys": [
+   "different user",
+   "Disconnect the computer"
+  ],
+  "tip": "Test a theory by changing one thing: new user, no network.",
+  "why": "Logging in as another user tests if the problem is tied to one profile. Unplugging the network tests if an outside attack is involved. The other choices just gather information."
+ },
+ "37": {
+  "cue": "Windows BitLocker",
+  "keys": [
+   "two volumes",
+   "TPM"
+  ],
+  "tip": "BitLocker needs TPM + Two volumes: T and T.",
+  "why": "BitLocker needs at least two volumes (one unencrypted to boot from) and normally a TPM chip to store the keys. EFS is a different, file-level encryption."
+ },
+ "38": {
+  "cue": "asymmetric encryption",
+  "keys": [
+   "public and private key pair"
+  ],
+  "tip": "Asymmetric = two different keys (public and private). Symmetric = same key.",
+  "why": "Asymmetric encryption uses a key pair: one key encrypts and the other decrypts. Using identical keys on both ends is symmetric encryption."
+ },
+ "39": {
+  "cue": "recording the keystrokes",
+  "keys": [
+   "virus"
+  ],
+  "tip": "In this exam: email-spread keystroke recorder = virus.",
+  "why": "A virus can spread as an email attachment and carry a payload, such as a keylogger, that records what you type to steal passwords and data."
+ },
+ "40": {
+  "cue": "remove stubborn malware",
+  "keys": [
+   "Safe Mode"
+  ],
+  "tip": "Stubborn malware? Boot Safe Mode: it loads only the basics, so malware can't hide.",
+  "why": "Safe Mode starts Windows with minimal drivers and programs, so most malware does not run. Then a system restore or scan can remove it."
+ },
+ "41": {
+  "cue": "buying supplies for the personal crafting business",
+  "keys": [
+   "acceptable use"
+  ],
+  "tip": "Personal business on company resources? Check the AUP: Acceptable Use Policy.",
+  "why": "The acceptable use policy says how employees may use company equipment and time. Running a personal business on them breaks that policy."
+ },
+ "42": {
+  "cue": "password rules, not part of a domain",
+  "keys": [
+   "Local Security Policy"
+  ],
+  "tip": "No domain = local. Local Security Policy (secpol.msc) sets password and lockout rules.",
+  "why": "On a standalone PC with no domain, the Local Security Policy tool sets password length, complexity and account lockout rules."
+ },
+ "43": {
+  "cue": "password as soon as it powers on",
+  "keys": [
+   "BIOS"
+  ],
+  "tip": "Password before the OS boots = BIOS password.",
+  "why": "The BIOS runs before the operating system, so a password asked for at power on comes from the BIOS or UEFI settings, not the Windows login."
+ },
+ "44": {
+  "cue": "increasing the size of the swap",
+  "keys": [
+   "hard disk space"
+  ],
+  "tip": "Swap is fake RAM on the slow disk. More RAM beats more swap.",
+  "why": "Swap stores inactive RAM content on the hard disk, which is much slower than real RAM. A bigger swap helps a little, but adding RAM is the real fix."
+ },
+ "45": {
+  "cue": "features of GPS",
+  "keys": [
+   "navigation",
+   "specialized search results",
+   "device tracking"
+  ],
+  "tip": "GPS knows WHERE: navigate, find nearby places, track the device.",
+  "why": "GPS gives your location, so it powers maps and directions, location-based search results and finding a lost device. Remote wipe and phone lookup don't need GPS."
+ },
+ "46": {
+  "cue": "Linux file and directory permissions",
+  "keys": [
+   "group",
+   "owner",
+   "all users"
+  ],
+  "tip": "Linux permissions: UGO = User (owner), Group, Others (all users).",
+  "why": "Linux sets read, write and execute permissions for three sets: the owner, the group and all other users."
+ },
+ "47": {
+  "cue": "widget is touched an app is launched",
+  "keys": [
+   "normal behavior"
+  ],
+  "tip": "Widgets are windows into apps. Tap the widget, open the app. Normal.",
+  "why": "A widget is a small view of an app on the home screen. Tapping it opening the full app is expected, not a virus."
+ },
+ "48": {
+  "cue": "sandbox",
+  "keys": [
+   "prevent malicious programs"
+  ],
+  "tip": "Sandbox = a play box: the app can't get out to harm the rest.",
+  "why": "A sandbox isolates each app from the OS and other apps, so a malicious app can't reach and infect the rest of the device."
+ },
+ "49": {
+  "cue": "Mac OS X disk backups",
+  "keys": [
+   "Time Machine"
+  ],
+  "tip": "Mac backups go back in time: Time Machine.",
+  "why": "Time Machine is the backup tool built into macOS. Deja Dup is a Linux tool, and Disk Utility manages disks rather than backups."
+ },
+ "50": {
+  "cue": "kernel panic",
+  "keys": [
+   "driver has become corrupted"
+  ],
+  "tip": "Kernel panic = the core crashed. Corrupted drivers crash the core.",
+  "why": "Drivers run inside the kernel, so a corrupted driver can crash it and cause a kernel panic. A missing GRUB would stop boot before the kernel loads."
+ },
+ "51": {
+  "cue": "mobile device very slow",
+  "keys": [
+   "power-intensive app"
+  ],
+  "tip": "Slow phone? Look for a hungry app running in the background.",
+  "why": "A power-hungry app in the background uses CPU and memory, which slows everything else. Close it to speed the device up."
+ },
+ "52": {
+  "cue": "boot an operating system by default",
+  "keys": [
+   "active partition"
+  ],
+  "tip": "Active partition = the one the computer actively boots from.",
+  "why": "The active partition is the one marked to hold the boot files, so the computer boots the OS from it by default."
+ },
+ "53": {
+  "cue": "partition size up to 16 exabytes",
+  "keys": [
+   "NTFS"
+  ],
+  "tip": "NTFS is huge: 16 exabytes. FAT32 tops out at 2 TB.",
+  "why": "NTFS supports partitions up to 16 exabytes and adds security features like permissions. FAT32 is limited to 2 TB partitions."
+ },
+ "54": {
+  "cue": "USB flash drives, files larger than 4 GB",
+  "keys": [
+   "exFAT"
+  ],
+  "tip": "exFAT = extended FAT for flash: big files, no 4 GB limit.",
+  "why": "exFAT is made for flash drives and removes the 4 GB file size limit of FAT32, while still working on Windows and Mac."
+ },
+ "55": {
+  "cue": "up to 23 logical drives",
+  "keys": [
+   "extended partition"
+  ],
+  "tip": "Extended partition is a container: it holds up to 23 logical drives.",
+  "why": "On an MBR disk, one extended partition can be split into as many as 23 logical drives, getting around the 4 primary partition limit."
+ },
+ "56": {
+  "cue": "file system for optical disk media",
+  "keys": [
+   "CDFS"
+  ],
+  "tip": "CDFS = CD File System, for optical discs.",
+  "why": "CDFS, the Compact Disc File System, is built for optical media like CDs and DVDs."
+ },
+ "57": {
+  "cue": "only exist on a hard disk that has an MBR",
+  "keys": [
+   "logical drive"
+  ],
+  "tip": "Logical drives live inside an extended partition, an MBR-only idea.",
+  "why": "Logical drives are sections inside an extended partition, and extended partitions only exist on MBR disks. GPT disks don't need them."
+ },
+ "58": {
+  "cue": "extended into adjacent unallocated space",
+  "keys": [
+   "basic disk"
+  ],
+  "tip": "Basic disk can grow only next door: contiguous space. Dynamic can span.",
+  "why": "A basic disk can extend a partition only into free space right next to it on the same disk. Spanning across disks needs a dynamic disk."
+ },
+ "59": {
+  "cue": "general name for physical areas",
+  "keys": [
+   "partition"
+  ],
+  "tip": "Partition = a part of the drive. Like rooms in a house.",
+  "why": "A partition is a section of a hard drive that is set aside and treated as its own area. Formatting then puts a file system on it."
+ },
+ "60": {
+  "cue": "512 bytes long and that contains the boot loader",
+  "keys": [
+   "MBR"
+  ],
+  "tip": "MBR = Master Boot Record: the first 512 bytes, holds the boot loader.",
+  "why": "The master boot record is the first 512 byte sector of the disk. It holds the boot loader and the partition table."
+ },
+ "61": {
+  "cue": "volume that can span across more than one disk",
+  "keys": [
+   "dynamic disk"
+  ],
+  "tip": "Dynamic = flexible: volumes can span many disks.",
+  "why": "Dynamic disks support volumes that span, stripe or mirror across more than one physical disk. Basic disks can't do that."
+ },
+ "62": {
+  "cue": "NTOSKRNL.EXE starts the login file called WINLOGON.EXE",
+  "keys": [
+   "Welcome screen"
+  ],
+  "tip": "Last two steps: NTOSKRNL starts WINLOGON, then WINLOGON shows Welcome.",
+  "why": "Once the kernel starts WINLOGON.EXE, its job is to show the Welcome or login screen. That is the final step of the boot."
+ },
+ "63": {
+  "cue": "WINLOGON.EXE displays the Windows Welcome screen",
+  "keys": [
+   "no more steps"
+  ],
+  "tip": "Welcome screen = the finish line. Nothing comes after.",
+  "why": "Showing the Welcome screen is the last step of the Windows boot process, so there are no more steps."
+ },
+ "64": {
+  "cue": "currently working on the following step: POST",
+  "keys": [
+   "CMOS memory"
+  ],
+  "tip": "Boot order start: POST, then CMOS settings, then boot sector.",
+  "why": "After POST checks the hardware, the BIOS reads its configuration settings from CMOS memory, such as the boot order."
+ },
+ "65": {
+  "cue": "BIOS locates and reads the configuration settings",
+  "keys": [
+   "first drive that contains a valid boot sector"
+  ],
+  "tip": "CMOS tells the boot order. Then BIOS boots the first drive with a valid boot sector.",
+  "why": "The CMOS settings include the boot order. The BIOS then uses it to boot from the first drive that has a valid boot sector."
+ },
+ "66": {
+  "cue": "control of the boot process is given to Windows Boot Manager",
+  "keys": [
+   "path specified in BOOTMGR"
+  ],
+  "tip": "BOOTMGR points the way: Winload follows its path to the boot partition.",
+  "why": "Windows Boot Manager holds the path to the Windows install. Winload uses that path to find the boot partition before loading the kernel."
+ },
+ "67": {
+  "cue": "Winload uses the path specified in BOOTMGR",
+  "keys": [
+   "NTOSKRNL.EXE and HAL.DLL"
+  ],
+  "tip": "Found the partition? Load the core: NTOSKRNL (kernel) and HAL (hardware layer).",
+  "why": "After finding the boot partition, Winload loads the two core files of Windows: NTOSKRNL.EXE, the kernel, and HAL.DLL, the hardware abstraction layer."
+ },
+ "68": {
+  "cue": "WinLoad reads the registry files",
+  "keys": [
+   "kernel takes over"
+  ],
+  "tip": "Drivers loaded? Winload hands off: the kernel takes over.",
+  "why": "Once Winload has read the registry and loaded the drivers, its work is done and the Windows kernel takes control of the boot."
+ },
+ "69": {
+  "cue": "The Windows kernel takes over the boot process",
+  "keys": [
+   "starts the login file called WINLOGON.EXE"
+  ],
+  "tip": "Kernel in charge, then it starts WINLOGON, then Welcome.",
+  "why": "Once the kernel takes over, NTOSKRNL.EXE starts WINLOGON.EXE, the program that handles logging in."
+ },
+ "70": {
+  "cue": "WINLOGON.EXE displays the Windows Welcome screen",
+  "keys": [
+   "no more steps"
+  ],
+  "tip": "Welcome screen = done. The boot ends there.",
+  "why": "The Welcome screen shown by WINLOGON.EXE is the final step of the boot process, so nothing else follows."
+ },
+ "71": {
+  "cue": "The Windows kernel takes over the boot process",
+  "keys": [
+   "starts the login file called WINLOGON.EXE"
+  ],
+  "tip": "Kernel, then WINLOGON, then Welcome screen.",
+  "why": "After the kernel takes control, NTOSKRNL.EXE starts WINLOGON.EXE, which will then show the Welcome screen."
+ },
+ "72": {
+  "cue": "TCP three-way handshake",
+  "keys": [
+   "SYN flood"
+  ],
+  "tip": "Handshake attack = SYN flood: tons of SYNs, never finishing the handshake.",
+  "why": "A SYN flood sends many SYN requests and never completes the TCP handshake, so the server fills up with half-open connections."
+ },
+ "73": {
+  "cue": "compares hashed passwords",
+  "keys": [
+   "rainbow table"
+  ],
+  "tip": "Rainbow table = a big table of ready-made hashes to match.",
+  "why": "A rainbow table holds precomputed password hashes. The attacker compares stolen hashes to the table to find the matching passwords fast."
+ },
+ "74": {
+  "cue": "enormous amount of false requests",
+  "keys": [
+   "DoS"
+  ],
+  "tip": "Flood a server with junk = DoS, Denial of Service.",
+  "why": "A denial of service attack overwhelms a server with fake requests so real users can't get service. DNS poisoning changes records instead."
+ },
+ "75": {
+  "cue": "known to the software vendor, but not patched",
+  "keys": [
+   "zero-day"
+  ],
+  "tip": "Zero-day = zero days of patch protection.",
+  "why": "A zero-day attack uses a flaw the vendor knows about or just learned of, before a patch is out. There are zero days of protection."
+ },
+ "76": {
+  "cue": "zombies were used",
+  "keys": [
+   "DDoS"
+  ],
+  "tip": "Zombies = many bots = Distributed DoS.",
+  "why": "Zombies are infected computers in a botnet. Using many of them at once to flood a target is a distributed denial of service, DDoS."
+ },
+ "78": {
+  "cue": "table of words that potentially could be used as passwords",
+  "keys": [
+   "dictionary"
+  ],
+  "tip": "List of words = dictionary attack. Precomputed hashes = rainbow table.",
+  "why": "A dictionary attack tries each word from a word list as the password until one works."
+ },
+ "79": {
+  "cue": "injected false records",
+  "keys": [
+   "DNS poisoning"
+  ],
+  "tip": "Fake name records = poisoned DNS.",
+  "why": "DNS poisoning puts false records into a DNS server, so names point users to the wrong, often malicious, IP addresses."
+ },
+ "82": {
+  "cue": "monitor incoming and outgoing traffic and stop",
+  "keys": [
+   "IPS"
+  ],
+  "tip": "IPS = Intrusion Prevention System: it Prevents (stops) attacks. IDS only detects.",
+  "why": "An intrusion prevention system watches traffic and blocks malicious activity in real time, not just reports it."
+ },
+ "83": {
+  "cue": "antimalware software cannot remove all",
+  "keys": [
+   "Safe Mode"
+  ],
+  "tip": "Malware won't leave? Go to Safe Mode, where it can't run.",
+  "why": "Safe Mode loads only the basic drivers and services, so most malware doesn't start and can then be removed."
+ },
+ "85": {
+  "cue": "preventing tailgating",
+  "keys": [
+   "mantrap"
+  ],
+  "tip": "Mantrap = two doors, one person at a time. No tailgaters.",
+  "why": "A mantrap is a small room with two doors where only one opens at a time, so a second person can't follow someone in."
+ },
+ "86": {
+  "cue": "drive redundancy",
+  "keys": [
+   "RAID"
+  ],
+  "tip": "Redundancy of drives = RAID: Redundant Array of Independent Disks.",
+  "why": "RAID stores data across several drives so that if one fails, the data is still safe on the others."
+ },
+ "88": {
+  "cue": "solution for phishing",
+  "keys": [
+   "awareness training"
+  ],
+  "tip": "Phishing tricks people, so train the people.",
+  "why": "Phishing fools users into clicking or sharing data. Training teaches people to spot fake emails, which tech alone can't fully stop."
+ },
+ "89": {
+  "cue": "bootable disk containing hacking tools",
+  "keys": [
+   "Disable ports"
+  ],
+  "tip": "No ports, no boot disk. Disable the USB and optical ports.",
+  "why": "Disabling USB and other ports stops someone from plugging in a bootable disk to run hacking tools on the machine."
+ },
+ "91": {
+  "cue": "manager traveling",
+  "keys": [
+   "VPN"
+  ],
+  "tip": "Remote worker + private network = VPN, a secure tunnel.",
+  "why": "A VPN makes an encrypted tunnel over the internet, so a traveling user can safely reach internal company resources."
+ },
+ "92": {
+  "cue": "move command",
+  "keys": [
+   "relocate a file"
+  ],
+  "tip": "move = relocate (it leaves no copy behind). copy = keep both.",
+  "why": "The move command takes a file out of one directory and puts it in another, so it no longer exists in the old place."
+ },
+ "93": {
+  "cue": "copy command",
+  "keys": [
+   "leaving the file in the current location"
+  ],
+  "tip": "copy = a twin: the original stays where it was.",
+  "why": "The copy command puts a duplicate in another directory while the original file stays where it is."
+ },
+ "94": {
+  "cue": "robocopy command",
+  "keys": [
+   "copy a group of files"
+  ],
+  "tip": "robocopy = Robust copy: copies groups of files reliably.",
+  "why": "Robocopy, robust file copy, copies many files and folders from one place to another and can retry when copying fails."
+ },
+ "95": {
+  "cue": "xcopy command",
+  "keys": [
+   "subdirectories"
+  ],
+  "tip": "xcopy = extended copy: it brings subdirectories too.",
+  "why": "xcopy copies files plus whole directory trees, including subdirectories. The plain copy command only copies files."
+ },
+ "96": {
+  "cue": "format command",
+  "keys": [
+   "prepare a hard drive"
+  ],
+  "tip": "format = prepare the drive with a file system.",
+  "why": "format writes a file system to a drive or partition, so Windows can store files on it."
+ },
+ "97": {
+  "cue": "bootrec command",
+  "keys": [
+   "repair the MBR"
+  ],
+  "tip": "bootrec = boot record repair.",
+  "why": "bootrec repairs boot records, such as the MBR and boot sector, when Windows won't start. sfc is the one for system files."
+ },
+ "98": {
+  "cue": "ipconfig command",
+  "keys": [
+   "IPv6 address"
+  ],
+  "tip": "ipconfig = IP configuration: shows your IPv4 and IPv6 addresses.",
+  "why": "ipconfig shows the IP settings of each network adapter, including its IPv4 and IPv6 addresses."
+ },
+ "99": {
+  "cue": "netstat command",
+  "keys": [
+   "active TCP connections"
+  ],
+  "tip": "netstat = network statistics: lists active connections.",
+  "why": "netstat shows active TCP connections and listening ports, which helps you see what the PC is talking to."
+ },
+ "100": {
+  "cue": "nslookup command",
+  "keys": [
+   "query the Domain Name"
+  ],
+  "tip": "nslookup = name server lookup: ask DNS.",
+  "why": "nslookup sends queries to a DNS server to check how a name maps to an IP address, or the reverse."
+ },
+ "101": {
+  "cue": "ping command",
+  "keys": [
+   "echo-request"
+  ],
+  "tip": "ping sends echo requests and waits for echo replies.",
+  "why": "ping sends ICMP echo-request messages and listens for echo replies, a quick test of whether a destination is reachable."
+ },
+ "102": {
+  "cue": "unable to access local resources",
+  "keys": [
+   "bad cabling",
+   "DNS name resolution"
+  ],
+  "tip": "Local and wired: check the Cable and the Names (DNS). Gateway and ISP only matter beyond the LAN.",
+  "why": "A bad cable breaks the wired link. If DNS fails, shares and printers found by name can't be reached. The gateway and ISP only matter for remote networks."
+ },
+ "103": {
+  "cue": "authentication on behalf of all of the access points",
+  "keys": [
+   "RADIUS"
+  ],
+  "tip": "Many APs, one login server = RADIUS.",
+  "why": "RADIUS is a central authentication server. All access points pass logins to it, which is secure and scales to many users."
+ },
+ "104": {
+  "cue": "inkjet printer cartridge",
+  "keys": [
+   "Recycle"
+  ],
+  "tip": "Old cartridges: Recycle by local rules, never the trash.",
+  "why": "Ink cartridges contain chemicals, so they must be recycled or disposed of according to local regulations."
+ },
+ "105": {
+  "cue": "destination port number of 3389",
+  "keys": [
+   "RDP"
+  ],
+  "tip": "3389 = RDP. Think 3-3-8-9 for remote desktop.",
+  "why": "TCP port 3389 is used by the Remote Desktop Protocol."
+ },
+ "106": {
+  "cue": "destination port number of 67",
+  "keys": [
+   "DHCP"
+  ],
+  "tip": "DHCP: server 67, client 68.",
+  "why": "DHCP servers listen on UDP port 67 for clients asking for an IP address."
+ },
+ "107": {
+  "cue": "destination port number of 443",
+  "keys": [
+   "HTTPS"
+  ],
+  "tip": "443 = HTTPS (secure web). 80 = plain HTTP.",
+  "why": "Port 443 is used by HTTPS, the encrypted version of web traffic."
+ },
+ "108": {
+  "cue": "destination port number of 69",
+  "keys": [
+   "TFTP"
+  ],
+  "tip": "TFTP = 69, Trivial FTP on UDP.",
+  "why": "TFTP, Trivial File Transfer Protocol, uses UDP port 69."
+ },
+ "109": {
+  "cue": "destination port number of 445",
+  "keys": [
+   "SMB/CIFS"
+  ],
+  "tip": "445 = SMB file sharing in Windows.",
+  "why": "Port 445 is used by SMB/CIFS, the protocol Windows uses to share files and printers."
+ },
+ "110": {
+  "cue": "destination port number of 548",
+  "keys": [
+   "AFP"
+  ],
+  "tip": "548 = AFP, Apple Filing Protocol.",
+  "why": "Port 548 is used by AFP, Apple's file sharing protocol."
+ },
+ "111": {
+  "cue": "destination port number of 80",
+  "keys": [
+   "HTTP"
+  ],
+  "tip": "80 = HTTP, plain web.",
+  "why": "Port 80 is the standard port for unencrypted web traffic, HTTP."
+ },
+ "113": {
+  "cue": "stateful firewall services",
+  "keys": [
+   "ASA"
+  ],
+  "tip": "Cisco ASA = Adaptive Security Appliance, a stateful firewall box.",
+  "why": "A Cisco ASA is a dedicated firewall that tracks the state of each connection, giving a small company stateful firewall services."
+ },
+ "114": {
+  "cue": "Windows 10 installed on dynamic drives, registry files",
+  "keys": [
+   "NTOSKRNL.EXE and HAL.DLL",
+   "kernel takes over"
+  ],
+  "tip": "Winload trio: load NTOSKRNL and HAL, read registry and drivers, then the kernel takes over.",
+  "why": "Winload loads NTOSKRNL.EXE and HAL.DLL and reads the registry to load drivers. When that is done, the Windows kernel takes over the boot process."
+ },
+ "115": {
+  "cue": "error message about decryption",
+  "keys": [
+   "certificate"
+  ],
+  "tip": "Can't decrypt email? You're missing the right certificate (the key).",
+  "why": "Encrypted email needs the right digital certificate to decrypt it. Installing that certificate lets the laptop open the message."
+ },
+ "118": {
+  "cue": "key on the keyboard is not responding",
+  "keys": [
+   "compressed air"
+  ],
+  "tip": "Sticky key = dirt under it. Blow it out with compressed air.",
+  "why": "Dust and crumbs under a key often stop it from working. Compressed air blows the dirt out without taking the keyboard apart."
+ },
+ "120": {
+  "cue": "GPS is not functioning",
+  "keys": [
+   "airplane mode"
+  ],
+  "tip": "Airplane mode turns off radios. Check it first when GPS is dead.",
+  "why": "Airplane mode can switch off wireless radios, including location services. Make sure it is off so GPS can work."
+ },
+ "123": {
+  "cue": "GPS is not functioning",
+  "keys": [
+   "status of service"
+  ],
+  "tip": "GPS dead? Check that the location service is on.",
+  "why": "GPS needs the location service turned on in the device settings. If the service is off or stopped, GPS won't work."
+ },
+ "125": {
+  "cue": "manager need to use the tracert command",
+  "keys": [
+   "near-side router interfaces"
+  ],
+  "tip": "tracert = trace route: lists each router hop on the way.",
+  "why": "tracert shows each router along the path to a destination, listing the router interface closest to you at each hop."
+ },
+ "126": {
+  "cue": "sfc command",
+  "keys": [
+   "protected system files"
+  ],
+  "tip": "sfc = System File Checker: scans and fixes protected system files.",
+  "why": "System File Checker scans the protected Windows system files and replaces damaged or wrong versions with correct copies."
+ },
+ "127": {
+  "cue": "DISM command",
+  "keys": [
+   "Windows images"
+  ],
+  "tip": "DISM = Deployment Image Servicing and Management: it fixes images.",
+  "why": "DISM services Windows images, including the recovery image, so it can repair and prepare the image Windows runs from."
+ },
+ "128": {
+  "cue": "tasklist command",
+  "keys": [
+   "list of current processes"
+  ],
+  "tip": "tasklist = list tasks (processes). taskkill = end them.",
+  "why": "tasklist shows the processes running on a local or remote computer, with their process IDs."
+ },
+ "129": {
+  "cue": "taskkill command",
+  "keys": [
+   "end one or more processes"
+  ],
+  "tip": "taskkill kills tasks by PID or name.",
+  "why": "taskkill stops one or more running processes, chosen by process ID or by image (program) name."
+ },
+ "130": {
+  "cue": "msconfig command",
+  "keys": [
+   "automatically run at startup"
+  ],
+  "tip": "msconfig = Microsoft config: choose what runs at startup.",
+  "why": "msconfig, System Configuration, lets you choose startup options and which programs and services load when Windows starts."
+ },
+ "131": {
+  "cue": "dir command",
+  "keys": [
+   "show all of the files"
+  ],
+  "tip": "dir = directory listing: shows the files here.",
+  "why": "dir lists the files and folders in the current directory."
+ },
+ "132": {
+  "cue": "gpupdate command",
+  "keys": [
+   "synchronize with new group policy"
+  ],
+  "tip": "gpupdate = update group policy now.",
+  "why": "gpupdate forces the PC to pull and apply the latest Group Policy settings instead of waiting for the next refresh."
+ },
+ "133": {
+  "cue": "gpresult command",
+  "keys": [
+   "verify the settings"
+  ],
+  "tip": "gpresult = group policy results: see what really applied.",
+  "why": "gpresult shows which Group Policy settings are applied to the user and computer, so you can check settings you suspect are wrong."
+ },
+ "134": {
+  "cue": "cd command",
+  "keys": [
+   "change from the current working folder"
+  ],
+  "tip": "cd = change directory.",
+  "why": "cd moves you from the current folder to another folder in the command prompt."
+ },
+ "136": {
+  "cue": "mobile device screen",
+  "keys": [
+   "different tiles"
+  ],
+  "tip": "Live Tiles are alive: they show messages, news and photos.",
+  "why": "This is a Windows phone Start screen with Live Tiles. Each tile can show live content like messages, news and photos. Unpinning a tile does not uninstall the app."
+ },
+ "137": {
+  "cue": "BIOS locates and reads the configuration settings",
+  "keys": [
+   "first drive that contains a valid boot sector"
+  ],
+  "tip": "POST, CMOS settings, then boot the first drive with a valid boot sector.",
+  "why": "After reading the CMOS settings, including the boot order, the BIOS boots from the first drive that has a valid boot sector."
+ },
+ "138": {
+  "cue": "Winload uses the path specified in BOOTMGR",
+  "keys": [
+   "NTOSKRNL.EXE and HAL.DLL"
+  ],
+  "tip": "Path found, then load the core: NTOSKRNL and HAL.",
+  "why": "Once Winload finds the boot partition, it loads the two core Windows files, the kernel NTOSKRNL.EXE and the hardware layer HAL.DLL."
+ },
+ "139": {
+  "cue": "bootable recovery USB device",
+  "keys": [
+   "repair the operating system"
+  ],
+  "tip": "Recovery USB = repair kit for when Windows won't start.",
+  "why": "A recovery USB lets you start the PC and use repair tools when the installed Windows is too damaged to boot on its own."
+ },
+ "140": {
+  "cue": "Wireless Wide Area Network (WWAN)",
+  "keys": [
+   "cellular provider"
+  ],
+  "tip": "WWAN = cellular data. Needs an adapter to reach the cell tower.",
+  "why": "A WWAN connection uses a cellular network, so the device needs a WWAN adapter, built in or external, to link to the nearest cell tower."
+ },
+ "141": {
+  "cue": "automatic restart setting",
+  "keys": [
+   "disable the auto restart"
+  ],
+  "tip": "Turn off auto restart to read the stop error before it vanishes.",
+  "why": "In System settings (Startup and Recovery), you can turn off automatic restart, so the stop error stays on screen and you can read it."
+ },
+ "142": {
+  "cue": "libraries in Windows 10",
+  "keys": [
+   "link mutiple different directories"
+  ],
+  "tip": "A library is a shortcut shelf: many folders in one view.",
+  "why": "A Windows library gathers files from several different folders and shows them in one place, without moving them."
+ },
+ "143": {
+  "cue": "three or more factors",
+  "keys": [
+   "MFA"
+  ],
+  "tip": "SFA = 1, 2FA = 2, MFA = many (3 or more).",
+  "why": "Multifactor authentication can use any number of factors, including three or more. 2FA is exactly two factors."
+ },
+ "144": {
+  "cue": "selectively encrypt individual files",
+  "keys": [
+   "EFS"
+  ],
+  "tip": "EFS = Encrypting File System: per File. BitLocker = whole drive.",
+  "why": "EFS encrypts individual files and folders tied to a user account. BitLocker encrypts the whole drive, not selected files."
+ },
+ "145": {
+  "cue": "64-bit processor architecture",
+  "keys": [
+   "both 32-bit and 64-bit",
+   "additional registers"
+  ],
+  "tip": "64-bit CPU runs both kinds of OS and adds extra registers. 4 GB limit is a 32-bit thing.",
+  "why": "A 64-bit CPU can run 32-bit or 64-bit operating systems and has extra registers for 64-bit addresses. The 4 GB RAM limit is a 32-bit limit."
+ },
+ "146": {
+  "cue": "currently working on the following step: POST",
+  "keys": [
+   "CMOS memory"
+  ],
+  "tip": "POST first, then the BIOS reads CMOS settings.",
+  "why": "After POST tests the hardware, the BIOS reads its saved settings, like boot order, from CMOS memory."
+ },
+ "147": {
+  "cue": "simple text file, created in Notepad",
+  "keys": [
+   "PowerShell",
+   "batch script"
+  ],
+  "tip": "Windows built-ins: PowerShell (.ps1) and batch files (.bat). Bash and C++ are not built in.",
+  "why": "Windows has two built-in script runners: PowerShell and the command line batch interpreter. Both can run commands saved in a plain text file."
+ },
+ "148": {
+  "cue": "lawyer need to use the tracert command",
+  "keys": [
+   "near-side router interfaces"
+  ],
+  "tip": "tracert = trace the route, hop by hop.",
+  "why": "tracert lists each router on the path to the destination. ping only tests reachability, and netstat lists connections."
+ },
+ "149": {
+  "cue": "start Windows 10 in safe mode",
+  "keys": [
+   "Shift key",
+   "Restart"
+  ],
+  "tip": "Windows 10 Safe Mode: Shift + Restart. F8 was the old Windows 7 way.",
+  "why": "Holding Shift while you choose Restart opens the Windows 10 advanced startup menu, where you can pick Safe Mode. F8 usually doesn't work on Windows 10."
+ },
+ "150": {
+  "cue": "username and password are automatically populated",
+  "keys": [
+   "does not automatically save"
+  ],
+  "tip": "Each browser keeps its own password store. Edge's saved logins don't show up in Chrome.",
+  "why": "Saved passwords belong to the browser that saved them. Chrome does not save these login details automatically, so it doesn't fill them in the way Edge does."
+ },
+ "151": {
+  "cue": "Windows 10 boot sequence after the boot manager",
+  "keys": [
+   "winload.exe loads",
+   "hal.dll",
+   "winlogon.exe"
+  ],
+  "tip": "After BOOTMGR: Winload, then Kernel and HAL, then Kernel runs, then Winlogon. W-K-K-W.",
+  "why": "After the boot manager, Winload starts and loads the kernel (ntoskrnl.exe) and hal.dll. The kernel then runs, and finally winlogon.exe starts the logon process."
+ },
+ "152": {
+  "cue": "API with its function",
+  "keys": [
+   "OpenGL",
+   "DirectX",
+   "Windows APIs",
+   "Java APIs"
+  ],
+  "tip": "OpenGL = Open, cross-platform graphics. DirectX = Microsoft multimedia. Windows APIs = old apps work. Java APIs = Java coding.",
+  "why": "OpenGL is an open graphics standard for any platform. DirectX is Microsoft's multimedia API set. Windows APIs keep older apps working, and Java APIs support Java development."
+ },
+ "153": {
+  "cue": "tabs of the Windows 10 Task Manager",
+  "keys": [
+   "affinity",
+   "resource utilization",
+   "startup to be disabled",
+   "restart of a particular service"
+  ],
+  "tip": "Details = affinity. Performance = graphs. Startup = disable startup apps. Services = start or stop.",
+  "why": "Details lets you set a process's CPU affinity. Performance shows resource use. Startup turns startup programs on or off. Services starts, stops and restarts services. Users is not used."
+ },
+ "154": {
+  "cue": "drive status indicators in the Disk Management",
+  "keys": [
+   "functioning properly",
+   "being converted into a dynamic",
+   "valid signature",
+   "corrupted or unavailable"
+  ],
+  "tip": "Healthy = volume OK. Online = disk OK. Initializing = going dynamic. Not Initialized = no signature. Offline = broken dynamic.",
+  "why": "Healthy is a working volume and Online is a working disk. Initializing means a basic disk is being made dynamic. Not Initialized means no valid signature. Offline is a corrupted or missing dynamic disk."
+ },
+ "155": {
+  "cue": "wireless security settings",
+  "keys": [
+   "preshared keys",
+   "RADIUS server",
+   "unencrypted"
+  ],
+  "tip": "Personal = PSK password. Enterprise = RADIUS server. Open = nothing. WEP is not used.",
+  "why": "WPA2-Personal uses AES with a shared password (PSK). WPA2-Enterprise sends logins to a RADIUS server. Open has no encryption or login."
+ },
+ "156": {
+  "cue": "languages with their corresponding classification",
+  "keys": [
+   "VBScript",
+   "Python",
+   "C++",
+   "C#"
+  ],
+  "tip": "Scripts: VBScript, Python, JavaScript. Compiled: C++, C#, Java. JavaScript is not Java.",
+  "why": "VBScript, Python and JavaScript are run by an interpreter line by line, so they are scripting languages. C++, C# and Java are compiled before they run."
+ },
+ "157": {
+  "cue": "file system with the respective description",
+  "keys": [
+   "16 exabytes",
+   "larger than 4GB",
+   "2TB",
+   "optical disk"
+  ],
+  "tip": "NTFS = huge and secure. exFAT = flash. FAT32 = 2 TB. CDFS = CDs. NFS = network.",
+  "why": "NTFS supports 16 EB partitions and security. exFAT handles big files on flash drives. FAT32 partitions max at 2 TB. CDFS is for optical discs, and NFS shares files over a network."
+ },
+ "158": {
+  "cue": "loading of bootmgr.exe",
+  "keys": [
+   "POST executed",
+   "CMOS",
+   "MBR",
+   "VBR"
+  ],
+  "tip": "P-C-M-V: POST, CMOS, MBR, VBR, then bootmgr.",
+  "why": "First POST tests the hardware, then the BIOS loads CMOS settings. Next it reads the MBR on the boot disk, which points to the VBR (volume boot record) that loads bootmgr.exe."
+ },
+ "159": {
+  "cue": "Windows 10 version that best meets the described use",
+  "keys": [
+   "parental control",
+   "academic",
+   "small business",
+   "large to mid-size"
+  ],
+  "tip": "Home = family. Education = schools. Pro = small business. Enterprise = big business.",
+  "why": "Home is for personal use and family safety. Education is for schools with volume licensing. Pro adds business tools for small companies, and Enterprise adds advanced security and management for larger ones."
+ }
+}

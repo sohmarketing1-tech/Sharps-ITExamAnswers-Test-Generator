@@ -1,0 +1,608 @@
+{
+ "1": {
+  "cue": "command history",
+  "keys": [
+   "buffer size",
+   "previously entered"
+  ],
+  "tip": "History is a buffer: you set its size and recall what you previously entered. It doesn't save to a log file or reach a previous session.",
+  "why": "The command history keeps your recent commands in a buffer for this session, so you can scroll back with the up arrow and change how many it keeps with terminal history size."
+ },
+ "2": {
+  "cue": "first action … powered on",
+  "keys": [
+   "power-on self-test"
+  ],
+  "tip": "Power On → POST first. POST stands for Power-On Self-Test.",
+  "why": "When a switch powers on, it first runs POST from ROM to test the CPU, memory and flash. Only after that does the boot loader start and load the IOS."
+ },
+ "3": {
+  "cue": "reset a lost password",
+  "keys": [
+   "physical access"
+  ],
+  "tip": "You can't reset a lost password from far away. You need hands on the router.",
+  "why": "Password recovery means interrupting the boot process and changing the config register from the console port. You can only do that if you are standing at the router."
+ },
+ "4": {
+  "cue": "login local",
+  "keys": [
+   "username"
+  ],
+  "tip": "LOGIN LOCAL means check a LOCAL list of usernames, so you must create a username with a secret.",
+  "why": "login local tells the line to check usernames stored on the switch itself. If you never create a username with a secret, nobody can log in over SSH."
+ },
+ "5": {
+  "cue": "auto-MDIX",
+  "keys": [
+   "controllers"
+  ],
+  "tip": "MDIX is about the cable hardware, and hardware details live under show CONTROLLERS.",
+  "why": "show controllers ethernet-controller <port> phy shows low-level details of the physical port, including whether auto-MDIX is on. show interfaces doesn't list it."
+ },
+ "6": {
+  "cue": "late collisions",
+  "keys": [
+   "half-duplex end"
+  ],
+  "tip": "Collisions only happen in half duplex, so that's the end that sees them.",
+  "why": "A full-duplex end sends whenever it wants. The half-duplex end listens before sending, so it sees the other side's frames arrive late and counts them as late collisions."
+ },
+ "7": {
+  "cue": "set the BOOT variable",
+  "keys": [
+   "boot system"
+  ],
+  "tip": "Tell the switch which IOS to boot: boot SYSTEM.",
+  "why": "The boot system command in global config sets the BOOT variable, which tells the switch which IOS file in flash to load next time it starts."
+ },
+ "8": {
+  "cue": "locate and load the IOS",
+  "keys": [
+   "BOOT environment variable"
+  ],
+  "tip": "The BOOT variable is the map that points to the IOS file.",
+  "why": "The boot loader reads the BOOT environment variable to find the IOS file. If the variable isn't set, the switch tries the first runnable image it finds in flash."
+ },
+ "9": {
+  "cue": "adds security",
+  "keys": [
+   "SSH"
+  ],
+  "tip": "SSH = Secure SHell. The S is for Secure.",
+  "why": "SSH encrypts the whole session, including your password. FTP, HTTP and POP send data in plain text that anyone capturing traffic can read."
+ },
+ "10": {
+  "cue": "loopback",
+  "keys": [
+   "logical"
+  ],
+  "tip": "A loopback loops back inside the router. It's logical, not a port you plug into.",
+  "why": "A loopback interface exists only in software inside the router. It is always up once created, has no cable, and you can make many of them."
+ },
+ "11": {
+  "cue": "runt frame",
+  "keys": [
+   "64 bytes"
+  ],
+  "tip": "Under 64 bytes is a runt. 64 is the smallest legal frame.",
+  "why": "Ethernet frames must be at least 64 bytes. Anything smaller is called a runt, usually left over from a collision, and the receiver throws it away."
+ },
+ "12": {
+  "cue": "boot loader runs after …",
+  "keys": [
+   "POST"
+  ],
+  "tip": "Boot order: POST → boot loader → IOS.",
+  "why": "The switch first runs POST to check its hardware. If POST passes, the boot loader runs next and then finds and loads the IOS."
+ },
+ "13": {
+  "cue": "adding a Layer 2 switch",
+  "keys": [
+   "broadcast domain"
+  ],
+  "tip": "Switches pass broadcasts along, so adding one makes the broadcast domain bigger.",
+  "why": "A Layer 2 switch forwards broadcasts out all its ports, so every device you connect to it joins the same broadcast domain. Only routers or VLANs split it."
+ },
+ "14": {
+  "cue": "cut-through",
+  "keys": [
+   "without any error checking"
+  ],
+  "tip": "Cut-through cuts corners: it forwards right away, without error checking.",
+  "why": "Cut-through starts sending a frame as soon as it reads the destination MAC address. It never sees the FCS at the end, so bad frames get forwarded too."
+ },
+ "15": {
+  "cue": "hub vs switch",
+  "keys": [
+   "extends",
+   "divides"
+  ],
+  "tip": "A hub EXTENDS the collision domain. A switch DIVIDES it.",
+  "why": "A hub repeats every signal out every port, so all its devices share one collision domain. A switch gives each port its own collision domain."
+ },
+ "16": {
+  "cue": "forwarding decisions",
+  "keys": [
+   "CAM table"
+  ],
+  "tip": "Switches look up MAC addresses in the CAM table to decide.",
+  "why": "A switch looks up the destination MAC in its CAM (MAC address) table to find the right port. Unknown unicasts and broadcasts are flooded, not only broadcasts."
+ },
+ "17": {
+  "cue": "switch buffers",
+  "keys": [
+   "store frames",
+   "congestion"
+  ],
+  "tip": "Buffers store frames during congestion so they don't get dropped.",
+  "why": "When too many frames arrive for one port at once, the switch holds them in buffer memory and sends them as the port frees up, instead of dropping them."
+ },
+ "18": {
+  "cue": "keep traffic local",
+  "keys": [
+   "high port density"
+  ],
+  "tip": "More ports on one switch means more traffic stays on that switch.",
+  "why": "With many ports on one switch, more devices connect to the same box, so their traffic is switched locally and doesn't have to cross busy links to other switches."
+ },
+ "19": {
+  "cue": "packet handling time",
+  "keys": [
+   "ASIC"
+  ],
+  "tip": "An ASIC is a special chip built just to switch fast.",
+  "why": "ASICs are chips designed for one job: forwarding frames in hardware. That is much faster than having the general CPU handle each frame in software."
+ },
+ "20": {
+  "cue": "frame with an unknown destination",
+  "keys": [
+   "adds the source MAC address",
+   "forwards the frame out all ports"
+  ],
+  "tip": "First LEARN the sender, then FLOOD because the destination is unknown.",
+  "why": "A switch always learns first: it records the source MAC and the port it came in on. The destination isn't in the table yet, so it floods the frame out every other port."
+ },
+ "21": {
+  "cue": "added to the switch table",
+  "keys": [
+   "source MAC address",
+   "incoming port"
+  ],
+  "tip": "Switches learn from the SOURCE: who sent it and which port it came in on.",
+  "why": "A switch learns where devices are by reading the source MAC of each incoming frame and noting the port it came in on. Switches don't look at IP addresses."
+ },
+ "22": {
+  "cue": "error-free before forwarding",
+  "keys": [
+   "store-and-forward"
+  ],
+  "tip": "Store-and-forward stores the whole frame and checks it before sending.",
+  "why": "Store-and-forward receives the whole frame and checks the FCS before forwarding, so damaged frames are dropped. Cut-through and fragment-free don't check the full frame."
+ },
+ "23": {
+  "cue": "how many broadcast domains",
+  "keys": [
+   "8"
+  ],
+  "tip": "Every router interface is its own broadcast domain. Count them: 8.",
+  "why": "Routers don't forward broadcasts, so each router port starts a new broadcast domain: the 4 LANs plus the 4 links between routers make 8."
+ },
+ "24": {
+  "cue": "disable DTP",
+  "keys": [
+   "non-Cisco",
+   "should not be trunking"
+  ],
+  "tip": "DTP is Cisco-only and only for trunks. Turn it off for non-Cisco switches and links that shouldn't trunk.",
+  "why": "DTP is a Cisco protocol, so a non-Cisco switch won't understand it. On ports that should never trunk, turning DTP off stops the link from being turned into a trunk by mistake."
+ },
+ "25": {
+  "cue": "native VLAN",
+  "keys": [
+   "untagged",
+   "common identifier"
+  ],
+  "tip": "Native VLAN = untagged traffic, and both ends of the trunk must agree on it.",
+  "why": "On an 802.1Q trunk, frames from the native VLAN are sent without a tag. Both ends must use the same native VLAN, or untagged traffic ends up in the wrong VLAN."
+ },
+ "26": {
+  "cue": "remove only VLAN 100",
+  "keys": [
+   "(config)# no vlan 100"
+  ],
+  "tip": "Remove one VLAN from global config with no vlan 100. Deleting vlan.dat wipes every VLAN.",
+  "why": "no vlan 100 in global config deletes just that VLAN. Deleting vlan.dat erases all VLANs, and the interface commands only change a single port."
+ },
+ "27": {
+  "cue": "ports missing from the VLAN list",
+  "keys": [
+   "trunk"
+  ],
+  "tip": "show vlan lists access ports only. Trunk ports don't show up there.",
+  "why": "show vlan brief lists only access ports under each VLAN. Ports set as trunks carry many VLANs, so they are left out of that list."
+ },
+ "28": {
+  "cue": "broadcast in VLAN 20",
+  "keys": [
+   "Only devices in VLAN 20"
+  ],
+  "tip": "Each VLAN is its own broadcast domain, so broadcasts stay inside VLAN 20.",
+  "why": "A VLAN is its own broadcast domain. The switch only floods the broadcast to ports in VLAN 20, even across trunks to other switches."
+ },
+ "29": {
+  "cue": "same VLAN can't cross switches",
+  "keys": [
+   "Allow VLAN 20 on the trunk"
+  ],
+  "tip": "Same VLAN on both switches but no traffic? The trunk isn't letting it through.",
+  "why": "Both switches have VLAN 20 ports, but the trunk between them only passes VLANs in its allowed list. VLAN 20 is missing, so add it to the allowed VLANs."
+ },
+ "30": {
+  "cue": "the VLAN is deleted",
+  "keys": [
+   "stop communicating"
+  ],
+  "tip": "Delete the VLAN and its ports go silent. They do NOT fall back to VLAN 1. (Compare: taking ONE port out of its VLAN sends it back to VLAN 1.)",
+  "why": "When you delete a VLAN, its ports stay assigned to that missing VLAN and become inactive. They only work again once you recreate the VLAN or move them to another one."
+ },
+ "31": {
+  "cue": "802.1Q tag fields",
+  "keys": [
+   "tag protocol ID",
+   "a VLAN number",
+   "level or service",
+   "Token Ring"
+  ],
+  "tip": "Type = TPID, VLAN ID = the VLAN number, Priority = level of service, CFI = Token Ring.",
+  "why": "The 802.1Q tag has a Type field (TPID 0x8100), 3 priority bits for QoS, a CFI bit for Token Ring, and a 12-bit VLAN ID that says which VLAN the frame belongs to."
+ },
+ "32": {
+  "cue": "Cisco best practice for G0/1",
+  "keys": [
+   "trunk"
+  ],
+  "tip": "A link between switches should be set to trunk on purpose, not left on auto.",
+  "why": "Cisco recommends setting links between switches to trunk mode by hand instead of relying on DTP auto negotiation, so the link always trunks the way you expect."
+ },
+ "33": {
+  "cue": "DTP modes",
+  "keys": [
+   "manual configuration",
+   "Actively attempts",
+   "Permanent",
+   "Passively waits"
+  ],
+  "tip": "DesiRable = Really wants a trunk (active). Auto = waits. Trunk = always. Nonegotiate = you set it by hand.",
+  "why": "Dynamic desirable asks the other side to trunk, dynamic auto only trunks if asked, trunk mode is always a trunk, and nonegotiate turns DTP off so you set the mode yourself."
+ },
+ "34": {
+  "cue": "no switchport access vlan 30",
+  "keys": [
+   "returned to VLAN 1"
+  ],
+  "tip": "Take a port out of its VLAN and it goes back to VLAN 1, the default. (Compare: deleting the VLAN makes ports stop talking.)",
+  "why": "no switchport access vlan 30 just removes the port's VLAN setting, so it goes back to the default, VLAN 1. VLAN 30 itself still exists."
+ },
+ "35": {
+  "cue": "voice VLAN and access VLAN for one port",
+  "keys": [
+   "Fa0/1 switchport"
+  ],
+  "tip": "Port settings for one port: show interfaces <port> SWITCHPORT.",
+  "why": "show interfaces Fa0/1 switchport shows that port's mode, trunk encapsulation, access VLAN and voice VLAN. show vlan brief only lists ports per VLAN."
+ },
+ "36": {
+  "cue": "voice and data on Fa0/20",
+  "keys": [
+   "voice VLAN to the switch port is incorrect"
+  ],
+  "tip": "A voice VLAN needs switchport voice vlan. The command in the picture is the wrong one.",
+  "why": "A voice VLAN is assigned with switchport voice vlan <id> on the access port. The exhibit uses a different command, so the phone traffic isn't put in the voice VLAN."
+ },
+ "37": {
+  "cue": "steps for a voice VLAN",
+  "keys": [
+   "Add a voice VLAN",
+   "access mode",
+   "Assign the voice VLAN",
+   "trusted"
+  ],
+  "tip": "Create it, set the port to access, assign the voice VLAN, trust CoS. No trunk, PortFast or subinterfaces.",
+  "why": "You create the voice VLAN, make the port an access port, add switchport voice vlan, and use mls qos trust cos so phone traffic keeps its priority. No trunk is needed."
+ },
+ "38": {
+  "cue": "show interfaces trunk",
+  "keys": [
+   "G0/2 is not configured as a trunk"
+  ],
+  "tip": "A port missing from show interfaces trunk isn't a trunk.",
+  "why": "show interfaces trunk lists every port that is trunking. G0/2 is not in the list, so it isn't a trunk and can't carry traffic for more than one VLAN."
+ },
+ "39": {
+  "cue": "error on router CiscoVille",
+  "keys": [
+   "encapsulation dot1Q 20"
+  ],
+  "tip": "A subinterface needs encapsulation dot1Q before it accepts an IP address.",
+  "why": "A router subinterface must be told its VLAN with encapsulation dot1Q 20 before IOS lets you give it an IP address. Without it, the ip address command fails."
+ },
+ "40": {
+  "cue": "command on the switch for CiscoVille",
+  "keys": [
+   "switchport mode trunk"
+  ],
+  "tip": "Router-on-a-stick needs a trunk on the switch side: switchport mode trunk.",
+  "why": "In router-on-a-stick, one router link carries all the VLANs with 802.1Q tags. The switch port facing the router must be a trunk to pass those tagged frames."
+ },
+ "41": {
+  "cue": "router-on-a-stick",
+  "keys": [
+   "trunk"
+  ],
+  "tip": "One router link carrying every VLAN means a trunk.",
+  "why": "Router-on-a-stick uses one router interface split into subinterfaces. The switch port to the router must be a trunk so frames from both VLANs can travel over that one link."
+ },
+ "42": {
+  "cue": "downsides of router-on-a-stick",
+  "keys": [
+   "dedicated router",
+   "traffic flow speed"
+  ],
+  "tip": "It needs its own router, and every VLAN shares one link, which slows traffic.",
+  "why": "Router-on-a-stick needs an extra router, and all VLAN traffic shares one physical link, which can become a bottleneck. A multilayer switch routes inside itself."
+ },
+ "43": {
+  "cue": "errors on Gi1/1",
+  "keys": [
+   "default VLAN",
+   "trunk mode"
+  ],
+  "tip": "The output shows access VLAN 1 (default) and mode trunk. Both are wrong for this port.",
+  "why": "This is legacy inter-VLAN routing: each router port links to one switch port per VLAN. Gi1/1 goes to the VLAN 20 router port, so it should be an access port in VLAN 20, not a trunk in VLAN 1."
+ },
+ "44": {
+  "cue": "PC2 can't reach PC1",
+  "keys": [
+   "wrong VLAN"
+  ],
+  "tip": "Check that the dot1Q number matches the VLAN. Here it doesn't.",
+  "why": "Each subinterface's encapsulation dot1Q number must match the VLAN its users are in. Here the number is wrong, so tagged frames from PC2's VLAN never reach that subinterface."
+ },
+ "45": {
+  "cue": "port type on the switch for CiscoVille",
+  "keys": [
+   "trunk port"
+  ],
+  "tip": "Router-on-a-stick always connects to a trunk port.",
+  "why": "The router sends tagged frames for many VLANs on one link. Only a trunk port on the switch understands those tags and passes all the VLANs."
+ },
+ "46": {
+  "cue": "hosts can't talk, switch is fine",
+  "keys": [
+   "incorrectly matched"
+  ],
+  "tip": "Each subinterface's IP has to match its VLAN. Here they're mixed up.",
+  "why": "Each subinterface's IP must be in the subnet used by the VLAN set in its dot1Q command. If the IPs are swapped, hosts' gateways sit in the wrong VLAN and routing fails."
+ },
+ "47": {
+  "cue": "VLAN 30 trouble",
+  "keys": [
+   "incorrect IP address"
+  ],
+  "tip": "Trouble reaching VLAN 30? Look at .30's IP address. It's wrong.",
+  "why": "The subinterface for VLAN 30 has an IP address that isn't in the 172.16.30.0/24 network. PCs in VLAN 30 can't reach their gateway, so traffic between VLANs fails."
+ },
+ "48": {
+  "cue": "routed port",
+  "keys": [
+   "not assigned to a VLAN"
+  ],
+  "tip": "A routed port acts like a router port, so it has no VLAN.",
+  "why": "A routed port is created with no switchport. It acts like a router interface with its own IP address and is not part of any VLAN."
+ },
+ "49": {
+  "cue": "how many subinterfaces",
+  "keys": [
+   "4"
+  ],
+  "tip": "One subinterface per VLAN. Count the VLANs: 4.",
+  "why": "Router-on-a-stick uses one subinterface for each VLAN that needs routing. The exhibit shows 4 VLANs, so you need 4 subinterfaces."
+ },
+ "50": {
+  "cue": "mdix auto",
+  "keys": [
+   "straight-through or a crossover"
+  ],
+  "tip": "MDIX auto lets either cable type work.",
+  "why": "mdix auto lets the port detect the cable type and swap its send and receive pairs if needed, so either a straight-through or a crossover cable works."
+ },
+ "51": {
+  "cue": "ip address … 255.255.255.0",
+  "keys": [
+   "IPv4"
+  ],
+  "tip": "Dotted numbers with a mask = IPv4.",
+  "why": "An address like 172.18.33.88 with a dotted mask is IPv4. On a 2960 you put it on the VLAN interface (SVI), which is a virtual interface."
+ },
+ "52": {
+  "cue": "configure terminal",
+  "keys": [
+   "global configuration"
+  ],
+  "tip": "configure terminal takes you to global config: Switch(config)#.",
+  "why": "configure terminal moves you from privileged EXEC mode (#) into global configuration mode, where you can change switch-wide settings."
+ },
+ "54": {
+  "cue": "shutdown",
+  "keys": [
+   "disables"
+  ],
+  "tip": "shutdown turns the interface OFF.",
+  "why": "The shutdown command administratively turns an interface off, whether it's a physical port or a virtual one like an SVI. no shutdown turns it back on."
+ },
+ "56": {
+  "cue": "ipv6 address",
+  "keys": [
+   "applies an IPv6 address"
+  ],
+  "tip": "ipv6 address APPLIES an IPv6 address. Trap: 'permits an IPv6 address' is wrong.",
+  "why": "The ipv6 address command puts that IPv6 address on the interface, here the switch's virtual interface (SVI). It doesn't just allow IPv6, it actually sets the address."
+ },
+ "57": {
+  "cue": "exit from interface config",
+  "keys": [
+   "returns to global configuration"
+  ],
+  "tip": "exit goes back one level: interface → global config.",
+  "why": "exit moves you back one mode. From interface config, that's global config. To jump straight to privileged mode you would use end."
+ },
+ "58": {
+  "cue": "enable",
+  "keys": [
+   "privileged"
+  ],
+  "tip": "enable turns > into # (privileged mode).",
+  "why": "enable moves you from user EXEC mode (>) to privileged EXEC mode (#), where you can run show and configuration commands."
+ },
+ "59": {
+  "cue": "duplex full",
+  "keys": [
+   "both directions"
+  ],
+  "tip": "Full duplex = both directions at the same time.",
+  "why": "Full duplex lets the port send and receive at the same time, so there are no collisions. Half duplex only lets one direction at a time."
+ },
+ "60": {
+  "cue": "should NOT carry voice or management",
+  "keys": [
+   "data"
+  ],
+  "tip": "Data VLAN carries user data only.",
+  "why": "A data VLAN is for normal user traffic. Voice traffic and switch management traffic should go in their own VLANs."
+ },
+ "61": {
+  "cue": "IP Phone quality",
+  "keys": [
+   "voice"
+  ],
+  "tip": "IP phone → voice VLAN.",
+  "why": "A voice VLAN separates phone traffic and gives it priority (QoS), so calls have enough bandwidth and stay clear."
+ },
+ "62": {
+  "cue": "initially the management VLAN",
+  "keys": [
+   "default"
+  ],
+  "tip": "Out of the box, VLAN 1 (the default VLAN) is the management VLAN.",
+  "why": "On a new Cisco switch every port is in VLAN 1, the default VLAN, and it is also the management VLAN until you change it."
+ },
+ "63": {
+  "cue": "delay under 150 ms",
+  "keys": [
+   "voice"
+  ],
+  "tip": "Phone calls need low delay → voice VLAN.",
+  "why": "Voice needs low delay (under 150 ms) and little jitter to sound clear, so it goes into a voice VLAN that gets priority."
+ },
+ "64": {
+  "cue": "separate into groups of users",
+  "keys": [
+   "data"
+  ],
+  "tip": "Groups of users and their devices → data VLAN.",
+  "why": "Data VLANs split users into groups, such as staff or students, so each group's traffic stays separate. That's their main job."
+ },
+ "65": {
+  "cue": "SSH, Telnet, HTTPS, SNMP",
+  "keys": [
+   "management"
+  ],
+  "tip": "Those are all ways to manage a switch → management VLAN.",
+  "why": "SSH, Telnet, HTTPS, HTTP and SNMP are used to reach and manage the switch, so that traffic belongs in the management VLAN."
+ },
+ "66": {
+  "cue": "untagged traffic",
+  "keys": [
+   "native"
+  ],
+  "tip": "Untagged = native.",
+  "why": "On an 802.1Q trunk, frames in the native VLAN are sent without a tag. Every other VLAN's frames get a tag."
+ },
+ "68": {
+  "cue": "administratively down",
+  "keys": [
+   "no shutdown"
+  ],
+  "tip": "Administratively down means someone shut it down. Undo it with no shutdown.",
+  "why": "Administratively down means the interface is off because of the shutdown setting, which is the default for router interfaces. no shutdown turns it on."
+ },
+ "69": {
+  "cue": "allow SSH, block Telnet",
+  "keys": [
+   "transport input"
+  ],
+  "tip": "Which protocols can log in is set by transport input (transport input ssh).",
+  "why": "transport input on the vty lines controls which protocols may log in. Changing it to transport input ssh blocks Telnet and keeps SSH."
+ },
+ "70": {
+  "cue": "congestion from collisions",
+  "keys": [
+   "high port density"
+  ],
+  "tip": "Collisions → give devices their own switch ports.",
+  "why": "Collisions happen when devices share a medium. A switch with many ports gives each device its own port and collision domain, so collisions stop."
+ },
+ "71": {
+  "cue": "SVI inter-VLAN routing",
+  "keys": [
+   "faster",
+   "no need for a connection to a router"
+  ],
+  "tip": "SVIs route inside the switch: faster, and no router needed.",
+  "why": "With SVIs, a multilayer switch routes between VLANs inside itself in hardware. That's faster than sending traffic to an outside router, and no router link is needed."
+ },
+ "72": {
+  "cue": "the ? after encapsulation dot1Q",
+  "keys": [
+   "VLAN number"
+  ],
+  "tip": "encapsulation dot1Q <VLAN number>.",
+  "why": "In encapsulation dot1Q <number>, the number tells the subinterface which VLAN's tagged frames belong to it."
+ },
+ "73": {
+  "cue": "untagged across a trunk",
+  "keys": [
+   "native"
+  ],
+  "tip": "Untagged = native.",
+  "why": "The native VLAN is the one whose frames cross an 802.1Q trunk with no tag. All other VLANs are tagged."
+ },
+ "74": {
+  "cue": "show vlan brief",
+  "keys": [
+   "all switch ports"
+  ],
+  "tip": "show vlan brief lists every VLAN and which switch ports are in it.",
+  "why": "show vlan brief lists each VLAN with its name, status and the access ports in it. It doesn't show MAC addresses or trunk settings."
+ },
+ "75": {
+  "cue": "DHCP messages",
+  "keys": [
+   "find a DHCP server",
+   "responding",
+   "accepting",
+   "confirming"
+  ],
+  "tip": "DORA: Discover (find), Offer (respond), Request (accept), Ack (confirm).",
+  "why": "DHCP follows DORA: the client sends Discover to find a server, the server sends an Offer, the client sends Request to accept it, and the server confirms with Ack."
+ },
+ "76": {
+  "cue": "SSH, Telnet, HTTPS, SNMP",
+  "keys": [
+   "management"
+  ],
+  "tip": "Those are all ways to manage a switch → management VLAN.",
+  "why": "SSH, Telnet, HTTPS, HTTP and SNMP are used to reach and manage the switch, so that traffic belongs in the management VLAN."
+ }
+}

@@ -828,3 +828,6 @@ mark.hint-mark { background: #FDE68A; color: inherit; border-radius: 4px; paddin
 .seo-n { color: var(--muted); font-size: 13px; }
 .seo-btn { align-self: flex-start; display: inline-block; padding: 10px 16px; border-radius: 12px; background: var(--primary); color: #fff !important; font-weight: 600; text-decoration: none; }
 .seo-tip { color: var(--muted); }
+.hint-why { margin: 0; padding-top: 8px; border-top: 1px solid rgba(194, 65, 12, 0.2); color: var(--ink); font-size: 15px; line-height: 1.45; }
+.ans-hint { margin: 10px 0 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+.ans-hint strong { color: var(--ink); }

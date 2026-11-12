@@ -1,0 +1,629 @@
+{
+ "1": {
+  "cue": "secretly collecting data about websites",
+  "keys": [
+   "spyware"
+  ],
+  "tip": "SPY-ware SPIES on you: it quietly watches and reports what you do.",
+  "why": "Spyware hides on a computer and collects information, like the sites you visit, then sends it to someone else. A DoS attack floods a service instead."
+ },
+ "2": {
+  "cue": "secure access by suppliers, customers",
+  "keys": [
+   "extranet"
+  ],
+  "tip": "EXtranet = EXternal partners. INtranet = INside staff only.",
+  "why": "An extranet lets outside partners, like suppliers and customers, safely reach part of a company's network. An intranet is only for the company's own people."
+ },
+ "3": {
+  "cue": "personal laptops and smart phones",
+  "keys": [
+   "bring your own device"
+  ],
+  "tip": "BYOD: Bring Your Own Device. Personal phones and laptops on the work network.",
+  "why": "When a company lets you use your own laptop or phone to reach its network resources, that trend is called bring your own device (BYOD)."
+ },
+ "4": {
+  "cue": "What is an ISP?",
+  "keys": [
+   "connect to the Internet"
+  ],
+  "tip": "ISP = Internet Service Provider: the company that PROVIDES your Internet SERVICE.",
+  "why": "An Internet Service Provider is a company that links homes and businesses to the Internet, like a cable, DSL or phone company. It's not a standard, protocol or device."
+ },
+ "5": {
+  "cue": "confidential pricing information from internal servers",
+  "keys": [
+   "an intranet"
+  ],
+  "tip": "INtranet = INside the company. The branch office worker is still an insider.",
+  "why": "An intranet is a company's private network for its own staff. The branch employee works for the company, so they use the intranet, not an extranet meant for outsiders."
+ },
+ "6": {
+  "cue": "powerline networking technology",
+  "keys": [
+   "adapter",
+   "electrical outlet"
+  ],
+  "tip": "POWERline = the POWER outlet in the wall plus a small adapter.",
+  "why": "Powerline networking sends network data over the home's existing electrical wiring. You plug an adapter into a wall outlet and your device joins the LAN, no new cables needed."
+ },
+ "7": {
+  "cue": "patients can see the medical records",
+  "keys": [
+   "security"
+  ],
+  "tip": "Seeing data you shouldn't = a SECURITY failure (privacy and confidentiality).",
+  "why": "Security means keeping data private and only letting the right people see it. Patients seeing other patients' records breaks confidentiality, so security was violated."
+ },
+ "8": {
+  "cue": "criteria to select a network medium",
+  "keys": [
+   "distance",
+   "environment"
+  ],
+  "tip": "Pick media by D and E: Distance and Environment.",
+  "why": "Each medium can only carry a signal so far, and some cope better with places like noisy factories or outdoors. So distance and environment drive the choice, not device cost."
+ },
+ "9": {
+  "cue": "traffic requires QoS",
+  "keys": [
+   "video conferencing"
+  ],
+  "tip": "Live voice and video can't wait: QoS gives them the fast lane.",
+  "why": "Quality of Service (QoS) gives priority to traffic that breaks up if it's delayed. Video conferencing is real-time, while email and web shopping can tolerate small delays."
+ },
+ "10": {
+  "cue": "minimum security requirements",
+  "keys": [
+   "firewall",
+   "antivirus"
+  ],
+  "tip": "Small office basics: F and A, Firewall and Antivirus.",
+  "why": "A firewall blocks unwanted traffic and antivirus protects each computer from malware. These are the minimum. IDS and IPS devices are extras for bigger networks."
+ },
+ "11": {
+  "cue": "modes and interfaces that can be protected with passwords",
+  "keys": [
+   "VTY",
+   "console",
+   "privileged EXEC"
+  ],
+  "tip": "Lock the 3 doors: Console (cable in), VTY (remote in), and enable (privileged EXEC).",
+  "why": "You can set a password on the console line, on the VTY lines for remote access, and with enable secret for privileged EXEC mode. Ethernet ports don't take login passwords."
+ },
+ "12": {
+  "cue": "remote management of a Layer 2 switch",
+  "keys": [
+   "switch virtual interface"
+  ],
+  "tip": "SVI = the switch's Virtual door for remote management.",
+  "why": "A Layer 2 switch needs an IP address to be managed over the network. You put that address on the switch virtual interface (SVI), usually interface VLAN 1."
+ },
+ "13": {
+  "cue": "pressing the Tab key",
+  "keys": [
+   "completes the remainder"
+  ],
+  "tip": "TAB = Type A Bit: you type a bit, Tab finishes the word.",
+  "why": "When you type part of a command like conf and press Tab, IOS fills in the rest of the word, like configure. It only works if the letters match a single command."
+ },
+ "14": {
+  "cue": "discard the changes and work with the file in NVRAM",
+  "keys": [
+   "reload"
+  ],
+  "tip": "Unsaved changes live in RAM. Reload wipes RAM and loads NVRAM's startup-config.",
+  "why": "The changes are only in the running config in RAM. Reloading without saving restarts the device, which loads the saved startup config from NVRAM. Copying startup to running would merge, not replace."
+ },
+ "15": {
+  "cue": "Ctrl-Shift-6",
+  "keys": [
+   "interrupt"
+  ],
+  "tip": "Ctrl-Shift-6 = the IOS 'stop!' key for ping and traceroute.",
+  "why": "Ctrl-Shift-6 is the IOS break sequence. It interrupts a running ping or traceroute so you get your prompt back."
+ },
+ "16": {
+  "cue": "console connection to access user EXEC mode",
+  "keys": [
+   "lineconin"
+  ],
+  "tip": "CONsole = linecONin. The VTY password (linevtyin) is for remote logins.",
+  "why": "When you connect by console cable, the switch asks for the password set under line console 0. In the exhibit that's lineconin. letmein and secretin are for privileged EXEC."
+ },
+ "17": {
+  "cue": "technician configures a switch with these commands",
+  "keys": [
+   "SVI"
+  ],
+  "tip": "interface vlan 1 + an IP address = setting up the SVI.",
+  "why": "The commands go into interface vlan 1 and give it an IP address and no shutdown. That's the switch virtual interface (SVI), used to manage the switch remotely."
+ },
+ "18": {
+  "cue": "return to the previous level",
+  "keys": [
+   "exit"
+  ],
+  "tip": "EXIT = one step back. END or Ctrl-Z = jump all the way to privileged EXEC.",
+  "why": "The exit command moves you up one level, like from interface config to global config. end and Ctrl-Z skip straight back to privileged EXEC mode."
+ },
+ "19": {
+  "cue": "characteristics of RAM",
+  "keys": [
+   "actively running",
+   "lost during a power cycle"
+  ],
+  "tip": "RAM = Running And Momentary: holds the running config and forgets it when power goes off.",
+  "why": "RAM is volatile working memory. It holds the running configuration, and everything in it disappears when the device loses power. NVRAM and flash keep files."
+ },
+ "20": {
+  "cue": "host names follow the guidelines",
+  "keys": [
+   "RM-3-Switch-2A4",
+   "SwBranch799"
+  ],
+  "tip": "Good names: start with a letter, no spaces, no symbols except dash and underscore.",
+  "why": "IOS host names should start with a letter, have no spaces and only use letters, digits, dashes or underscores. Branch2! has a symbol, Floor(15) has brackets and HO Floor 17 has spaces."
+ },
+ "21": {
+  "cue": "How is SSH different from Telnet?",
+  "keys": [
+   "encrypting",
+   "plaintext"
+  ],
+  "tip": "SSH = Secure SHell (encrypted). Telnet = Tells everyone (plain text).",
+  "why": "Both give remote command-line access over the network. SSH encrypts the session and requires user login, while Telnet sends everything, even passwords, in readable plain text."
+ },
+ "22": {
+  "cue": "three characteristics of an SVI",
+  "keys": [
+   "not associated with any physical interface",
+   "remotely manage",
+   "VLAN1 by default"
+  ],
+  "tip": "SVI: Virtual (no physical port), for remote management, starts on VLAN 1.",
+  "why": "An SVI is a virtual interface, not tied to any port. You give it an IP address so you can manage the switch remotely, and by default it's interface VLAN 1."
+ },
+ "23": {
+  "cue": "verify the condition of the switch interfaces",
+  "keys": [
+   "show ip interface brief"
+  ],
+  "tip": "'Brief' = a quick table of every interface: IP, status and protocol.",
+  "why": "show ip interface brief lists each interface with its IP address and whether it's up or down. ipconfig is a PC command, and ping and traceroute test reachability."
+ },
+ "24": {
+  "cue": "running-config",
+  "keys": [
+   "a keyword"
+  ],
+  "tip": "show = command, running-config = keyword (a fixed word IOS already knows).",
+  "why": "In IOS syntax, a keyword is a fixed word that belongs to the command, like running-config. A variable is a value you make up, like an IP address or a name."
+ },
+ "25": {
+  "cue": "copy running-config startup-config",
+  "keys": [
+   "loaded if the switch is restarted"
+  ],
+  "tip": "Copy running TO startup = save it so it STARTS UP that way next time.",
+  "why": "This command saves the current config into NVRAM as the startup config. When the switch reboots, it loads that saved config. It's not stored in flash or replacing the IOS."
+ },
+ "26": {
+  "cue": "prevent all unencrypted passwords from displaying",
+  "keys": [
+   "service password-encryption"
+  ],
+  "tip": "service password-encryption = SCRAMBLE every plain password in the config.",
+  "why": "This global command encrypts all the plain-text passwords, like the console and VTY ones, so they aren't readable in the config. enable secret only protects one password."
+ },
+ "27": {
+  "cue": "service password-encryption",
+  "keys": [
+   "prevents someone from viewing"
+  ],
+  "tip": "Shoulder-surfer shield: the config passwords show up scrambled.",
+  "why": "The command encrypts passwords in the running config, so anyone viewing it sees scrambled text, not the real passwords. It doesn't encrypt traffic on links."
+ },
+ "28": {
+  "cue": "too much data is being sent too quickly",
+  "keys": [
+   "flow control"
+  ],
+  "tip": "FLOW control = controls how fast the data FLOWS.",
+  "why": "Flow control manages the rate of sending, so a fast sender doesn't overwhelm a slower receiver and cause dropped packets."
+ },
+ "29": {
+  "cue": "TCP/IP encapsulation process when a PC is sending",
+  "keys": [
+   "Segments",
+   "transport layer to the internet layer"
+  ],
+  "tip": "Going down: data, Segments (transport), Packets (internet), Frames (network access).",
+  "why": "When you send, data moves down the stack. The transport layer makes segments and hands them down to the internet layer, which puts them in packets."
+ },
+ "30": {
+  "cue": "application layer protocols",
+  "keys": [
+   "DHCP",
+   "DNS",
+   "FTP"
+  ],
+  "tip": "Apps you use: DHCP gives addresses, DNS finds names, FTP moves files.",
+  "why": "DHCP, DNS and FTP all run at the application layer of TCP/IP. ARP links IP to MAC addresses, PPP is a data link protocol and NAT is a router translation feature."
+ },
+ "31": {
+  "cue": "transport layer PDU",
+  "keys": [
+   "segment"
+  ],
+  "tip": "Do Some People Fear Birthdays: Data, Segment, Packet, Frame, Bits. Transport = Segment.",
+  "why": "The transport layer splits data into pieces and adds a header with port numbers. That PDU is called a segment. Packets are network layer, frames are data link."
+ },
+ "32": {
+  "cue": "identifies the network and host portion",
+  "keys": [
+   "subnet mask"
+  ],
+  "tip": "The subnet MASK MASKS off which part is network and which part is host.",
+  "why": "The subnet mask marks which bits of an IPv4 address are the network part and which are the host part. The default gateway is just the router's address."
+ },
+ "33": {
+  "cue": "placing one PDU inside of another PDU",
+  "keys": [
+   "encapsulation"
+  ],
+  "tip": "EN-CAPSULE: put it IN a capsule, like a letter inside an envelope.",
+  "why": "Encapsulation is when each layer wraps the data from the layer above with its own header, like putting a segment inside a packet, then the packet inside a frame."
+ },
+ "34": {
+  "cue": "routing messages through an internetwork",
+  "keys": [
+   "internet"
+  ],
+  "tip": "TCP/IP INTERNET layer = OSI network layer: IP and routing.",
+  "why": "In the TCP/IP model, the internet layer handles IP addressing and picks paths between networks. The transport layer is end-to-end, and session is an OSI layer."
+ },
+ "35": {
+  "cue": "bits are received from the network medium by the NIC",
+  "keys": [
+   "frame"
+  ],
+  "tip": "NIC = layer 2. Bits off the wire are built back into a FRAME.",
+  "why": "The NIC works at the data link layer. It takes the bits from the cable or radio and rebuilds them into a frame before passing the data up."
+ },
+ "36": {
+  "cue": "ServerB is attempting to contact HostA",
+  "keys": [
+   "destination MAC address of RouterB",
+   "destination IP address of HostA"
+  ],
+  "tip": "IP = final stop (HostA). MAC = next hop (RouterB, the gateway).",
+  "why": "HostA is on another network, so the IP packet is addressed to HostA all the way. The frame only travels to the next hop, so it uses the MAC of ServerB's gateway, RouterB."
+ },
+ "37": {
+  "cue": "server takes too long to respond",
+  "keys": [
+   "response timeout"
+  ],
+  "tip": "Too long = TIME OUT. Like giving up on a friend who never texts back.",
+  "why": "A response timeout sets how long a host waits for a reply. If no answer comes in time, the host can resend or report an error."
+ },
+ "38": {
+  "cue": "order of the protocol stack that is used to decode",
+  "keys": [
+   "Ethernet, IP, TCP, HTTP"
+  ],
+  "tip": "Receiving goes UP the stack: Ethernet first, HTTP last.",
+  "why": "The receiving client starts at the bottom: the Ethernet frame, then the IP packet, then the TCP segment, and finally the HTTP data for the browser."
+ },
+ "39": {
+  "cue": "same functionality as a single layer",
+  "keys": [
+   "data link",
+   "physical"
+  ],
+  "tip": "OSI layers 1 + 2 (physical, data link) = TCP/IP network access layer.",
+  "why": "The TCP/IP network access layer covers what the OSI physical and data link layers do together: the cables and signals plus the frames and MAC addresses."
+ },
+ "40": {
+  "cue": "logical address be added",
+  "keys": [
+   "network layer"
+  ],
+  "tip": "Logical = IP = Layer 3 (network). Physical = MAC = Layer 2.",
+  "why": "A logical address is an IP address. It's added at the network layer (Layer 3) when the segment is put inside a packet."
+ },
+ "41": {
+  "cue": "characteristic of multicast messages",
+  "keys": [
+   "select group"
+  ],
+  "tip": "UNI = one, MULTI = a group, BROAD = everyone.",
+  "why": "A multicast goes to a chosen group of hosts that joined it. Broadcast goes to all hosts, and unicast goes to one single host."
+ },
+ "42": {
+  "cue": "correct about network protocols",
+  "keys": [
+   "how messages are exchanged"
+  ],
+  "tip": "Protocols = the rules of the conversation between sender and receiver.",
+  "why": "Protocols are agreed rules for message format, timing and order, so the source and destination understand each other. They work at every layer, not just one."
+ },
+ "43": {
+  "cue": "advantage of network devices using open standard protocols",
+  "keys": [
+   "different operating systems"
+  ],
+  "tip": "OPEN standards = OPEN to everyone: any vendor, any OS can talk.",
+  "why": "Open standards are public rules any vendor can follow. So a Windows client and a Linux server, or devices from different makers, can still exchange data."
+ },
+ "44": {
+  "cue": "determining the path that messages should take",
+  "keys": [
+   "a router"
+  ],
+  "tip": "ROUTEr picks the ROUTE.",
+  "why": "A router looks at the destination IP address and its routing table to choose the best path through the internetwork. A firewall filters traffic, it doesn't choose paths."
+ },
+ "45": {
+  "cue": "Open the PT Activity",
+  "keys": [
+   "192.168.5.10"
+  ],
+  "tip": "In the lab, show ip interface brief on the switch shows 5.10 on VLAN 1.",
+  "why": "In the Packet Tracer activity, the address you find on the switch's management SVI is 192.168.5.10. 192.168.5.0 is a network address, not a host address."
+ },
+ "46": {
+  "cue": "Layer 2 switch need an IP address",
+  "keys": [
+   "managed remotely"
+  ],
+  "tip": "A switch moves frames without an IP. The IP is only so YOU can reach it remotely.",
+  "why": "A Layer 2 switch forwards frames using MAC addresses, so it doesn't need an IP to work. You give it one, on the SVI, so you can manage it by Telnet or SSH."
+ },
+ "47": {
+  "cue": "receives the error message",
+  "keys": [
+   "privileged EXEC mode"
+  ],
+  "tip": "Ladder: > user EXEC, enable, # privileged EXEC, then conf t.",
+  "why": "The Switch> prompt means user EXEC mode, where configure terminal isn't allowed. You must type enable to get to privileged EXEC (#) first."
+ },
+ "48": {
+  "cue": "different organization",
+  "keys": [
+   "extranet"
+  ],
+  "tip": "EXtranet = EXternal people from another organization.",
+  "why": "An extranet is a company's network area shared securely with outsiders, like partners or suppliers who work for another organization."
+ },
+ "49": {
+  "cue": "storing personal files on servers over the internet",
+  "keys": [
+   "cloud"
+  ],
+  "tip": "Your files float in the CLOUD: reach them anywhere, any device.",
+  "why": "Cloud storage keeps your files on Internet servers run by a provider, so you can open them from any device, at any time, from anywhere."
+ },
+ "50": {
+  "cue": "both client and server",
+  "keys": [
+   "peer-to-peer"
+  ],
+  "tip": "PEERs are equals: each one can ask and serve.",
+  "why": "In a peer-to-peer network there's no dedicated server. Each computer can share its resources (server) and use others' resources (client)."
+ },
+ "51": {
+  "cue": "people who work from home or from a small remote office",
+  "keys": [
+   "SOHO"
+  ],
+  "tip": "SOHO = Small Office / Home Office.",
+  "why": "A SOHO network is a small network for a home or small branch office, often just a router, a few devices and an Internet connection."
+ },
+ "52": {
+  "cue": "server software runs on dedicated computers",
+  "keys": [
+   "client/server"
+  ],
+  "tip": "Dedicated server serves, clients ask: client/server.",
+  "why": "In the client/server model, special server software runs on dedicated computers, and client computers send requests to them for things like web pages or email."
+ },
+ "53": {
+  "cue": "electrical outlet",
+  "keys": [
+   "powerline"
+  ],
+  "tip": "POWERline = network through the POWER outlet.",
+  "why": "Powerline networking uses the home's electrical wiring to carry data. You plug an adapter into an outlet to connect a device to the LAN."
+ },
+ "54": {
+  "cue": "give priority to voice and video",
+  "keys": [
+   "quality of service"
+  ],
+  "tip": "QoS = the VIP lane for voice and video.",
+  "why": "Quality of Service (QoS) sorts traffic and sends time-sensitive data like voice and video first, so calls don't break up when the network is busy."
+ },
+ "55": {
+  "cue": "private collection of LANs and WANs",
+  "keys": [
+   "intranet"
+  ],
+  "tip": "INtranet = private, INside the organization.",
+  "why": "An intranet is an organization's own private network, made of its LANs and WANs, meant only for its members and employees."
+ },
+ "56": {
+  "cue": "use personal devices",
+  "keys": [
+   "BYOD"
+  ],
+  "tip": "BYOD: Bring Your Own Device.",
+  "why": "BYOD lets you use your own laptop, tablet or phone on a business or school network instead of only company-owned devices."
+ },
+ "57": {
+  "cue": "source IP address added",
+  "keys": [
+   "network layer"
+  ],
+  "tip": "IP address = Layer 3 = network layer.",
+  "why": "IP addresses, both source and destination, are added in the packet header at the network layer (Layer 3)."
+ },
+ "58": {
+  "cue": "destination port number added",
+  "keys": [
+   "transport layer"
+  ],
+  "tip": "Ports = Layer 4 = transport (TCP/UDP).",
+  "why": "Port numbers tell which app gets the data. They go in the TCP or UDP header at the transport layer (Layer 4)."
+ },
+ "59": {
+  "cue": "data added to a PDU",
+  "keys": [
+   "application layer"
+  ],
+  "tip": "Data is born at the top: the application layer.",
+  "why": "The data itself starts at the application layer, made by your app, like a browser. Lower layers then add their headers around it."
+ },
+ "61": {
+  "cue": "participate directly in network communication",
+  "keys": [
+   "Host"
+  ],
+  "tip": "Hosts are the end devices that send and receive. Switches and routers are in-between.",
+  "why": "Hosts, also called end devices, are the computers that send or receive messages themselves. Intermediary devices like switches just pass traffic along."
+ },
+ "62": {
+  "cue": "destination IP address added",
+  "keys": [
+   "network layer"
+  ],
+  "tip": "IP address = Layer 3 = network layer.",
+  "why": "The destination IP address goes into the packet header at the network layer (Layer 3), so routers know where to send it."
+ },
+ "63": {
+  "cue": "source MAC address added",
+  "keys": [
+   "data link layer"
+  ],
+  "tip": "MAC address = Layer 2 = data link layer.",
+  "why": "MAC addresses are added in the frame header at the data link layer (Layer 2), when the packet is put inside a frame."
+ },
+ "64": {
+  "cue": "source port number added",
+  "keys": [
+   "transport layer"
+  ],
+  "tip": "Ports = Layer 4 = transport.",
+  "why": "The source port number goes into the TCP or UDP header at the transport layer (Layer 4), so the reply can find the right app."
+ },
+ "65": {
+  "cue": "destination MAC address added",
+  "keys": [
+   "data link layer"
+  ],
+  "tip": "MAC = Layer 2 = data link.",
+  "why": "The destination MAC address is added in the frame header at the data link layer (Layer 2), for delivery on the local network."
+ },
+ "66": {
+  "cue": "pulses of light",
+  "keys": [
+   "optic cable"
+  ],
+  "tip": "Light = fiber optic. Electricity = copper. Radio waves = wireless.",
+  "why": "Fiber optic cable carries data as pulses of light through glass or plastic strands. Copper uses electrical signals and wireless uses radio waves."
+ },
+ "67": {
+  "cue": "intermediary devices",
+  "keys": [
+   "Router",
+   "Switch"
+  ],
+  "tip": "Intermediary = in the MIDDLE: routers and switches pass data along.",
+  "why": "Intermediary devices connect end devices and move traffic between them, like switches and routers. Hosts and servers are end devices."
+ },
+ "68": {
+  "cue": "fiber optic cable has been cut",
+  "keys": [
+   "fault tolerance"
+  ],
+  "tip": "Fault tolerance = the network TOLERATES a fault and keeps working on a backup path.",
+  "why": "Fault tolerance means the network has redundant paths, so when one link fails, traffic quickly moves to another. That's why the cut cable caused only a short outage."
+ },
+ "69": {
+  "cue": "requirements of a reliable network",
+  "keys": [
+   "redundant links",
+   "Expand the network",
+   "unauthorized access"
+  ],
+  "tip": "Fault tolerance = Redundancy, Scalability = Expand, Security = Stop intruders.",
+  "why": "Fault tolerance uses redundant links and devices, scalability lets the network grow without slowing current users, and security keeps out unauthorized people."
+ },
+ "70": {
+  "cue": "Internet connectivity type",
+  "keys": [
+   "coaxial",
+   "heavily wooded",
+   "very low bandwidth",
+   "telephone line"
+  ],
+  "tip": "Cable = Coax. Satellite needs clear Sky. Dialup = slow. DSL = fast on the phone line.",
+  "why": "Cable runs on coaxial TV cable. Satellite needs a clear view of the sky, so trees block it. Dialup is very slow, and DSL gives high speed over the phone line."
+ },
+ "71": {
+  "cue": "IOS modes of operation",
+  "keys": [
+   "user EXEC mode",
+   "privileged EXEC mode",
+   "global configuration mode",
+   "line configuration mode"
+  ],
+  "tip": "U-P-G-L: User, Privileged, Global, Line. You Probably Get Lost without it.",
+  "why": "You start in user EXEC (>), type enable for privileged EXEC (#), configure terminal for global config, then line console 0 to enter line config mode."
+ },
+ "72": {
+  "cue": "description with the associated IOS mode",
+  "keys": [
+   "basic monitoring",
+   "enable command",
+   "configure terminal",
+   "whole"
+  ],
+  "tip": "> user EXEC (look only), # privileged EXEC (enable), (config)# global (whole device).",
+  "why": "User EXEC is the first mode with limited monitoring. enable takes you to privileged EXEC, which has a # prompt. configure terminal opens global config, where changes affect the whole device."
+ },
+ "73": {
+  "cue": "CLI hot keys and shortcuts",
+  "keys": [
+   "Up Arrow",
+   "context-sensitive help",
+   "aborts",
+   "completes abbreviated"
+  ],
+  "tip": "? = help. Tab = finish word. Up = history. Space = next page. Ctrl-Shift-6 = stop.",
+  "why": "The ? key gives help for what you're typing, Tab completes commands, Up Arrow recalls old commands, Space bar shows the next screen of output and Ctrl-Shift-6 stops ping or trace."
+ },
+ "74": {
+  "cue": "description to the organization",
+  "keys": [
+   "IP address allocation",
+   "Open Systems Interconnection",
+   "open development"
+  ],
+  "tip": "IANA = Addresses and Names. ISO = OSI model. ISOC = Internet SOCiety.",
+  "why": "IANA manages IP address allocation, domain names and protocol numbers. ISO makes international standards, including the OSI model. ISOC, the Internet Society, promotes open use of the Internet."
+ },
+ "75": {
+  "cue": "Telnet message is being prepared",
+  "keys": [
+   "Telnet-formatted data",
+   "TCP header",
+   "IP header",
+   "Ethernet header"
+  ],
+  "tip": "Top down: Telnet data, then TCP, then IP, then Ethernet. App, Transport, Internet, Link.",
+  "why": "Sending goes down the stack. Telnet makes the data first, TCP adds its header second, IP adds its header third and Ethernet wraps it in a frame fourth."
+ }
+}

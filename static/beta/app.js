@@ -535,13 +535,14 @@ async function viewAnswers(root, [filename], query, alive) {
     const meta = examMeta(filename);
     if (!meta) return go("study");
     const enc = encodeURIComponent(filename);
-    const r = await api("/api/exam-questions", { method: "POST", body: { filename } });
+    const [r, hints] = await Promise.all([api("/api/exam-questions", { method: "POST", body: { filename } }), loadHints(filename)]);
     if (!alive()) return;
     if (!r.ok) {
         root.innerHTML = `<div class="error-box">${esc(r.data.error || "Couldn't load the questions.")}</div>`;
         return;
     }
     const all = (r.data.questions || []).map((q, i) => ({ q, n: i + 1 }));
+    const hintFor = (q) => (hints ? hints[String(q.id)] : null);
     const textOf = (q) => [q.question, ...(q.options || []), ...correctList(q), ...(q.terms || []), ...(q.definitions || [])].join(" ").toLowerCase();
     all.forEach((x) => { x.text = textOf(x.q); });
     const s = { query: "", hide: false, shown: new Set() };
@@ -571,7 +572,9 @@ async function viewAnswers(root, [filename], query, alive) {
             <div class="ans-head"><span class="ans-num">Question ${n}</span>${isMatching(q) ? '<span class="ans-tag">Matching</span>' : many ? `<span class="ans-tag">Choose ${correctList(q).length}</span>` : ""}</div>
             <p class="question-text">${esc(q.question)}</p>
             ${q.image ? `<img class="question-img" src="${esc(q.image)}" alt="Exhibit for question ${n}" loading="lazy">` : ""}
-            ${hidden ? `<button type="button" class="btn btn-secondary ans-reveal" data-n="${n}">Show answer</button>` : answerHtml(q)}
+            ${hidden ? `<button type="button" class="btn btn-secondary ans-reveal" data-n="${n}">Show answer</button>` : answerHtml(q) + (hintFor(q) ? `
+            <p class="ans-hint"><strong>Why:</strong> ${esc(hintFor(q).why || "")}</p>
+            <p class="ans-hint"><strong>Remember:</strong> ${esc(hintFor(q).tip)}</p>` : "")}
         </article>`;
     };
     function renderList() {
@@ -708,15 +711,16 @@ function isCorrect(q, sel) {
 // ─── Memory hints ───────────────────────────────────────────────────────────
 // Each hint links a clue in the question to a key word in the right answer. A key marked
 // "unique" appears in no other answer choice in the whole exam. Hint files live in
-// static/beta/hints/<exam>.json; add an exam's file name here when its hints are written.
-const HINT_EXAMS = new Set([
-    "ccna-2-v7-modules-1-4-switching-concepts-vlans-and-intervlan-routing-exam-answers.json",
-]);
+// static/beta/hints/<exam>.json (every exam has one; built by tools/build_hints_all.py). Each hint also has
+// "why": a short explanation, shown only after the question is answered.
+const HINTS_VERSION = 2;
+const hintCache = {};
 async function loadHints(filename) {
-    if (!HINT_EXAMS.has(filename)) return null;
+    if (hintCache[filename]) return hintCache[filename];
     try {
-        const res = await fetch(`/beta/hints/${encodeURIComponent(filename)}?v=1`);
-        return res.ok ? await res.json() : null;
+        const res = await fetch(`/beta/hints/${encodeURIComponent(filename)}?v=${HINTS_VERSION}`);
+        if (res.ok) return (hintCache[filename] = await res.json());
+        return null;
     } catch (e) { return null; }
 }
 function hintCardHtml(h, open) {
@@ -726,6 +730,7 @@ function hintCardHtml(h, open) {
         <div class="hint-title">${icon("star")}Memory hook</div>
         <div class="hint-link"><span class="hint-cue">${esc(h.cue)}</span><span class="hint-arrow" aria-label="goes with">→</span>${keys}</div>
         <p class="hint-tip">${esc(h.tip)}</p>
+        ${open && h.why ? `<p class="hint-why"><strong>Why:</strong> ${esc(h.why)}</p>` : ""}
         ${anyUnique ? `<p class="hint-legend">★ No other answer in this exam has this word</p>` : ""}
     </div>`;
 }
@@ -3339,6 +3344,9 @@ window.addEventListener("hashchange", () => { router(); trackPageView(); });
 (async function start() {
     routeFromPath();
     await loadMe();
-    router();
+    // A question's own page (/questions/<slug>/, what Google lists) is written by the server: keep it on screen.
+    // Tapping a tab or link still opens the app as usual.
+    const onQuestionPage = /^\/questions\/[^/]+\/?$/.test(location.pathname) && (!location.hash || location.hash === "#" || location.hash === "#/");
+    if (!onQuestionPage) router();
     trackPageView();
 })();

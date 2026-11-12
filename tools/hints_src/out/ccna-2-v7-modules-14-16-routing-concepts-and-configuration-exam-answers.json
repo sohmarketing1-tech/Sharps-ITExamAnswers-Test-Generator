@@ -1,0 +1,505 @@
+{
+ "1": {
+  "cue": "traffic for which there is no specific route",
+  "keys": [
+   "gateway of last resort"
+  ],
+  "tip": "No route? Go to the LAST RESORT, like the last place you look.",
+  "why": "The gateway of last resort is where the router sends a packet when nothing more specific in the routing table matches it. It is set by a default route."
+ },
+ "2": {
+  "cue": "three advantages provided by static routing",
+  "keys": [
+   "better security",
+   "less network bandwidth",
+   "path a static route uses to send data is known"
+  ],
+  "tip": "Static = Secure, Small overhead, Sure path. It does NOT scale and is NOT error-free.",
+  "why": "Static routes are never advertised, so outsiders learn less. They need no protocol messages or CPU work, and you chose the path yourself, so you know it."
+ },
+ "3": {
+  "cue": "two functions of dynamic routing protocols",
+  "keys": [
+   "maintain routing tables",
+   "discover the network"
+  ],
+  "tip": "Dynamic protocols DISCOVER and MAINTAIN. Static is the one where the admin picks the path.",
+  "why": "Dynamic routing protocols find remote networks by talking to neighbor routers, then keep the routing table up to date when links change."
+ },
+ "4": {
+  "cue": "advantage of dynamic routing protocols",
+  "keys": [
+   "actively search for new routes"
+  ],
+  "tip": "Dynamic = self-healing: it searches for a new path. Static is easier, more secure and lighter.",
+  "why": "When a link fails, a dynamic protocol finds another path on its own. Static routing is simpler and lighter, but you must fix it by hand."
+ },
+ "5": {
+  "cue": "outgoing interface associated with that route goes into the down state",
+  "keys": [
+   "removed from the routing table"
+  ],
+  "tip": "Exit interface down = static route out of the table. It comes back when the interface comes up.",
+  "why": "A route is only useful if its exit works. When the interface goes down, the router removes the static route, and puts it back when the link comes up again."
+ },
+ "6": {
+  "cue": "static route that matches all packets",
+  "keys": [
+   "does not have a learned or static route"
+  ],
+  "tip": "Matches ALL packets = default route 0.0.0.0/0: the catch-all for traffic with no other route.",
+  "why": "A default static route (0.0.0.0/0) matches every address, so packets with no better match in the table are sent to its gateway."
+ },
+ "7": {
+  "cue": "more beneficial to use a dynamic routing protocol",
+  "keys": [
+   "lot of topology changes"
+  ],
+  "tip": "Lots of change? Let the protocol handle it. Stub, small, or weak routers: go static.",
+  "why": "Dynamic protocols adjust by themselves when links or networks change. Static routes would need manual edits every time the topology changes."
+ },
+ "8": {
+  "cue": "destination IP address of 10.1.1.1",
+  "keys": [
+   "10.1.1.0/24 [110/65]"
+  ],
+  "tip": "Longest match wins: /24 beats /16, and both beat the /0 default.",
+  "why": "10.1.1.1 matches both 10.1.0.0/16 and 10.1.1.0/24, but the router always picks the longest (most specific) prefix, so the OSPF /24 route wins."
+ },
+ "9": {
+  "cue": "administrative distance value of the route for router R1",
+  "keys": [
+   "120"
+  ],
+  "tip": "R in the table = RIP = AD 120. The first number in [120/4] is the AD.",
+  "why": "2001:DB8:CAFE:4::A is in 2001:DB8:CAFE:4::/64, an R (RIPng) route shown as [120/4]. The first number in brackets is the AD, 120."
+ },
+ "10": {
+  "cue": "represents trustworthiness",
+  "keys": [
+   "administrative distance"
+  ],
+  "tip": "AD = trust (lower is better). Metric = distance cost within one protocol.",
+  "why": "AD rates how believable a route source is. When two sources offer a route to the same network, the one with the lower AD goes in the table."
+ },
+ "11": {
+  "cue": "router A static route from LAN A destined for LAN C",
+  "keys": [
+   "192.168.4.0 255.255.255.0 192.168.3.2"
+  ],
+  "tip": "ip route DESTINATION MASK NEXT-HOP: LAN C first, then B's near side (.3.2).",
+  "why": "The command lists the destination network (LAN C, 192.168.4.0/24) and then the next hop, which is router B's address on the link to A, 192.168.3.2."
+ },
+ "12": {
+  "cue": "two routers would a default static route be configured",
+  "keys": [
+   "stub router",
+   "edge router connection to the ISP"
+  ],
+  "tip": "Default routes live at the edges: the stub with one way out, and the edge router facing the ISP.",
+  "why": "A stub router has only one exit, and the edge router sends everything unknown to the ISP. In both cases one default route covers all remote traffic."
+ },
+ "13": {
+  "cue": "floating static route that avoids recursive route lookups",
+  "keys": [
+   "fully specified",
+   "AD of 95"
+  ],
+  "tip": "Floating = AD just above the primary. EIGRP is 90, so 95. Ethernet exit = fully specified.",
+  "why": "EIGRP internal routes have AD 90, so a backup needs a higher AD like 95. On Ethernet, a fully specified route (exit interface plus next hop) avoids lookups and next-hop confusion."
+ },
+ "14": {
+  "cue": "characteristic of a floating static route",
+  "keys": [
+   "higher administrative distance"
+  ],
+  "tip": "Floating = it floats ABOVE the main route (higher AD) and drops in only when the main one sinks.",
+  "why": "A floating static route has a higher AD than the main route, so it stays out of the table until the main route disappears. It is a backup."
+ },
+ "15": {
+  "cue": "default static route that will match any IPv6 destination",
+  "keys": [
+   "::/0"
+  ],
+  "tip": "IPv4 default 0.0.0.0/0, IPv6 default ::/0. Zero bits to match = matches everything.",
+  "why": "A prefix length of 0 means no bits have to match, so ::/0 matches every IPv6 address. It is the IPv6 version of 0.0.0.0/0."
+ },
+ "16": {
+  "cue": "What does the 5 at the end of the command signify",
+  "keys": [
+   "administrative distance"
+  ],
+  "tip": "A number after the next hop in ip route is the AD. Static routes default to 1.",
+  "why": "The optional number at the end of an ip route command sets the AD. Static routes have AD 1 by default, so 5 makes this route less preferred."
+ },
+ "17": {
+  "cue": "packet destined for 192.168.10.129",
+  "keys": [
+   "Serial0/0/1"
+  ],
+  "tip": "Find the network (.128/26), then the next hop (10.0.0.6), then which C line holds it (10.0.0.4 on S0/0/1).",
+  "why": "192.168.10.129 is in 192.168.10.128/26, reached via 10.0.0.6. That address is in 10.0.0.4/30, which is directly connected on Serial0/0/1."
+ },
+ "18": {
+  "cue": "ipv6 route 2001:db8:acad:1::/32",
+  "keys": [
+   "100"
+  ],
+  "tip": "The last number in the route command is the AD: here 100.",
+  "why": "A number typed at the end of a static route sets its AD. Without it, the AD would be 1."
+ },
+ "19": {
+  "cue": "default static route command would allow R1 to potentially reach",
+  "keys": [
+   "::/0 G0/1"
+  ],
+  "tip": "Default = ::/0, and point it out the interface that faces the Internet (G0/1).",
+  "why": "::/0 is the IPv6 default route that catches all unknown networks. It must leave through G0/1, the interface toward the ISP, with fe80::2 as the link-local next hop."
+ },
+ "20": {
+  "cue": "primary ISP connection for all external connectivity",
+  "keys": [
+   "s0/1/0 10"
+  ],
+  "tip": "Two defaults: primary with normal AD 1, backup with a higher AD (10) so it floats.",
+  "why": "Both are default routes (0.0.0.0 0.0.0.0). The backup has AD 10, so it is used only when the primary route through s0/0/0 is gone."
+ },
+ "21": {
+  "cue": "Park and the Alta routers to a) forward packets to each LAN",
+  "keys": [
+   "Park(config)# ip route 0.0.0.0 0.0.0.0 192.168.14.1",
+   "Alta(config)# ip route 0.0.0.0 0.0.0.0 s0/0/0"
+  ],
+  "tip": "Stub Park: one default to Alta. Alta: route to Park's LAN, plus a default out S0/0/0 to the Internet.",
+  "why": "Park is a stub, so one default route to Alta covers everything. Alta needs a route to Park's 10.0.234.0 LAN and a default route out S0/0/0, which faces the Internet."
+ },
+ "22": {
+  "cue": "R2 LAN have reported a problem with connectivity",
+  "keys": [
+   "R1 needs a static route to the R2 LAN"
+  ],
+  "tip": "Check both routing tables for the far LAN. R1 lists no 10.0.60.0, so R1 can't reply to R2's LAN.",
+  "why": "R2 reaches everything through its default route to R1, but R1's table has no entry for 10.0.60.0/24. R1 sends that traffic to the ISP instead, so R1 needs a route to R2's LAN."
+ },
+ "23": {
+  "cue": "connectivity to the network is still failing",
+  "keys": [
+   "interface is incorrect"
+  ],
+  "tip": "The exit interface must be on THIS router. R1's link to R2 is S0/0/0, not S0/0/1.",
+  "why": "R1 connects to R2 through its own S0/0/0. The command uses s0/0/1, which is R2's interface name, so R1 sends the traffic out the wrong port."
+ },
+ "24": {
+  "cue": "host route 2001:DB8:CAFE:4::1/128 installed",
+  "keys": [
+   "manually entered by an administrator"
+  ],
+  "tip": "Code S = static = someone typed it in. L would be automatic from an interface address.",
+  "why": "The route is marked S, which means static. Static routes exist only because an administrator configured them."
+ },
+ "25": {
+  "cue": "HostA is attempting to contact ServerB",
+  "keys": [
+   "IP address of ServerB",
+   "MAC address of RouterA"
+  ],
+  "tip": "IP = final destination (ServerB). MAC = next hop on this link (RouterA, the gateway).",
+  "why": "The IP address stays the same end to end, so it is ServerB. The MAC address changes each hop, so the frame goes to HostA's default gateway, RouterA."
+ },
+ "26": {
+  "cue": "ping from R1 to any address in the 192.168.2.0 network fails",
+  "keys": [
+   "static route for 192.168.2.0 is incorrectly configured"
+  ],
+  "tip": "A next hop must be on the far router. 192.168.3.0 is R1's own LAN, not R2.",
+  "why": "The static route points to 192.168.3.0, which is R1's own Fa0/0 network, not a neighbor router. It should point to R2 at 10.1.1.2."
+ },
+ "27": {
+  "cue": "default static route on router R1 to reach the Site B network",
+  "keys": [
+   "next hop address is incorrect"
+  ],
+  "tip": "Next hop = the neighbor's interface on the shared link (.130), not the far network.",
+  "why": "172.16.2.0 is a network behind R2, not a next-hop address R1 can reach directly. The route should point to R2's serial address, 209.165.202.130."
+ },
+ "28": {
+  "cue": "traffic will only use the OSPF link when it is up",
+  "keys": [
+   "administrative distance to 120"
+  ],
+  "tip": "OSPF AD = 110. A floating route must be HIGHER than 110, so 100 wins wrongly; 120 floats.",
+  "why": "A lower AD is preferred. With AD 100 the static route beats OSPF (110). Raising it to 120 makes it a true backup used only when OSPF fails."
+ },
+ "29": {
+  "cue": "the next-hop address can be",
+  "keys": [
+   "link-local address on the adjacent router"
+  ],
+  "tip": "IPv6 next hop: you may use the neighbor's link-local (FE80::) address, plus an exit interface.",
+  "why": "In IPv6 a static route can point to the neighbor's link-local address. Since link-local addresses only work on one link, you must also name the exit interface."
+ },
+ "30": {
+  "cue": "destination IP address 172.19.115.206",
+  "keys": [
+   "GigabitEthernet0/0"
+  ],
+  "tip": "Find the block: .192/27 covers .192 to .223, so .206 is on G0/0.",
+  "why": "A /27 block holds 32 addresses. 172.19.115.192/27 runs from .192 to .223, so .206 is in it, and that network is directly connected on G0/0."
+ },
+ "31": {
+  "cue": "minimum amount of router CPU and network bandwidth",
+  "keys": [
+   "static default route from R1 to Edge"
+  ],
+  "tip": "Least CPU and bandwidth = all static: defaults pointing out, a specific route pointing back in.",
+  "why": "Static routes use no protocol updates. R1 and Edge each send unknown traffic outward with default routes, and Edge uses a static route to reach R1's LANs."
+ },
+ "32": {
+  "cue": "after the IT administrator enters the new static route",
+  "keys": [
+   "learned from RIP would be replaced"
+  ],
+  "tip": "Same network, lower AD wins: static (1) beats RIP (120).",
+  "why": "Both routes go to 172.16.1.0/24. The static route has AD 1, lower than RIP's 120, so the router trusts it more and replaces the RIP route."
+ },
+ "33": {
+  "cue": "fully specified static route to eliminate recursive lookups",
+  "keys": [
+   "interface ID exit interface",
+   "IP address of the next-hop neighbor"
+  ],
+  "tip": "Fully specified = BOTH: your exit interface plus the neighbor's next-hop IP.",
+  "why": "With both the exit interface and the next-hop IP, the router knows where to send the packet and to whom, with no extra table lookups."
+ },
+ "34": {
+  "cue": "without any recursive lookups by router R2",
+  "keys": [
+   "2001:db8:10:12::/64 S0/0/0"
+  ],
+  "tip": "No recursive lookup = point to the exit interface. R2's link to R1 is S0/0/0.",
+  "why": "A route with only an exit interface needs no second lookup. PC1's network is 2001:db8:10:12::/64, reached out R2's S0/0/0 toward R1."
+ },
+ "35": {
+  "cue": "backup route to the 172.16.1.0 network",
+  "keys": [
+   "s0/0/0 121"
+  ],
+  "tip": "RIP AD = 120. Backup must be just above it: 121.",
+  "why": "A floating static route needs a higher AD than the main route. RIP has AD 120, so 121 keeps the static route hidden until the RIP route fails."
+ },
+ "36": {
+  "cue": "Match the routing table entry",
+  "keys": [
+   "route source identifies how a route was learned",
+   "metric identifies the value assigned",
+   "administrative distance identifies the trustworthiness"
+  ],
+  "tip": "Source = HOW learned. Destination = WHERE. Metric = COST. AD = TRUST.",
+  "why": "Each route lists how it was learned (source), the remote network (destination), the trust in the source (AD) and the cost to reach it (metric). The exit interface choice is unused."
+ },
+ "37": {
+  "cue": "destination field in the packet as the packet leaves PC A",
+  "keys": [
+   "192.168.12.16"
+  ],
+  "tip": "The destination IP is always the final target (Server B). Only the MAC changes per hop.",
+  "why": "The IP header holds the end-to-end destination, Server B at 192.168.12.16. Routers along the way change the frame's MAC addresses, not the destination IP."
+ },
+ "38": {
+  "cue": "MAC address of the destination when constructing the frame",
+  "keys": [
+   "R1 sends an ARP request"
+  ],
+  "tip": "Need a MAC? Check the ARP cache first. Not there? Send an ARP request.",
+  "why": "Server B is on R1's Ethernet LAN, so R1 needs its MAC address. If it isn't in the ARP cache, R1 asks with an ARP request before building the frame."
+ },
+ "39": {
+  "cue": "lowest administrative distance",
+  "keys": [
+   "directly connected network"
+  ],
+  "tip": "AD ladder: connected 0, static 1, EIGRP 90, OSPF 110, RIP 120.",
+  "why": "A directly connected network has AD 0, because the router knows it from its own interface. Nothing is more trustworthy than that."
+ },
+ "40": {
+  "cue": "as a backup route to a static route",
+  "keys": [
+   "administrative distance of 2"
+  ],
+  "tip": "Main static = AD 1, so the backup static needs just one more: 2.",
+  "why": "A normal static route has AD 1. Giving the backup AD 2 keeps it out of the table until the main static route goes away."
+ },
+ "41": {
+  "cue": "OSPF protocol to learn a route to the 172.16.32.0/19",
+  "keys": [
+   "172.16.32.0 255.255.224.0",
+   "200"
+  ],
+  "tip": "Same network and mask (/19 = 255.255.224.0), plus an AD above OSPF's 110.",
+  "why": "A backup must match the exact network, 172.16.32.0 with mask 255.255.224.0 (/19), and use an AD higher than OSPF's 110, so 200 works."
+ },
+ "42": {
+  "cue": "How would an administrator test this configuration",
+  "keys": [
+   "shut down the router interface used as a primary route"
+  ],
+  "tip": "To test a backup, break the primary on purpose and see if the backup takes over.",
+  "why": "This is a floating static route (AD 5). It only appears when the main route fails, so you shut the primary interface and check that traffic switches."
+ },
+ "43": {
+  "cue": "Which type of IPv6 static route is configured",
+  "keys": [
+   "recursive static route"
+  ],
+  "tip": "Next-hop only = recursive. Exit interface only = directly attached. Both = fully specified.",
+  "why": "The command gives only a next-hop address. The router must look that address up again to find the exit interface, so it is a recursive static route."
+ },
+ "44": {
+  "cue": "it is first necessary to configure",
+  "keys": [
+   "ipv6 unicast-routing"
+  ],
+  "tip": "No ipv6 unicast-routing, no IPv6 routing. Turn it on first.",
+  "why": "Cisco routers don't forward IPv6 packets by default. The ipv6 unicast-routing command enables IPv6 routing, so static routes can work."
+ },
+ "45": {
+  "cue": "destination IP address 172.18.109.152",
+  "keys": [
+   "Serial0/0/0"
+  ],
+  "tip": "/26 blocks go 0, 64, 128, 192. .152 falls in .128/26, which leaves via Serial0/0/0.",
+  "why": "172.18.109.152 is in 172.18.109.128/26 (.128 to .191). That OSPF route goes via 172.18.32.1 out Serial0/0/0."
+ },
+ "46": {
+  "cue": "destination IP address of 192.168.12.227",
+  "keys": [
+   "Serial0/0/0"
+  ],
+  "tip": "No specific match? The default route (S*) catches it.",
+  "why": "192.168.12.227 matches none of the connected networks, so the router uses the default route 0.0.0.0/0 via 209.165.200.226, which is reached through Serial0/0/0."
+ },
+ "47": {
+  "cue": "Which route would have to go down",
+  "keys": [
+   "static route to the 192.168.10.0/24 network"
+  ],
+  "tip": "AD 5 only loses to routes with AD below 5: connected (0) or a normal static (1).",
+  "why": "This route has AD 5. It stays hidden only behind a better route, such as a normal static route with AD 1. OSPF (110) and EIGRP (90) have higher ADs."
+ },
+ "48": {
+  "cue": "two advantages of static routing over dynamic routing",
+  "keys": [
+   "more secure",
+   "fewer router resources"
+  ],
+  "tip": "Static = Secure and Skinny (few resources). It does NOT scale and isn't easy for big networks.",
+  "why": "Static routes are never advertised, which is safer, and they need no protocol updates or CPU work. They don't scale, and big networks are hard to set up by hand."
+ },
+ "49": {
+  "cue": "the same IPv6 link-local address is used for",
+  "keys": [
+   "next-hop address of two different adjacent routers"
+  ],
+  "tip": "Link-local is unique only per link, so two neighbors can both be FE80::1.",
+  "why": "Link-local addresses only have to be unique on one link. Two routers on different links can share the same one, so you also give the exit interface."
+ },
+ "50": {
+  "cue": "routing table does not show the directly connected network",
+  "keys": [
+   "has not been activated"
+  ],
+  "tip": "No no shutdown, no connected route. The interface must be up/up.",
+  "why": "A connected route appears only when the interface is up. Router interfaces are shut down by default, so you must enter no shutdown."
+ },
+ "51": {
+  "cue": "traffic from both LANs can reach the 2001:db8:1:4::/64",
+  "keys": [
+   "2001:db8:1:3::2"
+  ],
+  "tip": "Next hop = the neighbor's address on the shared link. R1 is ::1, R2 is ::2.",
+  "why": "The route needs the remote network 2001:db8:1:4::/64 and R2's address on the link, 2001:db8:1:3::2. ::1 is R1's own address."
+ },
+ "52": {
+  "cue": "change the next-hop address for the 10.0.0.0/8",
+  "keys": [
+   "ip route 10.0.0.0 255.0.0.0 192.168.1.2",
+   "no ip route 10.0.0.0 255.0.0.0 172.16.40.2"
+  ],
+  "tip": "To change a static route: remove the old one (no ip route), then add the new one.",
+  "why": "A static route can't be edited in place. You delete the old route with no ip route and add a new one with the new next hop."
+ },
+ "53": {
+  "cue": "destination IP address 192.168.139.244",
+  "keys": [
+   "GigabitEthernet0/1"
+  ],
+  "tip": ".224/27 covers .224 to .255, so .244 is on G0/1.",
+  "why": "192.168.139.244 falls in 192.168.139.224/27 (.224 to .255), which is directly connected on GigabitEthernet0/1."
+ },
+ "54": {
+  "cue": "a fully-specified configuration should be used with",
+  "keys": [
+   "multiaccess network"
+  ],
+  "tip": "Multiaccess (Ethernet) = many neighbors, so give BOTH exit interface and next hop.",
+  "why": "On a multiaccess network like Ethernet, an exit interface alone doesn't say which neighbor to use. A fully specified route adds the next-hop address."
+ },
+ "55": {
+  "cue": "destination IP address 192.168.71.52",
+  "keys": [
+   "Serial0/0/0"
+  ],
+  "tip": "Don't mix up .139 and .71. 192.168.71.0/26 is the S route out Serial0/0/0.",
+  "why": "192.168.71.52 is in 192.168.71.0/26 (.0 to .63). That static route uses next hop 192.168.70.1, which is on Serial0/0/0."
+ },
+ "56": {
+  "cue": "the installation of the route can be verified with",
+  "keys": [
+   "show ipv6 route static"
+  ],
+  "tip": "Verify = show. show ipv6 route static lists only the static IPv6 routes.",
+  "why": "The show ipv6 route static command shows just the static routes in the IPv6 table, so you can confirm your route was installed."
+ },
+ "57": {
+  "cue": "destination IP address 10.55.99.78",
+  "keys": [
+   "Serial0/0/1"
+  ],
+  "tip": ".64/26 covers .64 to .127, so .78 goes via 10.55.18.6 out Serial0/0/1.",
+  "why": "10.55.99.78 is in 10.55.99.64/26. That OSPF route uses next hop 10.55.18.6, which is on the 10.55.18.4/30 link, Serial0/0/1."
+ },
+ "58": {
+  "cue": "destination IP address 10.3.86.2",
+  "keys": [
+   "Serial0/0/0"
+  ],
+  "tip": ".0/26 covers .0 to .63, and that route goes out Serial0/0/0.",
+  "why": "10.3.86.2 is in 10.3.86.0/26, an OSPF route via 10.3.2.1 out Serial0/0/0."
+ },
+ "59": {
+  "cue": "Match the characteristic to the corresponding type of routing",
+  "keys": [
+   "Typically used on stub networks Static routing",
+   "New networks are added automatically to the routing table Dynamic routing",
+   "Best choice for large networks Dynamic routing"
+  ],
+  "tip": "Static: stub, small, low overhead. Dynamic: big networks, learns new networks by itself.",
+  "why": "Static routes suit small or stub networks and cost little. Dynamic protocols scale to large networks and add new networks automatically."
+ },
+ "60": {
+  "cue": "destination IP address 172.25.128.244",
+  "keys": [
+   "GigabitEthernet0/1"
+  ],
+  "tip": ".224/27 covers .224 to .255, so .244 is on G0/1.",
+  "why": "172.25.128.244 falls in 172.25.128.224/27 (.224 to .255), which is directly connected on GigabitEthernet0/1."
+ },
+ "61": {
+  "cue": "Which static route is configured here",
+  "keys": [
+   "Recursive static"
+  ],
+  "tip": "Next-hop address only = Recursive. Exit interface only = directly attached.",
+  "why": "The route names only a next-hop address, so the router must do a second lookup to find the exit interface. That makes it recursive."
+ }
+}

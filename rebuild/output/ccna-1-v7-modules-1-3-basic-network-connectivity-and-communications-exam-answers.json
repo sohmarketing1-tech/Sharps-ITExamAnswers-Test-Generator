@@ -744,10 +744,10 @@
       "question": "When data is encoded as pulses of light, which media is being used to transmit the data?",
       "options": [
         "Wireless",
-        "Fire optic cable",
+        "Fiber optic cable",
         "Copper cable"
       ],
-      "correct_answer": "Fire optic cable"
+      "correct_answer": "Fiber optic cable"
     },
     {
       "id": 67,

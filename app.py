@@ -195,16 +195,20 @@ def seo_exam_html(exam: dict) -> str:
                 f"<li>{'<strong>' + _esc(o) + ' (correct)</strong>' if o in ans else _esc(o)}</li>" for o in opts) + "</ul>"
             if ans:
                 body += f'<p class="seo-ans"><strong>Answer:</strong> {_esc(" / ".join(_answers_of(q)))}</p>'
-        tip = (hints.get(str(q.get("id", i))) or {}).get("tip")
-        if tip:
-            body += f'<p class="seo-tip"><strong>Why:</strong> {_esc(tip)}</p>'
-        rows.append(f'<li id="q{_esc(q.get("id", i))}"><h3>{_esc(text)}</h3>{body}</li>')
+        h = hints.get(str(q.get("id", i))) or {}
+        if h.get("why"):
+            body += f'<p class="seo-tip"><strong>Why:</strong> {_esc(h["why"])}</p>'
+        if h.get("tip"):
+            body += f'<p class="seo-tip"><strong>Remember:</strong> {_esc(h["tip"])}</p>'
+        page = question_slug_for(fn, q.get("id", i))
+        head = f'<a href="/questions/{_esc(page)}/">{_esc(text)}</a>' if page else _esc(text)
+        rows.append(f'<li id="q{_esc(q.get("id", i))}"><h3>{head}</h3>{body}</li>')
     start = f"/#/exam/{_esc(fn)}"
     return (
         '<article class="seo-page">'
         f'<p class="seo-crumbs"><a href="/">AnswrIT</a> › {_esc(course)}</p>'
         f"<h1>{_esc(name)} Answers</h1>"
-        f"<p>All {len(qs)} questions from the {_esc(name)} with the correct answers{', plus a short tip on why' if hints else ''}. "
+        f"<p>All {len(qs)} questions from the {_esc(name)} with the correct answers{', a short explanation of why each answer is right, and a memory trick' if hints else ''}. "
         f"Study them here, then take a free practice test, flip through flashcards, or use Mastery mode until you know every one.</p>"
         f'<p><a class="seo-btn" href="{start}">Start the free practice test</a></p>'
         f"<h2>All {len(qs)} {_esc(name)} questions and answers</h2>"
@@ -212,6 +216,107 @@ def seo_exam_html(exam: dict) -> str:
         f"<h2>More exam answers</h2>{seo_exam_links_html(fn)}"
         "</article>"
     )
+
+
+# ── One page per question: /questions/<slug>/ ──
+# Students search the exact question text, so each unique question gets its own page with the answer,
+# a short explanation and a memory trick. Questions that need a picture (exhibit) are left out.
+_QINDEX = {"built": 0.0, "by_slug": {}, "by_ref": {}}
+
+
+def _slugify(text: str) -> str:
+    s = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    s = re.sub(r"^(refer-to-the-exhibit-|match-the-)", "", s)
+    if len(s) > 90:
+        s = s[:90].rsplit("-", 1)[0]
+    return s or "question"
+
+
+def question_index() -> dict:
+    """Unique questions across all exams -> {slug: {exam, q, also: [exam filenames]}}; rebuilt when data changes."""
+    files = [DATA_DIR / "exams.json"] + [DATA_DIR / e.get("filename", "") for e in load_exam_manifest()]
+    stamp = max((p.stat().st_mtime for p in files if p.exists()), default=0.0)
+    hint_dir_stamp = max((p.stat().st_mtime for p in HINTS_DIR.glob("*.json")), default=0.0) if HINTS_DIR.exists() else 0.0
+    stamp = max(stamp, hint_dir_stamp)
+    if _QINDEX["built"] == stamp:
+        return _QINDEX
+    norm = lambda s: re.sub(r"\W+", " ", str(s).lower()).strip()
+    by_key, by_slug, by_ref = {}, {}, {}
+    for exam in load_exam_manifest():
+        fn = exam.get("filename", "")
+        for q in _exam_questions(fn):
+            if not q.get("question") or q.get("image") or q.get("option_images"):
+                continue
+            key = (norm(q["question"]), norm(q.get("correct_answer") or q.get("correct_pairs")))
+            entry = by_key.get(key)
+            if not entry:
+                slug = base = _slugify(q["question"])
+                n = 2
+                while slug in by_slug:
+                    slug = f"{base}-{n}"; n += 1
+                entry = by_key[key] = {"slug": slug, "exam": fn, "q": q, "also": []}
+                by_slug[slug] = entry
+            if fn not in entry["also"]:
+                entry["also"].append(fn)
+            by_ref[(fn, str(q.get("id")))] = entry["slug"]
+    _QINDEX.update(built=stamp, by_slug=by_slug, by_ref=by_ref)
+    return _QINDEX
+
+
+def question_slug_for(filename: str, qid) -> str:
+    return question_index()["by_ref"].get((filename, str(qid)), "")
+
+
+def seo_question_page(entry: dict) -> dict:
+    q, fn = entry["q"], entry["exam"]
+    exams = {e["filename"]: e for e in load_exam_manifest()}
+    h = _load_hints(fn).get(str(q.get("id"))) or {}
+    ans = _answers_of(q)
+    text = q["question"]
+    if q.get("type") == "matching" and q.get("correct_pairs"):
+        p = q["correct_pairs"]
+        items = p.items() if isinstance(p, dict) else [(x[0], x[1]) for x in p]
+        body = "<ul>" + "".join(f"<li>{_esc(a)} → <strong>{_esc(b)}</strong></li>" for a, b in items) + "</ul>"
+        ans_text = "; ".join(f"{a} → {b}" for a, b in items)
+    else:
+        ans_set = set(ans)
+        body = "<ul>" + "".join(f"<li>{'<strong>' + _esc(o) + ' (correct)</strong>' if o in ans_set else _esc(o)}</li>" for o in (q.get("options") or [])) + "</ul>"
+        ans_text = " / ".join(ans)
+    body += f'<p class="seo-ans"><strong>Answer:</strong> {_esc(ans_text)}</p>'
+    if h.get("why"):
+        body += f'<h2>Why this is the answer</h2><p>{_esc(h["why"])}</p>'
+    if h.get("tip"):
+        keys = ", ".join(k["k"] if isinstance(k, dict) else k for k in h.get("keys", []))
+        body += f'<h2>How to remember it</h2><p>{_esc(h["tip"])}</p>'
+        if keys:
+            body += f'<p>Look for these words in the right answer: <strong>{_esc(keys)}</strong></p>'
+    names = [(f, seo_exam_name(exams[f])) for f in entry["also"] if f in exams]
+    body += "<h2>This question is on</h2><ul class=\"seo-links\">" + "".join(
+        f'<li><a href="/exams/{_esc(f[:-5])}/">{_esc(n)} Answers</a></li>' for f, n in names) + "</ul>"
+    body += f'<p><a class="seo-btn" href="/#/exam/{_esc(fn)}">Practice the whole exam</a></p>'
+    # A few other questions from the same exam, for readers and for search engines.
+    idx = question_index()["by_slug"]
+    sibs = [e for e in idx.values() if e["exam"] == fn and e["slug"] != entry["slug"]]
+    pos = next((i for i, e in enumerate(sibs) if str(e["q"].get("id")) > str(q.get("id"))), 0)
+    more = (sibs[pos:] + sibs[:pos])[:6]
+    if more:
+        body += "<h2>More questions from this exam</h2><ul class=\"seo-links\">" + "".join(
+            f'<li><a href="/questions/{_esc(e["slug"])}/">{_esc(e["q"]["question"])}</a></li>' for e in more) + "</ul>"
+    course = seo_course_of(fn)[1]
+    html_out = (f'<article class="seo-page"><p class="seo-crumbs"><a href="/">AnswrIT</a> › '
+                f'<a href="/exams/{_esc(fn[:-5])}/">{_esc(names[0][1] if names else course)}</a></p>'
+                f"<h1>{_esc(text)}</h1>{body}</article>")
+    short_q = text if len(text) <= 80 else text[:77].rsplit(" ", 1)[0] + "…"
+    desc = f"Answer: {ans_text}. {h.get('why', '')}".strip()
+    if len(desc) > 158:
+        desc = desc[:155].rsplit(" ", 1)[0] + "…"
+    ld = {"@context": "https://schema.org", "@type": "Quiz", "name": text,
+          "about": {"@type": "Thing", "name": course},
+          "hasPart": [{"@type": "Question", "eduQuestionType": "Flashcard", "text": text,
+                       "acceptedAnswer": {"@type": "Answer", "text": ans_text}}]}
+    ld_json = json.dumps(ld, ensure_ascii=False).replace("</", "<\\/")
+    return {"title": f"{short_q} | Answer & Explanation | AnswrIT", "description": desc, "html": html_out,
+            "jsonld": f'<script type="application/ld+json">{ld_json}</script>'}
 
 
 def seo_exam_jsonld(exam: dict) -> str:
@@ -1134,6 +1239,28 @@ def exam_page(slug: str):
     )
 
 
+@app.route("/questions/<slug>/")
+def question_page(slug: str):
+    entry = question_index()["by_slug"].get(slug)
+    if not entry:
+        return redirect("/", code=302)
+    page = seo_question_page(entry)
+    return render_index_html(
+        page_title=page["title"],
+        page_description=page["description"],
+        canonical_url=f"{SITE_URL}/questions/{slug}/",
+        h1_text=entry["q"]["question"],
+        seo_intro=page["description"],
+        view_html=page["html"],
+        extra_head=page["jsonld"],
+    )
+
+
+@app.route("/questions/<slug>")
+def question_page_noslash(slug: str):
+    return redirect(f"/questions/{slug}/", code=301)
+
+
 @app.route("/google46429450d03302f8.html")
 def google_verify():
     return send_from_directory(app.static_folder, "google46429450d03302f8.html")
@@ -1153,6 +1280,8 @@ def _build_sitemap() -> str:
         lines.append(f"  <url><loc>{SITE_URL}{page}</loc><lastmod>{today}</lastmod><priority>0.7</priority></url>")
     for slug in slugs:
         lines.append(f"  <url><loc>{SITE_URL}/exams/{slug}/</loc><lastmod>{today}</lastmod><priority>0.9</priority></url>")
+    for qslug in question_index()["by_slug"]:
+        lines.append(f"  <url><loc>{SITE_URL}/questions/{qslug}/</loc><lastmod>{today}</lastmod><priority>0.6</priority></url>")
     lines.append("</urlset>")
     return "\n".join(lines)
 

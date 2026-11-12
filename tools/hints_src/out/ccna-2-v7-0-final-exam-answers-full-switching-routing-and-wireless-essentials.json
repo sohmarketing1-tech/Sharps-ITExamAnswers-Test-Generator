@@ -1,0 +1,1316 @@
+{
+ "1": {
+  "cue": "destination IPv6 address of 2001:db8:cafe:5::1",
+  "keys": [
+   "Serial0/0/0"
+  ],
+  "tip": "No exact match? Follow the default route ::/0. Here it points out Serial0/0/0.",
+  "why": "The routing table has no route for 2001:db8:cafe:5::/64, but it has a default route (::/0) out Serial0/0/0. Packets with no better match always use the default route instead of being dropped."
+ },
+ "2": {
+  "cue": "floating static route ... backup route to the 10.10.0.0/16",
+  "keys": [
+   "209.165.200.225 100"
+  ],
+  "tip": "Floating route: AD higher than EIGRP's 90, and point to the OTHER router's address (.225), not your own.",
+  "why": "A floating static route needs an AD bigger than the EIGRP route (90), so 100 works and 50 would take over. The next hop must be the neighbor's address, 209.165.200.225, not R1's own interface."
+ },
+ "3": {
+  "cue": "users on network 172.16.0.0/16 are unable to reach the Internet",
+  "keys": [
+   "0.0.0.0 0.0.0.0"
+  ],
+  "tip": "Internet = everywhere = 0.0.0.0 0.0.0.0, the default route.",
+  "why": "The route only covers one small network, so traffic to the rest of the Internet has no match. Changing it to 0.0.0.0 0.0.0.0 makes it a default route that catches every destination."
+ },
+ "4": {
+  "cue": "correctly configured IPv4 default static route",
+  "keys": [
+   "0.0.0.0 0.0.0.0"
+  ],
+  "tip": "Default route = all zeros twice: network 0.0.0.0, mask 0.0.0.0.",
+  "why": "A mask of 0.0.0.0 means no bits must match, so the route matches every destination. Any other mask would only match part of the address space."
+ },
+ "5": {
+  "cue": "R1 to forward traffic to the LAN connected to R2",
+  "keys": [
+   "S0/0/1 fe80::2"
+  ],
+  "tip": "Link-local next hop? You MUST also give the exit interface, since fe80 addresses repeat on every link.",
+  "why": "R1 reaches R2 out S0/0/1, and R2's link-local address on that link is fe80::2. A link-local next hop only makes sense with the exit interface, so both are needed."
+ },
+ "6": {
+  "cue": "method to launch a VLAN hopping attack",
+  "keys": [
+   "rogue switch",
+   "enabling trunking"
+  ],
+  "tip": "Hop VLANs = become a trunk. A rogue switch that forms a trunk sees every VLAN.",
+  "why": "If an attacker connects a switch (or spoofs one) and a trunk forms, the attacker's port carries all VLANs. That lets them reach VLANs they should not be on."
+ },
+ "7": {
+  "cue": "macof tool",
+  "keys": [
+   "MAC address table overflow"
+  ],
+  "tip": "macof = MAC flood. It fills the MAC table until the switch floods like a hub.",
+  "why": "macof sends huge numbers of frames with fake source MACs. The switch's MAC table fills up, so it floods frames out all ports and the attacker can capture them."
+ },
+ "9": {
+  "cue": "HSRP group 1 ... ARP table on Host1",
+  "keys": [
+   "virtual IP address and the virtual MAC address"
+  ],
+  "tip": "HSRP is virtual both ways: virtual IP + virtual MAC. Hosts never need the real router's address.",
+  "why": "Hosts use the HSRP virtual IP as their gateway, and ARP for it returns the virtual MAC. That way, if the active router fails, the standby takes over the same IP and MAC with no host change."
+ },
+ "10": {
+  "cue": "forwarding characteristic to its type",
+  "keys": [
+   "may forward invalid frames",
+   "only forwards valid frames",
+   "entire frame"
+  ],
+  "tip": "Cut-through = fast, starts at the destination address, may pass bad frames. Store-and-forward = waits for the whole frame and checks errors.",
+  "why": "Cut-through starts sending once it reads the destination MAC, so it is fast but cannot check the FCS. Store-and-forward receives the entire frame and checks it first, so it only forwards valid frames."
+ },
+ "11": {
+  "cue": "Layer 2 switch determines how to forward frames",
+  "keys": [
+   "CAM table"
+  ],
+  "tip": "CAM table = MAC table. Switches look up MAC to port there.",
+  "why": "A switch learns which MAC address lives on which port and stores it in the CAM (MAC address) table. It uses that table to send each frame only out the right port."
+ },
+ "12": {
+  "cue": "multiple Cisco LAN switches are interconnected",
+  "keys": [
+   "broadcast domain expands"
+  ],
+  "tip": "Switches split collision domains but SHARE one broadcast domain. Only routers stop broadcasts.",
+  "why": "Switches forward broadcasts out every port, including links to other switches. So connecting switches makes one big broadcast domain, while each port is still its own collision domain."
+ },
+ "13": {
+  "cue": "link state to the interface and protocol status",
+  "keys": [
+   "administratively down",
+   "down/down",
+   "up/down",
+   "up/up"
+  ],
+  "tip": "First word = Layer 1, second = Layer 2. down/down = cable, up/down = L2, up/up = working.",
+  "why": "The interface status shows the physical layer and the protocol status shows the data link layer. Shutdown shows administratively down, a cable issue gives down/down, an L2 issue gives up/down, and up/up is working."
+ },
+ "14": {
+  "cue": "MAC address table on switch SW1 is empty",
+  "keys": [
+   "excluding the port through which the frame entered"
+  ],
+  "tip": "Unknown destination = flood everywhere except where it came in. Links to other switches included.",
+  "why": "When a switch doesn't know the destination MAC, it floods the frame out every port except the one it arrived on. That includes the port to SW2, so the frame can still reach PCC."
+ },
+ "15": {
+  "cue": "erase startup-config ... VLANs 10 and 100 still exist",
+  "keys": [
+   "vlan.dat"
+  ],
+  "tip": "VLANs live in vlan.dat in flash, not in startup-config. Delete vlan.dat to wipe them.",
+  "why": "Switches keep VLAN info in a separate file called vlan.dat in flash memory. Erasing the startup config doesn't touch it, so you must delete vlan.dat too and reload."
+ },
+ "16": {
+  "cue": "description to the correct VLAN type",
+  "keys": [
+   "user generated traffic",
+   "initial bootup",
+   "untagged traffic",
+   "an IP address and subnet mask"
+  ],
+  "tip": "Data = users. Default = where every port starts (VLAN 1). Native = untagged. Management = has the IP you SSH to.",
+  "why": "Data VLANs carry user traffic, the default VLAN holds every port at first boot, the native VLAN carries untagged frames on a trunk, and the management VLAN gets the switch's IP for remote access."
+ },
+ "17": {
+  "cue": "two switches together using EtherChannel technology. If STP is running",
+  "keys": [
+   "STP will block one of the redundant links"
+  ],
+  "tip": "Two EtherChannels between the same switches = two logical links = a loop. STP blocks one.",
+  "why": "STP treats each EtherChannel as one logical link. Two of them between the same switches form a loop, so STP blocks one of the port channels to stop it."
+ },
+ "18": {
+  "cue": "secure configuration option for remote access",
+  "keys": [
+   "SSH"
+  ],
+  "tip": "SSH = Secure SHell. Telnet sends everything in clear text.",
+  "why": "SSH encrypts the whole remote session, including the password. Telnet sends everything in plain text, and an ACL only limits who can connect, it doesn't encrypt."
+ },
+ "19": {
+  "cue": "wireless encryption method is the most secure",
+  "keys": [
+   "WPA2 with AES"
+  ],
+  "tip": "AES beats TKIP, and WPA2 beats WPA and WEP. Best combo: WPA2 + AES.",
+  "why": "WPA2 with AES uses strong modern encryption. TKIP and WEP are older and have known weaknesses, so they are easier to break."
+ },
+ "20": {
+  "cue": "switch ports, SSID, authentication ... firewall",
+  "keys": [
+   "wireless router"
+  ],
+  "tip": "Switch + Wi-Fi + firewall + Internet link in one home box = wireless router.",
+  "why": "A wireless router combines a small switch, a wireless access point, a firewall and a router in one device. That is why it covers wired ports, SSIDs and a firewall at once."
+ },
+ "21": {
+  "cue": "source MAC and IP addresses on the packet when it arrives at host B",
+  "keys": [
+   "00E0.FE91.7799",
+   "10.1.1.10"
+  ],
+  "tip": "IP stays the same end to end. MAC changes every hop: the source MAC is the last router's interface.",
+  "why": "Source IP stays host A's 10.1.1.10 the whole trip. Each router rewrites the Layer 2 frame, so at host B the source MAC is the MAC of the router interface on B's LAN, 00E0.FE91.7799."
+ },
+ "22": {
+  "cue": "ip route 0.0.0.0 0.0.0.0 serial 0/1/1",
+  "keys": [
+   "forwarded to the Internet"
+  ],
+  "tip": "Default route = 'everything else'. Anything not in the table goes out to the Internet.",
+  "why": "A default route is used only when no more specific route matches. So traffic for networks other than the two LANs and the connected links goes out S0/1/1 to the Internet."
+ },
+ "23": {
+  "cue": "disables redundant paths to eliminate Layer 2 loops",
+  "keys": [
+   "STP"
+  ],
+  "tip": "STP = Spanning Tree: it prunes extra links into a loop-free tree.",
+  "why": "Spanning Tree Protocol finds redundant switch links and puts some ports into blocking. That leaves one loop-free path and stops broadcast storms."
+ },
+ "24": {
+  "cue": "why is VLAN 99 missing",
+  "keys": [
+   "not yet been created"
+  ],
+  "tip": "A VLAN interface (SVI) stays down until the VLAN itself exists. Create the VLAN first.",
+  "why": "Configuring interface vlan 99 doesn't create VLAN 99. The VLAN must be created with the vlan 99 command and have ports in it, or it won't show up."
+ },
+ "25": {
+  "cue": "VTP modes allow for the creation, modification, and deletion of VLANs",
+  "keys": [
+   "server",
+   "transparent"
+  ],
+  "tip": "Server and transparent can edit VLANs. Client can only listen.",
+  "why": "A VTP server creates VLANs and shares them. A transparent switch can create its own local VLANs but doesn't share them. A client cannot change VLANs at all."
+ },
+ "26": {
+  "cue": "before moving a Cisco switch to a new VTP management domain",
+  "keys": [
+   "name of the new management domain",
+   "correct VTP mode and version",
+   "Reboot the switch"
+  ],
+  "tip": "Name, Mode, Reboot: set the domain name, set the right mode and version, then reboot to clear old data.",
+  "why": "The switch must have the new domain name and the right VTP mode and version to join. Rebooting resets its revision so it won't overwrite the new domain's VLANs with old ones."
+ },
+ "27": {
+  "cue": "Rapid PVST+ link types determined",
+  "keys": [
+   "determined automatically"
+  ],
+  "tip": "RSTP sets link type by duplex automatically: full duplex = point-to-point, half = shared.",
+  "why": "Rapid PVST+ looks at each port's duplex. Full duplex ports become point-to-point and half duplex ports become shared, without you typing anything."
+ },
+ "28": {
+  "cue": "Which three ports will be STP designated ports",
+  "keys": [
+   "fa0/13",
+   "fa0/10",
+   "fa0/21"
+  ],
+  "tip": "Root bridge = lowest MAC when priorities match. All its ports are designated, and each segment gets one designated port.",
+  "why": "With equal priority, the switch with the lowest MAC becomes root, and all its ports are designated. On each other link, the switch closer to the root (or with the lower BID) gets the designated port."
+ },
+ "29": {
+  "cue": "Cisco Express Forwarding is disabled",
+  "keys": [
+   "Ethernet multiaccess interfaces"
+  ],
+  "tip": "No CEF + Ethernet = give both exit interface and next hop (fully specified). Many devices share Ethernet.",
+  "why": "An Ethernet link can have many neighbors, so without CEF the router can't tell which one to send to using only an exit interface. A fully specified route adds the next-hop address."
+ },
+ "30": {
+  "cue": "advantages of using static routes",
+  "keys": [
+   "improve network security",
+   "fewer router resources"
+  ],
+  "tip": "Static = Safe and Small: no updates sent, no CPU spent on routing math.",
+  "why": "Static routes send no routing updates that someone could see or fake, which helps security. They also need no routing algorithm, so the router uses less CPU and memory."
+ },
+ "31": {
+  "cue": "static route to a specific network using the next-hop address",
+  "keys": [
+   "S 10.17.2.0/24 [1/0] via 10.16.2.2"
+  ],
+  "tip": "S + a specific network + 'via' an address = static route with a next hop. 0.0.0.0/0 is the default.",
+  "why": "The S code means static, 10.17.2.0/24 is a specific network, and 'via 10.16.2.2' is the next-hop address. 'Directly connected' would mean an exit interface was used instead."
+ },
+ "32": {
+  "cue": "spanning-tree portfast configuration command",
+  "keys": [
+   "enables portfast on a specific switch interface"
+  ],
+  "tip": "Typed under an interface, it affects only that port. PortFast = skip waiting, go straight to forwarding.",
+  "why": "Entered in interface config mode, spanning-tree portfast turns on PortFast for that one port. The port then goes straight to forwarding, which is meant for end devices."
+ },
+ "33": {
+  "cue": "IPv6 prefix that is used for link-local addresses",
+  "keys": [
+   "FE80::/10"
+  ],
+  "tip": "Link-local starts with FE80. FF = multicast, FC/FD = unique local, 2000 = global.",
+  "why": "IPv6 link-local addresses are in FE80::/10 and only work on the local link. FF00::/8 is multicast, FC00::/7 is unique local and 2000::/3 is global unicast."
+ },
+ "34": {
+  "cue": "characteristics of routed ports on a multilayer switch",
+  "keys": [
+   "core and distribution layers",
+   "not associated with a particular VLAN"
+  ],
+  "tip": "Routed port = 'no switchport'. It acts like a router port: no VLAN, used between core and distribution.",
+  "why": "A routed port is a physical switch port turned into a Layer 3 port with no switchport. It isn't in any VLAN and is mostly used for point-to-point links between core and distribution switches."
+ },
+ "35": {
+  "cue": "STP brings up a backup trunk link ... two VLANs",
+  "keys": [
+   "allowed VLANs on the backup link"
+  ],
+  "tip": "Only some VLANs broke after failover? The backup trunk's allowed VLAN list is missing them.",
+  "why": "Only two VLANs lost access when traffic moved to the backup trunk. That points to those VLANs not being on that trunk's allowed list, so their traffic can't cross it."
+ },
+ "36": {
+  "cue": "start the process to bundle two physical interfaces ... LACP",
+  "keys": [
+   "interface range GigabitEthernet 0/4 - 5"
+  ],
+  "tip": "Step 1: pick the ports with interface range. Then channel-group. Desirable and auto are PAgP, not LACP.",
+  "why": "You start by selecting the physical ports with interface range, then add them to the group. The modes desirable and auto belong to PAgP, while LACP uses active and passive."
+ },
+ "37": {
+  "cue": "frame entering a switch has a multicast destination",
+  "keys": [
+   "all ports except the incoming port"
+  ],
+  "tip": "Multicast and broadcast are treated alike by a basic switch: flood, but not back where it came from.",
+  "why": "A switch doesn't learn multicast MACs as normal entries, so by default it floods multicast frames out every port in the VLAN except the one they came in on."
+ },
+ "38": {
+  "cue": "traceroute to a device on the new network revealed a wrong path",
+  "keys": [
+   "exit interface on the new static route"
+  ],
+  "tip": "New route, wrong path? Check the new route itself first: its exit interface.",
+  "why": "The problem appeared right after the new route was added, so the route is the likely cause. A wrong exit interface sends traffic down the wrong path where it can't be reached."
+ },
+ "39": {
+  "cue": "PAgP channel establishment modes",
+  "keys": [
+   "auto",
+   "desirable",
+   "on"
+  ],
+  "tip": "PAgP: Auto, Desirable, On. LACP: Active, Passive, On. Passive is LACP.",
+  "why": "PAgP uses desirable (asks to form a channel), auto (waits to be asked) and on (forces it with no negotiation). Passive belongs to LACP."
+ },
+ "40": {
+  "cue": "destination network no longer exists ... remove the static route",
+  "keys": [
+   "no ip route"
+  ],
+  "tip": "Static routes are manual: you add them, you remove them with 'no ip route'.",
+  "why": "Static routes stay in the configuration until someone deletes them. The no ip route command removes it, since changing AD or metric would leave it there."
+ },
+ "41": {
+  "cue": "What can be concluded about the configuration shown on R1",
+  "keys": [
+   "DHCPv4 relay agent"
+  ],
+  "tip": "ip helper-address = relay. It forwards DHCP broadcasts as unicast to a server on another network.",
+  "why": "The ip helper-address command makes R1 a DHCP relay agent. It takes client DHCP broadcasts and forwards them as unicast to the DHCP server at 10.10.10.8."
+ },
+ "42": {
+  "cue": "switch boot sequence",
+  "keys": [
+   "execute POST",
+   "load the boot loader from ROM",
+   "flash file system initialization",
+   "transfer switch control to the IOS"
+  ],
+  "tip": "POST, boot loader, CPU init, flash, IOS, hand over. Think: test, load, wake, files, OS, go.",
+  "why": "The switch first tests hardware (POST), then loads the boot loader from ROM. The boot loader sets up the CPU and flash file system, loads the IOS and hands control to it."
+ },
+ "43": {
+  "cue": "PC1 is not able to receive an IPv4 address",
+  "keys": [
+   "applied on the wrong interface"
+  ],
+  "tip": "Put ip helper-address on the interface facing the CLIENTS, where the broadcasts arrive.",
+  "why": "The relay command must go on the interface that receives the clients' DHCP broadcasts, the LAN side of PC1. On any other interface, the router never sees PC1's requests."
+ },
+ "44": {
+  "cue": "default wireless router settings can affect network security",
+  "keys": [
+   "SSID is broadcast",
+   "well-known administrator password"
+  ],
+  "tip": "Two default risks: everyone sees the SSID, and everyone knows the default admin password.",
+  "why": "A broadcast SSID announces the network to anyone nearby, and a default admin password is published online. Both make it easier for an outsider to find and take over the router."
+ },
+ "45": {
+  "cue": "SNMP log messages ... sent to the SNMP server",
+  "keys": [
+   "traps"
+  ],
+  "tip": "SNMP agents 'trap' events and send them to the manager without being asked.",
+  "why": "In SNMP, a trap is an unrequested alert that a device sends to the SNMP manager when something happens, like a link going down."
+ },
+ "46": {
+  "cue": "Cisco 3500 series WLC ... create a new VLAN interface",
+  "keys": [
+   "CONTROLLER"
+  ],
+  "tip": "Interfaces live on the controller itself, so use the CONTROLLER tab. The WLAN is made later in WLANs.",
+  "why": "On a Cisco WLC, the interfaces (including VLAN interfaces) are settings of the controller, found under CONTROLLER > Interfaces. The WLANs tab is where you later link a WLAN to that interface."
+ },
+ "47": {
+  "cue": "change the default DHCP IPv4 addresses on an AP",
+  "keys": [
+   "well-known address range"
+  ],
+  "tip": "Defaults are public knowledge. Change the address range so outsiders can't guess it.",
+  "why": "Default address ranges are known to everyone, which makes it easier for an attacker to join or snoop on the network. Using your own range makes that harder."
+ },
+ "48": {
+  "cue": "WLC when using split media access control",
+  "keys": [
+   "frame translation to other protocols",
+   "association and re-association of roaming clients"
+  ],
+  "tip": "Split MAC: AP does real-time radio work (beacons, ACKs, queues). WLC does the management: roaming and translation.",
+  "why": "With split MAC, the AP handles time-sensitive radio jobs like beacons and acknowledgments. The WLC handles management jobs, like associating roaming clients and translating frames to other protocols."
+ },
+ "49": {
+  "cue": "BPDU guard be enabled to enhance STP stability",
+  "keys": [
+   "PortFast-enabled ports"
+  ],
+  "tip": "PortFast and BPDU guard go together: edge ports should never hear BPDUs.",
+  "why": "PortFast ports connect to end devices and skip STP checks. BPDU guard shuts such a port down if a BPDU shows up, which means someone plugged in a switch."
+ },
+ "50": {
+  "cue": "mitigated by enabling BPDU guard",
+  "keys": [
+   "rogue switches"
+  ],
+  "tip": "Only switches send BPDUs. BPDU on an edge port = rogue switch, so shut it.",
+  "why": "BPDUs come from switches, not PCs. If one arrives on an edge port, BPDU guard disables the port, stopping a rogue switch from joining or taking over STP."
+ },
+ "51": {
+  "cue": "DHCP snooping required when using the Dynamic ARP Inspection",
+  "keys": [
+   "binding database"
+  ],
+  "tip": "DAI checks ARP against DHCP snooping's list of who got which IP.",
+  "why": "DHCP snooping builds a table of which MAC got which IP on which port. DAI compares each ARP packet to that table and drops ones that don't match, so it needs snooping first."
+ },
+ "52": {
+  "cue": "traffic is using the backup link even when the OSPF link is up",
+  "keys": [
+   "120"
+  ],
+  "tip": "OSPF AD is 110. A floating route must be HIGHER than 110, so 120 works and 100 doesn't.",
+  "why": "The static route's AD of 100 is lower than OSPF's 110, so the router prefers it. Raising it to 120 makes OSPF win while it's up, and the static route only appears if OSPF fails."
+ },
+ "53": {
+  "cue": "metric to forward a data packet with the IPv6 destination",
+  "keys": [
+   "2682112"
+  ],
+  "tip": "Match the destination to its route prefix first, then read the second number in the brackets: [AD/metric].",
+  "why": "The address falls in the 2001:DB8:ACAD:E::/64 route. In the routing table, that route shows [90/2682112], and the second number is the metric."
+ },
+ "54": {
+  "cue": "new Cisco switch for remote management access",
+  "keys": [
+   "IP address",
+   "vty lines",
+   "default gateway"
+  ],
+  "tip": "To reach a switch remotely: give it an IP, open the vty lines, and set a default gateway.",
+  "why": "The switch needs an IP address on an SVI to be reachable, vty lines for Telnet or SSH logins, and a default gateway so it can reply to admins on other networks."
+ },
+ "55": {
+  "cue": "respond to stateless DHCPv6 requests",
+  "keys": [
+   "ipv6 nd other-config-flag"
+  ],
+  "tip": "Stateless = O flag ('other' info). Stateful = M flag ('managed').",
+  "why": "The other-config-flag sets the O flag in RAs. It tells hosts to make their own address with SLAAC but ask the DHCPv6 server for other details like DNS. That is stateless DHCPv6."
+ },
+ "56": {
+  "cue": "Layer 3 switch routes for three VLANs and connects to a router",
+  "keys": [
+   "no switchport",
+   "ip routing"
+  ],
+  "tip": "Layer 3 switch to router: 'ip routing' to turn on routing, 'no switchport' to make a routed port.",
+  "why": "ip routing lets the switch route between VLANs. The uplink to the router becomes a routed port with no switchport and an IP on the same /30 as the router."
+ },
+ "58": {
+  "cue": "switched to a new ISP ... not able to access the internet",
+  "keys": [
+   "old default route has been removed"
+  ],
+  "tip": "New ISP, no Internet? The old default route still points to the old ISP.",
+  "why": "If the old default route is still there, traffic keeps going to the old ISP. Removing it lets the new default route toward the new ISP be used."
+ },
+ "59": {
+  "cue": "information does a switch use to populate the MAC address table",
+  "keys": [
+   "source MAC address and the incoming port"
+  ],
+  "tip": "Learn from SOURCE, forward by DESTINATION.",
+  "why": "When a frame arrives, the switch notes the sender's MAC and the port it came in on. Later frames for that MAC go out that port. The destination MAC is only used for forwarding."
+ },
+ "60": {
+  "cue": "group multiple physical ports into one logical link",
+  "keys": [
+   "PAgP"
+  ],
+  "tip": "Mode desirable or auto in the config = PAgP. Active or passive = LACP.",
+  "why": "The configuration uses channel-group with a PAgP mode (desirable or auto). Those modes belong to PAgP, Cisco's EtherChannel protocol, while LACP uses active and passive."
+ },
+ "61": {
+  "cue": "greater administrative distance to provide a backup route",
+  "keys": [
+   "floating static route"
+  ],
+  "tip": "Floating = it floats above the main route and only drops in when that route dies.",
+  "why": "A floating static route has a higher AD than the dynamic route, so it stays out of the table. If the dynamic route disappears, the floating route is installed as the backup."
+ },
+ "62": {
+  "cue": "unicast destination MAC address appearing in the MAC address table",
+  "keys": [
+   "out of the specified port"
+  ],
+  "tip": "Known unicast = send it only out the port in the table. Unknown = flood.",
+  "why": "If the destination MAC is in the table, the switch knows exactly where that device is. It forwards the frame only out that port, instead of flooding."
+ },
+ "63": {
+  "cue": "static route on R2 in order to reach PC B",
+  "keys": [
+   "172.16.2.0 255.255.255.0 172.16.3.1"
+  ],
+  "tip": "Route = network ID (ends in .0) + mask + the NEIGHBOR's address on your shared link (172.16.3.1).",
+  "why": "PC B is on network 172.16.2.0/24. R2 reaches it through R1, whose address on the shared serial link is 172.16.3.1. A host address like 172.16.2.1 or R1's far LAN address won't work as the route."
+ },
+ "64": {
+  "cue": "allows data to transmit over redundant switch links",
+  "keys": [
+   "EtherChannel"
+  ],
+  "tip": "STP blocks extra links. EtherChannel bundles them so ALL carry data.",
+  "why": "EtherChannel groups several physical links into one logical link. STP sees just one link, so nothing gets blocked and traffic is shared across all the members."
+ },
+ "65": {
+  "cue": "Which three hosts will receive ARP requests from host A",
+  "keys": [
+   "host C",
+   "host D",
+   "host F"
+  ],
+  "tip": "ARP is a broadcast, and broadcasts stay inside one VLAN. Find every host in host A's VLAN, on both switches.",
+  "why": "An ARP request is a broadcast, so it only reaches hosts in the same VLAN as host A. The trunk on Fa0/4 carries that VLAN to the other switch, so hosts C, D and F in that VLAN get it."
+ },
+ "66": {
+  "cue": "host C is unable to ping host D and host E is unable to ping host F",
+  "keys": [
+   "dynamic desirable"
+  ],
+  "tip": "auto + auto = no trunk. Someone has to ask: make one side desirable.",
+  "why": "Both trunk ports are dynamic auto, which only waits for the other side to ask. With neither side asking, no trunk forms. Setting one side to dynamic desirable starts the negotiation."
+ },
+ "67": {
+  "cue": "shutdown configuration command on a switch",
+  "keys": [
+   "disables an unused port"
+  ],
+  "tip": "shutdown = turn the port off. Good practice for every unused port.",
+  "why": "The shutdown command administratively disables an interface. Shutting down unused ports stops someone from just plugging in and getting access."
+ },
+ "68": {
+  "cue": "primary reason an attacker would launch a MAC address overflow",
+  "keys": [
+   "see frames that are destined for other hosts"
+  ],
+  "tip": "Full MAC table = switch acts like a hub = attacker sees everyone's frames.",
+  "why": "When the MAC table is full, the switch floods frames out every port. The attacker can then capture traffic meant for other hosts."
+ },
+ "69": {
+  "cue": "AAA process, when will authorization be implemented",
+  "keys": [
+   "after successful authentication"
+  ],
+  "tip": "AAA order: Authenticate (who are you), Authorize (what can you do), Account (what did you do).",
+  "why": "Authorization decides what a user may do, so it only happens once the user has proven who they are. That means right after successful authentication."
+ },
+ "70": {
+  "cue": "added to both the MAC address table and the running configuration",
+  "keys": [
+   "sticky"
+  ],
+  "tip": "Sticky = learned addresses STICK in the running config.",
+  "why": "Sticky secure MAC addresses are learned dynamically like normal ones, but the switch also writes them into the running configuration. Plain dynamic ones are not saved to the config."
+ },
+ "71": {
+  "cue": "Wi-Fi standards operate in the 2.4GHz",
+  "keys": [
+   "802.11b",
+   "802.11g",
+   "802.11n"
+  ],
+  "tip": "2.4 GHz: b, g, n. 5 GHz: a, ac (n can do both).",
+  "why": "802.11b and 802.11g use 2.4 GHz, and 802.11n can use 2.4 or 5 GHz. 802.11a and 802.11ac only use 5 GHz."
+ },
+ "72": {
+  "cue": "show spanning-tree command",
+  "keys": [
+   "root bridge BID",
+   "role of the ports"
+  ],
+  "tip": "show spanning-tree shows WHO is root (BID) and WHAT each port is doing (role and state).",
+  "why": "show spanning-tree lists the root bridge ID and each port's role (root, designated, alternate) and state for every VLAN. It doesn't show broadcast counts or management IPs."
+ },
+ "73": {
+  "cue": "trunk link will not forward any traffic after the root bridge election",
+  "keys": [
+   "Trunk2"
+  ],
+  "tip": "Find the root (lowest BID). The link farthest from it, between two non-root switches, gets a blocked port.",
+  "why": "Once the root bridge is chosen, every switch picks its best path to it. The one redundant link left, Trunk2, has a port put into blocking to break the loop, so it carries no traffic."
+ },
+ "74": {
+  "cue": "IPv6 prefix assignment relies on the prefix contained in RA messages",
+  "keys": [
+   "SLAAC"
+  ],
+  "tip": "SLAAC = Stateless Address AutoConfig: take the prefix from the RA, add your own interface ID.",
+  "why": "With SLAAC, the host reads the network prefix from the router's RA message and builds its own address from it. No DHCPv6 server hands out the address."
+ },
+ "75": {
+  "cue": "server-based AAA authentication",
+  "keys": [
+   "TACACS+",
+   "RADIUS"
+  ],
+  "tip": "AAA servers: TACACS+ (Cisco, TCP) and RADIUS (open standard, UDP).",
+  "why": "TACACS+ and RADIUS are the two protocols devices use to check logins against a central AAA server. SSH and SNMP are not authentication server protocols."
+ },
+ "76": {
+  "cue": "disable the broadcast feature for the SSID",
+  "keys": [
+   "outsiders scanning for available SSIDs"
+  ],
+  "tip": "Hide the SSID = it won't show in a casual Wi-Fi scan list.",
+  "why": "When SSID broadcast is off, the network name doesn't appear in the list of nearby networks, so casual outsiders scanning the area don't see it. It isn't real encryption, just less visibility."
+ },
+ "77": {
+  "cue": "prevent rogue servers from providing false IP configuration",
+  "keys": [
+   "DHCP snooping"
+  ],
+  "tip": "DHCP snooping trusts only the port where the real DHCP server lives. Offers on other ports get dropped.",
+  "why": "DHCP snooping marks ports as trusted or untrusted. DHCP server replies arriving on untrusted ports are dropped, so a rogue DHCP server can't hand out fake settings."
+ },
+ "78": {
+  "cue": "unknown source MAC address is dropped and a notification is sent",
+  "keys": [
+   "restrict"
+  ],
+  "tip": "Protect = drop silently. Restrict = drop + report. Shutdown = kill the port.",
+  "why": "Restrict mode drops frames from unknown MACs and also sends a log message and counts the violation. Protect drops quietly, and shutdown disables the whole port."
+ },
+ "79": {
+  "cue": "one of them defined as active and another one as standby",
+  "keys": [
+   "HSRP"
+  ],
+  "tip": "HSRP = Hot Standby Router Protocol. Active router works, standby waits.",
+  "why": "HSRP groups routers that share a virtual gateway address. One is active and forwards traffic, and the standby takes over if the active one fails."
+ },
+ "80": {
+  "cue": "users on VLAN 20 report that they are unable to reach users on VLAN 30",
+  "keys": [
+   "same subnet for VLAN 20 and VLAN 30"
+  ],
+  "tip": "Each VLAN needs its own subnet. Same subnet on two subinterfaces = overlap error.",
+  "why": "Each subinterface must be in a different subnet. When the same subnet is used for VLAN 20 and VLAN 30, the router rejects the overlap with an error and routing between them fails."
+ },
+ "81": {
+  "cue": "trunking modes will establish a functional trunk link",
+  "keys": [
+   "dynamic desirable - trunk",
+   "dynamic desirable - dynamic desirable",
+   "dynamic desirable - dynamic auto"
+  ],
+  "tip": "A trunk needs at least one side that asks (desirable) or forces (trunk). Auto + auto never forms one.",
+  "why": "Desirable actively asks to trunk, so it works with trunk, desirable or auto. Auto only answers, so auto with auto fails, and an access port never trunks."
+ },
+ "82": {
+  "cue": "doesn't need the complexity of a dynamic routing protocol",
+  "keys": [
+   "static routes to all internal networks",
+   "default route to the internet"
+  ],
+  "tip": "No routing protocol = static routes inside + one default route outside.",
+  "why": "Without a dynamic protocol, the router needs a static route to each internal network it doesn't connect to directly, and a default route for everything on the Internet."
+ },
+ "83": {
+  "cue": "802.11g ... wireless channels are not overlapping",
+  "keys": [
+   "1, 6, and 11"
+  ],
+  "tip": "2.4 GHz non-overlapping trio: 1, 6, 11.",
+  "why": "2.4 GHz channels are 5 MHz apart but each is about 22 MHz wide, so neighbors overlap. Channels 1, 6 and 11 are far enough apart that they don't interfere in North America."
+ },
+ "84": {
+  "cue": "WPA2 PSK method. Which credential do office users need",
+  "keys": [
+   "a key that matches the key on the AP"
+  ],
+  "tip": "PSK = Pre-Shared Key. Everyone types the same key that's on the AP.",
+  "why": "With WPA2 Personal (PSK), there are no user accounts. Every user just enters the same pre-shared key that is configured on the AP."
+ },
+ "97": {
+  "cue": "preventing them from being able to obtain a DHCP lease",
+  "keys": [
+   "DHCP starvation"
+  ],
+  "tip": "Starvation = eat every address so real clients go hungry. Spoofing = pretend to be the server.",
+  "why": "In DHCP starvation, the attacker requests every address in the pool with fake MACs. The pool runs empty, so real clients can't get a lease. That is a denial of service."
+ },
+ "98": {
+  "cue": "default gateway router and the DNS server are correct",
+  "keys": [
+   "default gateway router is not contained in the excluded address list"
+  ],
+  "tip": "Exclude the router's own IP from the pool, or DHCP may hand it to a PC.",
+  "why": "The router's gateway address is inside the pool but not excluded, so DHCP could give that address to a client and cause a conflict. Statically used addresses must be excluded."
+ },
+ "99": {
+  "cue": "new subnet to receive IPv4 addresses from the DHCPv4 server",
+  "keys": [
+   "ip helper-address 10.2.0.250",
+   "interface G0/0"
+  ],
+  "tip": "Helper address goes on the router port facing the new clients, pointing to the DHCP server's IP.",
+  "why": "R1's G0/0 faces the new subnet, so that's where the client broadcasts arrive. Adding ip helper-address 10.2.0.250, the DHCP server's address, there relays the requests to the server."
+ },
+ "100": {
+  "cue": "source IP to destination IP as a load-balancing mechanism",
+  "keys": [
+   "EtherChannel"
+  ],
+  "tip": "EtherChannel spreads traffic over its links using a hash like src-dst IP.",
+  "why": "EtherChannel decides which member link each flow uses with a load-balancing method, such as source and destination IP. That spreads traffic across the bundle."
+ },
+ "101": {
+  "cue": "disabled to help mitigate VLAN attacks",
+  "keys": [
+   "DTP"
+  ],
+  "tip": "No DTP = no surprise trunks. Set ports to access or trunk by hand.",
+  "why": "DTP auto-negotiates trunks, which lets an attacker trick a port into trunking and reach all VLANs. Turning DTP off stops that VLAN hopping trick."
+ },
+ "102": {
+  "cue": "requires switches to be in server mode or client mode",
+  "keys": [
+   "VTP"
+  ],
+  "tip": "VTP modes: server, client, transparent. Server shares VLANs, clients take them.",
+  "why": "VTP shares VLAN info between switches. Switches run as servers (make changes), clients (receive changes) or transparent (pass updates along)."
+ },
+ "103": {
+  "cue": "segment a network with a Layer 2 switch",
+  "keys": [
+   "enhance user bandwidth",
+   "isolate traffic between segments"
+  ],
+  "tip": "Switch = more collision domains = more bandwidth each and traffic kept on its own segment. Broadcasts still pass.",
+  "why": "A switch makes each port its own collision domain, so users share bandwidth with fewer devices. It also only sends unicast frames where they belong, isolating traffic. It does not stop broadcasts."
+ },
+ "104": {
+  "cue": "begin sending messages that allow it to configure a link-local address",
+  "keys": [
+   "ipv6 unicast-routing"
+  ],
+  "tip": "ipv6 unicast-routing turns the router into an IPv6 router, so it starts sending RAs.",
+  "why": "Only after ipv6 unicast-routing is on does the router act as an IPv6 router and send Router Advertisements. Hosts use those RAs to set themselves up without a DHCPv6 server."
+ },
+ "105": {
+  "cue": "router-on-a-stick ... switch port that connects to the router",
+  "keys": [
+   "802.1q trunk port"
+  ],
+  "tip": "One cable, many VLANs = trunk. Router-on-a-stick always uses an 802.1Q trunk.",
+  "why": "Router-on-a-stick sends many VLANs over one link, so the switch port must be an 802.1Q trunk. The tags let the router's subinterfaces tell the VLANs apart."
+ },
+ "108": {
+  "cue": "use the show interfaces switch command",
+  "keys": [
+   "packets are being dropped"
+  ],
+  "tip": "show interfaces = counters: errors, drops, collisions. Use it when packets go missing on a port.",
+  "why": "show interfaces shows detailed per-port counters like input errors, CRC errors and drops. That makes it the tool for finding why traffic from one attached host is being lost."
+ },
+ "109": {
+  "cue": "drawback of the local database method",
+  "keys": [
+   "configured locally on each device"
+  ],
+  "tip": "Local accounts = type them on every box. Central AAA = one place for all.",
+  "why": "With a local database, every user account must be added to every device, which doesn't scale. A central AAA server keeps one set of accounts for all devices."
+ },
+ "110": {
+  "cue": "receives more than one DHCPOFFER",
+  "keys": [
+   "DHCPREQUEST"
+  ],
+  "tip": "DORA: Discover, Offer, Request, Ack. Many offers? Pick one with a Request.",
+  "why": "The client picks one offer and broadcasts a DHCPREQUEST naming that server. The chosen server confirms with an ACK, and the others know their offers were declined."
+ },
+ "111": {
+  "cue": "show port-security interface fa 0/2",
+  "keys": [
+   "port is currently up",
+   "shut down immediately",
+   "access mode"
+  ],
+  "tip": "Port security only runs on access ports. Default violation mode is shutdown.",
+  "why": "The output shows the port status as secure-up, so it is up. Violation mode is shutdown, which disables the port at once. Port security only works on access ports, so the port is in access mode."
+ },
+ "112": {
+  "cue": "wireless authentication is dependent on a RADIUS",
+  "keys": [
+   "WPA2 Enterprise"
+  ],
+  "tip": "Personal = shared password. Enterprise = each user logs in through a RADIUS server.",
+  "why": "WPA2 Enterprise uses 802.1X, where each user's login is checked by a RADIUS server. Personal modes just use one shared key on the AP."
+ },
+ "113": {
+  "cue": "double-tagged 802.1Q frame",
+  "keys": [
+   "different VLANs than any native VLANs"
+  ],
+  "tip": "Double tagging only works if the attacker sits in the native VLAN. Keep users out of it.",
+  "why": "Double tagging needs the attacker's access VLAN to match the trunk's native VLAN, so the outer tag gets stripped. Using a native VLAN that no user port belongs to blocks the attack."
+ },
+ "114": {
+  "cue": "Which two conclusions can be drawn from the output",
+  "keys": [
+   "EtherChannel is down",
+   "port channel ID is 2"
+  ],
+  "tip": "In show etherchannel summary: Po2 = group 2. Flag D = down, U = in use.",
+  "why": "The summary lists Po2, so the port channel ID is 2. Its flags show it is down (D), not in use (U), so the bundle is not working."
+ },
+ "115": {
+  "cue": "HSRP failover process",
+  "keys": [
+   "The forwarding router fails.",
+   "stops seeing hello messages",
+   "assumes the role of the forwarding router"
+  ],
+  "tip": "Fail, silence, take over. The host doesn't ARP again, since the virtual MAC stays the same.",
+  "why": "First the active router fails. The standby then stops hearing its hello messages, and finally takes over using the same virtual IP and MAC. Hosts don't need a new ARP."
+ },
+ "116": {
+  "cue": "Cisco 3504 WLC Summary page ... WPA2 policy",
+  "keys": [
+   "WLANs"
+  ],
+  "tip": "Settings for one WLAN (like its WPA2 security) live under the WLANs tab.",
+  "why": "On the WLC, each WLAN is edited from the WLANs tab, which has its own Security sub-tab where you set WPA2. The SECURITY tab is for global things like RADIUS servers."
+ },
+ "117": {
+  "cue": "default route to the Internet ... IPv6 destination",
+  "keys": [
+   "ipv6 route ::/0 serial 0/1/1"
+  ],
+  "tip": "IPv6 default = ::/0. Then pick the interface that faces the Internet.",
+  "why": "::/0 is the IPv6 default route that matches every destination. It must go out serial 0/1/1, the link to the Internet. ip route is IPv4 only."
+ },
+ "118": {
+  "cue": "sporadic access to the internet every afternoon",
+  "keys": [
+   "oversaturation"
+  ],
+  "tip": "Same time every day = busy hour. Check if the default route's link is overloaded.",
+  "why": "Problems at the same time each day point to too much traffic, not a broken config. Checking the default route link's statistics shows whether it is saturated."
+ },
+ "119": {
+  "cue": "source MAC address ... associated with a different port",
+  "keys": [
+   "replaces the old entry"
+  ],
+  "tip": "Device moved? The switch updates its table to the newest port.",
+  "why": "If a known MAC shows up on a different port, the device has likely moved. The switch replaces the old entry with the new port so frames go to the right place."
+ },
+ "120": {
+  "cue": "Why would the administrator use a WLAN controller",
+  "keys": [
+   "group configuration and management"
+  ],
+  "tip": "A WLC is a central brain: configure and manage many WLANs and APs as a group.",
+  "why": "A WLAN controller lets you configure and manage many APs and WLANs from one place instead of one by one. That makes group changes easy."
+ },
+ "121": {
+  "cue": "Layer 3 switch ... interVLAN routing (creating SVI)",
+  "keys": [
+   "creating SVI interfaces",
+   "enabling IP routing",
+   "assigning ports to VLANs"
+  ],
+  "tip": "Layer 3 switch steps: make VLANs, put ports in them, make SVIs, turn on ip routing, set the routed uplink.",
+  "why": "The five steps are creating VLANs, assigning ports to them, creating SVIs as gateways, enabling IP routing and configuring the routed port to the router. Metrics and the default VLAN aren't part of it."
+ },
+ "122": {
+  "cue": "Layer 3 switch ... interVLAN routing [Case 1]",
+  "keys": [
+   "no switchport",
+   "assigning ports to VLANs",
+   "enabling IP routing"
+  ],
+  "tip": "VLANs, ports in VLANs, SVIs, ip routing, and 'no switchport' on the uplink to the router.",
+  "why": "The uplink to the router becomes a routed port with no switchport, ports are placed in VLANs and ip routing turns on routing. Static routes, metrics and the native VLAN aren't required steps."
+ },
+ "123": {
+  "cue": "Layer 3 switch ... interVLAN routing [Case 2]",
+  "keys": [
+   "assigning ports to VLANs",
+   "creating SVI interfaces",
+   "creating VLANs"
+  ],
+  "tip": "Build order: create VLANs, assign ports, create SVIs. No routing protocol needed for local VLANs.",
+  "why": "You must first create the VLANs, then put ports into them, then make an SVI for each VLAN as its gateway. Routing protocols and adjacencies aren't needed to route between local VLANs."
+ },
+ "124": {
+  "cue": "Layer 3 switch ... interVLAN routing [Case 3]",
+  "keys": [
+   "assigning ports to VLANs",
+   "enabling IP routing",
+   "no switchport"
+  ],
+  "tip": "Ports into VLANs, ip routing on, 'no switchport' on the router link. Leave the default VLAN alone.",
+  "why": "Ports go into their VLANs, ip routing turns on Layer 3 forwarding and the router link becomes a routed port with no switchport. Changing or deleting the default VLAN isn't needed (and VLAN 1 can't be deleted)."
+ },
+ "125": {
+  "cue": "Layer 3 switch ... interVLAN routing [Case 4]",
+  "keys": [
+   "enabling IP routing",
+   "assigning ports to VLANs",
+   "creating SVI interfaces"
+  ],
+  "tip": "SVI = the VLAN's gateway. Ports in VLANs + SVIs + ip routing = interVLAN routing.",
+  "why": "Hosts use each VLAN's SVI as their gateway, ports must be in the right VLANs and ip routing must be on for the switch to route. A routing protocol or static route isn't one of the five steps."
+ },
+ "126": {
+  "cue": "Layer 3 switch ... interVLAN routing [Case 5]",
+  "keys": [
+   "assigning ports to VLANs",
+   "enabling IP routing",
+   "creating SVI interfaces"
+  ],
+  "tip": "Remember the trio here: ports to VLANs, SVIs, ip routing.",
+  "why": "Assigning ports to VLANs, creating an SVI per VLAN and enabling ip routing are core steps. The native VLAN, default VLAN, static routes and routing protocols aren't part of the basic setup."
+ },
+ "127": {
+  "cue": "Layer 3 switch ... interVLAN routing [Case 6]",
+  "keys": [
+   "enabling IP routing",
+   "no switchport",
+   "assigning ports to VLANs"
+  ],
+  "tip": "Routed uplink ('no switchport') + ports in VLANs + ip routing. No adjacencies or metrics.",
+  "why": "The switch needs ip routing on, its ports in the right VLANs and the link to the router turned into a routed port with no switchport. Adjacencies and metrics belong to routing protocols, not these steps."
+ },
+ "128": {
+  "cue": "duplex and speed settings on Cisco 2960 switches",
+  "keys": [
+   "autonegotiation failure",
+   "1000 Mb/s",
+   "manually configured"
+  ],
+  "tip": "Auto by default, can be set by hand, gigabit is always full duplex, and a failed negotiation causes trouble.",
+  "why": "2960 ports autonegotiate by default but you can set speed and duplex by hand. Gigabit runs full duplex only. If negotiation fails you can get a duplex mismatch and poor connectivity."
+ },
+ "129": {
+  "cue": "R1 for inter-VLAN routing between VLAN 10 and VLAN 20",
+  "keys": [
+   "encapsulation is misconfigured"
+  ],
+  "tip": "Each subinterface needs 'encapsulation dot1q <its VLAN>'. A wrong VLAN number breaks that VLAN.",
+  "why": "Each subinterface must use encapsulation dot1Q with the VLAN number it serves. In the exhibit one subinterface has the wrong VLAN, so its traffic doesn't match the switch's tags."
+ },
+ "130": {
+  "cue": "spanning-tree portfast bpduguard default",
+  "keys": [
+   "PortFast is not configured"
+  ],
+  "tip": "The global 'bpduguard default' only covers PortFast ports. No PortFast, no BPDU guard.",
+  "why": "The global command turns on BPDU guard only for ports that have PortFast enabled. Access ports without PortFast don't get BPDU guard."
+ },
+ "131": {
+  "cue": "only one spanning-tree instance for the entire bridged network",
+  "keys": [
+   "RSTP",
+   "STP"
+  ],
+  "tip": "No 'PV' (per-VLAN) in the name = one tree for all VLANs: STP and RSTP.",
+  "why": "Plain STP (802.1D) and RSTP (802.1w) run one spanning tree for all VLANs, so you can't load share by VLAN. PVST+ and Rapid PVST+ run one tree per VLAN, and MSTP maps VLANs to several trees."
+ },
+ "132": {
+  "cue": "IPv6 global unicast address assignment scheme",
+  "keys": [
+   "stateful"
+  ],
+  "tip": "managed-config-flag = M flag = stateful DHCPv6 gives out the addresses.",
+  "why": "The config sets the managed-config-flag (M flag) and a DHCPv6 pool with an address prefix. That tells hosts to get their address from the DHCPv6 server, which is stateful."
+ },
+ "133": {
+  "cue": "CAPWAP protocol with the DTLS feature",
+  "keys": [
+   "disabled by default for the data channel"
+  ],
+  "tip": "DTLS on CAPWAP: control channel ON by default, data channel OFF by default.",
+  "why": "CAPWAP has a control channel and a data channel. DTLS encrypts the control channel by default, but data channel encryption must be turned on separately, so data is plain text."
+ },
+ "134": {
+  "cue": "receive VLAN updates from the VTP domain",
+  "keys": [
+   "VTP client",
+   "existing VTP domain name"
+  ],
+  "tip": "Want updates but no edits? Be a client in the same domain.",
+  "why": "A VTP client gets VLAN updates but can't create VLANs. It must have the same VTP domain name as the others, or it will ignore their updates."
+ },
+ "135": {
+  "cue": "PC3 issues a broadcast IPv4 DHCP request",
+  "keys": [
+   "Fa0/1, Fa0/2, and Fa0/3 only"
+  ],
+  "tip": "Broadcast goes out every port in the same VLAN except the one it came in on.",
+  "why": "A DHCP request is a broadcast, so SW1 floods it out all ports in that VLAN except the port PC3 is on. That leaves Fa0/1, Fa0/2 and Fa0/3."
+ },
+ "136": {
+  "cue": "source MAC not in the MAC address table",
+  "keys": [
+   "adds the MAC address and incoming port number"
+  ],
+  "tip": "New source = learn it: write down MAC + incoming port.",
+  "why": "The switch learns from source addresses. A new source MAC gets added to the table with the port it came in on, so later frames to it can go straight there."
+ },
+ "137": {
+  "cue": "source MAC address ... not in the MAC address table [Case 2]",
+  "keys": [
+   "adds the MAC address and incoming port number"
+  ],
+  "tip": "Switches learn SOURCE MACs only. Unknown source = add it with its incoming port.",
+  "why": "A switch builds its table from the source MAC of each incoming frame. If that MAC is new, it records it with the incoming port. It never learns from destination addresses."
+ },
+ "138": {
+  "cue": "unable to connect to servers on one of the internal networks",
+  "keys": [
+   "show ip interface brief"
+  ],
+  "tip": "One internal network unreachable? First check if its interface is down: show ip interface brief.",
+  "why": "If only one internal network is unreachable, the interface facing it may be down. show ip interface brief quickly lists every interface with its up or down status."
+ },
+ "139": {
+  "cue": "ip dhcp snooping configuration command",
+  "keys": [
+   "DHCP snooping globally"
+  ],
+  "tip": "Typed in global config with no extras = turns the feature on for the whole switch.",
+  "why": "The ip dhcp snooping command, entered in global configuration mode, turns DHCP snooping on for the whole switch. You then pick VLANs and trusted ports separately."
+ },
+ "140": {
+  "cue": "packets are being dropped on one of the branch routers",
+  "keys": [
+   "missing static route"
+  ],
+  "tip": "Router drops packets it has no route for. Look for the missing route.",
+  "why": "A router drops packets when it has no matching route and no default route. Checking the routing table shows whether a needed static route is missing."
+ },
+ "141": {
+  "cue": "switch characteristics that could help alleviate network congestion",
+  "keys": [
+   "fast internal switching",
+   "large frame buffers"
+  ],
+  "tip": "Fight congestion with speed (fast switching) and space (big buffers).",
+  "why": "Fast internal switching moves frames through quickly, and large buffers hold frames during bursts instead of dropping them. Both help a busy switch keep up."
+ },
+ "142": {
+  "cue": "result of connecting two or more switches together",
+  "keys": [
+   "size of the broadcast domain is increased"
+  ],
+  "tip": "More switches = bigger broadcast domain, not more of them. Only routers split broadcast domains.",
+  "why": "Switches forward broadcasts to each other, so linking them makes one larger broadcast domain. The number of broadcast domains stays the same."
+ },
+ "143": {
+  "cue": "no connectivity with the site since lunch time",
+  "keys": [
+   "static route to the server is present"
+  ],
+  "tip": "Worked this morning, not now? Check that the route to that site is still in the table.",
+  "why": "One site stopped working while it was fine earlier, so the route to it may have disappeared, for example when its exit interface went down. Checking the routing table for that static route confirms it."
+ },
+ "144": {
+  "cue": "switchport port-security configuration command",
+  "keys": [
+   "enables port security on an interface"
+  ],
+  "tip": "switchport commands are interface commands, so this turns on port security on that one port.",
+  "why": "switchport port-security is entered in interface configuration mode and turns on port security for that port only. There is no global port security on/off command."
+ },
+ "145": {
+  "cue": "use multiple lightweight APs",
+  "keys": [
+   "group configuration and management"
+  ],
+  "tip": "Lightweight APs are managed by a WLC, so you configure them as a group.",
+  "why": "Lightweight APs don't work alone, they get their settings from a WLC. That lets you configure and manage many APs and WLANs together from one place."
+ },
+ "146": {
+  "cue": "PC-A and PC-B are both in VLAN 60",
+  "keys": [
+   "not in the list of allowed VLANs"
+  ],
+  "tip": "Same VLAN but can't talk across a trunk? Check the trunk's allowed VLAN list.",
+  "why": "The trunk's allowed VLAN list doesn't include VLAN 60, so frames from PC-A's VLAN aren't carried to the other switch. Adding VLAN 60 to the allowed list fixes it."
+ },
+ "147": {
+  "cue": "use RADIUS servers on the network",
+  "keys": [
+   "authorized, authenticated users only"
+  ],
+  "tip": "RADIUS = login checker. Only users who prove who they are get in.",
+  "why": "A RADIUS server checks each user's credentials, as with WPA2 Enterprise. Only users who authenticate and are authorized can join the WLAN."
+ },
+ "148": {
+  "cue": "switchport mode access configuration command",
+  "keys": [
+   "disables DTP on a non-trunking interface"
+  ],
+  "tip": "Mode access = never a trunk, so DTP negotiation isn't needed.",
+  "why": "Setting a port to switchport mode access makes it a permanent non-trunk port. It won't try to negotiate a trunk with DTP, which helps block VLAN hopping."
+ },
+ "149": {
+  "cue": "stateless DHCPv6 ... not receiving DNS server information",
+  "keys": [
+   "dns-server line",
+   "ipv6 nd other-config-flag"
+  ],
+  "tip": "Stateless DHCPv6 needs two things: the O flag on the LAN interface and the DNS info in the pool.",
+  "why": "The other-config-flag tells hosts to ask DHCPv6 for extra info. The dns-server line in the pool is the DNS info they get. Without either one, hosts won't receive the DNS server."
+ },
+ "152": {
+  "cue": "unicast destination MAC address that is not in the MAC address table",
+  "keys": [
+   "all ports except the incoming port"
+  ],
+  "tip": "Unknown unicast = flood, but never back out the port it came in on.",
+  "why": "If the switch doesn't know where the destination is, it floods the frame out all ports in the VLAN except the incoming one. When the device replies, the switch learns its port."
+ },
+ "154": {
+  "cue": "ip arp inspection vlan 10",
+  "keys": [
+   "enables DAI"
+  ],
+  "tip": "ip arp inspection = DAI. It relies on DHCP snooping's binding table.",
+  "why": "This command turns on Dynamic ARP Inspection for VLAN 10. DAI checks ARP packets against the DHCP snooping bindings, so snooping must already be set up."
+ },
+ "155": {
+  "cue": "manages trunk negotiations between switches",
+  "keys": [
+   "DTP"
+  ],
+  "tip": "DTP = Dynamic Trunking Protocol: it decides if a link becomes a trunk.",
+  "why": "DTP is the Cisco protocol that lets two switch ports agree on whether to form a trunk, based on modes like dynamic auto and dynamic desirable."
+ },
+ "156": {
+  "cue": "apply WPA2 with AES to the WLAN",
+  "keys": [
+   "privacy and integrity"
+  ],
+  "tip": "Encryption = privacy (nobody reads it) + integrity (nobody changes it).",
+  "why": "WPA2 with AES encrypts wireless traffic so eavesdroppers can't read it and adds checks so it can't be changed in transit. That gives privacy and integrity."
+ },
+ "157": {
+  "cue": "unable to get to a company web server but are able to get elsewhere",
+  "keys": [
+   "static route to the server is present"
+  ],
+  "tip": "Only one destination fails? Check the route to that one destination.",
+  "why": "Since everything else works, the general setup is fine. The problem is specific to the server, so check that the static route to its network is in the routing table."
+ },
+ "158": {
+  "cue": "IPv6 prefix is designed for link-local communication",
+  "keys": [
+   "fe80::/10"
+  ],
+  "tip": "fe80 = 'link-local'. ff00 = multicast, fc00 = unique local, 2000 = global.",
+  "why": "IPv6 link-local addresses use fe80::/10 and only work on one link. Every IPv6 interface makes one automatically, and routers never forward them."
+ },
+ "159": {
+  "cue": "ip dhcp snooping limit rate 6",
+  "keys": [
+   "restricts the number of discovery messages"
+  ],
+  "tip": "limit rate 6 = at most 6 DHCP messages per second on that port. Stops starvation floods.",
+  "why": "This interface command caps how many DHCP messages per second the port accepts. It slows down DHCP starvation attacks that flood the server with requests."
+ },
+ "161": {
+  "cue": "ip arp inspection validate src-mac",
+  "keys": [
+   "source L2 address in the Ethernet header"
+  ],
+  "tip": "validate src-mac: the Ethernet header MAC must match the sender MAC inside the ARP.",
+  "why": "This DAI option compares the source MAC in the Ethernet header with the sender MAC written in the ARP body. If they differ, the ARP packet is dropped as spoofed."
+ },
+ "162": {
+  "cue": "Cisco proprietary protocol that is automatically enabled on 2960",
+  "keys": [
+   "DTP"
+  ],
+  "tip": "DTP is Cisco-only and on by default, which is why you turn it off on access ports.",
+  "why": "DTP is a Cisco-proprietary protocol and runs by default on 2960 switch ports so they can negotiate trunks. STP is an IEEE standard, and VTP and EtherChannel need setup."
+ },
+ "163": {
+  "cue": "IPv6 default static route",
+  "keys": [
+   "::/0"
+  ],
+  "tip": "IPv4 default 0.0.0.0/0. IPv6 default ::/0. All zeros, zero prefix.",
+  "why": "::/0 means all zeros with a prefix length of 0, so it matches every IPv6 address. That makes it the IPv6 default route. ::1/128 is loopback."
+ },
+ "164": {
+  "cue": "characteristics of Cisco Express Forwarding",
+  "keys": [
+   "fastest forwarding mechanism",
+   "FIB and an adjacency table"
+  ],
+  "tip": "CEF = FIB + adjacency table, built ahead of time. Fastest, no CPU per packet.",
+  "why": "CEF builds a FIB (from the routing table) and an adjacency table (next-hop Layer 2 info) in advance. Packets are forwarded straight from these, making it the fastest method."
+ },
+ "165": {
+  "cue": "role of a Cisco switch in the 802.1X",
+  "keys": [
+   "authenticator"
+  ],
+  "tip": "802.1X roles: supplicant (PC), authenticator (switch), authentication server (RADIUS).",
+  "why": "In 802.1X, the client is the supplicant and the RADIUS server checks credentials. The switch sits in the middle passing messages and controlling the port, so it is the authenticator."
+ },
+ "166": {
+  "cue": "prevent ARP spoofing and ARP poisoning",
+  "keys": [
+   "Dynamic ARP Inspection"
+  ],
+  "tip": "ARP attack? Use the ARP tool: Dynamic ARP Inspection.",
+  "why": "Dynamic ARP Inspection checks ARP messages against trusted IP-to-MAC bindings and drops fake ones. That stops attackers from poisoning ARP caches."
+ },
+ "167": {
+  "cue": "advantage of PVST+",
+  "keys": [
+   "load sharing"
+  ],
+  "tip": "Per-VLAN trees = different roots per VLAN = different links used = load sharing.",
+  "why": "PVST+ runs a separate spanning tree for each VLAN. You can make different switches root for different VLANs, so traffic is shared across links that would otherwise sit blocked."
+ },
+ "168": {
+  "cue": "standby router to assume packet-forwarding responsibility",
+  "keys": [
+   "HSRP"
+  ],
+  "tip": "Hot Standby = a standby router ready to take over. HSRP.",
+  "why": "HSRP gives hosts one virtual gateway. If the active router fails, the standby router takes over forwarding using the same virtual IP and MAC."
+ },
+ "169": {
+  "cue": "show ip dhcp snooping binding",
+  "keys": [
+   "IP-to-MAC address associations"
+  ],
+  "tip": "'binding' = the table tying each IP to its MAC, port and VLAN.",
+  "why": "This show command lists the DHCP snooping binding table: which IP was given to which MAC, on which port and VLAN. It only displays, it changes nothing."
+ },
+ "170": {
+  "cue": "source MAC address of a frame is in the MAC address table",
+  "keys": [
+   "updates the refresh timer"
+  ],
+  "tip": "Known source on same port = still alive, reset its timer so it doesn't age out.",
+  "why": "If the source MAC is already in the table on that port, nothing new is learned. The switch just resets the aging timer so the entry isn't removed."
+ },
+ "171": {
+  "cue": "200 devices receive the transmitted broadcast",
+  "keys": [
+   "route between them"
+  ],
+  "tip": "Routers stop broadcasts. Fewer devices per broadcast = split and route.",
+  "why": "Switches and hubs pass broadcasts, so adding or changing them won't help. Splitting the LAN into smaller subnets (or VLANs) with routing between them makes smaller broadcast domains."
+ },
+ "172": {
+  "cue": "defines a host route on a Cisco router",
+  "keys": [
+   "/32 subnet mask"
+  ],
+  "tip": "Host route = one single device = /32 (IPv4) or /128 (IPv6).",
+  "why": "A host route points to one exact address. In IPv4 that means a /32 mask, where every bit must match, so it matches only that one device."
+ },
+ "173": {
+  "cue": "IPv6 static route using a next-hop link-local address",
+  "keys": [
+   "interface number and type"
+  ],
+  "tip": "fe80 addresses repeat on every link, so add the exit interface to say WHICH link.",
+  "why": "Every link uses the same fe80 range, so a link-local next hop alone is ambiguous. You must also give the exit interface type and number so the router knows where it is."
+ },
+ "174": {
+  "cue": "authentication methods ... configured with WPA2",
+  "keys": [
+   "personal",
+   "enterprise"
+  ],
+  "tip": "WPA2 auth: Personal (shared key) or Enterprise (RADIUS). AES and TKIP are encryption, not auth.",
+  "why": "WPA2 can authenticate users two ways: Personal, with a pre-shared key, or Enterprise, with a RADIUS server. AES and TKIP are encryption methods, and WEP is an older standard."
+ },
+ "175": {
+  "cue": "rogue servers from providing false IPv6 configuration",
+  "keys": [
+   "DHCPv6 Guard"
+  ],
+  "tip": "Fake DHCPv6 server? DHCPv6 Guard. Fake router ads? RA Guard.",
+  "why": "DHCPv6 Guard blocks DHCPv6 server replies from ports that aren't trusted, so a rogue server can't hand out false settings. RA Guard protects against fake router advertisements instead."
+ },
+ "176": {
+  "cue": "PC has sent an RS message to an IPv6 router",
+  "keys": [
+   "prefix length",
+   "prefix"
+  ],
+  "tip": "RS asks, RA answers with the prefix and prefix length (plus gateway).",
+  "why": "The router answers a Router Solicitation with a Router Advertisement. The RA includes the network prefix and prefix length so the host can build its own address. IPv6 doesn't use dotted masks."
+ }
+}
