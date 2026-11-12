@@ -813,3 +813,18 @@ mark.hint-mark { background: #FDE68A; color: inherit; border-radius: 4px; paddin
 #pto-form { flex-wrap: wrap; }
 #pto-form .ptc-input { min-width: 120px; }
 .pto-tools { display: flex; justify-content: flex-end; min-height: 28px; }
+
+/* ── Readable page content for search engines (shown until the app starts) ── */
+.seo-page { display: flex; flex-direction: column; gap: 10px; font-size: 15px; line-height: 1.5; }
+.seo-page h1 { font-size: 24px; line-height: 1.25; margin: 4px 0 0; }
+.seo-page h2 { font-size: 18px; margin: 14px 0 0; }
+.seo-page h3 { font-size: 15px; margin: 0 0 4px; }
+.seo-page p { margin: 0; }
+.seo-page a { color: var(--primary); }
+.seo-crumbs { font-size: 13px; color: var(--muted); }
+.seo-links, .seo-qs { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.seo-qs > li { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.seo-qs ul { margin: 4px 0; padding-left: 18px; }
+.seo-n { color: var(--muted); font-size: 13px; }
+.seo-btn { align-self: flex-start; display: inline-block; padding: 10px 16px; border-radius: 12px; background: var(--primary); color: #fff !important; font-weight: 600; text-decoration: none; }
+.seo-tip { color: var(--muted); }

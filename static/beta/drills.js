@@ -259,51 +259,6 @@
         { term: "Honeypot", full: "Decoy system", desc: "A trap system designed to lure attackers so their behavior can be observed and studied." },
     ];
 
-    const NATO_DATA = [
-        { letter: "A", word: "Alpha", decoys: ["Apple", "Anchor", "Arrow"] },
-        { letter: "B", word: "Bravo", decoys: ["Banana", "Bishop", "Blaze"] },
-        { letter: "C", word: "Charlie", decoys: ["Cactus", "Comet", "Cobra"] },
-        { letter: "D", word: "Delta", decoys: ["Dagger", "Diamond", "Dolphin"] },
-        { letter: "E", word: "Echo", decoys: ["Eagle", "Ember", "Emerald"] },
-        { letter: "F", word: "Foxtrot", decoys: ["Falcon", "Fable", "Frost"] },
-        { letter: "G", word: "Golf", decoys: ["Garnet", "Glacier", "Gravel"] },
-        { letter: "H", word: "Hotel", decoys: ["Harbor", "Hazard", "Hunter"] },
-        { letter: "I", word: "India", decoys: ["Iceberg", "Ivory", "Impulse"] },
-        { letter: "J", word: "Juliett", decoys: ["Jasper", "Jaguar", "Jungle"] },
-        { letter: "K", word: "Kilo", decoys: ["Kraken", "Kernel", "Karma"] },
-        { letter: "L", word: "Lima", decoys: ["Lantern", "Laser", "Lynx"] },
-        { letter: "M", word: "Mike", decoys: ["Marlin", "Mango", "Mercury"] },
-        { letter: "N", word: "November", decoys: ["Nebula", "Nectar", "Nomad"] },
-        { letter: "O", word: "Oscar", decoys: ["Onyx", "Otter", "Oracle"] },
-        { letter: "P", word: "Papa", decoys: ["Panther", "Pepper", "Puzzle"] },
-        { letter: "Q", word: "Quebec", decoys: ["Quartz", "Quill", "Quasar"] },
-        { letter: "R", word: "Romeo", decoys: ["Raptor", "Raven", "Ripple"] },
-        { letter: "S", word: "Sierra", decoys: ["Saber", "Storm", "Spark"] },
-        { letter: "T", word: "Tango", decoys: ["Talon", "Thunder", "Tempest"] },
-        { letter: "U", word: "Uniform", decoys: ["Umbra", "Utopia", "Urchin"] },
-        { letter: "V", word: "Victor", decoys: ["Vortex", "Viper", "Velvet"] },
-        { letter: "W", word: "Whiskey", decoys: ["Wraith", "Willow", "Wander"] },
-        { letter: "X", word: "X-ray", decoys: ["Xenon", "Xylophone", "Xerox"] },
-        { letter: "Y", word: "Yankee", decoys: ["Yonder", "Yeti", "Yield"] },
-        { letter: "Z", word: "Zulu", decoys: ["Zephyr", "Zenith", "Zircon"] },
-    ];
-
-    const PRECEDENCE_DATA = [
-        { level: "FLASH", desc: "Reserved for initial enemy contact reports or reports of vital importance — deliver within minutes, right behind Flash Override." },
-        { level: "IMMEDIATE", desc: "For situations that gravely affect national/allied forces and require immediate action — deliver within 30 minutes." },
-        { level: "PRIORITY", desc: "For messages requiring prompt action or containing important information — deliver within 3 hours." },
-        { level: "ROUTINE", desc: "For all other official message traffic that doesn't require urgent handling — deliver within 6 hours." },
-    ];
-
-    const RF_SPECTRUM_DATA = [
-        { band: "LF (Low Frequency)", desc: "30–300 kHz. Long wavelength, used for navigation beacons and submarine communications." },
-        { band: "MF (Medium Frequency)", desc: "300 kHz–3 MHz. Used mainly for AM radio broadcasting." },
-        { band: "HF (High Frequency)", desc: "3–30 MHz. Reflects off the ionosphere for long-range, over-the-horizon communication." },
-        { band: "VHF (Very High Frequency)", desc: "30–300 MHz. Used for FM radio, TV broadcast, and line-of-sight aircraft/marine communication." },
-        { band: "UHF (Ultra High Frequency)", desc: "300 MHz–3 GHz. Used for TV broadcast, cell phones, GPS, and satellite communication." },
-        { band: "SHF (Super High Frequency)", desc: "3–30 GHz. Used for satellite links, radar, and Wi-Fi." },
-    ];
-
     const SERVER_ROLES_DATA = [
         { role: "AD DS (Active Directory Domain Services)", desc: "Provides centralized authentication and a directory of users, computers, and resources in a domain." },
         { role: "DNS Server", desc: "Resolves hostnames to IP addresses (and vice versa) for the network." },
@@ -362,9 +317,6 @@
         { id: "ohmsLaw", name: "Ohm's Law Calculator", desc: "Solve for V, I, R, or P", group: "Hardware & OS", course: "ite" },
         { id: "logicGates", name: "Logic Gates", desc: "AND, OR, NOT, XOR & more", group: "Hardware & OS", course: "ite" },
         { id: "secplusFlash", name: "Security+ Flashcards", desc: "Core cybersecurity concepts", group: "Security", course: "general" },
-        { id: "natoPhonetic", name: "NATO Phonetic", desc: "Alpha, Bravo, Charlie…", group: "Comms", course: "comms" },
-        { id: "precedenceMatch", name: "Message Precedence", desc: "Flash, Immediate, Priority, Routine", group: "Comms", course: "comms" },
-        { id: "rfSpectrum", name: "RF Spectrum Match", desc: "LF to SHF frequency bands", group: "Comms", course: "comms" },
     ];
 
     // Short instructions shown at the top of each game (from the classic screen subtitles).
@@ -382,9 +334,6 @@
         cableId: "Identify the connector or cable type shown.",
         topologyId: "Identify the network topology diagram shown.",
         secplusFlash: "Flip through core cybersecurity concepts.",
-        natoPhonetic: "Match each letter to its phonetic alphabet word.",
-        precedenceMatch: "Match naval message precedence levels to their delivery requirements.",
-        rfSpectrum: "Match radio frequency bands to their range and typical use.",
         serverRoles: "Match each server role to what it does.",
         ohmsLaw: "Enter any two values to solve for the rest. V = I × R, P = V × I.",
         wirelessMatch: "Match each 802.11 Wi-Fi standard to its specs.",
@@ -592,8 +541,6 @@
     GAMES.cliMatch = (ctx) => describeGame(ctx, CLI_DATA, "command", "What does this command do?", { mono: true });
     GAMES.raidMatch = (ctx) => describeGame(ctx, RAID_DATA, "level", "What does this RAID level do?");
     GAMES.osCmdMatch = (ctx) => describeGame(ctx, OS_CMD_DATA, "command", "What does this command do?", { mono: true });
-    GAMES.precedenceMatch = (ctx) => describeGame(ctx, PRECEDENCE_DATA, "level", "What does this precedence level mean?");
-    GAMES.rfSpectrum = (ctx) => describeGame(ctx, RF_SPECTRUM_DATA, "band", "What describes this frequency band?");
     GAMES.serverRoles = (ctx) => describeGame(ctx, SERVER_ROLES_DATA, "role", "What does this server role do?");
     GAMES.wirelessMatch = (ctx) => describeGame(ctx, WIRELESS_DATA, "standard", "What describes this Wi-Fi standard?");
     GAMES.cloudModels = (ctx) => describeGame(ctx, CLOUD_MODELS_DATA, "model", "What does this cloud service model provide?");
@@ -631,17 +578,6 @@
             return {
                 item, label: "What topology is this?", visual: `<div class="drill-topology">${item.svg}</div>`,
                 correct: item.name, choices: [item.name, ...wrong], wrong: `Not quite. This is a ${item.name} topology.`,
-            };
-        },
-    });
-
-    GAMES.natoPhonetic = (ctx) => choiceGame(ctx, {
-        delay: 900,
-        next(prev) {
-            const item = pickNew(NATO_DATA, prev);
-            return {
-                item, label: "What is the phonetic word for this letter?", prompt: item.letter,
-                correct: item.word, choices: [item.word, ...item.decoys], wrong: `Not quite. It's ${item.word}.`,
             };
         },
     });

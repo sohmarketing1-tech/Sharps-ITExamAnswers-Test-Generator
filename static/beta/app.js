@@ -7,18 +7,18 @@
 // ─── Course catalog ─────────────────────────────────────────────────────────
 // To add a course: add it here and to COURSE_ORDER. A course only shows once it has exams
 // (retired courses always show, with their note).
-const COURSE_ORDER = ["ite", "ccna", "comms", "ccna2"];
+const COURSE_ORDER = ["ite", "ccna", "ccna2"];
 
 const COURSES = {
     ite: {
         id: "ite", name: "IT Essentials", icon: "monitor", tint: "blue",
         match: (f) => f.startsWith("it-essentials"),
-        note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most shipmates score 90–100% this way.",
+        note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most students score 90–100% this way.",
     },
     ccna: {
         id: "ccna", name: "CCNA 1", icon: "network", tint: "green",
         match: (f) => f.startsWith("ccna-1"),
-        note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most shipmates score 90–100% this way.",
+        note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most students score 90–100% this way.",
     },
     ccna2: {
         id: "ccna2", name: "CCNA 2", icon: "network", tint: "blue",
@@ -29,12 +29,7 @@ const COURSES = {
             { href: "packet-tracer/order", icon: "list", tint: "green", title: "Packet Tracer 1: Step order drill", sub: "Learn what comes next on each device. Type it or pick it." },
             { href: "packet-tracer/lab/ccna2-routes", icon: "terminal", tint: "orange", title: "Packet Tracer 2", sub: "Static, default and floating routes for IPv4 and IPv6. New names and numbers every version." },
         ],
-        note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most shipmates score 90–100% this way.",
-    },
-    comms: {
-        id: "comms", name: "Comms", icon: "signal", tint: "orange", retired: true,
-        match: () => false,
-        subtitle: "Study with your peers",
+        note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most students score 90–100% this way.",
     },
 };
 
@@ -60,11 +55,6 @@ const EXAM_NAMES = {
 
 const DRILLS = () => (window.AnswritDrills && window.AnswritDrills.list) || [];
 
-const COMMS_MESSAGE = `
-    <p><strong>Comms study material has been removed.</strong></p>
-    <p>We didn't have enough material for this section, and what we did have wasn't enough to get most students a good score, so we removed it.</p>
-    <p>Please study with your peers for this section. It's not as hard as you think, and the final test is the easiest one you'll take in this class.</p>
-    <p class="signoff">We'll see you in C school!</p>`;
 
 const MASTERY_BATCH = 10;
 const LAST_EXAM_KEY = "answrit:lastExam";
@@ -429,13 +419,6 @@ async function viewStudy(root) {
 async function viewCourse(root, [courseId]) {
     const course = COURSES[courseId];
     if (!course) return go("study");
-    if (course.retired) {
-        root.innerHTML = `
-            <a class="back-link" href="#/study">${icon("back")}Study</a>
-            <div class="page-head"><h1 class="page-title">${esc(course.name)}</h1></div>
-            <div class="note note-accent">${COMMS_MESSAGE}</div>`;
-        return;
-    }
     const exams = examsFor(courseId);
     let mastery = {};
     if (state.user) {
@@ -601,9 +584,10 @@ async function viewAnswers(root, [filename], query, alive) {
     root.innerHTML = `
         <a class="back-link" href="#/exam/${enc}">${icon("back")}${esc(examSub(filename) || examTitle(filename))}</a>
         <div class="page-head">
-            <span class="eyebrow">${esc(examFullName(filename))}</span>
-            <h1 class="page-title">All questions &amp; answers</h1>
+            <span class="eyebrow">All questions &amp; answers</span>
+            <h1 class="page-title">${esc(examFullName(filename))} answers</h1>
         </div>
+        <a class="btn btn-primary btn-block" href="#/exam/${enc}" style="margin-bottom:14px">Practice this exam: test, flashcards or Mastery mode</a>
         <div class="ans-tools">
             <input class="input" id="ans-q" type="search" placeholder="Search questions or answers" aria-label="Search questions or answers" autocomplete="off">
             <label class="ans-toggle"><input type="checkbox" id="ans-hide"> Hide answers until I tap</label>
@@ -1246,7 +1230,7 @@ function loadPtLab() {
             css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=16";
             document.head.appendChild(css);
             const js = document.createElement("script");
-            js.src = "/beta/ptlab.js?v=16";
+            js.src = "/beta/ptlab.js?v=17";
             js.onload = () => resolve(true);
             js.onerror = () => { ptLabLoading = null; resolve(false); };
             document.head.appendChild(js);
@@ -2493,8 +2477,8 @@ function stopChatPolling() {
     if (state.chatTimer) { clearInterval(state.chatTimer); state.chatTimer = null; }
 }
 
-const ROOM_ICON = { announcements: ["megaphone", "orange"], lounge: ["bubble", "blue"], ite: ["monitor", "blue"], ccna1: ["network", "green"], ccna2: ["network", "blue"], comms: ["signal", "orange"] };
-const COURSE_ROOM = { ite: "ite", ccna: "ccna1", ccna2: "ccna2", comms: "comms" };
+const ROOM_ICON = { announcements: ["megaphone", "orange"], lounge: ["bubble", "blue"], ite: ["monitor", "blue"], ccna1: ["network", "green"], ccna2: ["network", "blue"] };
+const COURSE_ROOM = { ite: "ite", ccna: "ccna1", ccna2: "ccna2" };
 const CHAT_SEEN_KEY = () => `answrit:chatSeen:${state.user || ""}`;
 
 function chatSeen() {
@@ -3337,7 +3321,8 @@ function routeFromPath() {
     const path = location.pathname.replace(/\/+$/, "");
     const exam = path.match(/^\/exams\/([^/]+)$/);
     const map = { "/study": "study", "/flashcards": "study", "/history": "progress", "/chat": "chat", "/apps": "drills", "/packet-tracer": "packet-tracer" };
-    const target = exam ? `exam/${exam[1]}.json` : map[path];
+    // An exam's web address (what Google lists) opens its questions and answers.
+    const target = exam ? `answers/${exam[1]}.json` : map[path];
     if (target) history.replaceState(null, "", `/#/${target}`);
 }
 

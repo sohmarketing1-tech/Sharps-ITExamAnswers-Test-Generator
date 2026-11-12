@@ -148,7 +148,7 @@ function routerChecks(cfgOf) {
         ["Login blocked 5 min after 3 failures in 60 s", (c) => !!c.block && c.block.for === 300 && c.block.attempts === 3 && c.block.within === 60],
         ["Console times out after 5 minutes", (c) => c.lines.con.timeout === "5 0"],
         ["VTY times out after 5 minutes", (c) => c.lines.vty.timeout === "5 0"],
-        ["Domain name ITTN.navy", (c) => (c.domain || "").toLowerCase() === "ittn.navy"],
+        ["Domain name ITTN.net", (c) => (c.domain || "").toLowerCase() === "ittn.net"],
         ["User Administrator, privilege 15, secret CCNAIntroNet11!!", (c) => { const u = c.users.Administrator; return !!u && u.priv === 15 && u.type === "secret" && u.pw === "CCNAIntroNet11!!"; }],
         ["VTY accepts SSH only", (c) => c.lines.vty.transport === "ssh"],
         ["VTY uses the local user database (login local)", (c) => c.lines.vty.login === "local"],
@@ -212,14 +212,14 @@ const LABS = {
                 { sn: 0, label: "", net: "172.16.0.0", range: "172.16.0.1 - 172.16.0.62", bc: "172.16.0.63", mask: "255.255.255.192", given: "net" },
                 { sn: 1, label: "", net: "172.16.0.64", range: "172.16.0.65 - 172.16.0.126", bc: "172.16.0.127", mask: "255.255.255.192" },
                 { sn: 2, label: "", net: "172.16.0.128", range: "172.16.0.129 - 172.16.0.190", bc: "172.16.0.191", mask: "255.255.255.192" },
-                { sn: 3, label: "IT A SCHOOL", net: "172.16.0.192", range: "172.16.0.193 - 172.16.0.254", bc: "172.16.0.255", mask: "255.255.255.192" },
+                { sn: 3, label: "BUILDING A", net: "172.16.0.192", range: "172.16.0.193 - 172.16.0.254", bc: "172.16.0.255", mask: "255.255.255.192" },
                 { sn: 4, label: "", net: "172.16.1.0", range: "172.16.1.1 - 172.16.1.14", bc: "172.16.1.15", mask: "255.255.255.240", split: true },
-                { sn: 5, label: "IT C SCHOOL", net: "172.16.1.16", range: "172.16.1.17 - 172.16.1.30", bc: "172.16.1.31", mask: "255.255.255.240" },
+                { sn: 5, label: "BUILDING C", net: "172.16.1.16", range: "172.16.1.17 - 172.16.1.30", bc: "172.16.1.31", mask: "255.255.255.240" },
                 { sn: 6, label: "", net: "172.16.1.32", range: "172.16.1.33 - 172.16.1.46", bc: "172.16.1.47", mask: "255.255.255.240" },
             ],
             design: [
-                ["Router G0/0 (LAN 1: IT A School)", "172.16.0.254", "255.255.255.192", "", "2001:DB8:ACAD:1::1/64"],
-                ["Router G0/1 (LAN 2: IT C School)", "172.16.1.30", "255.255.255.240", "", "2001:DB8:ACAD:2::1/64"],
+                ["Router G0/0 (LAN 1: Building A)", "172.16.0.254", "255.255.255.192", "", "2001:DB8:ACAD:1::1/64"],
+                ["Router G0/1 (LAN 2: Building C)", "172.16.1.30", "255.255.255.240", "", "2001:DB8:ACAD:2::1/64"],
                 ["Switch ITA, VLAN 1", "172.16.0.253", "255.255.255.192", "172.16.0.254", ""],
                 ["Switch ITC, VLAN 1", "172.16.1.29", "255.255.255.240", "172.16.1.30", ""],
                 ["Host 0", "172.16.0.193", "255.255.255.192", "172.16.0.254", "2001:DB8:ACAD:1::FE/64"],
@@ -234,13 +234,13 @@ const LABS = {
             <ul>
                 <li>Subnet <strong>172.16.0.0/16</strong> so the first four subnets each have <strong>60</strong> host addresses, wasting as few as possible.</li>
                 <li>Starting with the fifth subnet, subnet again so the next four subnets each have <strong>12</strong> host addresses.</li>
-                <li>Fill in the table on the <em>Addressing</em> tab. SN 3 is <strong>IT A School</strong>, SN 5 is <strong>IT C School</strong>.</li>
+                <li>Fill in the table on the <em>Addressing</em> tab. SN 3 is <strong>Building A</strong>, SN 5 is <strong>Building C</strong>.</li>
             </ul>
             <h3>Step 2: Plan the addresses</h3>
             <ul>
                 <li>The first three subnets aren't used in this lab.</li>
-                <li><strong>LAN 1, IT A School (SN 3)</strong> is on the router's <strong>G0/0</strong>. G0/0 gets the <strong>last usable</strong> address.</li>
-                <li><strong>LAN 2, IT C School (SN 5)</strong> is on the router's <strong>G0/1</strong>. G0/1 gets the <strong>last usable</strong> address.</li>
+                <li><strong>LAN 1, Building A (SN 3)</strong> is on the router's <strong>G0/0</strong>. G0/0 gets the <strong>last usable</strong> address.</li>
+                <li><strong>LAN 2, Building C (SN 5)</strong> is on the router's <strong>G0/1</strong>. G0/1 gets the <strong>last usable</strong> address.</li>
                 <li>Each switch's VLAN 1 gets the <strong>next to last</strong> usable address. Hosts get the <strong>first usable</strong> addresses.</li>
                 <li>IPv6: G0/0 <code>2001:DB8:ACAD:1::1/64</code>, G0/1 <code>2001:DB8:ACAD:2::1/64</code>, Host 0 <code>…:1::FE/64</code>, Host 1 <code>…:1::FF/64</code>, Host 2 <code>…:2::FE/64</code>, Server <code>…:2::FF/64</code>.</li>
             </ul>
@@ -261,7 +261,7 @@ const LABS = {
                 <li>Passwords must be at least <strong>10</strong> characters.</li>
                 <li>Block logins for 5 minutes after 3 failed attempts within 60 seconds.</li>
                 <li>Console and VTY lines log out after 5 idle minutes.</li>
-                <li>SSH: domain name <strong>ITTN.navy</strong>; local user <strong>Administrator</strong> with password <strong>CCNAIntroNet11!!</strong> and administrator (level 15) access.</li>
+                <li>SSH: domain name <strong>ITTN.net</strong>; local user <strong>Administrator</strong> with password <strong>CCNAIntroNet11!!</strong> and administrator (level 15) access.</li>
                 <li>VTY lines: SSH only (no Telnet), using the local user database.</li>
                 <li>Generate an RSA key with a <strong>1024</strong>-bit modulus.</li>
             </ul>
@@ -306,7 +306,7 @@ service password-encryption
 banner motd #AUTHORIZED ACCESS ONLY!#`],
             ["Router security and SSH", `security passwords min-length 10
 login block-for 300 attempts 3 within 60
-ip domain-name ITTN.navy
+ip domain-name ITTN.net
 username Administrator privilege 15 secret CCNAIntroNet11!!
 crypto key generate rsa
  (answer 1024)
@@ -315,13 +315,13 @@ line vty 0 4
  login local
  exit`],
             ["Router interfaces", `interface g0/0
- description LAN 1 IT A School
+ description LAN 1 Building A
  ip address 172.16.0.254 255.255.255.192
  ipv6 address 2001:db8:acad:1::1/64
  ipv6 address fe80::1 link-local
  no shutdown
 interface g0/1
- description LAN 2 IT C School
+ description LAN 2 Building C
  ip address 172.16.1.30 255.255.255.240
  ipv6 address 2001:db8:acad:2::1/64
  ipv6 address fe80::1 link-local
@@ -352,9 +352,9 @@ end`],
         ],
         // Steps shown on the Tasks screen. Checks point at a step by index.
         steps: [
-            { title: "Subnet the network", dev: null, sheet: true, brief: "Split 172.16.0.0/16: four subnets with 60 hosts, then four with 12. SN 3 is IT A School, SN 5 is IT C School. Router interfaces get the last usable address, switches the next to last, hosts the first." },
+            { title: "Subnet the network", dev: null, sheet: true, brief: "Split 172.16.0.0/16: four subnets with 60 hosts, then four with 12. SN 3 is Building A, SN 5 is Building C. Router interfaces get the last usable address, switches the next to last, hosts the first." },
             { title: "Router basics", dev: "R", help: 0, brief: "Name it IT_Router, turn off DNS lookup, enable secret ccna1, console and VTY password cisco, encrypt passwords, banner AUTHORIZED ACCESS ONLY!" },
-            { title: "Router security & SSH", dev: "R", help: 1, brief: "Passwords at least 10 characters, block logins 5 min after 3 failures in 60 s, 5-minute idle timeout, domain ITTN.navy, user Administrator (level 15, secret CCNAIntroNet11!!), SSH only with local login, 1024-bit RSA key.", tip: "Set the short passwords (cisco, ccna1) before the 10-character minimum, or IOS will refuse them." },
+            { title: "Router security & SSH", dev: "R", help: 1, brief: "Passwords at least 10 characters, block logins 5 min after 3 failures in 60 s, 5-minute idle timeout, domain ITTN.net, user Administrator (level 15, secret CCNAIntroNet11!!), SSH only with local login, 1024-bit RSA key.", tip: "Set the short passwords (cisco, ccna1) before the 10-character minimum, or IOS will refuse them." },
             { title: "Router interfaces", dev: "R", help: 2, brief: "IPv4 and IPv6 on G0/0 and G0/1 with a description each, link-local FE80::1, turn them on, and turn on IPv6 routing." },
             { title: "Switches ITA & ITC", dev: "ITA", help: 3, brief: "Name them, give VLAN 1 its address and a description and turn it on, set the default gateway, and set console and VTY passwords." },
             { title: "Hosts", dev: "H0", brief: "Give every PC and the server its IPv4 and IPv6 addresses. IPv6 gateway is FE80::1. Make sure everyone can ping everyone." },
@@ -2390,13 +2390,13 @@ function mount(root, labId, { alive } = {}) {
             <p><b>Step 2: IP Address Assignment Design</b>. Determine how to assign the IP addresses and record your addressing scheme in the table below based on the instructions. Use the table above to help you organize your work.</p>
             <ul class="doc-dots">
                 <li>The first three subnets will not be used for this lab.</li>
-                <li><b>LAN 1:</b> <span class="hl">IT A SCHOOL</span> (SN: 3): This subnet is connected to the <b>G0/0</b> interface of the <b>Router</b>. The G0/0 interface should be assigned the <b>LAST USABLE</b> in its subnet for its IP address.</li>
-                <li><b>LAN 2:</b> <span class="hl">IT C SCHOOL</span> (SN: 5): This subnet is connected to the <b>G0/1</b> interface of the <b>Router</b>. The G0/1 interface should be assigned the <b>LAST USABLE</b> in its subnet for its IP address.</li>
+                <li><b>LAN 1:</b> <span class="hl">BUILDING A</span> (SN: 3): This subnet is connected to the <b>G0/0</b> interface of the <b>Router</b>. The G0/0 interface should be assigned the <b>LAST USABLE</b> in its subnet for its IP address.</li>
+                <li><b>LAN 2:</b> <span class="hl">BUILDING C</span> (SN: 5): This subnet is connected to the <b>G0/1</b> interface of the <b>Router</b>. The G0/1 interface should be assigned the <b>LAST USABLE</b> in its subnet for its IP address.</li>
                 <li>The <b>Switch</b> will use the <b>the next to last</b> usable address for the VLAN IP address. Configure the hosts with the first usable respectively of their respective subnet.</li>
             </ul>
             <div class="doc-scroll"><table class="doc-t design">
                 <tr><th>Router interface – G 0/0</th><th>Router interface – G 0/1</th></tr>
-                <tr><td class="hlc"><b>LAN 1: IT A School</b></td><td class="hlc"><b>LAN 2: IT C School</b></td></tr>
+                <tr><td class="hlc"><b>LAN 1: Building A</b></td><td class="hlc"><b>LAN 2: Building C</b></td></tr>
                 <tr><td class="ph">IP address &nbsp; Subnet mask</td><td class="ph">IP address &nbsp; Subnet mask</td></tr>
                 <tr><td>IPv6 address/prefix <b>2001:DB8:ACAD:0001::1/64</b></td><td>IPv6 address/prefix <b>2001:DB8:ACAD:0002::1/64</b></td></tr>
                 <tr><th>Switch – VLAN 1 – ITA</th><th>Switch – VLAN 1 – ITC</th></tr>
@@ -2429,7 +2429,7 @@ function mount(root, labId, { alive } = {}) {
             </ul>
             <p class="doc-ind">a. Enable SSH connections.</p>
             <ul class="doc-dots ind2">
-                <li>Assign the domain name : <span class="r">ITTN.navy</span></li>
+                <li>Assign the domain name : <span class="r">ITTN.net</span></li>
                 <li>Create a local SSH user and password. The user should have administrator-level access.<br><b>User name</b>: <span class="r">Administrator</span> <b>Password</b>: <span class="r">CCNAIntroNet11!!</span></li>
                 <li>Configure the transport input for the vty lines so they accept SSH connections, but do not allow Telnet connections.</li>
                 <li>The vty lines should use the local user database for authentication.</li>

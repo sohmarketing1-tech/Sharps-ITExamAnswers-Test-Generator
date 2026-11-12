@@ -1,9 +1,11 @@
 import copy
 import datetime
 import fcntl
+import html as html_lib
 import json
 import os
 import random
+import re
 import secrets
 import threading
 import time
@@ -20,8 +22,8 @@ app = Flask(__name__, static_folder="static", static_url_path="")
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 SITE_URL = "https://www.answrit.net"
-DEFAULT_PAGE_TITLE = "AnswrIT - Free Practice Tests, Flashcards & Study Guides for Cisco ITE, CCNA & Navy IT"
-DEFAULT_PAGE_DESCRIPTION = "AnswrIT is a free interactive study platform for Cisco ITE, CCNA, Netacad, and Navy IT Rate exams. Take practice tests, flip flashcards, track mastery, and play interactive study games."
+DEFAULT_PAGE_TITLE = "AnswrIT - Free Practice Tests, Flashcards & Study Guides for Cisco ITE & CCNA"
+DEFAULT_PAGE_DESCRIPTION = "AnswrIT is a free interactive study platform for Cisco IT Essentials, CCNA, and Netacad exams. Take practice tests, flip flashcards, track mastery, and play interactive study games."
 
 
 @app.after_request
@@ -84,6 +86,162 @@ def exam_by_slug(slug: str):
     return None
 
 
+# ─── Search engines ─────────────────────────────────────────────────────────
+# Every page ships real, readable HTML inside <main id="view"> (headings, the exam list, and on exam pages
+# every question with its answer). Google reads it straight away; the app replaces it when it starts.
+SEO_COURSES = [
+    ("it-essentials", "IT Essentials (ITE) 7.0 / 8.0"),
+    ("ccna-1", "CCNA 1 v7: Introduction to Networks (ITN)"),
+    ("ccna-2", "CCNA 2 v7: Switching, Routing and Wireless Essentials (SRWE)"),
+]
+HINTS_DIR = BASE_DIR / "static" / "beta" / "hints"
+
+
+def seo_course_of(filename: str):
+    return next(((pre, name) for pre, name in SEO_COURSES if filename.startswith(pre)), (None, "Other exams"))
+
+
+def seo_exam_name(exam: dict) -> str:
+    """'CCNA 1 v7 Modules 1-3: Basic Network Connectivity and Communications Exam' (no 'Answers')."""
+    t = exam.get("title") or display_name_for(exam.get("filename", ""), exam.get("display_name", ""))
+    t = re.sub(r"\s+-\s+", " - ", t)
+    t = re.sub(r"(\d+)\s+-\s+(\d+)", r"\1-\2", t)
+    t = re.sub(r"\s*\bAnswers\b\s*(Full\b)?", " ", t).strip()
+    t = t.replace("IT Essentials 7.0 8.0", "IT Essentials 7.0 / 8.0").replace("Exam Full", "Exam")
+    t = re.sub(r"\s{2,}", " ", t).strip(" -")
+    return t
+
+
+def _esc(s) -> str:
+    return html_lib.escape(str(s if s is not None else ""), quote=True)
+
+
+def _load_hints(filename: str) -> dict:
+    p = HINTS_DIR / filename
+    try:
+        return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+    except Exception:
+        return {}
+
+
+def _exam_questions(filename: str) -> list:
+    try:
+        data = json.loads((DATA_DIR / filename).read_text(encoding="utf-8"))
+        return data.get("questions", []) if isinstance(data, dict) else data
+    except Exception:
+        return []
+
+
+def seo_exam_links_html(current: str = "") -> str:
+    """Every exam, grouped by course, as plain links."""
+    groups = {}
+    for exam in load_exam_manifest():
+        fn = exam.get("filename", "")
+        if not fn.endswith(".json") or fn == current:
+            continue
+        groups.setdefault(seo_course_of(fn)[1], []).append(exam)
+    out = []
+    for _, cname in SEO_COURSES:
+        exams = groups.get(cname)
+        if not exams:
+            continue
+        items = "".join(
+            f'<li><a href="/exams/{_esc(e["filename"][:-5])}/">{_esc(seo_exam_name(e))} Answers</a> '
+            f'<span class="seo-n">({int(e.get("count") or 0)} questions)</span></li>' for e in exams)
+        out.append(f"<h2>{_esc(cname)}</h2><ul class=\"seo-links\">{items}</ul>")
+    return "".join(out)
+
+
+def seo_home_html(h1: str, intro: str) -> str:
+    return (
+        '<article class="seo-page">'
+        f"<h1>{_esc(h1)}</h1><p>{_esc(intro)}</p>"
+        "<p>Every IT Essentials, CCNA 1 and CCNA 2 exam on AnswrIT has all of its questions with the correct answers, "
+        "and you can turn each one into a free practice test, flashcards, or Mastery mode (it keeps asking until you know every question). "
+        "There are also Packet Tracer practice labs that look and grade like the real skills exams, a CLI simulator, "
+        "subnetting practice and short study games.</p>"
+        f"{seo_exam_links_html()}"
+        "<h2>Packet Tracer skills exam practice</h2>"
+        "<p>Practice the CCNA 2 Packet Tracer skills assessments in your browser: VLANs, trunks, router-on-a-stick, SSH, "
+        "IPv6, and static, default and floating routes. Every version has new names and addresses, and it grades your work like Packet Tracer.</p>"
+        "</article>"
+    )
+
+
+def _answers_of(q: dict) -> list:
+    ca = q.get("correct_answer")
+    if isinstance(ca, list):
+        return [str(x) for x in ca]
+    return [x.strip() for x in str(ca or "").split(" | ") if x.strip()]
+
+
+def seo_exam_html(exam: dict) -> str:
+    fn = exam["filename"]
+    name = seo_exam_name(exam)
+    qs = _exam_questions(fn)
+    hints = _load_hints(fn)
+    course = seo_course_of(fn)[1]
+    rows = []
+    for i, q in enumerate(qs, 1):
+        text = q.get("question", "")
+        if q.get("type") == "matching" and q.get("correct_pairs"):
+            pairs = q["correct_pairs"]
+            items = pairs.items() if isinstance(pairs, dict) else [(p[0], p[1]) if isinstance(p, (list, tuple)) else (p.get("term"), p.get("definition")) for p in pairs]
+            body = "<ul>" + "".join(f"<li>{_esc(a)} → <strong>{_esc(b)}</strong></li>" for a, b in items) + "</ul>"
+        else:
+            ans = set(_answers_of(q))
+            opts = q.get("options") or []
+            body = "<ul>" + "".join(
+                f"<li>{'<strong>' + _esc(o) + ' (correct)</strong>' if o in ans else _esc(o)}</li>" for o in opts) + "</ul>"
+            if ans:
+                body += f'<p class="seo-ans"><strong>Answer:</strong> {_esc(" / ".join(_answers_of(q)))}</p>'
+        tip = (hints.get(str(q.get("id", i))) or {}).get("tip")
+        if tip:
+            body += f'<p class="seo-tip"><strong>Why:</strong> {_esc(tip)}</p>'
+        rows.append(f'<li id="q{_esc(q.get("id", i))}"><h3>{_esc(text)}</h3>{body}</li>')
+    start = f"/#/exam/{_esc(fn)}"
+    return (
+        '<article class="seo-page">'
+        f'<p class="seo-crumbs"><a href="/">AnswrIT</a> › {_esc(course)}</p>'
+        f"<h1>{_esc(name)} Answers</h1>"
+        f"<p>All {len(qs)} questions from the {_esc(name)} with the correct answers{', plus a short tip on why' if hints else ''}. "
+        f"Study them here, then take a free practice test, flip through flashcards, or use Mastery mode until you know every one.</p>"
+        f'<p><a class="seo-btn" href="{start}">Start the free practice test</a></p>'
+        f"<h2>All {len(qs)} {_esc(name)} questions and answers</h2>"
+        f'<ol class="seo-qs">{"".join(rows)}</ol>'
+        f"<h2>More exam answers</h2>{seo_exam_links_html(fn)}"
+        "</article>"
+    )
+
+
+def seo_exam_jsonld(exam: dict) -> str:
+    """Quiz markup (Google's education Q&A format: flashcard questions with an accepted answer)."""
+    fn = exam["filename"]
+    name = seo_exam_name(exam)
+    parts = []
+    for q in _exam_questions(fn):
+        ans = _answers_of(q)
+        if q.get("type") == "matching" or not ans or not q.get("question"):
+            continue
+        parts.append({"@type": "Question", "eduQuestionType": "Flashcard", "text": q["question"],
+                      "acceptedAnswer": {"@type": "Answer", "text": " / ".join(ans)}})
+    data = {
+        "@context": "https://schema.org", "@type": "Quiz", "name": f"{name} Answers",
+        "about": {"@type": "Thing", "name": seo_course_of(fn)[1]},
+        "educationalAlignment": {"@type": "AlignmentObject", "alignmentType": "educationalSubject", "targetName": "Computer networking"},
+        "url": f"{SITE_URL}/exams/{fn[:-5]}/", "hasPart": parts,
+    }
+    breadcrumbs = {
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "AnswrIT", "item": f"{SITE_URL}/"},
+            {"@type": "ListItem", "position": 2, "name": f"{name} Answers", "item": f"{SITE_URL}/exams/{fn[:-5]}/"},
+        ],
+    }
+    dump = lambda d: json.dumps(d, ensure_ascii=False).replace("</", "<\\/")
+    return f'<script type="application/ld+json">{dump(data)}</script><script type="application/ld+json">{dump(breadcrumbs)}</script>'
+
+
 def build_exam_links_html() -> str:
     items = []
     for exam in load_exam_manifest():
@@ -105,7 +263,7 @@ CLASSIC_PATHS: set = set()
 
 def render_index_html(page_title: str, page_description: str, canonical_url: str,
                       h1_text: str, seo_intro: str, exam_filename: str = "",
-                      index_path: Path = NEW_INDEX) -> Response:
+                      index_path: Path = NEW_INDEX, view_html: str = "", extra_head: str = "") -> Response:
     html = index_path.read_text(encoding="utf-8")
     replacements = {
         "$PAGE_TITLE$": page_title,
@@ -117,6 +275,8 @@ def render_index_html(page_title: str, page_description: str, canonical_url: str
         "$SEO_INTRO$": seo_intro,
         "$EXAM_FILENAME$": exam_filename,
         "$EXAM_LINKS$": build_exam_links_html(),
+        "$VIEW_HTML$": view_html or seo_home_html(h1_text, seo_intro),
+        "$EXTRA_HEAD$": extra_head,
     }
     for token, value in replacements.items():
         html = html.replace(token, value)
@@ -645,7 +805,6 @@ CHAT_ROOMS = [
     {"id": "ite", "name": "IT Essentials", "desc": "Questions about the IT Essentials exams"},
     {"id": "ccna1", "name": "CCNA 1", "desc": "Questions about the CCNA 1 exams"},
     {"id": "ccna2", "name": "CCNA 2", "desc": "Questions about the CCNA 2 exams"},
-    {"id": "comms", "name": "Comms", "desc": "Study together for Comms"},
 ]
 CHAT_ROOM_IDS = {r["id"] for r in CHAT_ROOMS}
 CHAT_REACTIONS = ["👍", "❤️", "😂", "🙏"]
@@ -756,8 +915,6 @@ def _course_room_for(filename: str) -> str:
         return "ccna2"
     if f.startswith("ccna"):
         return "ccna1"
-    if f.startswith("naval") or "comms" in f or "mrts" in f:
-        return "comms"
     return "lounge"
 
 
@@ -884,23 +1041,23 @@ def index():
         page_title=DEFAULT_PAGE_TITLE,
         page_description=DEFAULT_PAGE_DESCRIPTION,
         canonical_url=f"{SITE_URL}/",
-        h1_text="AnswrIT — Cisco Netacad & Navy IT Exam Study Platform",
-        seo_intro="Free interactive practice tests, flashcards, and mastery tools for Cisco ITE, CCNA, Netacad, and Navy IT Rate A school exams.",
+        h1_text="Free ITE, CCNA 1 and CCNA 2 Exam Answers and Practice Tests",
+        seo_intro="AnswrIT has every Cisco Netacad IT Essentials (ITE), CCNA 1 (ITN) and CCNA 2 (SRWE) module and final exam with the correct answers, free practice tests, flashcards, Mastery mode and Packet Tracer practice labs.",
     )
 
 
 SPA_PAGE_SEO = {
     "/study": {
-        "title": "Practice Tests & Exam Study — AnswrIT",
-        "description": "Take custom-length, interactive practice tests for Cisco ITE, CCNA, Netacad, and Navy IT Rate A school exams. Track mastery and focus on weak areas.",
-        "h1": "Interactive Practice Tests for Cisco & Navy IT Exams",
-        "intro": "Build and take practice tests for ITE, CCNA, and Navy IT Rate A school exams. Set your own question count, see instant feedback, and track mastery over time.",
+        "title": "ITE & CCNA Practice Tests and Exam Answers | AnswrIT",
+        "description": "Take custom-length, interactive practice tests for Cisco ITE, CCNA, and Netacad exams. Track mastery and focus on weak areas.",
+        "h1": "ITE, CCNA 1 and CCNA 2 Practice Tests and Exam Answers",
+        "intro": "Build and take practice tests for IT Essentials and CCNA exams. Set your own question count, see instant feedback, and track mastery over time.",
     },
     "/flashcards": {
         "title": "Flashcards & Spaced Repetition — AnswrIT",
-        "description": "Swipe through flashcard decks for networking terms, Q/Z signals, and naval communications. Study at your own pace with smart review tracking.",
-        "h1": "Flashcard Decks for Networking & Naval Communications",
-        "intro": "Memorize networking terms, Q/Z signals, and naval comms concepts with swipeable flashcards. Flip, rate, and review only the cards you need.",
+        "description": "Swipe through flashcard decks for networking terms and Cisco exam topics. Study at your own pace with smart review tracking.",
+        "h1": "Flashcard Decks for Networking and Cisco Exams",
+        "intro": "Memorize networking terms and concepts with swipeable flashcards. Flip, rate, and review only the cards you need.",
     },
     "/apps": {
         "title": "Interactive Study Games & Arcade — AnswrIT",
@@ -910,14 +1067,14 @@ SPA_PAGE_SEO = {
     },
     "/history": {
         "title": "Progress & Mastery Tracking — AnswrIT",
-        "description": "View your practice test scores, mastery progress, streaks, and study history across all Cisco and Navy IT exams on AnswrIT.",
+        "description": "View your practice test scores, mastery progress, streaks, and study history across all Cisco exams on AnswrIT.",
         "h1": "Track Your Mastery & Exam Progress",
         "intro": "Review scores, streaks, and mastered questions across every exam. See where you are strong and where to focus next.",
     },
     "/packet-tracer": {
-        "title": "Packet Tracer Final Practice — AnswrIT",
-        "description": "Practice subnetting, Cisco CLI commands, and Packet Tracer lab tasks for the CCNA final exam. Build confidence before test day.",
-        "h1": "Packet Tracer Final Exam Practice",
+        "title": "Packet Tracer Skills Exam Practice Labs (CCNA 2) | AnswrIT",
+        "description": "Free CCNA 2 Packet Tracer skills assessment practice in your browser: VLANs, trunks, router-on-a-stick, SSH, IPv6 and static, default and floating routes, graded like Packet Tracer.",
+        "h1": "Packet Tracer Skills Exam Practice",
         "intro": "Work through subnetting, CLI configuration, and Packet Tracer lab scenarios designed to prepare you for the CCNA final.",
     },
 }
@@ -956,11 +1113,15 @@ def exam_page(slug: str):
         return redirect("/", code=302)
     filename = exam.get("filename", f"{slug}.json")
     display = display_name_for(filename, exam.get("display_name", ""))
-    title = f"{display} Practice Test & Study Guide — AnswrIT"
-    description = f"Free {display} practice test, flashcards, and study guide. Interactive mastery mode and quizzes for Netacad and Navy IT A school students."
+    exam = {**exam, "filename": filename}
+    name = seo_exam_name(exam)
+    count = int(exam.get("count") or len(_exam_questions(filename)))
+    title = f"{name} Answers & Free Practice Test | AnswrIT"
+    description = (f"All {count} {name} questions with the correct answers. "
+                   f"Free practice test, flashcards and Mastery mode for Cisco Netacad students.")
     canonical = f"{SITE_URL}/exams/{slug}/"
-    h1 = f"{display} Practice Test & Study Guide"
-    intro = f"Prepare for the {display} with free practice tests, flashcards, and mastery mode on AnswrIT. Built for Netacad and Navy IT Rate A school students."
+    h1 = f"{name} Answers"
+    intro = f"All {count} questions from the {name} with the correct answers."
     return render_index_html(
         page_title=title,
         page_description=description,
@@ -968,6 +1129,8 @@ def exam_page(slug: str):
         h1_text=h1,
         seo_intro=intro,
         exam_filename=filename,
+        view_html=seo_exam_html(exam),
+        extra_head=seo_exam_jsonld(exam),
     )
 
 
@@ -986,7 +1149,7 @@ def _build_sitemap() -> str:
     lines = ['<?xml version="1.0" encoding="UTF-8"?>']
     lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
     lines.append(f"  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod><priority>1.0</priority></url>")
-    for page in ["/study/", "/flashcards/", "/apps/", "/history/", "/packet-tracer/"]:
+    for page in ["/study/", "/flashcards/", "/apps/", "/packet-tracer/"]:
         lines.append(f"  <url><loc>{SITE_URL}{page}</loc><lastmod>{today}</lastmod><priority>0.7</priority></url>")
     for slug in slugs:
         lines.append(f"  <url><loc>{SITE_URL}/exams/{slug}/</loc><lastmod>{today}</lastmod><priority>0.9</priority></url>")

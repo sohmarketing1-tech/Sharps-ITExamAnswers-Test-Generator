@@ -51,3 +51,6 @@ bug*.MP4
 
 # Packet Tracer answer keys and screenshots from class files (private)
 ptlabs/
+
+# Retired Navy material and the classic page (kept on disk, not served or published)
+archive/

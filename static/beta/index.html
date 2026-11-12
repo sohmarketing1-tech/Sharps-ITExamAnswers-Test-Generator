@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>$PAGE_TITLE$</title>
     <meta name="description" content="$PAGE_DESCRIPTION$" />
-    <meta name="keywords" content="AnswrIT, AnswerIT, Answer IT, Answer-IT, Cisco ITE, CCNA prep, Netacad study guide, Navy IT rate, practice test, flashcards, mastery, ITE answers, CCNA answers" />
+    <meta name="keywords" content="AnswrIT, AnswerIT, Answer IT, Answer-IT, Cisco ITE, CCNA prep, Netacad study guide, practice test, flashcards, mastery, ITE answers, CCNA answers, CCNA 1 ITN, CCNA 2 SRWE, exam answers" />
     <meta name="robots" content="index, follow" />
     <meta name="google-site-verification" content="zy_GMrk7XuRJ3CPyBjJulYKXw-0XidwXvo18Ai_C2nY" />
     <link rel="canonical" href="$CANONICAL_URL$" />
@@ -32,9 +32,10 @@
         "educationalUse": "Exam preparation",
         "description": "$PAGE_DESCRIPTION$",
         "url": "$SITE_URL$",
-        "about": "Cisco Netacad IT Essentials, CCNA, and Navy IT Rate exam preparation"
+        "about": "Cisco Netacad IT Essentials and CCNA exam preparation"
     }
     </script>
+    $EXTRA_HEAD$
     <link rel="icon" type="image/svg+xml" href="/images/answrit-qa.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/images/answrit-qa-32.png" />
     <link rel="apple-touch-icon" href="/images/apple-touch-icon-qa.png" />
@@ -42,7 +43,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/beta/app.css?v=19" />
+    <link rel="stylesheet" href="/beta/app.css?v=20" />
     <link rel="stylesheet" href="/beta/drills.css?v=1" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TB1BG7F1XQ"></script>
     <script>
@@ -54,9 +55,6 @@
 </head>
 <body>
     <noscript>
-        <h1>$H1_TEXT$</h1>
-        <p>$SEO_INTRO$</p>
-        $EXAM_LINKS$
         <p>AnswrIT needs JavaScript turned on to run practice tests.</p>
     </noscript>
 
@@ -65,7 +63,7 @@
         <div id="topbar-account"></div>
     </header>
 
-    <main id="view" class="view" tabindex="-1" aria-live="polite"></main>
+    <main id="view" class="view" tabindex="-1" aria-live="polite">$VIEW_HTML$</main>
 
     <nav class="tabbar" id="tabbar" aria-label="Main">
         <a href="#/" data-tab="home">
@@ -86,7 +84,7 @@
         </a>
     </nav>
 
-    <script src="/beta/drills.js?v=1" defer></script>
-    <script src="/beta/app.js?v=39" defer></script>
+    <script src="/beta/drills.js?v=2" defer></script>
+    <script src="/beta/app.js?v=41" defer></script>
 </body>
 </html>
