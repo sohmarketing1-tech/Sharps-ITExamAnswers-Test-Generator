@@ -800,3 +800,16 @@ mark.hint-mark { background: #FDE68A; color: inherit; border-radius: 4px; paddin
 .pto-sub { display: block; font-size: 13px; font-weight: 400; opacity: .8; margin-top: 2px; overflow-wrap: anywhere; }
 .pto-lines { margin: 2px 0; padding: 8px 10px; background: rgba(15, 23, 42, 0.07); border-radius: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
 :root[data-theme="midnight"] .pto-lines { background: rgba(255, 255, 255, 0.1); }
+.pto-term { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 2px; }
+.pto-tl { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.pto-tl .ptc-prompt { flex: none; }
+.pto-tx { color: #F8FAFC; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 15px; overflow-wrap: anywhere; min-width: 0; }
+.pto-mk { flex: none; width: 1em; font-weight: 700; }
+.pto-ok .pto-mk { color: #4ADE80; }
+.pto-bad .pto-mk, .pto-bad .pto-tx { color: #FCA5A5; }
+.pto-nav { opacity: .75; }
+.pto-why { color: #FCD34D; font-size: 13px; padding: 0 0 4px 1.5em; }
+.pto-where { margin: 8px 0 0; font-size: 14px; line-height: 1.4; }
+#pto-form { flex-wrap: wrap; }
+#pto-form .ptc-input { min-width: 120px; }
+.pto-tools { display: flex; justify-content: flex-end; min-height: 28px; }

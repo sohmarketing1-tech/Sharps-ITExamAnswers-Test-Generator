@@ -27,6 +27,7 @@ const COURSES = {
             { href: "packet-tracer/lab/ccna2-vlan", icon: "terminal", tint: "orange", title: "Packet Tracer 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6. New names and numbers every version." },
             { href: "packet-tracer/commands", icon: "cards", tint: "blue", title: "Packet Tracer 1: Command drill", sub: "Practice every command on your phone. Type it or pick it." },
             { href: "packet-tracer/order", icon: "list", tint: "green", title: "Packet Tracer 1: Step order drill", sub: "Learn what comes next on each device. Type it or pick it." },
+            { href: "packet-tracer/lab/ccna2-routes", icon: "terminal", tint: "orange", title: "Packet Tracer 2", sub: "Static, default and floating routes for IPv4 and IPv6. New names and numbers every version." },
         ],
         note: "Questions come straight from the test bank. About 50 of these will be on your test, picked at random. <strong>Pro tip:</strong> focus on the keywords in the correct answers. Most shipmates score 90–100% this way.",
     },
@@ -1242,10 +1243,10 @@ function loadPtLab() {
     if (!ptLabLoading) {
         ptLabLoading = new Promise((resolve) => {
             const css = document.createElement("link");
-            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=15";
+            css.rel = "stylesheet"; css.href = "/beta/ptlab.css?v=16";
             document.head.appendChild(css);
             const js = document.createElement("script");
-            js.src = "/beta/ptlab.js?v=15";
+            js.src = "/beta/ptlab.js?v=16";
             js.onload = () => resolve(true);
             js.onerror = () => { ptLabLoading = null; resolve(false); };
             document.head.appendChild(js);
@@ -1734,7 +1735,7 @@ function ptoDevices(v) {
             steps: [
                 start(SC, "Switch>"),
                 rooms(SC),
-                { id: "trunks", label: "Cables: 3 trunks at once", lines: [`int range f0/${v.t1} , f0/${v.t2} , ${v.up}`, " sw mo tr", ` sw tr nat vlan ${v.N}`], first: [["interface", "range", { range: [`f0/${v.t1}`, `f0/${v.t2}`, v.up] }], ["interface", { iface: `f0/${v.t1}` }], ["interface", { iface: `f0/${v.t2}` }], ["interface", { iface: v.up }]], after: `${SC}(config-if-range)#`, cue: "Every cable on this switch goes to a switch or the router, so all 3 are trunks." },
+                { id: "trunks", label: "Cables: 3 trunks at once", lines: [`int range f0/${v.t1} , f0/${v.t2} , ${v.up}`, " sw mo tr", ` sw tr nat vlan ${v.N}`], alts: [[`f0/${v.t1}`, `f0/${v.t2}`, v.up].flatMap((p) => [`int ${p}`, " sw mo tr", ` sw tr nat vlan ${v.N}`])], first: [["interface", "range", { range: [`f0/${v.t1}`, `f0/${v.t2}`, v.up] }], ["interface", { iface: `f0/${v.t1}` }], ["interface", { iface: `f0/${v.t2}` }], ["interface", { iface: v.up }]], after: `${SC}(config-if-range)#`, cue: "Every cable on this switch goes to a switch or the router, so all 3 are trunks." },
                 { id: "own", label: "Own address: SVI + gateway", lines: [`int vlan ${v.N}`, ` ip add ${v.ipSC} ${M29}`, " no shut", `ip default-g ${v.rN}`], first: [["interface", "vlan", { v: String(v.N) }]], after: `${SC}(config)#`, cue: `Cables done, so the switch gets its own address in the native VLAN. ${v.lblSC} = network + ${v.lblSC[0]}.` },
                 { id: "ssh", label: "SSH (Dogs Use Keys Very Loudly)", lines: fSSH.lines, first: [["ip", "domain-name", { v: v.domain }]], after: `${SC}(config-line)#`, cue: "This switch is named in the SSH line of the Tasks box. Domain first, or the keys are refused." },
                 save(SC, "SSH was the last chunk for this switch. Save."),
@@ -1798,8 +1799,170 @@ function ptoMake(dev, order, k) {
     return { dev, done, step, valid, prompt, opts, pick: dev.pickOnly || !step.first };
 }
 
-function ptoMatchStep(q, typed) {
-    return q.valid.find((s) => (s.first || []).some((a) => ptcMatch(typed, a, s.min))) || null;
+// ── Typing a whole step: a tiny CLI that tracks the mode, then grades every line ──
+const PTO_KW = new Set([...Object.keys(PTC_MIN), "end"]);
+const PTO_LONG = Object.fromEntries(Object.entries(PTC_SHORT).map(([k, s]) => [s, k]));
+const PTO_PROMPT = { user: ">", priv: "#", config: "(config)#", if: "(config-if)#", subif: "(config-subif)#", range: "(config-if-range)#", vlan: "(config-vlan)#", line: "(config-line)#" };
+const PTO_INSIDE = ["if", "subif", "range", "vlan", "line"];
+// Commands that only work inside a port, a VLAN or a line.
+const PTO_SUB = {
+    if: [["ip", "address"], ["ipv6", "address"], ["no", "shutdown"], ["shutdown"], ["switchport"], ["no", "switchport"], ["encapsulation"], ["description"]],
+    vlan: [["name"]],
+    line: [["password"], ["login"], ["transport"], ["exec-timeout"], ["logging"]],
+};
+
+function ptoKw(w, k) {
+    w = String(w).toLowerCase();
+    return k.startsWith(w) && w.length >= Math.min(PTC_MIN[k] || 2, k.length);
+}
+
+// One line typed into the CLI: the new state, plus an error like Packet Tracer would give.
+function ptoTrack(s0, line) {
+    const s = { ...s0 };
+    const w = String(line).trim().split(/\s+/).filter(Boolean);
+    if (!w.length) return { st: s };
+    const is = (...p) => p.every((k, i) => w[i] && ptoKw(w[i], k));
+    if (s.ask) { s.ask = null; if (/^\d+$/.test(w[0])) return { st: s }; }
+    if (s.mode === "user") {
+        if (is("enable")) { s.mode = "priv"; return { st: s }; }
+        return { st: s, err: "You're in user mode (>). Type en first." };
+    }
+    if (s.mode === "priv") {
+        if (is("configure")) { s.mode = "config"; return { st: s }; }
+        if (is("write") || is("copy") || is("show") || is("enable")) return { st: s };
+        if (is("exit")) { s.mode = "user"; return { st: s }; }
+        return { st: s, err: "You're in admin mode (#). Type conf t first to change settings." };
+    }
+    const out = (o = {}) => ({ st: s, ...o });
+    if (w[0].toLowerCase() === "end") { s.mode = "priv"; s.where = s.open = null; return out(); }
+    if (is("exit")) { s.mode = s.mode === "config" ? "priv" : "config"; s.where = s.open = null; return out(); }
+    if (is("do") || is("configure")) return out();
+    if (is("interface")) {
+        if (!w[1]) return out({ err: "Which port? Add its name, like int f0/3." });
+        if (is("interface", "range")) { s.mode = "range"; s.where = w.slice(2).join(" "); }
+        else if (is("interface", "vlan")) { s.mode = "if"; s.where = `vlan ${w[2] || ""}`; }
+        else { const p = w.slice(1).join(""); s.mode = p.includes(".") ? "subif" : "if"; s.where = p; }
+        s.open = line.trim();
+        return out();
+    }
+    if (is("vlan") || is("line")) {
+        if (!w[1]) return out({ err: `Add the number, like ${is("vlan") ? "vlan 10" : "line con 0"}.` });
+        s.mode = is("vlan") ? "vlan" : "line"; s.where = w.slice(1).join(" "); s.open = line.trim();
+        return out();
+    }
+    const sub = Object.entries(PTO_SUB).find(([, list]) => list.some((p) => is(...p)));
+    if (sub) {
+        const here = ["if", "subif", "range"].includes(s.mode) ? "if" : s.mode;
+        if (here === sub[0]) return out();
+        return out({ err: sub[0] === "if" ? "This goes inside a port. Type int … first." : sub[0] === "vlan" ? "name goes inside a VLAN. Type vlan … first." : "This goes inside a line. Type line … first." });
+    }
+    if (is("write") || is("copy")) return out({ err: "Save from admin mode: type end first, then wr." });
+    if (is("hostname") && w[1]) s.host = w[1];
+    s.ask = is("crypto", "key", "generate", "rsa") && !w.slice(4).some((x) => /^\d+$/.test(x)) ? "bits" : null;
+    s.mode = "config"; s.where = s.open = null;
+    return out();
+}
+
+function ptoPrompt(s) { return s.host + PTO_PROMPT[s.mode]; }
+
+// Plain words for where you are in the CLI.
+function ptoWhere(s) {
+    if (s.ask) return "It's asking: How many bits in the modulus? Type 1024.";
+    const inside = " Typing int, vlan or line jumps straight to another one.";
+    switch (s.mode) {
+        case "user": return "User mode (>). You can only look here. Type en to get in.";
+        case "priv": return "Admin mode (#). Type conf t to change settings, or wr to save.";
+        case "config": return "Setup mode (config). Settings for the whole device: host, vlan, int, line, banner, and so on.";
+        case "if": return /^vlan/i.test(s.where)
+            ? `Inside the switch's own address, int ${s.where} (config-if). Its address and no shut go here.${inside}`
+            : `Inside port ${s.where} (config-if). Commands here change only this port.${inside}`;
+        case "subif": return `Inside virtual port ${s.where} (config-subif). Commands here change only this virtual port.${inside}`;
+        case "range": return `Inside ports ${s.where}, all at once (config-if-range). Commands here change all of them.${inside}`;
+        case "vlan": return `Inside VLAN ${s.where} (config-vlan). Give it its name here.${inside}`;
+        case "line": return `Inside line ${s.where} (config-line). Its password and login go here.${inside}`;
+    }
+    return "";
+}
+
+// The CLI state at the start of a question: replay the steps already done.
+function ptoStartState(q) {
+    const m = /^(.*?)(>|#)$/.exec(q.dev.prompt || "Router>");
+    let s = { host: m ? m[1] : "Router", mode: m && m[2] === "#" ? "priv" : "user", where: null, open: null, ask: null };
+    for (const d of q.done) for (const l of d.lines) s = ptoTrack(s, l).st;
+    return s;
+}
+
+// A step line (short forms) as ptcMatch answers.
+function ptoToks(line) {
+    const t = line.trim();
+    let m;
+    if ((m = /^\S+ \S+ (\S)(.*)\1$/.exec(t)) && ptoKw(t.split(" ")[0], "banner")) return [[{ banner: m[2] }]];
+    if (/^cry/.test(t)) return [["crypto", "key", "generate", "rsa", "general-keys", "modulus", { v: "1024" }]];
+    if ((m = /^int range (.+)$/.exec(t))) return [["interface", "range", { range: ptcRange(m[1]) }]];
+    if (t === "wr") return [["write"], ["write", "memory"], ["copy", "running-config", "startup-config"]];
+    return [t.split(/\s+/).map((w) => {
+        if (PTO_KW.has(w)) return w;
+        if (PTO_LONG[w]) return PTO_LONG[w];
+        if (/\d\/\d/.test(w) && ptcIface(w)) return { iface: ptcIface(w) };
+        if (w.includes(":")) { const [a, len] = w.split("/"); return len ? { v6: a, len } : { v6: a }; }
+        return { v: w };
+    })];
+}
+
+// Step lines as items. Indented lines belong to the port/VLAN/line opened above them.
+function ptoReq(lines, stp) {
+    const out = [];
+    let ctx = null;
+    for (const raw of lines) {
+        const sub = /^\s/.test(raw), text = raw.trim();
+        const it = { text, stp, alts: ptoToks(text), ctx: sub ? ctx : null, cry: /^cry/.test(text) };
+        if (!sub) ctx = /^(int|vlan|line)\b/.test(text) ? it : null;
+        out.push(it);
+    }
+    return out;
+}
+
+// Grade typed lines against the valid step(s). Order is free, but each line must be in the right place.
+function ptoGrade(q, lines) {
+    const plans = q.valid.length === 1
+        ? [q.step.lines, ...(q.step.alts || [])].map((ls) => ptoReq(ls, q.step))
+        : [q.valid.flatMap((stp) => ptoReq(stp.lines, stp))];
+    const runPlan = (items) => {
+        let st = ptoStartState(q);
+        const used = new Set(), marks = [];
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i], before = st, r = ptoTrack(st, line);
+            st = r.st;
+            const mark = { line, prompt: ptoPrompt(before) };
+            marks.push(mark);
+            if (r.err) { mark.kind = "bad"; mark.why = r.err; continue; }
+            const min = (it) => it.stp.min || {};
+            const cryShort = (it) => it.cry && ptcMatch(line, ["crypto", "key", "generate", "rsa"]);
+            const fits = (it) => it.alts.some((a) => ptcMatch(line, a, min(it))) || cryShort(it);
+            const placeOk = (it) => !it.ctx || (PTO_INSIDE.includes(before.mode) && before.open && it.ctx.alts.some((a) => ptcMatch(before.open, a, min(it))));
+            const ok = items.filter((it) => fits(it) && placeOk(it));
+            const hit = ok.find((it) => !used.has(it)) || ok[0];
+            if (hit) {
+                if (cryShort(hit) && !/^\s*1024\s*$/.test(lines[i + 1] || "")) { mark.kind = "bad"; mark.why = "It asks How many bits: type 1024 on the next line. Enter alone gives 512 and loses the point."; continue; }
+                used.add(hit); mark.kind = "ok";
+                if (cryShort(hit)) { i++; const r2 = ptoTrack(st, lines[i]); marks.push({ line: lines[i], prompt: ptoPrompt(st), kind: "ok" }); st = r2.st; }
+                continue;
+            }
+            if (items.some(fits)) { mark.kind = "bad"; mark.why = "Right command, wrong place. Check the prompt: which port, VLAN or line are you in?"; continue; }
+            const w0 = line.trim().split(/\s+/)[0] || "";
+            if (["enable", "configure", "exit", "do", "show"].some((k) => ptoKw(w0, k)) || w0.toLowerCase() === "end") { mark.kind = "nav"; continue; }
+            mark.kind = "bad"; mark.why = "Not part of this step, or a typo or wrong number.";
+        }
+        const per = q.valid.map((stp) => {
+            const mine = items.filter((it) => it.stp === stp);
+            return { stp, got: mine.filter((it) => used.has(it)).length, total: mine.length, missing: mine.filter((it) => !used.has(it)) };
+        }).filter((p) => p.total);
+        const done = per.find((p) => p.got === p.total);
+        const best = done || per.slice().sort((a, b) => b.got - a.got)[0];
+        const bad = marks.filter((m) => m.kind === "bad").length;
+        return { marks, ok: !!done && !bad, step: best.stp, missing: best.got ? best.missing : [], bad, got: best.got };
+    };
+    return plans.map(runPlan).sort((a, b) => (b.ok - a.ok) || (b.got - a.got) || (a.bad - b.bad))[0];
 }
 
 async function viewPtOrder(root, _p, _q, alive) {
@@ -1828,7 +1991,7 @@ async function viewPtOrder(root, _p, _q, alive) {
                 <button type="button" class="btn btn-primary btn-block" id="pto-all">Full walkthrough (${total}, whole lab in order)</button>
                 <button type="button" class="btn btn-secondary btn-block" id="pto-quick">Quick round (12)</button>
             </div>
-            <div class="note"><strong>Type it:</strong> type the first command of the next step, like <code>int f0/3</code> or <code>vlan 30</code>. After each answer you see the whole step. The steps about the whole lab are always pick.</div>`;
+            <div class="note"><strong>Type it:</strong> type the whole next step, one command per line, like the real CLI. Press Enter (return) after each command, then tap Check. The line under the box tells you where you are. The steps about the whole lab are always pick.</div>`;
         $$("[data-mode]", root).forEach((b) => {
             b.onclick = () => {
                 mode = b.dataset.mode;
@@ -1842,12 +2005,13 @@ async function viewPtOrder(root, _p, _q, alive) {
 
     function run(list) {
         document.body.classList.add("focus-mode");
-        const s = { i: 0, checked: false, ok: false, typed: "", picked: null, got: null, right: 0, missed: [] };
+        const s = { i: 0, checked: false, ok: false, typed: "", lines: [], grade: null, picked: null, got: null, right: 0, missed: [] };
+        const takeInput = () => { const inp = $("#pto-in", root); if (inp && inp.value.trim()) { s.lines.push(inp.value.trim()); inp.value = ""; } s.typed = ""; };
 
         function check() {
             const q = list[s.i];
             if (q.pick || mode === "pick") { s.got = s.picked; s.ok = !!s.picked && q.valid.includes(s.picked); }
-            else { s.got = ptoMatchStep(q, s.typed); s.ok = !!s.got; }
+            else { takeInput(); s.grade = ptoGrade(q, s.lines); s.got = s.grade.step; s.ok = s.grade.ok; }
             s.checked = true;
             if (s.ok) s.right++; else s.missed.push(q);
             render();
@@ -1874,25 +2038,41 @@ async function viewPtOrder(root, _p, _q, alive) {
                         <span class="mark">${icon(s.checked && o === s.picked && !q.valid.includes(o) ? "close" : "check")}</span>
                         <span class="option-text"><strong>${esc(o.label)}</strong><span class="pto-sub ptc-code">${esc(o.lines.slice(0, 3).map((l) => l.trim()).join(" · "))}${o.lines.length > 3 ? " …" : ""}</span></span></button>`;
                 }).join("")}</div>`;
+            } else if (s.checked) {
+                const marks = s.grade ? s.grade.marks : [];
+                body = `<div class="ptc-term pto-term">${marks.length ? marks.map((m) => `
+                    <div class="pto-tl pto-${m.kind}"><span class="pto-mk">${m.kind === "ok" ? "✓" : m.kind === "bad" ? "✗" : ""}</span><span class="ptc-prompt">${esc(m.prompt)}</span><span class="pto-tx">${esc(m.line)}</span></div>
+                    ${m.why ? `<div class="pto-why">${esc(m.why)}</div>` : ""}`).join("") : `<div class="pto-tl"><span class="ptc-prompt">${esc(q.prompt)}</span></div>`}</div>`;
             } else {
-                body = `<form class="ptc-term" id="pto-form" autocomplete="off">
-                    <span class="ptc-prompt">${esc(q.prompt)}</span>
-                    <input class="ptc-input" id="pto-in" type="text" value="${esc(s.typed)}" ${s.checked ? "readonly" : ""}
-                        autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"
-                        aria-label="Type the first command of the next step" placeholder="first command of the next step">
-                </form>`;
+                body = `<div class="ptc-term pto-term">
+                    <div id="pto-log"></div>
+                    <form class="pto-tl" id="pto-form" autocomplete="off">
+                        <span class="ptc-prompt" id="pto-pr"></span>
+                        <input class="ptc-input" id="pto-in" type="text" value="${esc(s.typed)}"
+                            autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="enter"
+                            aria-label="Type one command, then press Enter" placeholder="one command, then Enter">
+                    </form>
+                </div>
+                <p class="pto-where" id="pto-where" aria-live="polite"></p>
+                <div class="pto-tools">
+                    <button type="button" class="ptc-mine" id="pto-undo">Undo last line</button>
+                </div>`;
             }
             let feedback = "";
             if (s.checked) {
                 const shown = s.ok ? s.got : q.step;
                 const others = q.valid.length > 1 ? `<span>Any of these ${q.valid.length} was right here: ${q.valid.map((x) => esc(x.label)).join(" · ")}. Their order doesn't matter.</span>` : "";
                 const nope = !s.ok && s.picked && s.picked.nope ? `<span>${esc(s.picked.nope)}</span>` : "";
+                const g = !pick && s.grade;
+                const miss = g && !s.ok && g.missing.length ? `<span>You left out:</span><pre class="pto-lines">${esc(g.missing.map((it) => it.text).join("\n"))}</pre><span>The whole step:</span>` : "";
+                const half = g && !s.ok && g.got ? `Right step, not finished. ` : "";
                 feedback = `<div class="feedback ${s.ok ? "good" : "bad"}" role="status">
-                    <strong>${s.ok ? "Correct!" : "Not quite."} Next: ${esc(shown.label)}</strong>
+                    <strong>${s.ok ? "Correct!" : `Not quite. ${half}`}Next: ${esc(shown.label)}</strong>
+                    ${miss}
                     ${stepBlock(shown)}
                     <span>${esc(shown.cue)}</span>
                     ${nope}${others}
-                    ${!s.ok && !pick && s.typed.trim() ? `<button type="button" class="ptc-mine" id="pto-mine">I typed it right, count it</button>` : ""}
+                    ${!s.ok && !pick && s.lines.length ? `<button type="button" class="ptc-mine" id="pto-mine">I typed it right, count it</button>` : ""}
                 </div>`;
             }
             const last = s.i === list.length - 1;
@@ -1907,7 +2087,7 @@ async function viewPtOrder(root, _p, _q, alive) {
                     <span class="runner-count">${s.i + 1} / ${list.length}</span>
                 </div>
                 <span class="eyebrow">${esc(q.dev.name)}</span>
-                <h1 class="question-text">${q.dev.pickOnly ? (q.done.length ? "What do you do next?" : "What do you do first?") : pick ? "What's the next step?" : "Type the first command of the next step."}</h1>
+                <h1 class="question-text">${q.dev.pickOnly ? (q.done.length ? "What do you do next?" : "What do you do first?") : pick ? "What's the next step?" : "Type the whole next step. One command per line, then tap Check."}</h1>
                 ${map}
                 ${body}
                 ${feedback}
@@ -1915,15 +2095,31 @@ async function viewPtOrder(root, _p, _q, alive) {
             $("#pto-quit", root).onclick = () => { if (s.i === 0 || confirm("Leave this round?")) start(); };
             const inp = $("#pto-in", root);
             if (inp) {
-                inp.oninput = () => { s.typed = inp.value; };
-                if (!s.checked) inp.focus({ preventScroll: true });
-                $("#pto-form", root).onsubmit = (e) => { e.preventDefault(); if (!s.checked) { s.typed = inp.value; check(); } else next(); };
+                // Only the log, prompt and "where" line change, so the keyboard stays up on phones.
+                const paint = () => {
+                    let st = ptoStartState(q);
+                    $("#pto-log", root).innerHTML = s.lines.map((l) => {
+                        const pr = ptoPrompt(st), r = ptoTrack(st, l);
+                        st = r.st;
+                        return `<div class="pto-tl"><span class="ptc-prompt">${esc(pr)}</span><span class="pto-tx">${esc(l)}</span></div>${r.err ? `<div class="pto-why">% ${esc(r.err)}</div>` : ""}`;
+                    }).join("");
+                    $("#pto-pr", root).textContent = ptoPrompt(st);
+                    $("#pto-where", root).innerHTML = `<strong>You're in:</strong> ${esc(ptoWhere(st))}`;
+                    $("#pto-undo", root).hidden = !s.lines.length;
+                    const ck = $("#pto-check", root);
+                    if (ck) ck.disabled = !s.lines.length && !inp.value.trim();
+                };
+                inp.oninput = () => { s.typed = inp.value; const ck = $("#pto-check", root); if (ck) ck.disabled = !s.lines.length && !inp.value.trim(); };
+                $("#pto-form", root).onsubmit = (e) => { e.preventDefault(); takeInput(); paint(); inp.focus({ preventScroll: true }); };
+                $("#pto-undo", root).onclick = () => { s.lines.pop(); paint(); inp.focus({ preventScroll: true }); };
+                paint();
+                inp.focus({ preventScroll: true });
             }
             $$("[data-o]", root).forEach((b) => { b.onclick = () => { s.picked = q.opts[+b.dataset.o]; render(); }; });
             const ck = $("#pto-check", root);
             if (ck) ck.onclick = () => { if (inp) s.typed = inp.value; check(); };
             const sh = $("#pto-show", root);
-            if (sh) sh.onclick = () => { if (inp) s.typed = inp.value; s.checked = true; s.ok = false; s.got = null; s.missed.push(q); render(); };
+            if (sh) sh.onclick = () => { if (inp) { takeInput(); s.grade = s.lines.length ? ptoGrade(q, s.lines) : null; } s.checked = true; s.ok = false; s.got = null; s.missed.push(q); render(); };
             const mine = $("#pto-mine", root);
             if (mine) mine.onclick = () => { s.ok = true; s.got = q.step; s.right++; s.missed = s.missed.filter((m) => m !== q); render(); };
             const nx = $("#pto-next", root);
@@ -1931,7 +2127,7 @@ async function viewPtOrder(root, _p, _q, alive) {
         }
         function next() {
             if (s.i === list.length - 1) return results();
-            s.i++; s.checked = false; s.ok = false; s.typed = ""; s.picked = null; s.got = null;
+            s.i++; s.checked = false; s.ok = false; s.typed = ""; s.lines = []; s.grade = null; s.picked = null; s.got = null;
             render();
             window.scrollTo(0, 0);
         }

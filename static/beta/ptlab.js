@@ -642,6 +642,7 @@ function makeVlanLab(ver) {
         sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6",
         course: "CCNA 2",
         file: `answrit_skills_pt1_v${ver}.pka`,
+        family: VLAN_LAB, versions: VLAN_VERSIONS,
         ver, P, wide: true, countUp: true,
         devices, links, notes, reqs, vlanBox, answer, hosts,
         checks: () => items,
@@ -649,15 +650,264 @@ function makeVlanLab(ver) {
     };
 }
 
+// ─── CCNA 2 skills lab 2: static, default and floating routes (IPv4 + IPv6) ──
+// Same kind of steps as the class's second skills check: an ISP router (already set up), a middle router with
+// two serial cables to the ISP (main + backup) and one to the edge router, and an edge router with an IPv4 LAN
+// and an IPv6 LAN. Every version uses its own names, networks, ports and words; none reuse the class file's.
+// The real activity hides its assessment items, so these graded items are AnswrIT's own list of every task.
+const RT_NAMES = [["SUMMIT", "VALLEY"], ["NORTH", "SOUTH"], ["CEDAR", "MAPLE"], ["ORBIT", "COMET"], ["HAWK", "DOVE"], ["RIVER", "DELTA"], ["IRON", "STEEL"], ["ALPINE", "CANYON"], ["LIMA", "OSCAR"]];
+const RT_DESCS = [["Link to IPv4 LAN", "Link to IPv6 LAN"], ["IPv4 LAN", "IPv6 LAN"], ["To the PC network", "To the laptop network"], ["IPv4 users", "IPv6 users"]];
+const RT_PWS = ["cisco", "class", "ccna"];
+const ordinal = (n) => `${n}${n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] || "th"}`;
+
+function routeLabParams(ver) {
+    if (ver === 1) {
+        return {
+            r1: "SUMMIT", r2: "VALLEY", pw: "cisco", banner: "Authorized Access Only!", desc: ["Link to IPv4 LAN", "Link to IPv6 LAN"],
+            l1: "209.165.200.224", l2: "209.165.200.228", l1v6: "2001:db8:feed:1::", l2v6: "2001:db8:feed:2::",
+            mid: "10.10.50.0", midv6: "2001:db8:beef:10::",
+            lan: "172.16.30.0", lanP: 26, lanv6: "2001:db8:cafe:5::", nth: 11,
+            srvNet: "64.100.8.0", srvv6: "2001:db8:5e:1::",
+            mainFirst: true, midPort: "Serial0/1/0", r2Ser: "Serial0/1/0", v4First: true,
+        };
+    }
+    const r = rng(ver * 104729 + 7);
+    const pick = (a) => a[Math.floor(r() * a.length)];
+    const n = (a, b) => a + Math.floor(r() * (b - a + 1));
+    const hex = (k) => Math.floor(r() * 16 ** k).toString(16);
+    const [r1, r2] = pick(RT_NAMES);
+    const isp = `${pick([64, 98, 128, 171, 192, 198, 203, 209])}.${n(1, 254)}.${n(0, 255)}`, d = 8 * n(0, 31);
+    const lanP = pick([25, 26, 26, 27]);
+    const lanBase = 2 ** (32 - lanP) * n(0, 2 ** (lanP - 24) - 1);
+    const lanPre = r() < 0.5 ? `192.168.${n(1, 254)}` : `172.${n(16, 31)}.${n(0, 255)}`;
+    const g = () => `2001:db8:${hex(3) || "a"}`;
+    return {
+        r1, r2, pw: pick(RT_PWS), banner: pick(BANNERS), desc: pick(RT_DESCS),
+        l1: `${isp}.${d}`, l2: `${isp}.${d + 4}`, l1v6: `${g()}:1::`, l2v6: `${g()}:2::`,
+        mid: `10.${n(1, 254)}.${n(0, 255)}.${4 * n(0, 63)}`, midv6: `${g()}:${n(10, 99)}::`,
+        lan: `${lanPre}.${lanBase}`, lanP, lanv6: `${g()}:${hex(1) || "c"}::`, nth: n(5, 15),
+        srvNet: `${pick([8, 23, 45, 64, 72, 99])}.${n(0, 255)}.${n(0, 255)}.${4 * n(0, 63)}`, srvv6: `${g()}:${n(1, 9)}::`,
+        mainFirst: r() < 0.6, midPort: pick(["Serial0/1/0", "Serial0/1/1"]), r2Ser: pick(["Serial0/1/0", "Serial0/0/0"]), v4First: r() < 0.7,
+    };
+}
+
+function makeRouteLab(ver) {
+    const P = routeLabParams(ver);
+    const add = (ip, k) => n2ip((ip2n(ip) + k) >>> 0);
+    const maskOf = (p) => n2ip(p === 0 ? 0 : (0xFFFFFFFF << (32 - p)) >>> 0);
+    const M30 = "255.255.255.252", lanMask = maskOf(P.lanP);
+    const six = (pre, host) => v6(`${pre.replace(/::$/, "")}::${host}`);
+    const short6 = (a) => v6short(a);
+    const R1 = P.r1, R2 = P.r2;
+    const main = P.mainFirst ? "Serial0/0/0" : "Serial0/0/1", backup = P.mainFirst ? "Serial0/0/1" : "Serial0/0/0";
+    const v4Port = P.v4First ? "GigabitEthernet0/0" : "GigabitEthernet0/1", v6Port = P.v4First ? "GigabitEthernet0/1" : "GigabitEthernet0/0";
+    const sh = (n) => n.replace("GigabitEthernet", "G").replace("Serial", "");
+    const shSer = (n) => n.replace("Serial", "ser ");
+    // Addresses
+    const ispMain = add(P.l1, 1), r1Main = add(P.l1, 2), ispBak = add(P.l2, 1), r1Bak = add(P.l2, 2);
+    const ispMain6 = six(P.l1v6, 1), r1Main6 = six(P.l1v6, 2), ispBak6 = six(P.l2v6, 1), r1Bak6 = six(P.l2v6, 2);
+    const r1Mid = add(P.mid, 1), r2Mid = add(P.mid, 2), r1Mid6 = six(P.midv6, 1), r2Mid6 = six(P.midv6, 2);
+    const lanGw = add(P.lan, 2 ** (32 - P.lanP) - 2);
+    const r2Lan6 = six(P.lanv6, P.nth.toString(16)), lanNet6 = v6(P.lanv6);
+    const srvIp = add(P.srvNet, 1), ispSrv = add(P.srvNet, 2), srv6 = six(P.srvv6, 1), ispSrv6 = six(P.srvv6, "f");
+    const pcIp = (k) => add(P.lan, k + 1), lapV6 = (k) => six(P.lanv6, k + 1);
+    const LL1 = v6("fe80::1"), LL2 = v6("fe80::2");
+
+    const devices = {
+        ISP: { kind: "router", label: "ISP", model: "1941", x: 470, y: 64 },
+        SV: { kind: "server", label: "DNS Server", model: "Server-PT", x: 700, y: 64 },
+        R1: { kind: "router", label: R1, model: "1941", x: 470, y: 214 },
+        R2: { kind: "router", label: R2, model: "1941", x: 470, y: 352 },
+        SW0: { kind: "switch", label: "Switch0", model: "2960-24TT", x: 262, y: 430 },
+        SW1: { kind: "switch", label: "Switch1", model: "2960-24TT", x: 690, y: 430 },
+        PC0: { kind: "pc", label: "PC0", model: "PC-PT", x: 112, y: 362 },
+        PC1: { kind: "pc", label: "PC1", model: "PC-PT", x: 78, y: 452 },
+        PC2: { kind: "pc", label: "PC2", model: "PC-PT", x: 122, y: 540 },
+        L0: { kind: "pc", art: "laptop", label: "Laptop0", model: "Laptop-PT", x: 860, y: 362 },
+        L1: { kind: "pc", art: "laptop", label: "Laptop1", model: "Laptop-PT", x: 904, y: 452 },
+        L2: { kind: "pc", art: "laptop", label: "Laptop2", model: "Laptop-PT", x: 860, y: 540 },
+    };
+    const links = [
+        ["ISP", "GigabitEthernet0/0", "SV", "FastEthernet0"],
+        ["ISP", "Serial0/0/0", "R1", main, "serial", "ISP", P.mainFirst ? 14 : -14],
+        ["ISP", "Serial0/0/1", "R1", backup, "serial", "ISP", P.mainFirst ? -14 : 14],
+        ["R1", P.midPort, "R2", P.r2Ser, "serial", "R1"],
+        ["R2", v4Port, "SW0", "GigabitEthernet0/1"],
+        ["R2", v6Port, "SW1", "GigabitEthernet0/1"],
+        ["PC0", "FastEthernet0", "SW0", "FastEthernet0/1"], ["PC1", "FastEthernet0", "SW0", "FastEthernet0/2"], ["PC2", "FastEthernet0", "SW0", "FastEthernet0/3"],
+        ["L0", "FastEthernet0", "SW1", "FastEthernet0/1"], ["L1", "FastEthernet0", "SW1", "FastEthernet0/2"], ["L2", "FastEthernet0", "SW1", "FastEthernet0/3"],
+    ];
+    // ISP's main cable is the left one when mainFirst (negative offset = left of the downward line).
+    const r1Box = [`${R1}:`, "- IP's on interfaces (v4/6)", `- ${sh(main)} and ${sh(backup)}, 2nd usable`, `- ${sh(P.midPort)}, 1st usable and DCE`,
+        `- Def routes to ISP (v4/6) - ${shSer(main)} (Directly connected)`, `- Floating routes to ISP (v4/6) - ${shSer(backup)} AD-10 (Directly connected)`, "- v4/6 routes to local networks. (Recursive)"];
+    const r2Box = [`${R2}:`, "- hostname", `- encrypted enable password ${P.pw}`, `- con/vty lines encrypted password ${P.pw}`, `- motd - ${P.banner}`, "- IP's on interfaces (v4/6)",
+        `- ${sh(P.r2Ser)}, 2nd usables`, `- ${sh(v4Port)}, last usable`, `- ${sh(v6Port)}, ${ordinal(P.nth)} usable`, `- 1st Link-local on ${sh(v6Port).replace("G", "G ")}`,
+        "- Directly connected Def routes to ISP (v4/6)", "", "Descriptions:", `- ${sh(v4Port)} - ${P.desc[0]}`, `- ${sh(v6Port)} - ${P.desc[1]}`];
+    const endBox = ["END DEVICES:", "- IP add, mask, default gateway and DNS Server", "- all should ping DNS Server"];
+    const hostPart = (ip) => `.${ip.split(".")[3]}`;
+    const left = P.mainFirst ? [P.l1, P.l1v6, ispMain, r1Main] : [P.l2, P.l2v6, ispBak, r1Bak];
+    const right = P.mainFirst ? [P.l2, P.l2v6, ispBak, r1Bak] : [P.l1, P.l1v6, ispMain, r1Main];
+    const notes = [
+        { x: 18, y: 30, box: r1Box },
+        { x: 18, y: 152, box: endBox },
+        { x: 756, y: 60, box: [`${srvIp}/30`, `${short6(srv6)}/64`] },
+        { x: 280, y: 132, box: [`${left[0]}/30`, `${short6(v6(left[1]))}/64`] },
+        { x: 524, y: 132, box: [`${right[0]}/30`, `${short6(v6(right[1]))}/64`] },
+        { x: 416, y: 104, t: hostPart(left[2]), a: "end" }, { x: 416, y: 116, t: "::1", a: "end" },
+        { x: 528, y: 104, t: hostPart(right[2]), a: "start" }, { x: 528, y: 116, t: "::1", a: "start" },
+        { x: 416, y: 178, t: hostPart(left[3]), a: "end" }, { x: 416, y: 190, t: "::2", a: "end" },
+        { x: 528, y: 178, t: hostPart(right[3]), a: "start" }, { x: 528, y: 190, t: "::2", a: "start" },
+        { x: 440, y: 246, t: hostPart(r1Mid), a: "end" }, { x: 440, y: 258, t: "::1", a: "end" },
+        { x: 506, y: 238, t: "1st Link-local", a: "start" },
+        { x: 524, y: 276, box: [`${P.mid}/30`, `${short6(v6(P.midv6))}/64`] },
+        { x: 440, y: 318, t: hostPart(r2Mid), a: "end" }, { x: 440, y: 330, t: "::2", a: "end" },
+        { x: 362, y: 318, t: "2nd Link-local", a: "middle" },
+        { x: 112, y: 330, t: "1st" }, { x: 46, y: 448, t: "2nd" }, { x: 158, y: 556, t: "3rd" },
+        { x: 860, y: 330, t: "1st" }, { x: 948, y: 448, t: "2nd" }, { x: 820, y: 556, t: "3rd" },
+        { x: 228, y: 486, t: `${P.lan}/${P.lanP}`, a: "start" },
+        { x: 640, y: 486, t: `${short6(lanNet6)}/64`, a: "start" },
+        { x: 352, y: 488, box: r2Box },
+    ];
+
+    // Already set up in the activity: the ISP router and the DNS server.
+    const preset = (st) => {
+        const c = st.devs.ISP.cfg;
+        c.hostname = "ISP"; c.v6routing = true; c.lookup = true;
+        const set = (n, o) => Object.assign(c.ifaces[n], { shut: false, ...o });
+        set("GigabitEthernet0/0", { ip: ispSrv, mask: M30, v6: [{ addr: ispSrv6, len: 64 }], ll: LL1 });
+        set("Serial0/0/0", { ip: ispMain, mask: M30, v6: [{ addr: ispMain6, len: 64 }], ll: LL1, clock: 128000 });
+        set("Serial0/0/1", { ip: ispBak, mask: M30, v6: [{ addr: ispBak6, len: 64 }], ll: LL1, clock: 128000 });
+        c.routes = [
+            { fam: 4, net: P.lan, mask: lanMask, hop: "", ifc: "Serial0/0/0", ad: 1 },
+            { fam: 4, net: P.lan, mask: lanMask, hop: "", ifc: "Serial0/0/1", ad: 10 },
+            { fam: 6, net: lanNet6, len: 64, hop: "", ifc: "Serial0/0/0", ad: 1 },
+            { fam: 6, net: lanNet6, len: 64, hop: "", ifc: "Serial0/0/1", ad: 10 },
+        ];
+        c.lines.vty.login = "login";
+        st.devs.R1.cfg.hostname = R1;
+        Object.assign(st.devs.SV.cfg, { ip: srvIp, mask: M30, gw: ispSrv, v6: srv6, v6len: 64, v6gw: LL1 });
+    };
+
+    // ── Graded items (AnswrIT's list: the real activity hides its own)
+    const C = (st, id) => st.devs[id].cfg;
+    const I = (st, id, n) => C(st, id).ifaces[n] || {};
+    const items = [];
+    const it = (dev, path, test) => items.push({ dev, label: `${devices[dev].label}: ${path}`, item: path, test });
+    const has6 = (f, a, len = 64) => (f.v6 || []).some((x) => x.addr === a && x.len === len);
+    const route = (st, id, want) => (C(st, id).routes || []).some((r) => r.fam === want.fam && r.net === want.net && (want.fam === 4 ? r.mask === want.mask : r.len === want.len)
+        && (want.ifc ? r.ifc === want.ifc || r.hop === want.hop : r.hop === want.hop) && r.ad === want.ad);
+    const any0 = { fam: 4, net: "0.0.0.0", mask: "0.0.0.0" }, any6 = { fam: 6, net: v6("::"), len: 0 };
+    // R1
+    it("R1", `Ports › ${main} › IP Address`, (st) => { const f = I(st, "R1", main); return f.ip === r1Main && f.mask === M30; });
+    it("R1", `Ports › ${main} › IPv6 Address`, (st) => has6(I(st, "R1", main), r1Main6));
+    it("R1", `Ports › ${backup} › IP Address`, (st) => { const f = I(st, "R1", backup); return f.ip === r1Bak && f.mask === M30; });
+    it("R1", `Ports › ${backup} › IPv6 Address`, (st) => has6(I(st, "R1", backup), r1Bak6));
+    it("R1", `Ports › ${P.midPort} › IP Address`, (st) => { const f = I(st, "R1", P.midPort); return f.ip === r1Mid && f.mask === M30; });
+    it("R1", `Ports › ${P.midPort} › IPv6 Address`, (st) => has6(I(st, "R1", P.midPort), r1Mid6));
+    it("R1", `Ports › ${P.midPort} › Link Local`, (st) => I(st, "R1", P.midPort).ll === LL1);
+    it("R1", `Ports › ${P.midPort} › Clock Rate (DCE)`, (st) => !!I(st, "R1", P.midPort).clock);
+    it("R1", "IPv6 Unicast Routing", (st) => C(st, "R1").v6routing);
+    it("R1", "Static Routes › IPv4 Default", (st) => route(st, "R1", { ...any0, ifc: main, hop: ispMain, ad: 1 }));
+    it("R1", "Static Routes › IPv6 Default", (st) => route(st, "R1", { ...any6, ifc: main, hop: ispMain6, ad: 1 }));
+    it("R1", "Static Routes › IPv4 Floating (AD 10)", (st) => route(st, "R1", { ...any0, ifc: backup, hop: ispBak, ad: 10 }));
+    it("R1", "Static Routes › IPv6 Floating (AD 10)", (st) => route(st, "R1", { ...any6, ifc: backup, hop: ispBak6, ad: 10 }));
+    it("R1", `Static Routes › ${P.lan}/${P.lanP} (recursive)`, (st) => route(st, "R1", { fam: 4, net: P.lan, mask: lanMask, hop: r2Mid, ad: 1 }));
+    it("R1", `Static Routes › ${short6(lanNet6)}/64 (recursive)`, (st) => route(st, "R1", { fam: 6, net: lanNet6, len: 64, hop: r2Mid6, ad: 1 }));
+    // R2
+    it("R2", "Host Name", (st) => C(st, "R2").hostname === R2);
+    it("R2", "Enable Secret", (st) => C(st, "R2").enableSecret === P.pw);
+    it("R2", "Console Line › Password", (st) => C(st, "R2").lines.con.pw === P.pw && C(st, "R2").lines.con.login === "login");
+    it("R2", "VTY Lines › Password", (st) => C(st, "R2").lines.vty.pw === P.pw && C(st, "R2").lines.vty.login === "login");
+    it("R2", "Service Password-Encryption", (st) => C(st, "R2").spe);
+    it("R2", "Banner MOTD", (st) => (C(st, "R2").banner || "").trim() === P.banner);
+    it("R2", "IPv6 Unicast Routing", (st) => C(st, "R2").v6routing);
+    it("R2", `Ports › ${P.r2Ser} › IP Address`, (st) => { const f = I(st, "R2", P.r2Ser); return f.ip === r2Mid && f.mask === M30; });
+    it("R2", `Ports › ${P.r2Ser} › IPv6 Address`, (st) => has6(I(st, "R2", P.r2Ser), r2Mid6));
+    it("R2", `Ports › ${P.r2Ser} › Link Local`, (st) => I(st, "R2", P.r2Ser).ll === LL2);
+    it("R2", `Ports › ${v4Port} › IP Address`, (st) => { const f = I(st, "R2", v4Port); return f.ip === lanGw && f.mask === lanMask && !f.shut; });
+    it("R2", `Ports › ${v4Port} › Description`, (st) => (I(st, "R2", v4Port).desc || "").trim().toLowerCase() === P.desc[0].toLowerCase());
+    it("R2", `Ports › ${v6Port} › IPv6 Address`, (st) => has6(I(st, "R2", v6Port), r2Lan6) && !I(st, "R2", v6Port).shut);
+    it("R2", `Ports › ${v6Port} › Link Local`, (st) => I(st, "R2", v6Port).ll === LL1);
+    it("R2", `Ports › ${v6Port} › Description`, (st) => (I(st, "R2", v6Port).desc || "").trim().toLowerCase() === P.desc[1].toLowerCase());
+    it("R2", "Static Routes › IPv4 Default", (st) => route(st, "R2", { ...any0, ifc: P.r2Ser, hop: r1Mid, ad: 1 }));
+    it("R2", "Static Routes › IPv6 Default", (st) => route(st, "R2", { ...any6, ifc: P.r2Ser, hop: r1Mid6, ad: 1 }));
+    // End devices
+    ["PC0", "PC1", "PC2"].forEach((id, k) => {
+        it(id, "Ports › FastEthernet0 › IP Address", (st) => C(st, id).ip === pcIp(k));
+        it(id, "Ports › FastEthernet0 › Subnet Mask", (st) => C(st, id).mask === lanMask);
+        it(id, "Default Gateway", (st) => C(st, id).gw === lanGw);
+        it(id, "DNS Server IP", (st) => C(st, id).dns === srvIp);
+    });
+    ["L0", "L1", "L2"].forEach((id, k) => {
+        it(id, "Ports › FastEthernet0 › IPv6 Address", (st) => C(st, id).v6 === lapV6(k) && +C(st, id).v6len === 64);
+        it(id, "IPv6 Default Gateway", (st) => C(st, id).v6gw === LL1 || C(st, id).v6gw === r2Lan6);
+        it(id, "IPv6 DNS Server", (st) => C(st, id).v6dns === srv6);
+    });
+    const order = Object.keys(devices).sort((a, b) => devices[a].label.localeCompare(devices[b].label));
+    items.sort((x, y) => order.indexOf(x.dev) - order.indexOf(y.dev));
+
+    // ── Answers
+    const s6 = (a) => short6(a);
+    const answer = {
+        plan: [
+            [`${R1} ${main} (main)`, r1Main, M30, `${s6(r1Main6)}/64`],
+            [`${R1} ${backup} (backup)`, r1Bak, M30, `${s6(r1Bak6)}/64`],
+            [`${R1} ${P.midPort} (DCE)`, r1Mid, M30, `${s6(r1Mid6)}/64, link-local FE80::1, clock rate 128000`],
+            [`${R2} ${P.r2Ser}`, r2Mid, M30, `${s6(r2Mid6)}/64, link-local FE80::2`],
+            [`${R2} ${v4Port}`, lanGw, lanMask, "last usable"],
+            [`${R2} ${v6Port}`, "", "", `${s6(r2Lan6)}/64 (${ordinal(P.nth)} usable = ::${P.nth.toString(16)}), link-local FE80::1`],
+            ...["PC0", "PC1", "PC2"].map((id, k) => [`${id} (${ORD[k]})`, pcIp(k), lanMask, `gateway ${lanGw}, DNS ${srvIp}`]),
+            ...["Laptop0", "Laptop1", "Laptop2"].map((id, k) => [`${id} (${ORD[k]})`, "", "", `${s6(lapV6(k))}/64, gateway FE80::1, DNS ${s6(srv6)}`]),
+        ],
+        help: [
+            [`${R1} (middle router)`, [
+                "enable", "configure terminal", "ipv6 unicast-routing",
+                `interface ${main}`, ` ip address ${r1Main} ${M30}`, ` ipv6 address ${s6(r1Main6)}/64`, " no shutdown",
+                `interface ${backup}`, ` ip address ${r1Bak} ${M30}`, ` ipv6 address ${s6(r1Bak6)}/64`, " no shutdown",
+                `interface ${P.midPort}`, ` ip address ${r1Mid} ${M30}`, ` ipv6 address ${s6(r1Mid6)}/64`, " ipv6 address FE80::1 link-local", " clock rate 128000", " no shutdown", " exit",
+                `ip route 0.0.0.0 0.0.0.0 ${main}`, `ip route 0.0.0.0 0.0.0.0 ${backup} 10`,
+                `ipv6 route ::/0 ${main}`, `ipv6 route ::/0 ${backup} 10`,
+                `ip route ${P.lan} ${lanMask} ${r2Mid}`, `ipv6 route ${s6(lanNet6)}/64 ${s6(r2Mid6)}`, "end",
+            ].join("\n")],
+            [`${R2} (edge router)`, [
+                "enable", "configure terminal", `hostname ${R2}`, `enable secret ${P.pw}`,
+                "line console 0", ` password ${P.pw}`, " login", "line vty 0 4", ` password ${P.pw}`, " login", " exit",
+                "service password-encryption", `banner motd #${P.banner}#`, "ipv6 unicast-routing",
+                `interface ${P.r2Ser}`, ` ip address ${r2Mid} ${M30}`, ` ipv6 address ${s6(r2Mid6)}/64`, " ipv6 address FE80::2 link-local", " no shutdown",
+                `interface ${v4Port}`, ` description ${P.desc[0]}`, ` ip address ${lanGw} ${lanMask}`, " no shutdown",
+                `interface ${v6Port}`, ` description ${P.desc[1]}`, ` ipv6 address ${s6(r2Lan6)}/64`, " ipv6 address FE80::1 link-local", " no shutdown", " exit",
+                `ip route 0.0.0.0 0.0.0.0 ${P.r2Ser}`, `ipv6 route ::/0 ${P.r2Ser}`, "end",
+            ].join("\n")],
+        ],
+    };
+    return {
+        title: "Packet Tracer 2",
+        sub: "Static, default and floating routes for IPv4 and IPv6",
+        course: "CCNA 2",
+        family: ROUTE_LAB, versions: ROUTE_VERSIONS, routing: true,
+        file: `answrit_skills_pt2_v${ver}.pka`,
+        ver, P, wide: true, countUp: true, view: "0 0 1010 690",
+        devices, links, notes, answer, preset,
+        reqs: [...r1Box, ...r2Box, ...endBox],
+        facts: { R1, R2, main, backup, v4Port, v6Port, srvIp, srv6, lanGw, r2Lan6, lanMask, r1Mid, r2Mid, r1Mid6, r2Mid6, ispMain, ispBak },
+        checks: () => items,
+        conn: [["PC0", "SV", 4], ["PC1", "SV", 4], ["PC2", "SV", 4], ["L0", "SV", 6], ["L1", "SV", 6], ["L2", "SV", 6]],
+    };
+}
+
 const VLAN_LAB = "ccna2-vlan";
 const VLAN_VERSIONS = 6;
-// "ccna2-vlan" (version 1) or "ccna2-vlan-7"
+const ROUTE_LAB = "ccna2-routes";
+const ROUTE_VERSIONS = 6;
+const FAMILIES = { [VLAN_LAB]: makeVlanLab, [ROUTE_LAB]: makeRouteLab };
+// "ccna2-vlan" (version 1) or "ccna2-vlan-7"; same for "ccna2-routes"
 function getLab(id) {
     if (LABS[id]) return LABS[id];
-    const m = new RegExp(`^${VLAN_LAB}(?:-(\\d{1,5}))?$`).exec(id);
+    const m = /^(ccna2-vlan|ccna2-routes)(?:-(\d{1,5}))?$/.exec(id);
     if (!m) return null;
-    const ver = Math.max(1, +(m[1] || 1));
-    return LABS[`${VLAN_LAB}-${ver}`] || (LABS[`${VLAN_LAB}-${ver}`] = makeVlanLab(ver));
+    const ver = Math.max(1, +(m[2] || 1));
+    const key = `${m[1]}-${ver}`;
+    return LABS[key] || (LABS[key] = FAMILIES[m[1]](ver));
 }
 
 // ─── Devices ────────────────────────────────────────────────────────────────
@@ -666,7 +916,9 @@ function newIface(shut) { return { ip: "", mask: "", v6: [], ll: "", desc: "", s
 function newNetDevice(kind, model) {
     const ifaces = {};
     if (kind === "router") {
-        const names = model === "4331" ? ["GigabitEthernet0/0/0", "GigabitEthernet0/0/1", "GigabitEthernet0/0/2"] : ["GigabitEthernet0/0", "GigabitEthernet0/1", "GigabitEthernet0/2"];
+        const names = model === "4331" ? ["GigabitEthernet0/0/0", "GigabitEthernet0/0/1", "GigabitEthernet0/0/2"]
+            : model === "1941" ? ["GigabitEthernet0/0", "GigabitEthernet0/1", "Serial0/0/0", "Serial0/0/1", "Serial0/1/0", "Serial0/1/1"]
+            : ["GigabitEthernet0/0", "GigabitEthernet0/1", "GigabitEthernet0/2"];
         names.forEach((n) => { ifaces[n] = newIface(true); });
     } else {
         for (let i = 1; i <= 24; i++) ifaces[`FastEthernet0/${i}`] = newIface(false);
@@ -678,7 +930,7 @@ function newNetDevice(kind, model) {
         cfg: {
             hostname: kind === "router" ? "Router" : "Switch",
             enableSecret: "", enablePassword: "", spe: false, banner: "", minLen: 0, block: null,
-            lookup: true, domain: "", users: {}, rsa: 0, v6routing: false, gw: "",
+            lookup: true, domain: "", users: {}, rsa: 0, v6routing: false, gw: "", routes: [],
             // vty = lines 0-4, vty2 = lines 5-15
             lines: { con: { pw: "", login: "", timeout: "" }, vty: { pw: "", login: "", timeout: "", transport: "" }, vty2: { pw: "", login: "", timeout: "", transport: "" } },
             vlans: kind === "switch" ? { 1: "default" } : undefined,
@@ -687,11 +939,13 @@ function newNetDevice(kind, model) {
         startup: null,
     };
 }
-function newHost() { return { cfg: { ip: "", mask: "", gw: "", dns: "", v6: "", v6len: 64, v6gw: "", files: [] } }; }
+function newHost() { return { cfg: { ip: "", mask: "", gw: "", dns: "", v6: "", v6len: 64, v6gw: "", v6dns: "", files: [] } }; }
 function freshState(lab) {
     const devs = {};
     for (const [id, d] of Object.entries(lab.devices)) devs[id] = d.kind === "router" || d.kind === "switch" ? newNetDevice(d.kind, d.model) : newHost();
-    return { devs, sheet: {} };
+    const st = { devs, sheet: {} };
+    if (lab.preset) lab.preset(st);
+    return st;
 }
 // Fill in fields that older saved labs don't have.
 function upgradeState(st) {
@@ -699,6 +953,7 @@ function upgradeState(st) {
         const c = d.cfg;
         if (!c.lines) continue;
         if (!c.lines.vty2) c.lines.vty2 = { pw: "", login: "", timeout: "", transport: "" };
+        if (!c.routes) c.routes = [];
         for (const f of Object.values(c.ifaces)) {
             if (f.mode === undefined) Object.assign(f, { mode: "", access: 1, native: 1, dot1q: null });
         }
@@ -712,6 +967,19 @@ function peerOf(lab, dev, port) {
     const l = lab.links.find(([a, ap, b, bp]) => (a === dev && ap === port) || (b === dev && bp === port));
     if (!l) return null;
     return l[0] === dev && l[1] === port ? { dev: l[2], port: l[3] } : { dev: l[0], port: l[1] };
+}
+// The cable at dev/port: [a, aPort, b, bPort, style, dceDev]
+function linkAt(lab, dev, port) {
+    const p = String(port).split(".")[0];
+    return lab.links.find(([a, ap, b, bp]) => (a === dev && ap === p) || (b === dev && bp === p)) || null;
+}
+// A serial cable only comes up when both ends are on and the DCE end has a clock rate.
+function serialUp(lab, st, l) {
+    if (!l || l[4] !== "serial") return true;
+    const f = (dev, port) => st.devs[dev].cfg.ifaces[port] || {};
+    const A = f(l[0], l[1]), B = f(l[2], l[3]);
+    const dce = l[5] === l[0] ? A : B;
+    return !A.shut && !B.shut && !!dce.clock;
 }
 function hostPort(lab, id) {
     const l = lab.links.find(([a, , b]) => a === id || b === id);
@@ -802,11 +1070,12 @@ function stacks(lab, st, fam) {
                 const seg = routerIfSeg(L, st, id, name);
                 if (!seg) return;
                 const parentIf = d.cfg.ifaces[name.split(".")[0]];
-                const f = { ...f0, shut: f0.shut || parentIf.shut };
-                if (fam === 4 && f.ip) out.push({ dev: id, seg, addrs: [f.ip], inNet: (a) => sameNet(a, f.ip, f.mask), up: !f.shut, router: true });
+                const f = { ...f0, shut: f0.shut || parentIf.shut || !serialUp(lab, st, linkAt(lab, id, name)) };
+                if (fam === 4 && f.ip) out.push({ dev: id, ifc: name, seg, addrs: [f.ip], inNet: (a) => sameNet(a, f.ip, f.mask), lenOf: () => maskBits(f.mask), up: !f.shut, router: true });
                 if (fam === 6 && (f.v6.length || f.ll || f.v6on)) {
                     const ll = f.ll || autoLL(id, i);
-                    out.push({ dev: id, seg, addrs: [...f.v6.map((x) => x.addr), ll], inNet: (a) => isLL(a) || f.v6.some((x) => samePfx(a, x.addr, x.len)), up: !f.shut, router: true });
+                    out.push({ dev: id, ifc: name, seg, addrs: [...f.v6.map((x) => x.addr), ll], inNet: (a) => isLL(a) || f.v6.some((x) => samePfx(a, x.addr, x.len)),
+                        lenOf: (a) => (f.v6.find((x) => samePfx(a, x.addr, x.len)) || { len: 0 }).len, up: !f.shut, router: true });
                 }
             });
         } else if (def.kind === "switch") {
@@ -841,9 +1110,106 @@ function deliver(all, st, src, dst, fam) {
     if (owner.dev === g.dev) return true;
     return routes(st, g.dev, fam) && all.some((r) => r.dev === g.dev && r.up && r.seg === owner.seg && r.inNet(dst));
 }
+// ── Routed labs (several routers): connected + static routes, hop by hop.
+// Is this router port up/up? (on, cabled, and a serial cable has its clock)
+function ifLineUp(lab, st, dev, ifc) {
+    const c = st.devs[dev].cfg, f = c.ifaces[ifc];
+    if (!f) return false;
+    const parent = c.ifaces[ifc.split(".")[0]];
+    if (f.shut || parent.shut) return false;
+    const l = linkAt(lab, dev, ifc);
+    return !!l && serialUp(lab, st, l);
+}
+// The route a router uses for dst: { kind: "local" | "conn" | "static", out (stack), r (static route) } or null.
+// Longest prefix wins; on a tie the lower administrative distance (a floating route only wins when the main one is gone).
+function lookup(lab, st, all, dev, dst, fam, depth = 0) {
+    const mine = all.filter((s) => s.dev === dev && s.up);
+    if (mine.some((s) => s.addrs.includes(dst))) return { kind: "local", out: mine.find((s) => s.addrs.includes(dst)) };
+    const cands = [];
+    for (const s of mine) {
+        if (fam === 6 && isLL(dst)) continue;
+        if (s.inNet(dst)) cands.push({ kind: "conn", len: s.lenOf(dst), ad: 0, out: s });
+    }
+    for (const r of st.devs[dev].cfg.routes || []) {
+        if (r.fam !== fam) continue;
+        if (!(fam === 4 ? sameNet(dst, r.net, r.mask) : samePfx(dst, r.net, r.len))) continue;
+        const len = fam === 4 ? maskBits(r.mask) : r.len;
+        if (r.ifc) {
+            if (!ifLineUp(lab, st, dev, r.ifc)) continue;
+            cands.push({ kind: "static", len, ad: r.ad, r, out: mine.find((s) => s.ifc === r.ifc) || null });
+        } else {
+            if (depth > 3) continue;
+            const via = lookup(lab, st, all, dev, r.hop, fam, depth + 1);
+            if (!via || via.kind === "local") continue;
+            cands.push({ kind: "static", len, ad: r.ad, r, out: via.out, via });
+        }
+    }
+    cands.sort((a, b) => b.len - a.len || a.ad - b.ad);
+    return cands[0] || null;
+}
+// Follow a packet from device `from` to address dst. Returns true when it arrives.
+function travel(lab, st, all, from, dst, fam) {
+    let dev = from;
+    for (let hops = 0; hops < 12; hops++) {
+        if (all.some((s) => s.dev === dev && s.up && s.addrs.includes(dst))) return true;
+        const kind = lab.devices[dev].kind;
+        if (kind !== "router") {
+            const me = all.find((s) => s.dev === dev && s.up);
+            if (!me) return false;
+            const owner = all.find((x) => x.up && x.addrs.includes(dst));
+            if (owner && owner.seg === me.seg && me.inNet(dst)) return true;
+            if (!me.gw) return false;
+            const g = all.find((r) => r.router && r.up && r.seg === me.seg && r.addrs.includes(me.gw) && me.inNet(me.gw));
+            if (!g) return false;
+            dev = g.dev;
+            continue;
+        }
+        if (!routes(st, dev, fam)) return false;
+        const rt = lookup(lab, st, all, dev, dst, fam);
+        if (!rt) return false;
+        if (rt.kind === "conn") {
+            const owner = all.find((x) => x.up && x.seg === rt.out.seg && x.addrs.includes(dst));
+            return !!owner;
+        }
+        // Static route: hand it to the next router (next hop address, or the far end of the exit cable).
+        let next = null;
+        if (rt.r.hop) {
+            const h = all.find((x) => x.up && x.addrs.includes(rt.r.hop) && x.dev !== dev);
+            next = h ? h.dev : null;
+        } else {
+            const p = peerOf(lab, dev, rt.r.ifc.split(".")[0]);
+            if (p && lab.devices[p.dev].kind === "router") next = p.dev;
+            else if (rt.out) {
+                const owner = all.find((x) => x.up && x.seg === rt.out.seg && x.addrs.includes(dst));
+                return !!owner;
+            }
+        }
+        if (!next) return false;
+        dev = next;
+    }
+    return false;
+}
+function pingRouted(lab, st, srcDev, dst, fam) {
+    const all = stacks(lab, st, fam);
+    const mine = all.filter((s) => s.dev === srcDev && s.up);
+    if (!mine.length) return { ok: false, noAddr: true };
+    const owner = all.find((x) => x.up && x.addrs.includes(dst));
+    if (!owner) return { ok: false };
+    // The source address: a host's own address; a router uses the port it sends out of.
+    let srcAddr = mine[0].addrs[0];
+    if (lab.devices[srcDev].kind === "router") {
+        const rt = lookup(lab, st, all, srcDev, dst, fam);
+        if (!rt) return { ok: false, owner };
+        srcAddr = (rt.out || mine[0]).addrs[0];
+    }
+    const there = travel(lab, st, all, srcDev, dst, fam);
+    const back = there && travel(lab, st, all, owner.dev, srcAddr, fam);
+    return { ok: there && back, owner, src: mine[0], routed: owner.dev !== srcDev && owner.seg !== mine[0].seg && !owner.router };
+}
 function ping(lab, st, srcDev, target, fam) {
     const dst = fam === 4 ? normIp(target) : v6(target);
     if (!dst) return { ok: false, bad: true };
+    if (lab.routing) return pingRouted(lab, st, srcDev, dst, fam);
     const all = stacks(lab, st, fam);
     const mine = all.filter((s) => s.dev === srcDev && s.up);
     if (!mine.length) return { ok: false, noAddr: true };
@@ -869,7 +1235,7 @@ function normIf(raw, d, kind) {
     const s = String(raw).replace(/\s+/g, "").toLowerCase();
     const m = /^([a-z-]+)(\d[\d/.]*)$/.exec(s);
     if (!m) return null;
-    const types = [["gigabitethernet", "GigabitEthernet"], ["fastethernet", "FastEthernet"], ["vlan", "Vlan"]];
+    const types = [["gigabitethernet", "GigabitEthernet"], ["fastethernet", "FastEthernet"], ["serial", "Serial"], ["vlan", "Vlan"]];
     const t = types.find(([full]) => full.startsWith(m[1]));
     if (!t) return null;
     const name = t[1] + m[2];
@@ -959,7 +1325,10 @@ cmd("user priv", "show vlan", (ctx) => ctx.print(vlanBrief(ctx, true)), "switch"
 cmd("user priv", "show interfaces trunk", (ctx) => ctx.print(trunkShow(ctx)), "switch");
 cmd("user priv", "show ipv6 interface brief", (ctx) => ctx.print(ipv6Brief(ctx)), "router");
 cmd("user priv", "show ip route", (ctx) => ctx.print(ipRoute(ctx)), "router");
-cmd("user priv", "show version", (ctx) => ctx.print(ctx.kind === "router" && ctx.d.cfg.ifaces["GigabitEthernet0/0/0"]
+cmd("user priv", "show ipv6 route", (ctx) => ctx.print(ipv6Route(ctx)), "router");
+cmd("user priv", "show version", (ctx) => ctx.print(ctx.kind === "router" && ctx.d.cfg.ifaces["Serial0/0/0"]
+    ? "Cisco IOS Software, C1900 Software (C1900-UNIVERSALK9-M), Version 15.1(4)M4, RELEASE SOFTWARE (fc2)\ncisco CISCO1941/K9 (revision 1.0) with 491520K/32768K bytes of memory.\n2 Gigabit Ethernet interfaces\n4 Low-speed serial(sync/async) network interface(s)\n255K bytes of non-volatile configuration memory."
+    : ctx.kind === "router" && ctx.d.cfg.ifaces["GigabitEthernet0/0/0"]
     ? "Cisco IOS XE Software, Version 03.16.05.S - Extended Support Release\nCisco IOS Software, ISR Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 15.5(3)S5\ncisco ISR4331/K9 (1RU) processor with 1795999K/6147K bytes of memory.\n3 Gigabit Ethernet interfaces\n32768K bytes of non-volatile configuration memory."
     : ctx.kind === "router"
     ? "Cisco IOS Software, C2900 Software (C2900-UNIVERSALK9-M), Version 15.1(4)M5\ncisco CISCO2911/K9 (revision 1.0) with 491520K/32768K bytes of memory.\n3 Gigabit Ethernet interfaces\n255K bytes of non-volatile configuration memory."
@@ -1036,6 +1405,70 @@ cmd("config", "ip ssh version <n>", (ctx, [n]) => {
 cmd("config", "ipv6 unicast-routing", (ctx) => { ctx.d.cfg.v6routing = true; }, "router");
 cmd("config", "no ipv6 unicast-routing", (ctx) => { ctx.d.cfg.v6routing = false; }, "router");
 cmd("config", "ip default-gateway <ip>", (ctx, [g]) => { ctx.d.cfg.gw = normIp(g); }, "switch");
+// Static routes: "ip route NET MASK (next-hop | exit-interface) [distance]", same for IPv6 with a prefix.
+// The exit interface may be typed as one word (s0/0/0) or two (serial 0/0/0).
+function routeTarget(ctx, rest, fam) {
+    const w = rest.trim().split(/\s+/).filter(Boolean);
+    if (!w.length) return null;
+    let hop = "", ifc = "", used = 1;
+    if (fam === 4 && ip2n(w[0]) !== null) hop = normIp(w[0]);
+    else if (fam === 6 && v6(w[0]) && /:/.test(w[0])) hop = v6(w[0]);
+    else {
+        ifc = normIf(w[0], ctx.d, ctx.kind);
+        if (!ifc && w[1]) { ifc = normIf(w[0] + w[1], ctx.d, ctx.kind); used = 2; }
+        if (!ifc) return null;
+    }
+    const tail = w.slice(used);
+    if (tail.length > 1 || (tail.length && !/^\d+$/.test(tail[0]))) return null;
+    const ad = tail.length ? +tail[0] : 1;
+    if (ad < 1 || ad > 255) return null;
+    return { hop, ifc, ad };
+}
+const sameRoute = (a, b) => a.fam === b.fam && a.net === b.net && (a.fam === 4 ? a.mask === b.mask : a.len === b.len) && a.hop === b.hop && a.ifc === b.ifc;
+const addRoute = (ctx, r) => {
+    const list = ctx.d.cfg.routes || (ctx.d.cfg.routes = []);
+    const old = list.findIndex((x) => sameRoute(x, r));
+    if (old >= 0) list.splice(old, 1, r); else list.push(r);
+};
+cmd("config", "ip route <ip> <ip> <rest>", (ctx, [n, m, rest]) => {
+    const mask = normIp(m);
+    if (maskBits(mask) === null) return ctx.print("%Inconsistent address and mask");
+    const t = routeTarget(ctx, rest, 4);
+    if (!t) return ctx.invalid();
+    const net = normIp(n);
+    if (netOf(net, mask) !== net) return ctx.print("%Inconsistent address and mask");
+    if (!t.hop && maskBits(mask) === 0) ctx.print("%Default route without gateway, if not a point-to-point interface, may impact performance");
+    addRoute(ctx, { fam: 4, net, mask, ...t });
+}, "router");
+cmd("config", "no ip route <ip> <ip> <rest>", (ctx, [n, m, rest]) => {
+    const t = routeTarget(ctx, rest, 4);
+    const list = ctx.d.cfg.routes || [];
+    const i = list.findIndex((x) => t && sameRoute(x, { fam: 4, net: normIp(n), mask: normIp(m), ...t }));
+    if (i >= 0) list.splice(i, 1); else ctx.print("%No matching route to delete");
+}, "router");
+cmd("config", "no ip route <ip> <ip>", (ctx, [n, m]) => {
+    ctx.d.cfg.routes = (ctx.d.cfg.routes || []).filter((x) => !(x.fam === 4 && x.net === normIp(n) && x.mask === normIp(m)));
+}, "router");
+const v6net = (x) => {
+    const bits = x.addr.split(":").map((h) => parseInt(h, 16).toString(2).padStart(16, "0")).join("").slice(0, x.len).padEnd(128, "0");
+    return Array.from({ length: 8 }, (_, i) => parseInt(bits.slice(i * 16, i * 16 + 16), 2).toString(16).padStart(4, "0")).join(":");
+};
+cmd("config", "ipv6 route <v6p> <rest>", (ctx, [p, rest]) => {
+    const x = v6pfx(p), t = routeTarget(ctx, rest, 6);
+    if (!x || !t) return ctx.invalid();
+    addRoute(ctx, { fam: 6, net: v6net(x), len: x.len, ...t });
+}, "router");
+cmd("config", "no ipv6 route <v6p> <rest>", (ctx, [p, rest]) => {
+    const x = v6pfx(p), t = routeTarget(ctx, rest, 6);
+    const list = ctx.d.cfg.routes || [];
+    const i = list.findIndex((y) => x && t && sameRoute(y, { fam: 6, net: v6net(x), len: x.len, ...t }));
+    if (i >= 0) list.splice(i, 1);
+}, "router");
+cmd("config", "no ipv6 route <v6p>", (ctx, [p]) => {
+    const x = v6pfx(p);
+    if (!x) return ctx.invalid();
+    ctx.d.cfg.routes = (ctx.d.cfg.routes || []).filter((y) => !(y.fam === 6 && y.net === v6net(x) && y.len === x.len));
+}, "router");
 cmd("config", "interface <if>", (ctx, [n]) => {
     ctx.s.mode = n.includes(".") ? "subif" : "if"; ctx.s.ifc = n; ctx.s.range = null;
     if (n.includes(".") && !ctx.s.pinged[`sub:${n}`]) {
@@ -1124,9 +1557,19 @@ cmd("if", "no shutdown", (ctx) => {
     const f = curIf(ctx);
     if (!f.shut) return;
     f.shut = false;
-    const up = ctx.linked(ctx.s.ifc);
+    const up = ctx.lineUp(ctx.s.ifc);
     ctx.print(`%LINK-5-CHANGED: Interface ${ctx.s.ifc}, changed state to ${up ? "up" : "down"}${up ? `\n%LINEPROTO-5-UPDOWN: Line protocol on Interface ${ctx.s.ifc}, changed state to up` : ""}`);
 });
+const isSerial = (ctx) => String(ctx.s.ifc).startsWith("Serial");
+cmd("if", "clock rate <n>", (ctx, [n]) => {
+    if (!isSerial(ctx)) return ctx.invalid();
+    const ok = [1200, 2400, 4800, 9600, 19200, 38400, 56000, 64000, 72000, 125000, 128000, 148000, 250000, 500000, 800000, 1000000, 1300000, 2000000, 4000000];
+    if (!ok.includes(+n)) return ctx.print(`Unknown clock rate`);
+    const l = linkAt(ctx.app.lab, ctx.id, ctx.s.ifc);
+    if (l && l[4] === "serial" && l[5] !== ctx.id) return ctx.print("This command applies only to DCE interfaces");
+    curIf(ctx).clock = +n;
+}, "router");
+cmd("if", "no clock rate", (ctx) => { if (!isSerial(ctx)) return ctx.invalid(); curIf(ctx).clock = 0; }, "router");
 cmd("if", "duplex <w>", () => {});
 cmd("if", "speed <w>", () => {});
 cmd("if", "exit", (ctx) => { ctx.s.mode = "config"; ctx.s.ifc = null; ctx.s.range = null; });
@@ -1195,6 +1638,11 @@ cmd("line", "transport input <rest>", (ctx, [rest]) => {
 });
 
 // ─── IOS output builders ────────────────────────────────────────────────────
+function routeLine(r) {
+    const via = r.hop ? (r.fam === 4 ? r.hop : v6short(r.hop)) : r.ifc;
+    const dst = r.fam === 4 ? `ip route ${r.net} ${r.mask}` : `ipv6 route ${v6short(r.net)}/${r.len}`;
+    return `${dst} ${via}${r.ad !== 1 ? ` ${r.ad}` : ""}`;
+}
 function pwLine(cfg, pw) { return cfg.spe ? `7 ${type7(pw)}` : pw; }
 function runningConfig(d, kind, c, current) {
     const L = [];
@@ -1237,10 +1685,16 @@ function runningConfig(d, kind, c, current) {
         if (f.ll) body.push(` ipv6 address ${v6short(f.ll)} link-local`);
         f.v6.forEach((x) => body.push(` ipv6 address ${v6short(x.addr)}/${x.len}`));
         if (f.v6on) body.push(" ipv6 enable");
+        if (f.clock) body.push(` clock rate ${f.clock}`);
         if (f.shut) body.push(" shutdown");
         body.push("!");
     }
-    if (kind === "router") body.push("ip classless", "!", "ip flow-export version 9", "!");
+    if (kind === "router") {
+        const rts = c.routes || [];
+        body.push("ip classless", ...rts.filter((r) => r.fam === 4).map(routeLine), "!", "ip flow-export version 9", "!");
+        const r6 = rts.filter((r) => r.fam === 6).map(routeLine);
+        if (r6.length) body.push(...r6, "!");
+    }
     if (kind === "switch" && c.gw) body.push(`ip default-gateway ${c.gw}`, "!");
     if (c.banner) body.push(`banner motd ^C${c.banner}^C`, "!");
     const line = (title, l) => {
@@ -1268,7 +1722,8 @@ function ifStatus(ctx, name, f) {
     const parent = ctx.d.cfg.ifaces[name.split(".")[0]];
     if (name.includes(".") && parent.shut) return ["administratively down", "down"];
     if (name.startsWith("Vlan")) return (ctx.d.cfg.vlans || { 1: 1 })[+name.slice(4)] !== undefined ? ["up", "up"] : ["down", "down"];
-    return ctx.linked(name) ? ["up", "up"] : ["down", "down"];
+    if (!ctx.linked(name)) return ["down", "down"];
+    return ctx.lineUp(name) ? ["up", "up"] : ["up", "down"];
 }
 const shortIf = (n) => n.replace("GigabitEthernet", "Gig").replace("FastEthernet", "Fa");
 function vlanBrief(ctx, full) {
@@ -1327,13 +1782,40 @@ function ipv6Brief(ctx) {
     });
     return rows.join("\n");
 }
+// Static routes IOS would install now (exit port up, or next hop reachable), best distance per prefix.
+function installedStatic(ctx, fam) {
+    const app = ctx.app, all = stacks(app.lab, app.st, fam);
+    const ok = (ctx.d.cfg.routes || []).filter((r) => r.fam === fam && (r.ifc ? ifLineUp(app.lab, app.st, ctx.id, r.ifc)
+        : (() => { const v = lookup(app.lab, app.st, all, ctx.id, r.hop, fam, 1); return !!v && v.kind !== "local"; })()));
+    const key = (r) => (fam === 4 ? `${r.net}/${r.mask}` : `${r.net}/${r.len}`);
+    const best = {};
+    ok.forEach((r) => { const k = key(r); if (!best[k] || r.ad < best[k][0].ad) best[k] = [r]; else if (r.ad === best[k][0].ad) best[k].push(r); });
+    return Object.values(best).flat();
+}
 function ipRoute(ctx) {
-    const rows = ["Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP", "       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area", "", "Gateway of last resort is not set", ""];
+    const st4 = installedStatic(ctx, 4);
+    const def = st4.find((r) => r.mask === "0.0.0.0");
+    const rows = ["Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP", "       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area",
+        "       * - candidate default, U - per-user static route, o - ODR", "", def ? `Gateway of last resort is ${def.hop || "0.0.0.0"} to network 0.0.0.0` : "Gateway of last resort is not set", ""];
     for (const [name, f] of Object.entries(ctx.d.cfg.ifaces)) {
         if (!f.ip || ifStatus(ctx, name, f)[1] !== "up") continue;
         rows.push(`C       ${netOf(f.ip, f.mask)}/${maskBits(f.mask)} is directly connected, ${name}`);
         rows.push(`L       ${f.ip}/32 is directly connected, ${name}`);
     }
+    st4.forEach((r) => rows.push(`${r.mask === "0.0.0.0" ? "S*" : "S "}      ${r.net}/${maskBits(r.mask)} [${r.ad}/0] ${r.hop ? `via ${r.hop}` : `is directly connected, ${r.ifc}`}`));
+    return rows.join("\n");
+}
+function ipv6Route(ctx) {
+    const rows = [`IPv6 Routing Table - ${(ctx.d.cfg.routes || []).length + 4} entries`, "Codes: C - Connected, L - Local, S - Static, R - RIP, B - BGP", ""];
+    for (const [name, f] of Object.entries(ctx.d.cfg.ifaces)) {
+        if (!f.v6.length || ifStatus(ctx, name, f)[1] !== "up") continue;
+        f.v6.forEach((x) => {
+            rows.push(`C   ${v6short(v6net(x))}/${x.len} [0/0]`, `     via ${name}, directly connected`);
+            rows.push(`L   ${v6short(x.addr)}/128 [0/0]`, `     via ${name}, receive`);
+        });
+    }
+    installedStatic(ctx, 6).forEach((r) => rows.push(`S   ${v6short(r.net)}/${r.len} [${r.ad}/0]`, `     via ${r.hop ? v6short(r.hop) : r.ifc}${r.hop ? "" : ", directly connected"}`));
+    rows.push("L   FF00::/8 [0/0]", "     via Null0, receive");
     return rows.join("\n");
 }
 
@@ -1412,11 +1894,13 @@ function makeCtx(app, id) {
     const d = app.st.devs[id];
     const s = app.sess[id];
     const ctx = {
-        id, d, s, kind: def.kind,
+        id, d, s, kind: def.kind, app,
         print: (...ts) => { ts.forEach((t) => String(t).split("\n").forEach((l) => s.out.push(l))); },
         invalid: () => ctx.print("% Invalid input detected at '^' marker."),
         ask: (prompt, secret, fn, tries = 0) => { s.pend = { prompt, secret, fn, tries }; },
         linked: (port) => { const p = String(port).split(".")[0]; return app.lab.links.some(([a, ap, b, bp]) => (a === id && ap === p) || (b === id && bp === p)); },
+        // cabled, and a serial cable also needs both ends on and the DCE clock
+        lineUp: (port) => ctx.linked(port) && serialUp(app.lab, app.st, linkAt(app.lab, id, port)),
         trunking: (port) => isTrunk(app.lab, app.st, id, port),
         logout: () => {
             s.mode = "user"; s.connected = false;
@@ -1706,17 +2190,35 @@ function ptWorkspaceWide(app) {
     const L = app.lab, SC = 1.25;
     const on = (dev, port) => { const k = L.devices[dev].kind; return k === "router" || k === "switch" ? !app.st.devs[dev].cfg.ifaces[port].shut : true; };
     const lines = L.links.map((l) => {
-        const a = L.devices[l[0]], b = L.devices[l[2]];
+        let a = L.devices[l[0]], b = L.devices[l[2]];
+        let side = null;
+        if (l[6]) {
+            // two cables between the same devices: draw them side by side
+            const ddx = b.x - a.x, ddy = b.y - a.y, dl = Math.hypot(ddx, ddy) || 1, ox = (-ddy / dl) * l[6], oy = (ddx / dl) * l[6];
+            a = { ...a, x: a.x + ox, y: a.y + oy }; b = { ...b, x: b.x + ox, y: b.y + oy };
+            side = { x: Math.sign(ox) || 0, y: Math.sign(oy) || 0 };
+        }
         const end = (from, to, port, dev) => {
             const dx = to.x - from.x, dy = to.y - from.y, len = Math.hypot(dx, dy) || 1;
             const tx = from.x + (dx / len) * 34, ty = from.y + (dy / len) * 34;
             const far = L.devices[dev].kind === "server" ? 66 : 46;
-            const lx = from.x + (dx / len) * far + (dy / len) * 12, ly = from.y + (dy / len) * far - (dx / len) * 12;
-            const up = on(dev, port) && on(l[0] === dev ? l[2] : l[0], l[0] === dev ? l[3] : l[1]);
+            let lx = from.x + (dx / len) * far + (dy / len) * 12, ly = from.y + (dy / len) * far - (dx / len) * 12;
+            // side-by-side cables: put each port name on its own cable's outer side
+            if (side) { lx = from.x + (dx / len) * far + side.x * 24; ly = from.y + (dy / len) * far + side.y * 24; }
+            const up = on(dev, port) && on(l[0] === dev ? l[2] : l[0], l[0] === dev ? l[3] : l[1]) && serialUp(L, app.st, l);
+            const clk = l[4] === "serial" && l[5] === dev ? `<g transform="translate(${tx + (dy / len) * 11} ${ty - (dx / len) * 11})"><circle r="4.2" fill="#fff" stroke="#111" stroke-width="1"/><path d="M0 -2.6V0h2" stroke="#111" stroke-width="1" fill="none"/></g>` : "";
             const tri = up ? `<path d="M${tx - 5} ${ty + 4}L${tx} ${ty - 5}L${tx + 5} ${ty + 4}Z" fill="#26c43b"/>` : `<path d="M${tx - 5} ${ty - 4}L${tx} ${ty + 5}L${tx + 5} ${ty - 4}Z" fill="#e5172b"/>`;
-            return `${tri}<text x="${lx}" y="${ly + 3}" class="pt-port">${esc(shortIf(port).replace("Gig", "Gig").replace("FastEthernet0", "Fa0"))}</text>`;
+            return `${tri}${clk}<text x="${lx}" y="${ly + 3}" class="pt-port">${esc(shortIf(port).replace("Serial", "Se").replace("FastEthernet0", "Fa0"))}</text>`;
         };
-        return `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#111" stroke-width="2.4" ${l[4] === "dash" ? 'stroke-dasharray="9 6"' : ""}/>${end(a, b, l[1], l[0])}${end(b, a, l[3], l[2])}`;
+        let wire;
+        if (l[4] === "serial") {
+            // red serial cable with a zigzag in the middle
+            const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len;
+            const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+            const p = (t, side) => `${mx + ux * t + -uy * side} ${my + uy * t + ux * side}`;
+            wire = `<path d="M${a.x} ${a.y}L${p(-12, 0)}L${p(-4, 9)}L${p(4, -9)}L${p(12, 0)}L${b.x} ${b.y}" stroke="#e01b24" stroke-width="2.6" fill="none"/>`;
+        } else wire = `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#111" stroke-width="2.4" ${l[4] === "dash" ? 'stroke-dasharray="9 6"' : ""}/>`;
+        return `${wire}${end(a, b, l[1], l[0])}${end(b, a, l[3], l[2])}`;
     }).join("");
     const notes = (L.notes || []).map((n) => {
         if (!n.box) return `<text x="${n.x}" y="${n.y}" class="pt-note-t" text-anchor="${n.a || "middle"}">${esc(n.t)}</text>`;
@@ -1729,7 +2231,7 @@ function ptWorkspaceWide(app) {
             <text y="${d.kind === "server" ? 33 : 29}" class="pt-node-l big">${esc(d.modelLabel || d.model || MODEL_LABEL[d.kind])}</text>
             <text y="${d.kind === "server" ? 45 : 41}" class="pt-node-l big">${esc(d.label)}</text>
         </g>`).join("");
-    return `<svg viewBox="0 0 1010 490" class="pt-topo wide" aria-label="Logical workspace. Tap a device to open it.">${notes}${lines}${devs}</svg>`;
+    return `<svg viewBox="${L.view || "0 0 1010 490"}" class="pt-topo wide" aria-label="Logical workspace. Tap a device to open it.">${notes}${lines}${devs}</svg>`;
 }
 const hms = (s) => [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((n) => String(n).padStart(2, "0")).join(":");
 const TB_ICONS = ["M4 3h11l5 5v13H4z", "M3 7h7l2 2h9v10H3z", "M5 4h12l2 2v14H5zM8 4v5h7V4", "M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z", "M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM12 8v.5M12 11v6", "M5 19l14-14M8 5H5v3M16 19h3v-3", "M9 4l-5 5 5 5M4 9h11a5 5 0 0 1 0 10h-3", "M15 4l5 5-5 5M20 9H9a5 5 0 0 0 0 10h3", "M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM14.5 14.5L20 20M7 10h6M10 7v6", "M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM14.5 14.5L20 20", "M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zM14.5 14.5L20 20M7 10h6", "M3 5h18v12H3zM8 21h8"];
@@ -1759,8 +2261,8 @@ function mount(root, labId, { alive } = {}) {
             ${lab.ver ? `<div class="pt-verbar">
                 <label for="pt-ver-sel">Version</label>
                 <select id="pt-ver-sel">
-                    ${Array.from({ length: VLAN_VERSIONS }, (_, i) => i + 1).map((v) => `<option value="${v}" ${lab.ver === v ? "selected" : ""}>${v}</option>`).join("")}
-                    ${lab.ver > VLAN_VERSIONS ? `<option value="${lab.ver}" selected>Random #${lab.ver}</option>` : ""}
+                    ${Array.from({ length: lab.versions }, (_, i) => i + 1).map((v) => `<option value="${v}" ${lab.ver === v ? "selected" : ""}>${v}</option>`).join("")}
+                    ${lab.ver > lab.versions ? `<option value="${lab.ver}" selected>Random #${lab.ver}</option>` : ""}
                 </select>
                 <button type="button" class="pt-vbtn" id="pt-ver-new">New random</button>
                 <button type="button" class="pt-vbtn" id="pt-ver-reset">Start over</button>
@@ -1860,7 +2362,7 @@ function mount(root, labId, { alive } = {}) {
     }
 
     function actDoc() {
-        if (lab.ver) return vlanDoc();
+        if (lab.ver) return lab.routing ? routeDoc() : vlanDoc();
         const sh = app.st.sheet || (app.st.sheet = {});
         const cell = (r, k) => {
             if (r.given === k) return `<b>${esc(r[k])}</b>`;
@@ -2000,11 +2502,46 @@ function mount(root, labId, { alive } = {}) {
                 <p class="doc-hint">PCs, laptops and the server: Desktop, then IP Configuration (IPv4 address, mask, gateway and DNS server).</p>
             </details>`;
     }
+    function routeDoc() {
+        const P = lab.P, A = lab.answer, F = lab.facts;
+        const vers = Array.from({ length: lab.versions }, (_, i) => i + 1);
+        const box = (lines) => `<ul class="doc-dots">${lines.slice(1).filter((l) => l && !/:$/.test(l)).map((l) => `<li>${esc(l.replace(/^- /, ""))}</li>`).join("")}</ul>`;
+        const r2 = lab.reqs.slice(7, 22);
+        return `
+            <div class="doc-ver">
+                <b>Version:</b>
+                ${vers.map((v) => `<button type="button" class="doc-vbtn ${lab.ver === v ? "on" : ""}" data-ver="${v}">${v}</button>`).join("")}
+                <button type="button" class="doc-vbtn ${lab.ver > lab.versions ? "on" : ""}" data-ver="new">${lab.ver > lab.versions ? `#${lab.ver} · ` : ""}New random</button>
+            </div>
+            <p class="doc-hint">Every version has the same steps as the real activity. Only the names, networks, ports and words change. In the real activity Check Results shows only a percentage; here you also get the list of graded items.</p>
+            <p>In the real activity this window is empty: everything is written on the map. Here is the same information in one place.</p>
+            <p><b>${esc(F.R1)} (the middle router)</b></p>${box(lab.reqs.slice(0, 7))}
+            <p><b>${esc(F.R2)} (the edge router)</b></p>${box(r2)}
+            <p><b>End devices</b></p>
+            <ul class="doc-dots"><li>IP address, mask, default gateway and DNS server. PCs use IPv4, laptops IPv6.</li><li>All of them should ping the DNS Server.</li></ul>
+            <p><b>Rules the lab doesn't write down</b></p>
+            <ul class="doc-dots">
+                <li>The ISP router, the switches and the DNS Server are already set up. Don't change them.</li>
+                <li>"2nd usable" on a /30 is the .2 address; on IPv6 it's ::2. "1st usable and DCE" means ::1 / .1 and <b>clock rate 128000</b> on that end of the cable.</li>
+                <li>"Directly connected" routes point at the exit port (like <b>${esc(F.main)}</b>). "Recursive" routes point at the next router's address.</li>
+                <li>A floating route is the backup: the same route with a distance of <b>10</b> at the end. It only takes over when the main cable goes down.</li>
+                <li>"${esc(ordinal(P.nth))} usable" on IPv6 is written in hex: <b>::${P.nth.toString(16)}</b>. 1st/2nd/3rd next to a PC or laptop means its first, second or third address.</li>
+                <li>Laptops use the router's link-local address (FE80::1) as their IPv6 gateway, and the server's IPv6 address for DNS.</li>
+            </ul>
+            <p class="doc-tools"><button type="button" class="pt-navy small" id="doc-reset">Start this version over</button></p>
+            <details class="doc-help"><summary>AnswrIT help: show the answers</summary>
+                <p><b>Address plan</b></p>
+                <div class="doc-scroll"><table class="doc-t"><tr><th>Device</th><th>IPv4</th><th>Mask</th><th>Other</th></tr>
+                    ${A.plan.map((r) => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</table></div>
+                ${A.help.map(([title, code]) => `<p><b>${esc(title)}</b></p><pre>${esc(code)}</pre>`).join("")}
+                <p class="doc-hint">PCs and laptops: Desktop, then IP Configuration. Test the backup: shut ${esc(F.main)} on ${esc(F.R1)} and ping again.</p>
+            </details>`;
+    }
     const normCell = (k, v) => k === "range" ? String(v).split(/\s*(?:-|–|to)\s*/).map(normIp).join("-") : normIp(v);
     function goVersion(which) {
-        const v = which === "new" ? VLAN_VERSIONS + 1 + Math.floor(Math.random() * 9000) : +which;
+        const v = which === "new" ? lab.versions + 1 + Math.floor(Math.random() * 9000) : +which;
         store(labId, app.st);
-        location.hash = `#/packet-tracer/lab/${v === 1 ? VLAN_LAB : `${VLAN_LAB}-${v}`}`;
+        location.hash = `#/packet-tracer/lab/${v === 1 ? lab.family : `${lab.family}-${v}`}`;
     }
     function startOver() {
         if (!window.confirm("Start this version over? Everything you configured in it will be erased.")) return;
@@ -2041,7 +2578,10 @@ function mount(root, labId, { alive } = {}) {
         const tab = app.res;
         const tests = [];
         const pairs = lab.conn || ["H0", "H1", "H2", "SV"].flatMap((a, i, h) => h.slice(i + 1).map((b) => [a, b]));
-        pairs.forEach(([a, b]) => tests.push({ a, b, ok: !!app.st.devs[b].cfg.ip && ping(lab, app.st, a, app.st.devs[b].cfg.ip, 4).ok }));
+        pairs.forEach(([a, b, fam = 4]) => {
+            const to = fam === 6 ? app.st.devs[b].cfg.v6 : app.st.devs[b].cfg.ip;
+            tests.push({ a, b, fam, ok: !!to && ping(lab, app.st, a, fam === 6 ? v6short(to) : to, fam).ok });
+        });
         const groups = [];
         res.forEach((r) => {
             const name = lab.devices[r.dev].label;
@@ -2066,9 +2606,9 @@ function mount(root, labId, { alive } = {}) {
                             ${groups.map((g) => `<tr class="grp"><td colspan="2">&nbsp;&nbsp;▾ ${esc(g.name)}</td></tr>
                                 ${g.items.map((r) => `<tr><td class="it">${esc(short(r.label))}</td><td class="${r.ok ? "ok" : "no"}">${r.ok ? "Correct" : "Incorrect"}</td></tr>`).join("")}`).join("")}
                         </table>` : `
-                        ${lab.conn ? `<p class="res-note">This activity has no connectivity tests in Packet Tracer either. AnswrIT extra: these pings show whether your VLANs and routing work. They don't count toward the score.</p>` : ""}
+                        ${lab.conn ? `<p class="res-note">This activity has no connectivity tests in Packet Tracer either. AnswrIT extra: these pings show whether your ${lab.routing ? "addresses and routes" : "VLANs and routing"} work. They don't count toward the score.</p>` : ""}
                         <table class="res-t"><tr><th>Connectivity Tests</th><th>Status</th></tr>
-                            ${tests.map((t) => `<tr><td class="it">Ping ${esc(lab.devices[t.a].label)} → ${esc(lab.devices[t.b].label)}</td><td class="${t.ok ? "ok" : "no"}">${t.ok ? "Correct" : "Incorrect"}</td></tr>`).join("")}
+                            ${tests.map((t) => `<tr><td class="it">Ping ${esc(lab.devices[t.a].label)} → ${esc(lab.devices[t.b].label)}${t.fam === 6 ? " (IPv6)" : ""}</td><td class="${t.ok ? "ok" : "no"}">${t.ok ? "Correct" : "Incorrect"}</td></tr>`).join("")}
                         </table>`}
                 </div>
                 <div class="res-foot"><button type="button" class="pt-navy" id="res-ok">OK</button></div>
@@ -2325,7 +2865,7 @@ function mount(root, labId, { alive } = {}) {
                     <div class="ipc-row"><label>IPv6 Address</label><span class="ipc-v6">${f("v6", c.v6 ? v6short(c.v6) : "")}<b>/</b>${f("v6len", c.v6 ? c.v6len : "")}</span></div>
                     <div class="ipc-row"><label>Link Local Address</label><input class="ipc-in" value="${esc(ll)}" disabled></div>
                     <div class="ipc-row"><label>Default Gateway</label>${f("v6gw", c.v6gw ? v6short(c.v6gw) : "")}</div>
-                    <div class="ipc-row"><label>DNS Server</label><input class="ipc-in" disabled></div>
+                    <div class="ipc-row"><label>DNS Server</label>${f("v6dns", c.v6dns ? v6short(c.v6dns) : "")}</div>
                 </fieldset>
                 <fieldset><legend>802.1X</legend>
                     <label class="pt-chk"><input type="checkbox" disabled> Use 802.1X Security</label>
@@ -2343,7 +2883,7 @@ function mount(root, labId, { alive } = {}) {
                         if (v && ip2n(v) === null) bad = "Invalid IP address.";
                         else if (k === "mask" && v && maskBits(v) === null) bad = "Invalid subnet mask.";
                         else c[k] = v && !((k === "gw" || k === "dns") && v === "0.0.0.0") ? normIp(v) : "";
-                    } else if (k === "v6" || k === "v6gw") {
+                    } else if (k === "v6" || k === "v6gw" || k === "v6dns") {
                         if (v && !v6(v)) bad = "Invalid IPv6 address.";
                         else c[k] = v ? v6(v) : "";
                     } else {
@@ -2479,7 +3019,7 @@ function mount(root, labId, { alive } = {}) {
                 <fieldset><legend>Gateway/DNS IPv6</legend>
                     <div class="ipc-radio"><label><input type="radio" disabled> Automatic</label><label><input type="radio" checked> Static</label></div>
                     <div class="cfg-row"><label>Default Gateway</label><input data-k="v6gw" value="${esc(c.v6gw ? v6short(c.v6gw) : "")}" autocomplete="off" autocapitalize="none"></div>
-                    <div class="cfg-row"><label>DNS Server</label><input disabled></div></fieldset>`;
+                    <div class="cfg-row"><label>DNS Server</label><input data-k="v6dns" value="${esc(c.v6dns ? v6short(c.v6dns) : "")}" autocomplete="off" autocapitalize="none"></div></fieldset>`;
             hostFields(pg, id);
         } else if (!isNet && page === "FastEthernet0") {
             const c = d.cfg;
@@ -2504,10 +3044,11 @@ function mount(root, labId, { alive } = {}) {
         $$("input[data-k]", pg).forEach((inp) => {
             inp.oninput = () => {
                 const k = inp.dataset.k, v = inp.value.trim();
-                const ok = !v || (k === "v6" || k === "v6gw" ? !!v6(v) : ip2n(v) !== null);
+                const six = k === "v6" || k === "v6gw" || k === "v6dns";
+                const ok = !v || (six ? !!v6(v) : ip2n(v) !== null);
                 inp.classList.toggle("bad", !ok);
                 if (!ok) return;
-                c[k] = !v ? "" : k === "v6" || k === "v6gw" ? v6(v) : normIp(v);
+                c[k] = !v ? "" : six ? v6(v) : normIp(v);
                 update();
             };
         });
@@ -2566,10 +3107,11 @@ window.AnswritPtLab = {
     // Only the CCNA 2 labs are listed. (The CCNA 1 final-practice lab still works at its own link.)
     list: [
         { id: VLAN_LAB, title: "Packet Tracer 1", sub: "VLANs, trunks, router-on-a-stick, SSH and IPv6, in several versions", course: "CCNA 2" },
+        { id: ROUTE_LAB, title: "Packet Tracer 2", sub: "Static, default and floating routes for IPv4 and IPv6, in several versions", course: "CCNA 2" },
     ],
     get: (id) => getLab(id),
     mount,
     // For tests.
-    _internal: { LABS, getLab, makeVlanLab, v6, freshState, submit, Session, makeCtx, ping, hostCommand, mount },
+    _internal: { LABS, getLab, makeVlanLab, makeRouteLab, v6, freshState, submit, Session, makeCtx, ping, hostCommand, mount },
 };
 })();
