@@ -8,6 +8,54 @@
 
 ## ⚠️ REMINDER: Renew answrit.net at Spaceship before **July 18, 2027**
 
+## ▶ START HERE: handoff from the chat that ended Nov 16, 2026
+Everything from that chat is below or in the dated **Log**. The owner's next chat is about **Packet Tracer 2 (CCNA 2)**.
+
+### About the owner right now
+- Not a developer: plain words, one small step at a time, short lists. Never ask for passwords or card details.
+- Took the **CCNA 2 Skills PT 1** exam (Nov 13): **92%**. The teacher's files hide Check Results' Assessment Items (only a %), so they couldn't see what they missed. Most likely: the switches' **default gateways** (`ip default-gateway <router's native-VLAN address>`), which they skipped.
+- Their practice was 100% in under 22 minutes. What helped most: the "what to do next" framing (switch: name → VLANs → **look at every cable** (switch/router = trunk + native, PC = access + its VLAN) → own address (int vlan native + no shut + default gateway) → SSH if named → save).
+- Packet Tracer 2 is the next skills exam. Likely next asks: PT2 command drill and step order drill (like PT1's), help during practice, a post-it list.
+
+### Packet Tracer 2 (CCNA 2): everything done so far
+- **Class file:** `packet-tracer-ccna2-2.pka` in the repo folder (gitignored). Solved in Packet Tracer 9.0.1 to **100%** on Nov 12 (not saved). Answer key and screenshots: `ptlabs/ccna2-2-answer-key.md`, `ccna2-2-*.png` (local only, gitignored). Completion was 72% after the two routers, 100% after the 6 end devices. The file hides Assessment Items.
+- **Lab layout and the class file's exact values/commands:** only in `ptlabs/ccna2-2-answer-key.md` (private, gitignored, because this repo is public; never put the class file's names or addresses in the site or in git). In short: a preset ISP router with 2 serial cables (main + backup) to a middle router, which has a serial cable (it's the DCE) to an edge router; the edge router has an IPv4 LAN (3 PCs) and an IPv6 LAN (3 laptops); a preset DNS server hangs off the ISP. Middle router: addresses (v4/6), clock rate, link-local, default routes out the main cable, floating default routes (AD 10) out the backup, recursive routes to both LANs. Edge router: name, passwords + encryption, banner, addresses, link-locals, two interface descriptions, `ipv6 unicast-routing`, default routes back toward the middle router. Hosts: address, mask/prefix, gateway (laptops use the router's link-local), DNS.
+- **Command list PDF for the owner:** `~/Downloads/Packet-Tracer-2-Command-List.pdf` (Router 1 = middle, Router 2 = edge, PCs, laptops, notes; `<placeholders>`, generic names). Rebuild: `tools/pdf/make_pt2_list.py` → `list.html`, then Chrome `--headless=new --no-pdf-header-footer --print-to-pdf=list.pdf list.html`; preview pages with `swift tools/pdf/pages.swift`. (PT1's list is `~/Downloads/Packet-Tracer-Command-List.pdf`; its builder script was lost with the old scratchpad.)
+- **Site lab "Packet Tracer 2" (live):** `#/packet-tracer/lab/ccna2-routes` (versions `ccna2-routes-2`…`-6`, "New random"), linked from the CCNA 2 course page; the Packet Tracer page lists it automatically.
+  - Code: `makeRouteLab(ver)` + `routeLabParams(ver)` in `static/beta/ptlab.js` (lab has `routing: true`, `family: "ccna2-routes"`, `view: "0 0 1010 690"`, `preset` sets up ISP + DNS server). Own names/addresses in every version (v1 = SUMMIT/VALLEY, 209.165.200.224/30 + .228/30, 10.10.50.0/30, LAN 172.16.30.0/26, 11th usable, server 64.100.8.1). Never reuse the class file's names or numbers on the site.
+  - 53 graded items of our own (R1 ports/v6/link-local/clock/routes; R2 basics, ports, descriptions, routes; hosts). Connectivity tab pings PCs→server (v4) and laptops→server (v6). The doc panel (`routeDoc`) restates the map and "rules not written down", plus a hidden answers section.
+  - Engine added (only labs with `routing: true` use the new forwarding; PT1 unchanged, still 48/48): 1941 model with Serial0/0/0-0/1/1, serial cables (`["A","Se..","B","Se..","serial", dceDev, offset]`) stay down until the DCE end has `clock rate` (DCE-only, real rate list), `ip route` / `ipv6 route` (next hop or exit port, one or two words, AD) + `no` forms, hop-by-hop routing (longest match, then AD, so the floating route takes over when the main cable is shut), recursive next hops, `show ip route` / `show ipv6 route` / routes + clock in `show run`, IPv6 DNS box on hosts, red zigzag serial cables with DCE clock marks, side-by-side cables. Like the class file, ISP has no route back to the R1–R2 link, so R2 can't ping the server (PCs can).
+  - Tests: `node tools/tests/pt2test.mjs` (1,700 checks over 63 versions: 100%, pings, backup route, no-clock and no-IPv6-routing cases, PT1 regression). `tools/tests/short.mjs` types the short forms. `ui3.mjs` = browser check (needs headless Chrome on port 9333 + a local server).
+- **Not built yet for PT2:** a command drill and a step order drill (PT1 has both: `viewPtCmd` / `viewPtOrder` + `ptc*` / `pto*` helpers in `static/beta/app.js`, routes `#/packet-tracer/commands` and `#/packet-tracer/order`). A step story for PT2 could be: Router 1 = Start → IPv6 on → main cable → backup cable → cable to Router 2 (+ clock + link-local) → default routes → floating routes → routes to the LANs → Save; Router 2 = Start + name → Lock → Sign → IPv6 on → cable to Router 1 (+ link-local) → IPv4 LAN port (+ description) → IPv6 LAN port (+ description + link-local) → default routes → Save; then PCs and laptops.
+
+### Packet Tracer 1 (CCNA 2) things that exist
+- Lab `#/packet-tracer/lab/ccna2-vlan` (48 items), command drill, step order drill. The step order drill's **Type it** mode now takes the whole step one command per line (Enter adds a line, the prompt changes, a "You're in: …" line explains the CLI mode, Check marks each line ✓/✗).
+- Owner's "Task by Task" Claude doc: https://claude.ai/artifact/Sc5LrngXYjPxbv4uhm6vT2
+
+### How to drive Packet Tracer on this Mac (to read or solve a new .pka)
+- Helper: `tools/pt-driver/` (`pt.sh shot|click|dclick|type|key`, `mouse` = compile `clang -o mouse mouse.c -framework ApplicationServices` for real clicks/drag/scroll, `fill.sh X Y "text"` fills a box). VS Code needs Accessibility + Screen Recording (already granted). Screenshots are shrunk to 1470 px wide = screen points.
+- Open: `open -a "/Applications/Cisco Packet Tracer 9.0.1/Cisco Packet Tracer 9.0.1.app" <file>.pka`. Turn on port labels: Cmd+, → "Always Show Port Labels in Logical Workspace".
+- Fastest config: open a device's CLI tab, `pbcopy` the commands, click the CLI **Paste** button. Desktop → IP Configuration boxes: use `fill.sh` and wait ~2 s, long IPv6 text can lag.
+- PT Activity window: Window menu → "PT Activity". In the CCNA 2 files, Check Results shows no item tabs (hidden by the teacher); use the Completion %.
+- Close without saving: click the red close button, then **No**. Tell the owner not to use the mouse while you drive.
+
+### Other work from that chat (details in the Log)
+- **Navy removal (live):** no Navy / A School / C School / shipmate anywhere; Comms course, its 3 games and Comms chat room removed; old classic page + Navy files moved to `archive/` (gitignored, on the Mac) and to `/srv/answrit/prev-20261112-152618-navy-removal/removed/` on the server. The owner kept the **5 themes** (a Light/Dark-only change was rejected, don't redo it).
+- **SEO (live):** pages ship readable HTML; exam pages list every Q&A with Why + Remember; **1,251 question pages** at `/questions/<slug>/`; Quiz + Breadcrumb JSON-LD; sitemap 1,272 URLs. Told the owner: no one can promise #1; Google tends to rank the original (ITExamAnswers) first; links matter most; the owner doesn't want to post links (communities frown on dump sites), so lead with the free labs if ever sharing.
+  - **Owner to do:** Google Search Console → Sitemaps → submit `sitemap.xml` again (now 1,272 URLs); optionally Bing Webmaster Tools (import from Search Console).
+  - Ideas not done yet: post new Cisco exam versions fast; text walkthrough pages for the Packet Tracer skills exams; redraw exhibit pictures (they're hot-linked from ITExamAnswers, and exhibit questions have no question page); check Search Console queries in a few weeks.
+- **Explanations + memory hints for all 1,731 questions (live):** sources `tools/hints_src/`, build `python3 tools/build_hints_all.py tools/hints_src`. 12 answers flagged as possibly wrong and 5 data gaps are listed in the Nov 12 Log entry; the owner hasn't decided on them. Strongest: CCNA 2 M7-9 #9 (after a lease *expires* the client sends DHCPDISCOVER), ITE course final #155 (sounds like hybrid cloud), ITE M10-14 #114 (two answers listed).
+- **Course rooms:** drafted semi-formal replies for kvasen (CCNA 2, broadcast domains = 8: 5 routers; 4 LANs + 4 router links) and seishi (CCNA 1, what OSI means). The owner posts them; nothing was posted by Claude.
+- Older open items: phone use of the PT labs is still rough; Caddy redirect that keeps the query string; delete snapshot `answrit-test-snapshot`; cancel PythonAnywhere; `static/sitemap.xml` locally differs from git (it's regenerated by app.py on start; leave it uncommitted).
+
+### Deploy + test recipe (used all through that chat)
+1. `export CLOUDSDK_PYTHON=/Library/Frameworks/Python.framework/Versions/3.14/bin/python3; G=~/google-cloud-sdk/bin/gcloud`
+2. Compare live md5s with `git show HEAD:<file> | md5 -q` (`$G compute ssh answrit --zone us-central1-c --command 'sudo md5sum /srv/answrit/app/<file> …'`). Only overwrite files that match the last commit.
+3. `COPYFILE_DISABLE=1 tar czf x.tgz <files>`, `$G compute scp x.tgz script.sh answrit:/tmp/ --zone us-central1-c`, run the script with `sudo bash` (example: `tools/deploy-example.sh`: back up to `/srv/answrit/prev-<time>-<name>/`, `install -o answrit -g answrit -m 664`, then test with `sudo -u answrit /srv/answrit/venv/bin/python` + `app.test_client()`). Run file checks with sudo (the app folders aren't readable without it).
+4. Bump `?v=` numbers in `static/beta/index.html` (now app.js v=42, app.css v=21, drills.js v=2; app.js loads ptlab v=17). Restart (`sudo systemctl restart answrit`) only when `app.py` changes.
+5. Local test of app.py: Flask isn't installed on the Mac; make a venv (`python3 -m venv <dir>; <dir>/bin/pip install flask requests beautifulsoup4 lxml rapidfuzz`) and use `app.test_client()` or `app.app.run(port=5074)`.
+6. Every production deploy needs the owner's OK in that chat (the auto-mode guard blocks it otherwise). Log it here, then commit and push to `site-update-2026-11`.
+
 ## Checklist
 - [x] **1. Back up PythonAnywhere.** The backup is in `~/Desktop/answrit-backups/answrit-backup.tar.gz` (taken Nov 5, 2026).
   - It contains 172 accounts, user progress, chat, all pages and data, and 8 connector images that existed **only** on PythonAnywhere.

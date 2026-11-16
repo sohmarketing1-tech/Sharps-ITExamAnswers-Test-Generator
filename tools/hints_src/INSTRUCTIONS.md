@@ -1,6 +1,6 @@
 # Writing memory hints + explanations for one exam
 
-Folder: /private/tmp/claude-501/-Users-jonathansharp-CascadeProjects-quiz-scraper/fd85411f-f9f3-4821-9b5c-fc0cca9655bb/scratchpad/hints
+Folder: the hints work folder (a copy of `tools/hints_src`: `work/`, `out/`, `check.py`).
 
 Your exam's questions are in `work/<exam>.json` (only the questions you need to write for). Write
 `out/<exam>.json`: one JSON object keyed by question id (as a string), each value:
