@@ -232,6 +232,7 @@ const ROUTES = [
     [/^course\/([a-z0-9]+)$/, viewCourse, "study"],
     [/^exam\/(.+)$/, viewExam, "study"],
     [/^practice\/(.+)$/, viewPractice, "study"],
+    [/^buildup\/(.+)$/, viewBuildup, "study"],
     [/^mastery\/(.+)$/, viewMastery, "study"],
     [/^flashcards\/(.+)$/, viewFlashcards, "study"],
     [/^answers\/(.+)$/, viewAnswers, "study"],
@@ -464,11 +465,14 @@ async function viewExam(root, [filename]) {
     rememberExam(filename);
     const course = courseOf(filename);
     let progressCard = "";
+    let buSaved;
     if (state.user) {
-        const [m, h] = await Promise.all([
+        const [m, h, bu] = await Promise.all([
             api(`/api/mastery?filename=${encodeURIComponent(filename)}`),
             api("/api/history"),
+            fetchBuildup(filename),
         ]);
+        buSaved = bu;
         const s = m.ok ? m.data.summary : { mastered: 0, total: meta.count, progress: 0 };
         const attempt = h.ok ? (h.data.attempts || []).find((a) => a.filename === filename) : null;
         progressCard = `
@@ -513,6 +517,13 @@ async function viewExam(root, [filename]) {
                     <a class="chip" href="#/practice/${enc}?n=${meta.count}">All ${meta.count}</a>
                 </div>
             </div>
+            <a class="mode-btn" href="#/buildup/${enc}">
+                <span class="icon-tile tint-orange">${icon("plus")}</span>
+                <span class="row-body">
+                    <span class="mode-title">Build-up</span>
+                    <span class="row-sub">${buildupLabel(filename, meta.count, buSaved)}</span>
+                </span>
+            </a>
             <a class="mode-btn" href="#/flashcards/${enc}">
                 <span class="icon-tile tint-blue">${icon("cards")}</span>
                 <span class="row-body">
@@ -962,6 +973,114 @@ async function viewPractice(root, [filename], query, alive) {
         });
     }
     if (alive()) location.replace("#/results");
+}
+
+// ─── Build-up mode ──────────────────────────────────────────────────────────
+// Round 1 is one question. Each round asks every question so far again (in a new order)
+// plus one new one, until the whole exam is in. Every round ends on its results
+// (Continue +1 / Try again / Done); a perfect last round shows the finish screen. The question
+// order and the round reached are kept per exam on this device and, when logged in, in the
+// account (/api/buildup), so it can be resumed anywhere.
+// Rounds are not saved to Progress (that keeps one practice score per exam).
+const BUILDUP_KEY = "answrit:buildup:";
+function loadBuildup(filename) {
+    try { const v = JSON.parse(localStorage.getItem(BUILDUP_KEY + filename) || "null"); return v && Array.isArray(v.order) ? v : null; } catch (e) { return null; }
+}
+function saveBuildup(filename, v) {
+    try { if (v) localStorage.setItem(BUILDUP_KEY + filename, JSON.stringify(v)); else localStorage.removeItem(BUILDUP_KEY + filename); } catch (e) { /* not remembered, still works */ }
+    // Logged in: also keep it in the account, so it carries over to other devices
+    if (state.user) api("/api/buildup", { method: "POST", body: v ? { filename, order: v.order, round: v.round } : { filename, clear: true } });
+}
+/** The saved progress for an exam: the account's copy when logged in, else this device's. */
+async function fetchBuildup(filename) {
+    if (state.user) {
+        const r = await api(`/api/buildup?filename=${encodeURIComponent(filename)}`);
+        if (r.ok && r.data.progress && Array.isArray(r.data.progress.order)) return r.data.progress;
+    }
+    return loadBuildup(filename);
+}
+function buildupLabel(filename, count, saved) {
+    const b = saved === undefined ? loadBuildup(filename) : saved;
+    return b && b.round > 1 ? `Continue at round ${Math.min(b.round, count)} of ${count}` : "Start with 1 question, add 1 more each round";
+}
+
+async function viewBuildup(root, [filename], query, alive) {
+    const meta = examMeta(filename);
+    if (!meta) return go("study");
+    const enc = encodeURIComponent(filename);
+    const r = await api(`/api/test?n=${meta.count}&filename=${enc}`);
+    if (!alive()) return;
+    if (!r.ok || !(r.data.quiz || []).length) {
+        root.innerHTML = `<div class="error-box">${esc(r.data.error || "Couldn't load questions.")}</div>`;
+        return;
+    }
+    const byId = new Map(r.data.quiz.map((q) => [String(q.id), q]));
+    // Keep the saved order (dropping questions that left the exam), then any new questions at the end
+    let b = query.get("restart") ? null : await fetchBuildup(filename);
+    if (!alive()) return;
+    const order = (b ? b.order.map(String).filter((id) => byId.has(id)) : []);
+    const seen = new Set(order);
+    r.data.quiz.forEach((q) => { if (!seen.has(String(q.id))) order.push(String(q.id)); });
+    b = { order, round: Math.max(1, Math.min(b ? b.round : 1, order.length)) };
+    saveBuildup(filename, b);
+    if (query.get("restart")) history.replaceState(null, "", `#/buildup/${enc}`);
+    const total = order.length;
+    const title = examFullName(filename);
+    const hints = await loadHints(filename);
+    const fmt = (v) => Array.isArray(v) ? v.join(" · ") : (v && typeof v === "object") ? Object.entries(v).map(([k, val]) => `${k} → ${val}`).join("; ") : String(v || "");
+    const wait = (html, bind) => new Promise((resolve) => { root.innerHTML = html; window.scrollTo(0, 0); bind(resolve); });
+
+    while (alive()) {
+        const n = b.round;
+        const quiz = shuffleChoices(shuffle(order.slice(0, n).map((id) => byId.get(id))), filename);
+        const outcome = await runQuiz(root, { quiz, heading: `Build-up · Round ${n} of ${total} · ${title}`, alive, filename, hints });
+        if (!outcome) return alive() && go(`exam/${enc}`);
+        const missed = quiz.filter((q) => !isCorrect(q, outcome.answers[q.id]));
+        if (!missed.length && n >= total) {
+            saveBuildup(filename, null);
+            document.body.classList.remove("focus-mode");
+            await wait(`
+                <div class="card result-hero">
+                    <span class="eyebrow">${esc(title)}</span>
+                    <div class="result-score">${icon("check")}</div>
+                    <h1 class="page-title" style="margin:0">All ${total} questions!</h1>
+                    <p class="muted" style="margin:0">You built up to the whole exam and got every question right.</p>
+                    <div class="btn-row" style="width:100%">
+                        <a class="btn btn-primary" href="#/buildup/${enc}?restart=1">Start over</a>
+                        <a class="btn btn-secondary" href="#/exam/${enc}">Done</a>
+                    </div>
+                </div>`, () => {});
+            return;
+        }
+        // Every round ends on its results
+        const last = n >= total;
+        document.body.classList.remove("focus-mode");
+        const choice = await wait(`
+            <div class="card result-hero">
+                <span class="eyebrow">Build-up · Round ${n} of ${total}</span>
+                <div class="result-score">${n - missed.length}/${n}</div>
+                <p class="muted" style="margin:0">${missed.length ? `${missed.length} missed this round` : "All correct!"}</p>
+                <div class="btn-row" style="width:100%">
+                    ${last ? "" : `<button type="button" class="btn btn-primary btn-wide" id="bu-next">${icon("plus")}Continue with ${n + 1} questions</button>`}
+                    <button type="button" class="btn ${last ? "btn-primary" : "btn-secondary"}" id="bu-again">${icon("refresh")}Try again</button>
+                    <a class="btn btn-secondary" href="#/exam/${enc}">Done</a>
+                </div>
+                <span class="small muted">Your round is saved ${state.user ? "to your account" : "on this device"}. Come back any time to keep going. <a href="#/buildup/${enc}?restart=1">Start over at round 1</a></span>
+            </div>
+            ${missed.length ? `<section class="section">
+                <h2 class="section-title">Review ${missed.length} missed question${missed.length === 1 ? "" : "s"}</h2>
+                ${missed.map((q) => `
+                    <div class="card review-item">
+                        <span class="q">${esc(q.question)}</span>
+                        <span class="review-line bad"><span class="tag">You:</span><span>${esc(fmt(outcome.answers[q.id]) || "No answer")}</span></span>
+                        <span class="review-line good"><span class="tag">Answer:</span><span>${esc(fmt(isMatching(q) ? q.correct_pairs : correctList(q)))}</span></span>
+                    </div>`).join("")}
+            </section>` : ""}`, (resolve) => {
+            const nx = $("#bu-next", root); if (nx) nx.onclick = () => resolve("next");
+            $("#bu-again", root).onclick = () => resolve("again");
+        });
+        if (choice === "next") { b.round = n + 1; saveBuildup(filename, b); }
+    }
 }
 
 function resultsHtml(result, { backHref, retakeHref }) {

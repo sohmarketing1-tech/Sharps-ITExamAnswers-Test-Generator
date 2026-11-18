@@ -2554,6 +2554,60 @@ def save_my_flashcards():
 # Mastery mode endpoints
 # ---------------------------------------------------------------------------
 
+# ── Build-up mode progress ─────────────────────────────────────────────────
+# Build-up mode (static/beta/app.js, viewBuildup) asks 1 question, then 2, 3, ... until the
+# whole exam is in. For logged-in users the question order and the round reached are kept
+# per exam in user_data[user]["buildup"][filename], so it can be resumed on any device.
+
+@app.route("/api/buildup", methods=["GET"])
+def get_buildup():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to save Build-up progress."}), 401
+    filename = request.args.get("filename", "").strip()
+    record = load_user_record(user).get(user, {})
+    return jsonify({"ok": True, "progress": (record.get("buildup") or {}).get(filename)})
+
+
+@app.route("/api/buildup", methods=["POST"])
+def save_buildup():
+    user = current_user()
+    if not user:
+        return jsonify({"ok": False, "error": "Log in to save Build-up progress."}), 401
+    data = request.get_json(silent=True) or {}
+    filename = str(data.get("filename", "")).strip()
+    if filename not in {e.get("filename") for e in load_exam_manifest()}:
+        return jsonify({"ok": False, "error": "Unknown exam."}), 400
+    questions = get_questions_for_test(filename)
+    progress = None
+    if not data.get("clear"):
+        known = {str(q["id"]) for q in questions}
+        order = [str(x) for x in (data.get("order") or []) if str(x) in known]
+        order = list(dict.fromkeys(order))
+        try:
+            rnd = int(data.get("round", 1))
+        except (TypeError, ValueError):
+            rnd = 1
+        if not order:
+            return jsonify({"ok": False, "error": "Missing question order."}), 400
+        progress = {
+            "order": order,
+            "round": max(1, min(rnd, len(order))),
+            "updated": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        }
+
+    def _save(user_data: dict):
+        record = user_data.setdefault(user, {})
+        saved = record.setdefault("buildup", {})
+        if progress:
+            saved[filename] = progress
+        else:
+            saved.pop(filename, None)
+
+    modify_user_data(_save)
+    return jsonify({"ok": True, "progress": progress})
+
+
 @app.route("/api/mastery", methods=["GET"])
 def get_mastery():
     user = current_user()
