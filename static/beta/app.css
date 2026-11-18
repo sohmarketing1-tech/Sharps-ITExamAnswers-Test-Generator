@@ -440,6 +440,10 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
 
 /* ── Results ────────────────────────────────────────────────────────────── */
 .result-hero { align-items: center; text-align: center; padding: 26px 18px; }
+.add-more { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line, rgba(127,127,127,.25)); }
+.add-more-label { font-weight: 600; }
+.add-more-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.add-more-btn { min-width: 72px; }
 .result-score { font-family: var(--display); font-size: 56px; font-weight: 700; line-height: 1; }
 .review-item { display: flex; flex-direction: column; gap: 8px; }
 .review-item .q { font-weight: 600; }

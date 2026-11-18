@@ -929,8 +929,17 @@ async function viewPractice(root, [filename], query, alive) {
         root.innerHTML = `<div class="error-box">${esc(r.data.error || "Couldn't load questions.")}</div>`;
         return;
     }
+    let list = r.data.quiz;
+    // "Add new questions" on the results page: the same test plus `add` questions it didn't have
+    const add = ids ? Math.max(0, Number(query.get("add")) || 0) : 0;
+    if (add) {
+        const all = await api(`/api/test?n=${meta.count}&filename=${encodeURIComponent(filename)}`);
+        if (!alive()) return;
+        const have = new Set(list.map((q) => String(q.id)));
+        if (all.ok) list = list.concat(shuffle((all.data.quiz || []).filter((q) => !have.has(String(q.id)))).slice(0, add));
+    }
     // A retake uses the same questions, mixed into a new order
-    const quiz = shuffleChoices(ids ? shuffle(r.data.quiz) : r.data.quiz, filename);
+    const quiz = shuffleChoices(ids ? shuffle(list) : list, filename);
     const title = examFullName(filename);
     const hints = await loadHints(filename);
     const outcome = await runQuiz(root, { quiz, heading: `Practice test · ${title}`, alive, filename, hints });
@@ -942,7 +951,7 @@ async function viewPractice(root, [filename], query, alive) {
         return;
     }
     const d = scored.data;
-    state.lastResult = { filename, title, n, ...d };
+    state.lastResult = { filename, title, n: quiz.length, ...d };
     if (state.user) {
         api("/api/history", {
             method: "POST",
@@ -958,6 +967,12 @@ async function viewPractice(root, [filename], query, alive) {
 function resultsHtml(result, { backHref, retakeHref }) {
     const wrong = result.results.filter((x) => !x.is_correct);
     const sameIds = result.results.length && result.results.every((x) => x.id != null) ? result.results.map((x) => encodeURIComponent(x.id)).join(",") : "";
+    // "Add new questions": retake the same test with 1, 5 or 10 questions it didn't have yet
+    const meta = examMeta(result.filename);
+    const addLeft = retakeHref && sameIds && meta ? Math.max(0, meta.count - result.results.length) : 0;
+    const addSizes = [1, 5, 10].filter((k) => k <= addLeft);
+    if (addLeft > 1 && addLeft < 10 && !addSizes.includes(addLeft)) addSizes.push(addLeft);
+    const addHref = retakeHref ? `${retakeHref.split("?")[0]}?ids=${sameIds}&add=` : "";
     const fmt = (v) => Array.isArray(v) ? v.join(" · ") : (v && typeof v === "object") ? Object.entries(v).map(([k, val]) => `${k} → ${val}`).join("; ") : String(v || "");
     return `
         <div class="card result-hero">
@@ -969,6 +984,12 @@ function resultsHtml(result, { backHref, retakeHref }) {
                 ${retakeHref ? `<a class="btn ${sameIds ? "btn-secondary" : "btn-primary"}" href="${retakeHref}">New questions</a>` : ""}
                 <a class="btn btn-secondary" href="${backHref}">Done</a>
             </div>
+            ${addSizes.length ? `
+            <div class="add-more">
+                <span class="add-more-label">Add new questions to this test</span>
+                <div class="add-more-row">${addSizes.map((k) => `<a class="btn btn-secondary add-more-btn" href="${addHref}${k}">+${k}</a>`).join("")}</div>
+                <span class="small muted">Retake the same ${result.results.length} questions, plus the new ones.</span>
+            </div>` : ""}
         </div>
         ${!state.user ? `<div class="note"><a href="#/login">Log in</a> to save your scores to Progress.</div>` : ""}
         ${result.slimmed ? `<div class="note">Question-by-question review is kept for 30 days after a test. Your score is saved for good.</div>` : `
